@@ -8,3 +8,7 @@ config.log
 config.status
 configure
 *_copy_*
+*_charcount_*
+*_linecount_*
+*.gz
+
