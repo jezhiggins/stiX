@@ -14,7 +14,9 @@ noinst_PROGRAMS = 11_copy_1 \
                   13_linecount_3 \
                   13_linecount_4 \
                   13_linecount_5 \
-                  13_linecount_6 
+                  13_linecount_6 \
+                  14_wordcount_1 \
+                  14_wordcount_2
 
 11_copy_1_SOURCES = chapter1/1_copy_1.cpp
 11_copy_2_SOURCES = chapter1/1_copy_2.cpp
@@ -33,3 +35,6 @@ noinst_PROGRAMS = 11_copy_1 \
 13_linecount_4_SOURCES = chapter1/3_linecount_4.cpp
 13_linecount_5_SOURCES = chapter1/3_linecount_5.cpp
 13_linecount_6_SOURCES = chapter1/3_linecount_6.cpp
+
+14_wordcount_1_SOURCES = chapter1/4_wordcount_1.cpp
+14_wordcount_2_SOURCES = chapter1/4_wordcount_2.cpp

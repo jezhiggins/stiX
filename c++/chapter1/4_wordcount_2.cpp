@@ -2,13 +2,13 @@
 #include <iterator>
 #include <algorithm>
 
-class wordcount
+class wordcounter
 {
   public:
-    wordcount() :
+    wordcounter() :
 	inword_(false)
     {
-    } // wordcount
+    } // wordcounter
 
     bool operator()(const char& c) 
     {
@@ -27,12 +27,12 @@ class wordcount
     static const char NEWLINE = '\n';
     static const char TAB = '\r';
     static const char BLANK = ' ';
-};
+}; // class wordcounter
 
 int main()
 {
   int count = std::count_if(std::istreambuf_iterator<char>(std::cin),
 			    std::istreambuf_iterator<char>(),
-                            wordcount());
+                            wordcounter());
   std::cout << count << std::endl;
 } // main

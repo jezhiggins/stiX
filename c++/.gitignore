@@ -10,5 +10,7 @@ configure
 *_copy_*
 *_charcount_*
 *_linecount_*
+*_linecount_*
+*_wordcount_*
 *.gz
 
