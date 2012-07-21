@@ -1,5 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
+AM_CXXFLAGS=-std=c++0x
+
 noinst_PROGRAMS = 11_copy_1 \
                   11_copy_2 \
                   11_copy_3 \
