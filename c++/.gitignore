@@ -13,4 +13,5 @@ configure
 *_linecount_*
 *_wordcount_*
 *.gz
-
+*.exe
+*~
