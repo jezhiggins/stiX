@@ -1,3 +1,8 @@
+// wordcount - counts words in input
+// wordcount counts the words in its input and writes the total as a line of
+// text in the output. A "word" is a maximal sequence of characters not
+// containing a blank or tab or newline.
+
 #include <iostream>
 
 const char NEWLINE = '\n';
@@ -20,6 +25,6 @@ int main()
     }
 
   std::cout << nw << std::endl;
-  
+
   return 0;
 } // main

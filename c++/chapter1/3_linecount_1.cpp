@@ -1,3 +1,7 @@
+// linecount - count lines in the input
+// linecount counts the lines in its input and writes the total as a line of
+// text to the output.
+
 #include <iostream>
 
 const char NEWLINE = '\n';
