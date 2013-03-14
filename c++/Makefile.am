@@ -19,7 +19,8 @@ noinst_PROGRAMS = 11_copy_1 \
                   13_linecount_6 \
                   14_wordcount_1 \
                   14_wordcount_2 \
-                  15_detab \
+                  15_detab_1 \
+                  15_detab_2 \
                   21_entab
 
 11_copy_1_SOURCES = chapter1/1_copy_1.cpp
@@ -43,6 +44,7 @@ noinst_PROGRAMS = 11_copy_1 \
 14_wordcount_1_SOURCES = chapter1/4_wordcount_1.cpp
 14_wordcount_2_SOURCES = chapter1/4_wordcount_2.cpp
 
-15_detab_SOURCES = chapter1/5_detab.cpp
+15_detab_1_SOURCES = chapter1/5_detab_1.cpp
+15_detab_2_SOURCES = chapter1/5_detab_2.cpp
 
 21_entab_SOURCES = chapter2/1_entab.cpp
