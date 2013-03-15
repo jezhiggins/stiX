@@ -2,49 +2,51 @@ ACLOCAL_AMFLAGS = -I m4
 
 AM_CXXFLAGS=-std=c++0x
 
-noinst_PROGRAMS = 11_copy_1 \
-                  11_copy_2 \
-                  11_copy_3 \
-                  11_copy_4 \
-                  11_copy_5 \
-                  12_charcount_1 \
-                  12_charcount_2 \
-                  12_charcount_3 \
-                  12_charcount_4 \
-                  13_linecount_1 \
-                  13_linecount_2 \
-                  13_linecount_3 \
-                  13_linecount_4 \
-                  13_linecount_5 \
-                  13_linecount_6 \
-                  14_wordcount_1 \
-                  14_wordcount_2 \
-                  15_detab_1 \
-                  15_detab_2 \
-                  21_entab
+noinst_PROGRAMS = copy_1 \
+                  copy_2 \
+                  copy_3 \
+                  copy_4 \
+                  copy_5 \
+                  charcount_1 \
+                  charcount_2 \
+                  charcount_3 \
+                  charcount_4 \
+                  linecount_1 \
+                  linecount_2 \
+                  linecount_3 \
+                  linecount_4 \
+                  linecount_5 \
+                  linecount_6 \
+                  wordcount_1 \
+                  wordcount_2 \
+                  detab_1 \
+                  detab_2 \
+                  entab_1 \
+                  entab_2
 
-11_copy_1_SOURCES = chapter1/1_copy_1.cpp
-11_copy_2_SOURCES = chapter1/1_copy_2.cpp
-11_copy_3_SOURCES = chapter1/1_copy_3.cpp
-11_copy_4_SOURCES = chapter1/1_copy_4.cpp
-11_copy_5_SOURCES = chapter1/1_copy_5.cpp
+copy_1_SOURCES = chapter1/1_copy_1.cpp
+copy_2_SOURCES = chapter1/1_copy_2.cpp
+copy_3_SOURCES = chapter1/1_copy_3.cpp
+copy_4_SOURCES = chapter1/1_copy_4.cpp
+copy_5_SOURCES = chapter1/1_copy_5.cpp
 
-12_charcount_1_SOURCES = chapter1/2_charcount_1.cpp
-12_charcount_2_SOURCES = chapter1/2_charcount_2.cpp
-12_charcount_3_SOURCES = chapter1/2_charcount_3.cpp
-12_charcount_4_SOURCES = chapter1/2_charcount_4.cpp
+charcount_1_SOURCES = chapter1/2_charcount_1.cpp
+charcount_2_SOURCES = chapter1/2_charcount_2.cpp
+charcount_3_SOURCES = chapter1/2_charcount_3.cpp
+charcount_4_SOURCES = chapter1/2_charcount_4.cpp
 
-13_linecount_1_SOURCES = chapter1/3_linecount_1.cpp
-13_linecount_2_SOURCES = chapter1/3_linecount_2.cpp
-13_linecount_3_SOURCES = chapter1/3_linecount_3.cpp
-13_linecount_4_SOURCES = chapter1/3_linecount_4.cpp
-13_linecount_5_SOURCES = chapter1/3_linecount_5.cpp
-13_linecount_6_SOURCES = chapter1/3_linecount_6.cpp
+linecount_1_SOURCES = chapter1/3_linecount_1.cpp
+linecount_2_SOURCES = chapter1/3_linecount_2.cpp
+linecount_3_SOURCES = chapter1/3_linecount_3.cpp
+linecount_4_SOURCES = chapter1/3_linecount_4.cpp
+linecount_5_SOURCES = chapter1/3_linecount_5.cpp
+linecount_6_SOURCES = chapter1/3_linecount_6.cpp
 
-14_wordcount_1_SOURCES = chapter1/4_wordcount_1.cpp
-14_wordcount_2_SOURCES = chapter1/4_wordcount_2.cpp
+wordcount_1_SOURCES = chapter1/4_wordcount_1.cpp
+wordcount_2_SOURCES = chapter1/4_wordcount_2.cpp
 
-15_detab_1_SOURCES = chapter1/5_detab_1.cpp
-15_detab_2_SOURCES = chapter1/5_detab_2.cpp
+detab_1_SOURCES = chapter1/5_detab_1.cpp
+detab_2_SOURCES = chapter1/5_detab_2.cpp
 
-21_entab_SOURCES = chapter2/1_entab.cpp
+entab_1_SOURCES = chapter2/1_entab_1.cpp
+entab_2_SOURCES = chapter2/1_entab_2.cpp
