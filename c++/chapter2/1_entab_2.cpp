@@ -12,23 +12,24 @@ public:
 
   void operator()(const char& c)
   {
-    if(c != BLANK) 
+    if(c == BLANK) 
     {
-      while(column_ != newcol_)
-	output(BLANK);
-	
-      output(c);
-
-      newcol_ = column_;
+      ++newcol_;
+      if(at_tabstop(newcol_))
+      {
+	output(TAB);
+	column_ = newcol_;
+      }
       return;
     } // if ...
 
-    ++newcol_;
-    if(at_tabstop(newcol_))
-    {
-      output(TAB);
-      column_ = newcol_;
-    }
+    while(column_ != newcol_)
+      output(BLANK);
+	
+    output(c);
+
+    newcol_ = column_;
+    return;
   } // operator()
 
 private:
