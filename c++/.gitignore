@@ -18,3 +18,4 @@ entab*
 *.exe
 *~
 depcomp
+.dirstamp
