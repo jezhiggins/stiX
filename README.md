@@ -1,11 +1,11 @@
-# Software Tools in <X>
+# Software Tools in \<X\>
 
-*Jez Higgins*
-*jez@jezuk.co.uk*
+**Jez Higgins**, *jez@jezuk.co.uk*
 
-Reimplementing the programs described in Kernighan and Plauger's Software Tools in Pascal in other languages.
+Reimplementing the programs described in Kernighan and Plauger's Software Tools in Pascal in other languages. 
 
-## Chapter 1
+## C++
+### Chapter 1
 
 1. copy
 
