@@ -1,6 +1,6 @@
 .idea
 cmake-build-debug
-cmake_install.cache
+cmake_install.*
 Makefile
 CMakeFiles/
 CMakeCache.txt
