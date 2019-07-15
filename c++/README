@@ -1,2 +1,0 @@
-You'll need autotools to build this.
-Run autoreconf && ./configure && make
