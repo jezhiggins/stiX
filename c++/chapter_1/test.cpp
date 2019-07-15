@@ -1,8 +1,8 @@
 
 #define CATCH_CONFIG_MAIN
-#include "../../catch.hpp"
+#include "../catch.hpp"
 
-#include "copy.h"
+#include "1_copy/copy.h"
 
 void verifyCopyString(std::string input)
 {
