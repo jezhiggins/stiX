@@ -4,8 +4,7 @@
 
 Reimplementing the programs described in Kernighan and Plauger's Software Tools in Pascal in other languages. 
 
-## C++
-### Chapter 1
+## Chapter 1
 
 1. copy
 
