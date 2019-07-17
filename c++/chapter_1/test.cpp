@@ -7,9 +7,20 @@
 
 #include <tuple>
 
+void test(std::string label, void (*fn)(std::string));
 void verifyCopyString(std::string input);
 void verifyCharCount(std::string input);
 
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+TEST_CASE("Chapter 1 - copy") {
+    test("copy", verifyCopyString);
+}
+TEST_CASE( "Chapter 1 - charcount") {
+    test("charcount", verifyCharCount);
+}
+
+////////////////////////////////////////////////////
 const std::string empty;
 const std::string very_short("1");
 const std::string longer("Hello World");
@@ -24,19 +35,10 @@ const std::vector<std::string> test_strings = {
 
 std::string escape(std::string s);
 
-//////////////////////////
-TEST_CASE( "Chapter 1 - copy" ) {
+void test(std::string label, void (*fn)(std::string)) {
     for (auto s : test_strings) {
-        DYNAMIC_SECTION("copy(\"" << escape(s) << "\")") {
-            verifyCopyString(s);
-        }
-    }
-}
-
-TEST_CASE( "Chapter 1 - charcount") {
-    for (auto s : test_strings) {
-        DYNAMIC_SECTION("charcount(\"" << escape(s) << "\")") {
-            verifyCharCount(s);
+        DYNAMIC_SECTION(label << "(\"" << escape(s) << "\")") {
+            fn(s);
         }
     }
 }
@@ -57,6 +59,7 @@ std::string escape(std::string s) {
     }
     return s;
 }
+
 /////////
 void verifyCopyString(std::string input)
 {
