@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(1_copy chapter_1/1_copy/1_copy.cpp chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h)
 add_executable(2_charcount chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h chapter_1/2_charcount/2_charcount.cpp)
-add_executable(chapter_1_test chapter_1/test.cpp chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h)
+add_executable(chapter_1_test chapter_1/test.cpp chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h chapter_1/3_linecount/linecount.cpp chapter_1/3_linecount/linecount.h)

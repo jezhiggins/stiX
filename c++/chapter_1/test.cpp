@@ -4,33 +4,40 @@
 
 #include "1_copy/copy.h"
 #include "2_charcount/charcount.h"
+#include "3_linecount/linecount.h"
 
 #include <tuple>
 
 void test(std::string label, void (*fn)(std::string));
 void verifyCopyString(std::string input);
 void verifyCharCount(std::string input);
+void verifyLineCount(std::string input);
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 TEST_CASE("Chapter 1 - copy") {
     test("copy", verifyCopyString);
 }
-TEST_CASE( "Chapter 1 - charcount") {
+TEST_CASE("Chapter 1 - charcount") {
     test("charcount", verifyCharCount);
+}
+TEST_CASE("Chapter 1 - linecount") {
+    test("linecount", verifyLineCount);
 }
 
 ////////////////////////////////////////////////////
 const std::string empty;
 const std::string very_short("1");
 const std::string longer("Hello World");
-const std::string longer_with_line_breaks("\tHello\n\t\tWorld!\n");
+const std::string with_terminal_line_break("The End\n");
+const std::string longer_with_multiple_line_breaks("\tHello\n\t\tWorld!\n");
 
 const std::vector<std::string> test_strings = {
         empty,
         very_short,
         longer,
-        longer_with_line_breaks
+        with_terminal_line_break,
+        longer_with_multiple_line_breaks
 };
 
 std::string escape(std::string s);
@@ -68,7 +75,7 @@ void verifyCopyString(std::string input)
 
     stiX::copy(is, os);
 
-    REQUIRE( os.str() == input );
+    REQUIRE(os.str() == input );
 }
 
 void verifyCharCount(std::string input)
@@ -78,4 +85,17 @@ void verifyCharCount(std::string input)
     auto count = stiX::charcount(is);
 
     REQUIRE(count == input.size());
+}
+
+void verifyLineCount(std::string input)
+{
+    std::istringstream is(input);
+
+    auto count = stiX::linecount(is);
+
+    size_t lines = 0;
+    for (auto c : input)
+        lines += (c == '\n');
+
+    REQUIRE(count == lines);
 }
