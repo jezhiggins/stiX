@@ -7,6 +7,9 @@
 
 namespace stiX {
     size_t charcount(std::istream &in) {
-        return 0;
+        return std::distance(
+                std::istreambuf_iterator<char>(in),
+                std::istreambuf_iterator<char>()
+        );
     }
 }
