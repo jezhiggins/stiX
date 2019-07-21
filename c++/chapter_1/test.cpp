@@ -5,6 +5,7 @@
 #include "1_copy/copy.h"
 #include "2_charcount/charcount.h"
 #include "3_linecount/linecount.h"
+#include "4_wordcount/wordcount.h"
 
 #include <tuple>
 
@@ -12,6 +13,7 @@ void test(std::string label, void (*fn)(std::string));
 void verifyCopyString(std::string input);
 void verifyCharCount(std::string input);
 void verifyLineCount(std::string input);
+void verifyWordCount(std::string input);
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -23,6 +25,9 @@ TEST_CASE("Chapter 1 - charcount") {
 }
 TEST_CASE("Chapter 1 - linecount") {
     test("linecount", verifyLineCount);
+}
+TEST_CASE("Chapter 1 - wordcount") {
+    test("wordcount", verifyWordCount);
 }
 
 ////////////////////////////////////////////////////
@@ -99,13 +104,32 @@ void verifyCharCount(std::string input)
 
 void verifyLineCount(std::string input)
 {
-    std::istringstream is(input);
-
-    auto count = stiX::linecount(is);
-
     size_t lines = 0;
     for (auto c : input)
         lines += (c == '\n');
 
+    std::istringstream is(input);
+    auto count = stiX::linecount(is);
+
     REQUIRE(count == lines);
+}
+
+
+void verifyWordCount(std::string input)
+{
+    const char delims[] = " \t\n";
+    std::vector<char> v(input.begin(), input.end());
+    v.push_back(0);
+
+    char* s = strtok(&(v[0]), delims);
+    size_t wordcount = 0;
+    while (s != 0) {
+        ++wordcount;
+        s = strtok(0, delims);
+    }
+
+    std::istringstream is(input);
+    auto count = stiX::wordcount(is);
+
+    REQUIRE(count == wordcount);
 }
