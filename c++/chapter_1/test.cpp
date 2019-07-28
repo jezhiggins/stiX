@@ -7,7 +7,7 @@
 #include "3_linecount/linecount.h"
 #include "4_wordcount/wordcount.h"
 #include "5_detab/detab.h"
-#include "5_detab/detab_impl.h"
+#include "5_detab/tab_stops.h"
 
 #include <tuple>
 

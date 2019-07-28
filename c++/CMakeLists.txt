@@ -13,5 +13,5 @@ add_executable(chapter_1_test
         chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h
         chapter_1/3_linecount/linecount.cpp chapter_1/3_linecount/linecount.h
         chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h
-        chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h chapter_1/5_detab/detab_impl.h
+        chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h chapter_1/5_detab/tab_stops.h
     )
