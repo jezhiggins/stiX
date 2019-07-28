@@ -5,7 +5,10 @@ namespace stiX {
     inline const size_t tabSize = 8;
 
     size_t next_tab_stop(size_t position) {
-        return 0;
+        const auto currentTab = (position / tabSize);
+        const auto nextTab = currentTab + 1;
+        const auto nextStop = nextTab * tabSize;
+        return nextStop;
     }
 }
 
