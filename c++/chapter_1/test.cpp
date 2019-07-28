@@ -7,6 +7,7 @@
 #include "3_linecount/linecount.h"
 #include "4_wordcount/wordcount.h"
 #include "5_detab/detab.h"
+#include "5_detab/detab_impl.h"
 
 #include <tuple>
 
@@ -44,12 +45,33 @@ const std::string with_leading_line_break("\nThe Beginning");
 const std::string line_breaks_before_and_aft("\n  In the middle \n");
 const std::string longer_with_multiple_line_breaks("\tHello\n\t\tWorld!\n");
 
+TEST_CASE("Chapter 1 - detab - next_tab_stop") {
+    for (size_t p = 0; p != stiX::tabSize; ++p)
+        REQUIRE(stiX::next_tab_stop(p) == stiX::tabSize);
+    for (size_t p = stiX::tabSize; p != (stiX::tabSize * 2); ++p)
+        REQUIRE(stiX::next_tab_stop(p) == (stiX::tabSize * 2));
+
+    for (size_t s = 0; s <= 10; ++s) {
+        const auto p = (s * stiX::tabSize) + (stiX::tabSize / 2);
+        REQUIRE(stiX::next_tab_stop(p) == ((s+1) * stiX::tabSize));
+    }
+}
+
+TEST_CASE("Chapter 1 - detab - distance_to_next_tab_stop") {
+    for (size_t p = 0; p != stiX::tabSize; ++p) {
+        auto remainder = stiX::tabSize - p;
+        REQUIRE(stiX::distance_to_next_tab_stop(p) == remainder);
+        REQUIRE(stiX::distance_to_next_tab_stop(p + stiX::tabSize) == remainder);
+    }
+}
+
 TEST_CASE("Chapter 1 - detab") {
     testDetab(empty, empty);
     testDetab(one_character, one_character);
     testDetab(longer,longer);
     testDetab("\tHello", "        Hello");
 }
+
 
 
 const std::vector<std::string> test_strings = {
