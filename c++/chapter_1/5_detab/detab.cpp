@@ -5,10 +5,11 @@
 
 namespace stiX {
     void detab(std::istream &in, std::ostream &out) {
-        std::copy(
+        std::transform(
                 std::istreambuf_iterator<char>(in),
                 std::istreambuf_iterator<char>(),
-                std::ostreambuf_iterator<char>(out)
+                std::ostreambuf_iterator<char>(out),
+                [](char c) { return c; }
         );
     }
 }
