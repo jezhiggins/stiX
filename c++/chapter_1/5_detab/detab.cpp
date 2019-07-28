@@ -13,7 +13,11 @@ struct detabber {
             return std::string(spaces, ' ');
         }
 
-        ++position_;
+        if (c == '\n')
+            position_ = 0;
+        else
+            ++position_;
+
         return std::string(1, c);
     }
 };
