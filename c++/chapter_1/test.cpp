@@ -6,6 +6,7 @@
 #include "2_charcount/charcount.h"
 #include "3_linecount/linecount.h"
 #include "4_wordcount/wordcount.h"
+#include "5_detab/detab.h"
 
 #include <tuple>
 
@@ -14,6 +15,7 @@ void verifyCopyString(std::string input);
 void verifyCharCount(std::string input);
 void verifyLineCount(std::string input);
 void verifyWordCount(std::string input);
+void testDetab(std::string input, std::string expected);
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -41,6 +43,11 @@ const std::string with_terminal_line_break("The End\n");
 const std::string with_leading_line_break("\nThe Beginning");
 const std::string line_breaks_before_and_aft("\n  In the middle \n");
 const std::string longer_with_multiple_line_breaks("\tHello\n\t\tWorld!\n");
+
+TEST_CASE("Chapter 1 - detab") {
+    testDetab(empty, empty);
+}
+
 
 const std::vector<std::string> test_strings = {
         empty,
@@ -114,7 +121,6 @@ void verifyLineCount(std::string input)
     REQUIRE(count == lines);
 }
 
-
 void verifyWordCount(std::string input)
 {
     const char delims[] = " \t\n";
@@ -132,4 +138,14 @@ void verifyWordCount(std::string input)
     auto count = stiX::wordcount(is);
 
     REQUIRE(count == wordcount);
+}
+
+void testDetab(std::string input, std::string expected)
+{
+    std::istringstream is(input);
+    std::ostringstream os;
+
+    stiX::detab(is, os);
+
+    REQUIRE(os.str() == expected);
 }
