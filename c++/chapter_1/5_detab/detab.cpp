@@ -4,8 +4,10 @@
 #include "detab.h"
 
 struct detabber {
-    char operator()(char c) {
-        return c;
+    std::string operator()(char c) {
+        if (c == '\t')
+            return std::string("        ");
+        return std::string(1, c);
     }
 };
 
@@ -14,7 +16,7 @@ namespace stiX {
         std::transform(
                 std::istreambuf_iterator<char>(in),
                 std::istreambuf_iterator<char>(),
-                std::ostreambuf_iterator<char>(out),
+                std::ostream_iterator<std::string>(out),
                 detabber()
         );
     }
