@@ -10,6 +10,10 @@ namespace stiX {
         const auto nextStop = nextTab * tabSize;
         return nextStop;
     }
+
+    size_t distance_to_next_tab_stop(size_t position) {
+        return next_tab_stop(position) - position;
+    }
 }
 
 #endif //STICPP_DETAB_IMPL_H
