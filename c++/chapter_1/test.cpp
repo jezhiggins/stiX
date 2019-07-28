@@ -69,16 +69,16 @@ TEST_CASE("Chapter 1 - detab") {
     testDetab(empty, empty);
     testDetab(one_character, one_character);
     testDetab(longer,longer);
-    testDetab("\tHello", "        Hello");
+    testDetab("\tHello", "    Hello");
     testDetab("Hello\tWorld", "Hello   World");
     testDetab("1234567\t===", "1234567 ===");
-    testDetab("12345678\t===", "12345678        ===");
-    testDetab("\t\tHello", "                Hello");
+    testDetab("12345678\t===", "12345678    ===");
+    testDetab("\t\tHello", "        Hello");
 
-    testDetab("\n\tHello", "\n        Hello");
-    testDetab("\n\t\nHello", "\n        \nHello");
-    testDetab("\n\n\tHello", "\n\n        Hello");
-    testDetab("Hello\n\tWorld", "Hello\n        World");
+    testDetab("\n\tHello", "\n    Hello");
+    testDetab("\n\t\nHello", "\n    \nHello");
+    testDetab("\n\n\tHello", "\n\n    Hello");
+    testDetab("Hello\n\tWorld", "Hello\n    World");
 }
 
 

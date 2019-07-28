@@ -2,7 +2,7 @@
 #define STICPP_TAB_STOPS_H
 
 namespace stiX {
-    inline const size_t tabSize = 8;
+    inline const size_t tabSize = 4;
 
     inline size_t next_tab_stop(size_t position) {
         const auto currentTab = (position / tabSize);
