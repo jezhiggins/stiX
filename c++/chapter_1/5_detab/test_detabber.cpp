@@ -3,7 +3,7 @@
 
 #include "detab_impl.h"
 
-TEST_CASE("Chapter 1 - detab - detabber", "next_tab_position") {
+TEST_CASE("Chapter 1 - detab - detabber", "next_tab_stop") {
     for (size_t p = 0; p != stiX::tabSize; ++p)
         REQUIRE(stiX::next_tab_stop(p) == stiX::tabSize);
     for (size_t p = stiX::tabSize; p != (stiX::tabSize * 2); ++p)
