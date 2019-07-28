@@ -46,6 +46,9 @@ const std::string longer_with_multiple_line_breaks("\tHello\n\t\tWorld!\n");
 
 TEST_CASE("Chapter 1 - detab") {
     testDetab(empty, empty);
+    testDetab(one_character, one_character);
+    testDetab(longer,longer);
+    testDetab("\tHello", "        Hello");
 }
 
 
