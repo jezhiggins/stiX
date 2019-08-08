@@ -73,6 +73,10 @@ TEST_CASE("Chapter 1 - detab") {
     testDetab("Hello\tWorld", "Hello   World");
     testDetab("1234567\t===", "1234567 ===");
     testDetab("12345678\t===", "12345678    ===");
+    testDetab("\t Hello", "     Hello");
+    testDetab("\t  Hello", "      Hello");
+    testDetab("\t   Hello", "       Hello");
+    testDetab("\t    Hello", "        Hello");
     testDetab("\t\tHello", "        Hello");
 
     testDetab("\n\tHello", "\n    Hello");

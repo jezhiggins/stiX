@@ -36,6 +36,10 @@ TEST_CASE("Chapter 2 - entab") {
     testEntab("Hello   World", "Hello\tWorld");
     testEntab("1234567 ===", "1234567\t===");
     testEntab("12345678    ===", "12345678\t===");
+    testEntab("    Hello", "\tHello");
+    testEntab("     Hello", "\t Hello");
+    testEntab("      Hello", "\t  Hello");
+    testEntab("       Hello", "\t   Hello");
     testEntab("        Hello", "\t\tHello");
 
     testEntab("\n    Hello", "\n\tHello");
