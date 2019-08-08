@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <string>
 
 struct detabber {
     size_t position_;
