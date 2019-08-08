@@ -1,6 +1,9 @@
 
 #include "linecount.h"
+
+#include <algorithm>
 #include <iostream>
+#include <iterator>
 
 namespace stiX {
     size_t linecount(std::istream &in) {

@@ -1,8 +1,9 @@
-#include <algorithm>
-#include <iostream>
-
 #include "detab.h"
 #include "tab_stops.h"
+
+#include <algorithm>
+#include <iostream>
+#include <iterator>
 
 struct detabber {
     size_t position_;

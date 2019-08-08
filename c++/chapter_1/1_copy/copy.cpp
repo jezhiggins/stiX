@@ -1,8 +1,9 @@
 
+#include "copy.h"
+
 #include <algorithm>
 #include <iostream>
-
-#include "copy.h"
+#include <iterator>
 
 namespace stiX {
     void copy(std::istream &in, std::ostream &out) {

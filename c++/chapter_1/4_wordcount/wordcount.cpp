@@ -1,6 +1,8 @@
 #include "wordcount.h"
 
+#include <algorithm>
 #include <iostream>
+#include <iterator>
 
 namespace stiX {
     size_t wordcount(std::istream& in) {

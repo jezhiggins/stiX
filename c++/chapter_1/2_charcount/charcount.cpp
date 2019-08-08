@@ -1,9 +1,8 @@
-//
-// Created by Jez Higgins on 2019-07-17.
-//
-
 #include "charcount.h"
+
+#include <algorithm>
 #include <iostream>
+#include <iterator>
 
 namespace stiX {
     size_t charcount(std::istream &in) {
