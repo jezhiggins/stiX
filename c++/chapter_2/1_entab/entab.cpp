@@ -10,6 +10,9 @@
 struct entabber {
     size_t position_;
     size_t spaces_;
+    std::string const tab = "\t";
+    std::string const empty;
+    std::string output;
 
     std::string operator()(char c) {
         if (stiX::isspace(c)) {
@@ -17,16 +20,15 @@ struct entabber {
 
             if (stiX::is_tab_stop(spaces_)) {
                 position_ = spaces_;
-                return std::string("\t");
+                return tab;
             }
 
-            return std::string();
+            return empty;
         }
 
-        std::string output;
-        if (spaces_ != position_) {
-            output = std::string(spaces_ - position_, ' ');
-        }
+        output = (spaces_ != position_)
+                ? std::string(spaces_ - position_, ' ')
+                : empty;
         output += c;
 
         if (stiX::isnewline(c))
