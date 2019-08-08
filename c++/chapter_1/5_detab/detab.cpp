@@ -1,5 +1,5 @@
 #include "detab.h"
-#include "tab_stops.h"
+#include "../../lib/tab_stops.h"
 
 #include <algorithm>
 #include <iostream>

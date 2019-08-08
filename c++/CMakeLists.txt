@@ -7,17 +7,17 @@ add_executable(1_copy chapter_1/1_copy/1_copy.cpp chapter_1/1_copy/copy.cpp chap
 add_executable(2_charcount chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h chapter_1/2_charcount/2_charcount.cpp)
 add_executable(3_linecount chapter_1/3_linecount/linecount.cpp chapter_1/3_linecount/linecount.h chapter_1/3_linecount/3_linecount.cpp)
 add_executable(4_wordcount chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h chapter_1/4_wordcount/4_wordcount.cpp)
-add_executable(5_detab chapter_1/5_detab/5_detab.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h chapter_1/5_detab/tab_stops.h)
+add_executable(5_detab chapter_1/5_detab/5_detab.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.h)
 add_executable(chapter_1_test
         chapter_1/test.cpp
         chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h
         chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h
         chapter_1/3_linecount/linecount.cpp chapter_1/3_linecount/linecount.h
         chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h
-        chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h chapter_1/5_detab/tab_stops.h
+        chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.h
     )
 
 add_executable(chapter_2_test
         chapter_2/test.cpp
-        chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h
+        chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h lib/tab_stops.h
     )

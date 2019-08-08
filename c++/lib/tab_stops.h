@@ -14,6 +14,10 @@ namespace stiX {
     inline size_t distance_to_next_tab_stop(size_t position) {
         return next_tab_stop(position) - position;
     }
+
+    inline bool is_tab_stop(size_t position) {
+        return (position % tabSize) == 0;
+    }
 }
 
 #endif //STICPP_TAB_STOPS_H
