@@ -9,14 +9,14 @@
 
 struct entabber {
     size_t position_;
-    size_t buffer_;
+    size_t spaces_;
 
     std::string operator()(char c) {
         if (stiX::isspace(c)) {
-            ++buffer_;
+            ++spaces_;
 
-            if (stiX::is_tab_stop(buffer_)) {
-                position_ = buffer_;
+            if (stiX::is_tab_stop(spaces_)) {
+                position_ = spaces_;
                 return std::string("\t");
             }
 
@@ -24,8 +24,8 @@ struct entabber {
         }
 
         std::string output;
-        if (buffer_ != position_) {
-            output = std::string(buffer_ - position_, ' ');
+        if (spaces_ != position_) {
+            output = std::string(spaces_ - position_, ' ');
         }
         output += c;
 
@@ -33,7 +33,7 @@ struct entabber {
             position_ = 0;
         else
             ++position_;
-        buffer_ = position_;
+        spaces_ = position_;
 
         return output;
     }
