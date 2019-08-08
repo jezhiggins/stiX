@@ -1,4 +1,5 @@
 #include "detab.h"
+#include "../../lib/chars.h"
 #include "../../lib/tab_stops.h"
 
 #include <algorithm>
@@ -9,13 +10,13 @@
 struct detabber {
     size_t position_;
     std::string operator()(char c) {
-        if (c == '\t') {
+        if (stiX::istab(c)) {
             const auto spaces = stiX::distance_to_next_tab_stop(position_);
             position_ = stiX::next_tab_stop(position_);
             return std::string(spaces, ' ');
         }
 
-        if (c == '\n')
+        if (stiX::isnewline(c))
             position_ = 0;
         else
             ++position_;

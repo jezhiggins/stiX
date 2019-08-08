@@ -1,4 +1,5 @@
 #include "entab.h"
+#include "../../lib/chars.h"
 #include "../../lib/tab_stops.h"
 
 #include <iostream>
@@ -11,7 +12,7 @@ struct entabber {
     size_t buffer_;
 
     std::string operator()(char c) {
-        if (c == ' ') {
+        if (stiX::isspace(c)) {
             ++buffer_;
 
             if (stiX::is_tab_stop(buffer_)) {
@@ -28,7 +29,7 @@ struct entabber {
         }
         output += c;
 
-        if (c == '\n')
+        if (stiX::isnewline(c))
             position_ = 0;
         else
             ++position_;
