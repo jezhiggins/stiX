@@ -16,3 +16,8 @@ add_executable(chapter_1_test
         chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h
         chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h chapter_1/5_detab/tab_stops.h
     )
+
+add_executable(chapter_2_test
+        chapter_2/test.cpp
+        chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h
+    )
