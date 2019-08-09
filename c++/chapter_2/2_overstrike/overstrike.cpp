@@ -7,26 +7,33 @@
 struct overstriker {
     std::string const empty;
     std::string const skip = " ";
-    std::string const noskip = "+";
+    std::string const noskip = "\n+";
 
     std::string output;
-    std::string overstrike;
+
     size_t position_;
+    size_t backspaced_;
     std::string operator()(char c) {
         if (stiX::isbackspace(c)) {
-            // do something with backspaces
+            backspaced_ = std::max(backspaced_-1, 0UL);
             return empty;
         }
 
-        output = (position_ == 0)
-                ? skip
-                : empty;
+        output = empty;
+
+        if (backspaced_ != position_) {
+            output += noskip;
+            output += std::string(backspaced_, ' ');
+        } else if (position_ == 0)
+            output += skip;
+
         output += c;
 
         if (stiX::isnewline(c))
             position_ = 0;
         else
             ++position_;
+        backspaced_ = position_;
 
         return output;
     }
