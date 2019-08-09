@@ -54,7 +54,10 @@ void testEntab(std::string input, std::string expected)
 
 TEST_CASE("Chapter 2 - overstrike") {
     testOverstrike("Hello", " Hello");
+    testOverstrike("Hello\nWorld\n", " Hello\n World\n");
+
     testOverstrike("Hello\b\b\b\b\b_____", " Hello\n+_____");
+    testOverstrike("Hello\b\b\b\b\b_____\nWorld\b\b\b\b\b_____", " Hello\n+_____\n World\n+_____");
 }
 
 void testOverstrike(std::string input, std::string expected)
