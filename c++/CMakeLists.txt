@@ -9,6 +9,7 @@ add_executable(3_linecount chapter_1/3_linecount/linecount.cpp chapter_1/3_linec
 add_executable(4_wordcount chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h chapter_1/4_wordcount/4_wordcount.cpp)
 add_executable(5_detab chapter_1/5_detab/5_detab.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.h lib/chars.h)
 add_executable(1_entab chapter_2/1_entab/1_entab.cpp chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h lib/tab_stops.h lib/chars.h)
+add_executable(2_overstrike chapter_2/2_overstrike/2_overstrike.cpp chapter_2/2_overstrike/overstrike.cpp chapter_2/2_overstrike/overstrike.h)
 
 add_executable(chapter_1_test
         chapter_1/test.cpp
@@ -24,6 +25,7 @@ add_executable(chapter_1_test
 add_executable(chapter_2_test
         chapter_2/test.cpp
         chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h
+        chapter_2/2_overstrike/overstrike.cpp chapter_2/2_overstrike/overstrike.h
         lib/tab_stops.h
         lib/chars.h
     )

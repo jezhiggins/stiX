@@ -4,22 +4,21 @@
 
 #include "1_entab/entab.h"
 #include "../lib/tab_stops.h"
+#include "2_overstrike/overstrike.h"
 
-void test(std::string label, void (*fn)(std::string));
 void testEntab(std::string input, std::string expected);
+void testOverstrike(std::string input, std::string expected);
+void testFilter(
+        std::string input,
+        std::string expected,
+        void (*fn)(std::istream&, std::ostream&)
+);
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 const std::string empty;
 const std::string one_character("1");
-const std::string one_word_left_justified("Hello     ");
-const std::string one_word_right_justified("     Hello");
-const std::string one_word_centred("  hello  ");
 const std::string longer("Hello World");
-const std::string with_terminal_line_break("The End\n");
-const std::string with_leading_line_break("\nThe Beginning");
-const std::string line_breaks_before_and_aft("\n  In the middle \n");
-const std::string longer_with_multiple_line_breaks("\tHello\n\t\tWorld!\n");
 
 TEST_CASE("Chapter 2 - entab - is_tab_stop") {
     for (size_t p = 1; p != stiX::tabSize; ++p) {
@@ -50,10 +49,28 @@ TEST_CASE("Chapter 2 - entab") {
 
 void testEntab(std::string input, std::string expected)
 {
+    testFilter(input, expected, stiX::entab);
+}
+
+TEST_CASE("Chapter 2 - overstrike") {
+    testOverstrike("Hello", " Hello");
+    testOverstrike("Hello\b\b\b\b\b_____", " Hello\n+_____");
+}
+
+void testOverstrike(std::string input, std::string expected)
+{
+    testFilter(input, expected, stiX::overstrike);
+}
+
+void testFilter(
+        std::string input,
+        std::string expected,
+        void (*fn)(std::istream&, std::ostream&)
+) {
     std::istringstream is(input);
     std::ostringstream os;
 
-    stiX::entab(is, os);
+    fn(is, os);
 
     REQUIRE(os.str() == expected);
 }
