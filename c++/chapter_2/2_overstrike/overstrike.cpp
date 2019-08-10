@@ -15,15 +15,16 @@ struct overstriker {
     size_t backspaced_;
     std::string operator()(char c) {
         if (stiX::isbackspace(c)) {
-            backspaced_ = std::max(backspaced_-1, 0UL);
+            ++backspaced_;
             return empty;
         }
 
         output = empty;
 
-        if (backspaced_ != position_) {
+        if (backspaced_) {
+            position_ = (backspaced_ < position_) ? position_ - backspaced_ : 0;
             output += noskip;
-            output += std::string(backspaced_, ' ');
+            output += std::string(position_, ' ');
         } else if (position_ == 0)
             output += skip;
 
@@ -33,7 +34,7 @@ struct overstriker {
             position_ = 0;
         else
             ++position_;
-        backspaced_ = position_;
+        backspaced_ = 0;
 
         return output;
     }

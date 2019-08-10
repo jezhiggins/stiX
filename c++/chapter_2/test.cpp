@@ -58,6 +58,7 @@ TEST_CASE("Chapter 2 - overstrike") {
     testOverstrike("1", " 1");
     testOverstrike("\n", " \n");
     testOverstrike("Hello", " Hello");
+    testOverstrike("Hello", " Hello");
     testOverstrike(
             "Hello\nWorld\n",
             " Hello\n World\n");
@@ -74,13 +75,18 @@ TEST_CASE("Chapter 2 - overstrike") {
 
     testOverstrike("\b", "");
     testOverstrike("\b1", "\n+1");
+    testOverstrike("1\b", " 1");
     testOverstrike(
             "Hello\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b_____",
             " Hello\n+_____");
     testOverstrike("\b\n", "\n+\n");
     testOverstrike(
-            "\b\b\b\b\bHello World\b\b\b\b\b_____",
-            "+Hello World\n+      _____");
+            "\b\b\b\b\bHello=World\b\b\b\b\b_____",
+            "\n+Hello=World\n+      _____");
+    testOverstrike(
+        "Hello\b\b\b\b\b_____=World\b\b\b\b\b_____",
+        " Hello\n+_____=World\n+      _____");
+
 }
 
 void testOverstrike(std::string input, std::string expected)
