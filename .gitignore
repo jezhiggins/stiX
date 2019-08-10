@@ -4,3 +4,6 @@ cmake_install.*
 Makefile
 CMakeFiles/
 CMakeCache.txt
+.vscode
+build
+test

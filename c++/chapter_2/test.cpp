@@ -9,6 +9,7 @@
 void testEntab(std::string input, std::string expected);
 void testOverstrike(std::string input, std::string expected);
 void testFilter(
+        std::string label,
         std::string input,
         std::string expected,
         void (*fn)(std::istream&, std::ostream&)
@@ -49,31 +50,77 @@ TEST_CASE("Chapter 2 - entab") {
 
 void testEntab(std::string input, std::string expected)
 {
-    testFilter(input, expected, stiX::entab);
+    testFilter("entab", input, expected, stiX::entab);
 }
 
 TEST_CASE("Chapter 2 - overstrike") {
+    testOverstrike("", "");
+    testOverstrike("1", " 1");
+    testOverstrike("\n", " \n");
     testOverstrike("Hello", " Hello");
-    testOverstrike("Hello\nWorld\n", " Hello\n World\n");
+    testOverstrike(
+            "Hello\nWorld\n",
+            " Hello\n World\n");
 
-    testOverstrike("Hello\b\b\b\b\b_____", " Hello\n+_____");
-    testOverstrike("Hello\b\b\b\b\b_____\nWorld\b\b\b\b\b_____", " Hello\n+_____\n World\n+_____");
+    testOverstrike(
+            "Hello\b\b\b\b\b_____",
+            " Hello\n+_____");
+    testOverstrike(
+            "Hello\b\b\b\b\b_____\nWorld\b\b\b\b\b_____",
+            " Hello\n+_____\n World\n+_____");
+    testOverstrike(
+            "     Hello\b\b\b\b\b_____",
+            "      Hello\n+     _____");
+
+    testOverstrike("\b", "");
+    testOverstrike("\b1", "\n+1");
+    testOverstrike(
+            "Hello\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b_____",
+            " Hello\n+_____");
+    testOverstrike("\b\n", "\n+\n");
+    testOverstrike(
+            "\b\b\b\b\bHello World\b\b\b\b\b_____",
+            "+Hello World\n+      _____");
 }
 
 void testOverstrike(std::string input, std::string expected)
 {
-    testFilter(input, expected, stiX::overstrike);
+    testFilter("overstrike", input, expected, stiX::overstrike);
 }
 
+std::string escape(std::string s);
+
 void testFilter(
+        std::string label,
         std::string input,
         std::string expected,
         void (*fn)(std::istream&, std::ostream&)
 ) {
-    std::istringstream is(input);
-    std::ostringstream os;
+    DYNAMIC_SECTION(label << "(\"" << escape(input) << "\")") {
+        std::istringstream is(input);
+        std::ostringstream os;
 
-    fn(is, os);
+        fn(is, os);
 
-    REQUIRE(os.str() == expected);
+        REQUIRE(os.str() == expected);
+    }
 }
+
+////////////////////
+std::vector<std::tuple<std::string, std::string>> sequences = {
+        { "\n", "\\n" },
+        { "\t", "\\t" },
+        { "\b", "\\b" }
+};
+std::string escape(std::string s) {
+    for (auto esc : sequences ) {
+        auto f = std::get<0>(esc);
+        auto r = std::get<1>(esc);
+
+        for(size_t pos = s.find(f); pos != std::string::npos; pos = s.find(f))
+            s.replace(pos, f.size(), r);
+
+    }
+    return s;
+}
+
