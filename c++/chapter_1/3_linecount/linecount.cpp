@@ -7,10 +7,10 @@
 
 namespace stiX {
     size_t linecount(std::istream &in) {
-        return std::count_if(
+        return std::count(
                 std::istreambuf_iterator<char>(in),
                 std::istreambuf_iterator<char>(),
-                [](char c) { return c == '\n'; }
+                '\n'
         );
     }
 }
