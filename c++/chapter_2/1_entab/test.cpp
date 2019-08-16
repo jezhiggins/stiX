@@ -40,7 +40,6 @@ TEST_CASE("Chapter 2 - entab") {
     testEntab("Hello\n    World", "Hello\n\tWorld");
 }
 
-void testEntab(std::string input, std::string expected)
-{
+void testEntab(std::string input, std::string expected) {
     testFilter("entab", input, expected, stiX::entab);
 }

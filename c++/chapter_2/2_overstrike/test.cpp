@@ -41,23 +41,6 @@ TEST_CASE("Chapter 2 - overstrike") {
 
 }
 
-void testOverstrike(std::string input, std::string expected)
-{
+void testOverstrike(std::string input, std::string expected) {
     testFilter("overstrike", input, expected, stiX::overstrike);
-}
-
-void testFilter(
-        std::string label,
-        std::string input,
-        std::string expected,
-        void (*fn)(std::istream&, std::ostream&)
-) {
-    DYNAMIC_SECTION(label << "(\"" << escape(input) << "\")") {
-        std::istringstream is(input);
-        std::ostringstream os;
-
-        fn(is, os);
-
-        REQUIRE(os.str() == expected);
-    }
 }

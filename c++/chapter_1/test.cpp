@@ -1,6 +1,5 @@
 
-#define CATCH_CONFIG_MAIN
-#include "../catch.hpp"
+#include "../testlib/testlib.h"
 
 #include "1_copy/copy.h"
 #include "2_charcount/charcount.h"
@@ -8,8 +7,6 @@
 #include "4_wordcount/wordcount.h"
 #include "5_detab/detab.h"
 #include "../lib/tab_stops.h"
-
-#include <tuple>
 
 void test(std::string label, void (*fn)(std::string));
 void verifyCopyString(std::string input);
@@ -100,31 +97,12 @@ const std::vector<std::string> test_strings = {
         longer_with_multiple_line_breaks
 };
 
-std::string escape(std::string s);
-
 void test(std::string label, void (*fn)(std::string)) {
     for (auto s : test_strings) {
         DYNAMIC_SECTION(label << "(\"" << escape(s) << "\")") {
             fn(s);
         }
     }
-}
-
-////////////////////
-std::vector<std::tuple<std::string, std::string>> sequences = {
-        { "\n", "\\n" },
-        { "\t", "\\t" }
-};
-std::string escape(std::string s) {
-    for (auto esc : sequences ) {
-        auto f = std::get<0>(esc);
-        auto r = std::get<1>(esc);
-
-        for(size_t pos = s.find(f); pos != std::string::npos; pos = s.find(f))
-            s.replace(pos, f.size(), r);
-
-    }
-    return s;
 }
 
 /////////
