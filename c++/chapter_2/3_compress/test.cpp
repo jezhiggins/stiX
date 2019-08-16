@@ -5,7 +5,7 @@
 
 void testCompress(std::string input, std::string expected);
 
-TEST_CASE("Chapter 2 - overstrike") {
+TEST_CASE("Chapter 2 - compress") {
     testCompress("", "");
     testCompress("1", "1");
     testCompress("11", "11");
