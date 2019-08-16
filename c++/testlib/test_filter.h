@@ -1,9 +1,6 @@
 #ifndef STICPP_TEST_FILTER_H
 #define STICPP_TEST_FILTER_H
 
-#include <iosfwd>
-#include <string>
-
 void testFilter(
     std::string label,
     std::string input,

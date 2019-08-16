@@ -8,12 +8,28 @@ add_library(testsupport STATIC
         testlib/label_escape.cpp
         testlib/label_escape.h
         testlib/test_filter.cpp
-        testlib/test_filter.h)
+        testlib/test_filter.h
+        testlib/sample_strings.cpp
+        testlib/sample_strings.h
+        testlib/verify_with_samples.cpp
+        testlib/verify_with_samples.h)
 
 add_executable(1_copy chapter_1/1_copy/1_copy.cpp chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h)
-add_executable(2_charcount chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h chapter_1/2_charcount/2_charcount.cpp)
-add_executable(3_linecount chapter_1/3_linecount/linecount.cpp chapter_1/3_linecount/linecount.h chapter_1/3_linecount/3_linecount.cpp)
-add_executable(4_wordcount chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h chapter_1/4_wordcount/4_wordcount.cpp)
+add_executable(1_copy_test chapter_1/1_copy/test.cpp chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h)
+target_link_libraries(1_copy_test testsupport)
+
+add_executable(2_charcount chapter_1/2_charcount/2_charcount.cpp chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h)
+add_executable(2_charcount_test chapter_1/2_charcount/test.cpp chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h)
+target_link_libraries(2_charcount_test testsupport)
+
+add_executable(3_linecount chapter_1/3_linecount/3_linecount.cpp chapter_1/3_linecount/linecount.cpp chapter_1/3_linecount/linecount.h)
+add_executable(3_linecount_test chapter_1/3_linecount/test.cpp chapter_1/3_linecount/linecount.cpp chapter_1/3_linecount/linecount.h)
+target_link_libraries(3_linecount_test testsupport)
+
+add_executable(4_wordcount chapter_1/4_wordcount/4_wordcount.cpp chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h)
+add_executable(4_wordcount_test chapter_1/4_wordcount/test.cpp chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h)
+target_link_libraries(4_wordcount_test testsupport)
+
 add_executable(5_detab chapter_1/5_detab/5_detab.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.h lib/chars.h)
 add_executable(5_detab_test chapter_1/5_detab/test.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.h lib/chars.h)
 target_link_libraries(5_detab_test testsupport)
@@ -26,14 +42,3 @@ add_executable(2_overstrike chapter_2/2_overstrike/2_overstrike.cpp chapter_2/2_
 add_executable(2_overstrike_test chapter_2/2_overstrike/test.cpp chapter_2/2_overstrike/overstrike.cpp chapter_2/2_overstrike/overstrike.h)
 target_link_libraries(2_overstrike_test testsupport)
 
-add_executable(chapter_1_test
-        chapter_1/test.cpp
-        chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h
-        chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h
-        chapter_1/3_linecount/linecount.cpp chapter_1/3_linecount/linecount.h
-        chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h
-        chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h
-        lib/tab_stops.h
-        lib/chars.h
-    )
-target_link_libraries(chapter_1_test testsupport)
