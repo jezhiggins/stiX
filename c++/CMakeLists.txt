@@ -42,3 +42,5 @@ add_executable(2_overstrike chapter_2/2_overstrike/2_overstrike.cpp chapter_2/2_
 add_executable(2_overstrike_test chapter_2/2_overstrike/test.cpp chapter_2/2_overstrike/overstrike.cpp chapter_2/2_overstrike/overstrike.h)
 target_link_libraries(2_overstrike_test testsupport)
 
+add_executable(3_compress_test chapter_2/3_compress/test.cpp chapter_2/3_compress/compress.cpp chapter_2/3_compress/compress.h)
+target_link_libraries(3_compress_test testsupport)
