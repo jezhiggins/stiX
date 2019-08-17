@@ -16,23 +16,26 @@ struct compressor {
             return empty;
         }
 
-        output = empty;
-
         if (repeat) {
-            if (repeat >= 3) {
-                output += '~';
-                output += countEncoding[repeat];
-            } else {
-                while (repeat-- > 0)
-                    output += lastChar;
-            }
+            output = repeated();
             repeat = 0;
+        } else {
+            output = empty;
         }
 
         output += c;
         lastChar = c;
 
         return output;
+    }
+
+    std::string repeated() {
+        if (repeat < 3)
+            return std::string(repeat, lastChar);
+
+        std::string r("~");
+        r += countEncoding[repeat];
+        return r;
     }
 };
 
