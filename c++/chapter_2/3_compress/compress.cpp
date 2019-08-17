@@ -1,14 +1,15 @@
 #include "compress.h"
 #include "../../lib/filter.h"
 
-struct compressor {
-    std::string const countEncoding =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    std::string const empty;
-
-    char lastChar = 0;
-    size_t repeat = 0;
-    std::string output;
+class compressor {
+public:
+    compressor(std::ostream& out)
+        : out_(out) {
+    }
+    ~compressor() {
+        if (repeat)
+            out_ << repeated();
+    }
 
     std::string operator()(char c) {
         if (lastChar == c) {
@@ -29,6 +30,7 @@ struct compressor {
         return output;
     }
 
+private:
     std::string repeated() {
         if (repeat < 3)
             return std::string(repeat, lastChar);
@@ -37,11 +39,20 @@ struct compressor {
         r += countEncoding[repeat];
         return r;
     }
+
+    std::string const countEncoding =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    std::string const empty;
+
+    std::ostream& out_;
+    char lastChar = 0;
+    size_t repeat = 0;
+    std::string output;
 };
 
 namespace stiX {
     void compress(std::istream &in, std::ostream &out) {
-        filter(in, out, compressor());
+        filter(in, out, compressor(out));
     }
 }
 
