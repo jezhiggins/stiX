@@ -21,7 +21,7 @@ public:
             output = repeated(repeat);
             repeat = 0;
         } else {
-            output = empty;
+            output.clear();
         }
 
         output += c;
