@@ -1,7 +1,5 @@
 #include "overstrike.h"
-#include <iostream>
-#include <iterator>
-#include <algorithm>
+#include "../../lib/filter.h"
 #include "../../lib/chars.h"
 
 struct overstriker {
@@ -42,12 +40,7 @@ struct overstriker {
 
 namespace stiX {
     void overstrike(std::istream &in, std::ostream &out) {
-        std::transform(
-                std::istreambuf_iterator<char>(in),
-                std::istreambuf_iterator<char>(),
-                std::ostream_iterator<std::string>(out),
-                overstriker()
-        );
+        filter(in, out, overstriker());
     }
 }
 

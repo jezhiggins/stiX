@@ -1,11 +1,7 @@
 #include "entab.h"
 #include "../../lib/chars.h"
 #include "../../lib/tab_stops.h"
-
-#include <iostream>
-#include <iterator>
-#include <algorithm>
-#include <string>
+#include "../../lib/filter.h"
 
 struct entabber {
     size_t position_;
@@ -43,12 +39,7 @@ struct entabber {
 
 namespace stiX {
     void entab(std::istream &in, std::ostream &out) {
-        std::transform(
-                std::istreambuf_iterator<char>(in),
-                std::istreambuf_iterator<char>(),
-                std::ostream_iterator<std::string>(out),
-                entabber()
-        );
+        filter(in, out, entabber());
     }
 }
 
