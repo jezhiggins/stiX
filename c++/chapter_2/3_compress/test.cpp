@@ -17,20 +17,6 @@ TEST_CASE("Chapter 2 - compress") {
     testCompress("11111111", "1~H");
     testCompress("111111111", "1~I");
 
-    testCompress(std::string(26, 'a'), "a~Z");
-    testCompress(std::string(27, 'a'), "a~Za");
-    testCompress(std::string(28, 'a'), "a~Zaa");
-    testCompress(std::string(29, 'a'), "a~Zaaa");
-    testCompress(std::string(30, 'a'), "a~Za~D");
-    testCompress(std::string(31, 'a'), "a~Za~E");
-
-    testCompress(std::string(52, 'a'), "a~Za~Z");
-    testCompress(std::string(53, 'a'), "a~Za~Za");
-    testCompress(std::string(54, 'a'), "a~Za~Zaa");
-    testCompress(std::string(55, 'a'), "a~Za~Zaaa");
-    testCompress(std::string(56, 'a'), "a~Za~Za~D");
-    testCompress(std::string(57, 'a'), "a~Za~Za~E");
-
     testCompress("A1", "A1");
     testCompress("A11", "A11");
     testCompress("A111", "A111");
@@ -67,6 +53,23 @@ TEST_CASE("Chapter 2 - compress") {
     testCompress("A1111111B222C", "A1~GB222C");
     testCompress("A11111111B22C", "A1~HB22C");
     testCompress("A111111111B2C", "A1~IB2C");
+
+    testCompress(std::string(25, 'a'), "a~Y");
+    testCompress(std::string(26, 'a'), "a~Z");
+    testCompress(std::string(27, 'a'), "a~Za");
+    testCompress(std::string(28, 'a'), "a~Zaa");
+    testCompress(std::string(29, 'a'), "a~Zaaa");
+    testCompress(std::string(30, 'a'), "a~Za~D");
+    testCompress(std::string(31, 'a'), "a~Za~E");
+
+    testCompress(std::string(51, 'a'), "a~Za~Y");
+    testCompress(std::string(52, 'a'), "a~Za~Z");
+    testCompress(std::string(53, 'a'), "a~Za~Za");
+    testCompress(std::string(54, 'a'), "a~Za~Zaa");
+    testCompress(std::string(55, 'a'), "a~Za~Zaaa");
+    testCompress(std::string(56, 'a'), "a~Za~Za~D");
+    testCompress(std::string(57, 'a'), "a~Za~Za~E");
+
 }
 
 void testCompress(std::string input, std::string expected) {

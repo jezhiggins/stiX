@@ -8,7 +8,7 @@ public:
     }
     ~compressor() {
         if (repeat)
-            out_ << repeated();
+            out_ << repeated(repeat);
     }
 
     std::string operator()(char c) {
@@ -18,7 +18,7 @@ public:
         }
 
         if (repeat) {
-            output = repeated();
+            output = repeated(repeat);
             repeat = 0;
         } else {
             output = empty;
@@ -31,18 +31,24 @@ public:
     }
 
 private:
-    std::string repeated() {
-        if (repeat < 3)
-            return std::string(repeat, lastChar);
+    std::string repeated(size_t count) {
+        if (count >= 26) {
+            return repeated(25)
+              + lastChar
+              + repeated(count - 26);
+        }
+        if (count < 3)
+            return std::string(count, lastChar);
 
-        std::string r("~");
-        r += countEncoding[repeat];
+        std::string r = marker;
+        r += countEncoding[count];
         return r;
     }
 
     std::string const countEncoding =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     std::string const empty;
+    std::string const marker = "~";
 
     std::ostream& out_;
     char lastChar = 0;
