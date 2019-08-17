@@ -9,6 +9,8 @@ public:
     ~compressor() {
         if (repeat)
             out_ << repeated(repeat);
+        else if (lastChar)
+            out_ << lastChar;
     }
 
     std::string operator()(char c) {
@@ -22,9 +24,10 @@ public:
             repeat = 0;
         } else {
             output.clear();
+            if(lastChar)
+                output += lastChar;
         }
 
-        output += c;
         lastChar = c;
 
         return output;
@@ -32,16 +35,16 @@ public:
 
 private:
     std::string repeated(size_t count) {
-        if (count >= 26) {
+        if (count > 25) {
             return repeated(25)
-              + lastChar
               + repeated(count - 26);
         }
         if (count < 3)
-            return std::string(count, lastChar);
+            return std::string(count+1, lastChar);
 
         std::string r = marker;
         r += countEncoding[count];
+        r += lastChar;
         return r;
     }
 
