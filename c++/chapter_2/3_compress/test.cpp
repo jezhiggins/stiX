@@ -70,6 +70,20 @@ TEST_CASE("Chapter 2 - compress") {
     testCompress(std::string(56, 'a'), "~Za~Za~Da");
     testCompress(std::string(57, 'a'), "~Za~Za~Ea");
 
+    testCompress("~", "~A~");
+    testCompress("~1", "~A~1");
+    testCompress("1~", "1~A~");
+    testCompress("1~1", "1~A~1");
+    testCompress("~~", "~B~");
+    testCompress("~~~", "~C~");
+    testCompress("~~~~", "~D~");
+    testCompress(std::string(25, '~'), "~Y~");
+    testCompress(std::string(26, '~'), "~Z~");
+    testCompress(std::string(27, '~'), "~Z~~A~");
+    testCompress(std::string(28, '~'), "~Z~~B~");
+    testCompress(std::string(29, '~'), "~Z~~C~");
+    testCompress(std::string(30, '~'), "~Z~~D~");
+    testCompress(std::string(31, '~'), "~Z~~E~");
 }
 
 void testCompress(std::string input, std::string expected) {
