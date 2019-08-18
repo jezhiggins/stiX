@@ -7,10 +7,7 @@ public:
         : out_(out) {
     }
     ~compressor() {
-        if (repeat)
-            out_ << repeated(repeat);
-        else if (lastChar)
-            out_ << lastChar;
+       out_ << repeated(repeat);
     }
 
     std::string operator()(char c) {
@@ -19,14 +16,8 @@ public:
             return empty;
         }
 
-        if (repeat) {
-            output = repeated(repeat);
-            repeat = 0;
-        } else {
-            output.clear();
-            if(lastChar)
-                output += lastChar;
-        }
+        output = repeated(repeat);
+        repeat = 0;
 
         lastChar = c;
 
@@ -35,14 +26,18 @@ public:
 
 private:
     std::string repeated(size_t count) {
-        if (count > 25) {
-            return repeated(25)
-              + repeated(count - 26);
+        if (!lastChar)
+            return empty;
+
+        if (count > maxCount) {
+            return repeated(maxCount)
+              + repeated(count - (maxCount+1));
         }
-        if (count < 3)
+        if ((count < 3) && (lastChar != marker))
             return std::string(count+1, lastChar);
 
-        std::string r = marker;
+        std::string r;
+        r += marker;
         r += countEncoding[count];
         r += lastChar;
         return r;
@@ -50,8 +45,9 @@ private:
 
     std::string const countEncoding =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    size_t const maxCount = countEncoding.size() - 1;
     std::string const empty;
-    std::string const marker = "~";
+    char const marker = '~';
 
     std::ostream& out_;
     char lastChar = 0;
