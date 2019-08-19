@@ -45,3 +45,6 @@ target_link_libraries(2_overstrike_test testsupport)
 add_executable(3_compress chapter_2/3_compress/3_compress.cpp chapter_2/3_compress/compress.cpp chapter_2/3_compress/compress.h lib/filter.h)
 add_executable(3_compress_test chapter_2/3_compress/test.cpp chapter_2/3_compress/compress.cpp chapter_2/3_compress/compress.h lib/filter.h)
 target_link_libraries(3_compress_test testsupport)
+
+add_executable(4_expand_test chapter_2/4_expand/test.cpp chapter_2/4_expand/expand.cpp chapter_2/4_expand/expand.h lib/filter.h)
+target_link_libraries(4_expand_test testsupport)
