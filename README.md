@@ -7,6 +7,16 @@ Reimplementing the programs described in Kernighan and Plauger's Software Tools 
 ## Chapter 1
 
 1. copy
+2. charcount
+3. linecount
+4. wordcount
+5. detab
+
+## Chapter 2
+
+1. entab
+2. compress
+3. expand
 
 ## License
 
