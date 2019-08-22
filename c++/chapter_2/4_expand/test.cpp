@@ -5,7 +5,7 @@
 
 void testExpand(std::string input, std::string expected);
 
-TEST_CASE("Chapter 2 - compress") {
+TEST_CASE("Chapter 2 - expand") {
     testExpand("", "");
     testExpand("1", "1");
     testExpand("11", "11");
