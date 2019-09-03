@@ -23,8 +23,8 @@ public:
                     state = haveMarker;
                     return empty;
                 }
-                return std::string(1, c);
         }
+        return std::string(1, c);
     }
 
 private:
