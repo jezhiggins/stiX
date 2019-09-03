@@ -12,7 +12,7 @@ struct detabber {
     std::string operator()(char c) {
         if (stiX::istab(c)) {
             const auto spaces = stiX::distance_to_next_tab_stop(position_);
-            position_ = stiX::next_tab_stop(position_);
+            position_ += spaces;
             return std::string(spaces, ' ');
         }
 
