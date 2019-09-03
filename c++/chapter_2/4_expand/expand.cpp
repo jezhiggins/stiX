@@ -35,12 +35,12 @@ private:
             : std::string::npos;
     }
 
+    ExpandState state = passthrough;
+    size_t count;
+
     std::string const countEncoding =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     std::string const empty;
-
-    ExpandState state = passthrough;
-    size_t count;
 };
 
 namespace stiX {

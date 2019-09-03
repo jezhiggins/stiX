@@ -4,6 +4,7 @@
 #include "expand.h"
 
 void testExpand(std::string input, std::string expected);
+void testBadExpand(std::string input);
 
 TEST_CASE("Chapter 2 - expand") {
     testExpand("", "");
@@ -86,6 +87,18 @@ TEST_CASE("Chapter 2 - expand") {
     testExpand("~Z~~E~", std::string(31, '~'));
 }
 
+TEST_CASE("Chapter 2 - expand, malformed input") {
+    testBadExpand("~");
+    testBadExpand("~~Hello");
+    testBadExpand("World~~");
+    testBadExpand("~!Fruit!~");
+    testBadExpand("~zz");
+}
+
 void testExpand(std::string input, std::string expected) {
     testFilter("expand", input, expected, stiX::expand);
+}
+
+void testBadExpand(std::string input) {
+    testExpand(input, input);
 }
