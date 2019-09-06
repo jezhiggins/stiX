@@ -12,10 +12,10 @@ char const* argv[] = {
 void testEcho(int n);
 
 TEST_CASE("Chapter 2 - echo") {
-    testEcho(0);
     testEcho(1);
     testEcho(2);
     testEcho(3);
+    testEcho(4);
 }
 
 std::string testLabel(int n);
@@ -34,10 +34,10 @@ void testEcho(int n) {
 std::string testLabel(int n) {
   std::ostringstream l;
   l << '[';
-  for (int i = 0; i != n; ++i) {
-      if (i > 0)
+  for (int i = 1; i != n; ++i) {
+      if (i > 1)
         l << ',';
-      l << argv[i+1];
+      l << argv[i];
   }
   l << ']';
   return l.str();
@@ -45,10 +45,10 @@ std::string testLabel(int n) {
 
 std::string expected(int n) {
   std::ostringstream e;
-  for (int i = 0; i != n; ++i) {
-      if (i > 0)
+  for (int i = 1; i != n; ++i) {
+      if (i > 1)
         e << ' ';
-      e << argv[i+1];
+      e << argv[i];
   }
   return e.str();
 }
