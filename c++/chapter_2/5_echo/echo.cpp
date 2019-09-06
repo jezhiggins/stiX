@@ -1,28 +1,20 @@
 #include "echo.h"
+#include "../../lib/arguments.h"
 
 #include <algorithm>
 #include <iostream>
 #include <iterator>
-#include <string>
-#include <vector>
 
 namespace stiX {
-    std::vector<std::string> make_arguments(int argc, char const* argv[]) {
-        std::vector<std::string> args;
-        for (int a = 0; a != argc; ++a) 
-            args.emplace_back(argv[a+1]);
-        return args;
-    }
-
     template<typename InputIt, typename OutputIt, typename Separator = std::string>
-    OutputIt join(InputIt first, InputIt last, OutputIt d_first, Separator sep = " ") {
+    OutputIt join(InputIt first, InputIt last, OutputIt dest, Separator sep = " ") {
         if (first != last)
-            *d_first++ = *first++;        
+            *dest++ = *first++;        
         while (first != last) {
-            *d_first++ = sep;
-            *d_first++ = *first++;
+            *dest++ = sep;
+            *dest++ = *first++;
         }
-        return d_first;
+        return dest;
     }
 
     void echo(int argc, char const* argv[], std::ostream &out) {
