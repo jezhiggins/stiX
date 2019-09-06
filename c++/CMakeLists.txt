@@ -48,3 +48,6 @@ target_link_libraries(3_compress_test testsupport)
 
 add_executable(4_expand_test chapter_2/4_expand/test.cpp chapter_2/4_expand/expand.cpp chapter_2/4_expand/expand.h lib/filter.h)
 target_link_libraries(4_expand_test testsupport)
+
+add_executable(5_echo_test chapter_2/5_echo/test.cpp chapter_2/5_echo/echo.cpp chapter_2/5_echo/echo.h)
+target_link_libraries(5_echo_test testsupport)
