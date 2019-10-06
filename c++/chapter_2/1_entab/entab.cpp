@@ -3,13 +3,8 @@
 #include "../../lib/tab_stops.h"
 #include "../../lib/filter.h"
 
-struct entabber {
-    size_t position_;
-    size_t spaces_;
-    std::string const tab = "\t";
-    std::string const empty;
-    std::string output;
-
+class entabber {
+public:
     std::string operator()(char c) {
         if (stiX::isspace(c)) {
             ++spaces_;
@@ -22,7 +17,7 @@ struct entabber {
             return empty;
         }
 
-        output = (spaces_ != position_)
+        std::string output = (spaces_ != position_)
                 ? std::string(spaces_ - position_, ' ')
                 : empty;
         output += c;
@@ -35,6 +30,11 @@ struct entabber {
 
         return output;
     }
+private:
+    size_t position_;
+    size_t spaces_;
+    std::string const tab = "\t";
+    std::string const empty;
 };
 
 namespace stiX {
