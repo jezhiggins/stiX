@@ -7,8 +7,6 @@ struct overstriker {
     std::string const skip = " ";
     std::string const noskip = "\n+";
 
-    std::string output;
-
     size_t position_;
     size_t backspaced_;
     std::string operator()(char c) {
@@ -17,7 +15,7 @@ struct overstriker {
             return empty;
         }
 
-        output = empty;
+        std::string output;
 
         if (backspaced_) {
             position_ = (backspaced_ < position_) ? position_ - backspaced_ : 0;
