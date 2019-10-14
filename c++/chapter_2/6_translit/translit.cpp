@@ -46,6 +46,7 @@ namespace stiX {
                expand_dash_range(insert, c);
                continue;
             }
+            *insert++ = *c++;
         }
         return expanded;
     }

@@ -12,10 +12,23 @@ void testTranslit(
     std::string input, std::string expected
 );
 
-TEST_CASE("Chapter 2 - translit - expand argument") {
+TEST_CASE("Chapter 2 - translit - good argument expansions") {
   testExpandArg("abcdef", "abcdef");
   testExpandArg("a-d", "abcd");
   testExpandArg("a-dA-D", "abcdABCD");
+  testExpandArg("0-9", "0123456789");
+}
+TEST_CASE("Chapter 2 - translit - malformed argument expansions") {
+  testExpandArg("a-0", "a-0");
+  testExpandArg("9-0", "9-0");
+  testExpandArg("0-a", "0-a");
+  testExpandArg("z-a", "z-a");
+  testExpandArg("a-Z", "a-Z");
+  testExpandArg("A-z", "A-z");
+  testExpandArg("---", "---");
+  testExpandArg("-z", "-z");
+  testExpandArg("a-", "a-");
+  testExpandArg("{-}", "{-}");
 }
 
 TEST_CASE("Chapter 2 - translit - single character replacement") {
