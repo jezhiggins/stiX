@@ -19,6 +19,18 @@ TEST_CASE("Chapter 2 - translit - single character replacement") {
   testTranslit("x", "X", "axaxa", "aXaXa");
 }
 
+TEST_CASE("Chapter 2 - translit - two character replacement") {
+  testTranslit("xy", "XY", "abc", "abc");
+  testTranslit("xy", "XY", "xyz", "XYz");
+  testTranslit("yz", "YZ", "xyz", "xYZ");
+  testTranslit("xz", "XZ", "xyz", "XyZ");
+  testTranslit("xy", "XY", "xxz", "XXz");
+  testTranslit("xy", "XY", "zxx", "zXX");
+  testTranslit("xy", "XY", "xxx", "XXX");
+  testTranslit("xy", "XY", "axxxa", "aXXXa");
+  testTranslit("xy", "XY", "axaxa", "aXaXa");
+}
+
 void testTranslit(
     std::string replace, std::string with,
     std::string input, std::string expected
