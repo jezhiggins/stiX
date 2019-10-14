@@ -6,7 +6,7 @@
 #include <algorithm>
 
 namespace stiX {
-    template <typename Transformer>
+    template <typename Transformer, typename OutputType = std::string>
     void filter(
         std::istream &in,
         std::ostream &out,
@@ -15,7 +15,20 @@ namespace stiX {
       std::transform(
           std::istreambuf_iterator<char>(in),
           std::istreambuf_iterator<char>(),
-          std::ostream_iterator<std::string>(out),
+          std::ostream_iterator<OutputType>(out),
+          t
+      );
+    }
+
+    template <typename Transformer>
+    void raw_filter(
+        std::istream &in,
+        std::ostream &out,
+        Transformer t
+    ) {
+      filter<Transformer, char>(
+          in,
+          out,
           t
       );
     }
