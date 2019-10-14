@@ -2,10 +2,21 @@
 
 #include "translit.hpp"
 
+void testExpandArg(
+        std::string arg,
+        std::string expected
+);
+
 void testTranslit(
     std::string replace, std::string with,
     std::string input, std::string expected
 );
+
+TEST_CASE("Chapter 2 - translit - expand argument") {
+  testExpandArg("abcdef", "abcdef");
+  testExpandArg("a-d", "abcd");
+  testExpandArg("a-dA-D", "abcdABCD");
+}
 
 TEST_CASE("Chapter 2 - translit - single character replacement") {
   testTranslit("x", "X", "abc", "abc");
@@ -29,6 +40,15 @@ TEST_CASE("Chapter 2 - translit - two character replacement") {
   testTranslit("xy", "XY", "xxx", "XXX");
   testTranslit("xy", "XY", "axxxa", "aXXXa");
   testTranslit("xy", "XY", "axaxa", "aXaXa");
+}
+
+void testExpandArg(
+    std::string arg,
+    std::string expected
+) {
+  DYNAMIC_SECTION("expandArgument('" << arg << "') gives '" << expected << "'") {
+    REQUIRE(stiX::translitArgument(arg) == expected);
+  }
 }
 
 void testTranslit(

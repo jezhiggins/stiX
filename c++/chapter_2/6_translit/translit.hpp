@@ -4,6 +4,10 @@
 #include <iosfwd>
 
 namespace stiX {
+    std::string translitArgument(
+        const std::string& arg
+    );
+
     void translit(
         const std::string& replace, const std::string& with,
         std::istream& in, std::ostream& out
