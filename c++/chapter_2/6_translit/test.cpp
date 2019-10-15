@@ -4,8 +4,8 @@
 #include "translit-args.hpp"
 
 void testExpandArg(
-        std::string arg,
-        std::string expected
+    std::string arg,
+    std::string expected
 );
 
 void testTranslit(
@@ -18,6 +18,7 @@ TEST_CASE("Chapter 2 - translit - good argument expansions") {
   testExpandArg("a-d", "abcd");
   testExpandArg("a-dA-D", "abcdABCD");
   testExpandArg("0-9", "0123456789");
+  testExpandArg("a-c-e", "abcde");
 }
 TEST_CASE("Chapter 2 - translit - malformed argument expansions") {
   testExpandArg("a-0", "a-0");
@@ -30,6 +31,16 @@ TEST_CASE("Chapter 2 - translit - malformed argument expansions") {
   testExpandArg("-z", "-z");
   testExpandArg("a-", "a-");
   testExpandArg("{-}", "{-}");
+}
+TEST_CASE("Chapter 2 - translit - escape sequence expansion") {
+  testExpandArg("@", "@");
+  testExpandArg("@a", "a");
+  testExpandArg("@n", "\n");
+  testExpandArg("@t", "\t");
+  testExpandArg("@n@t", "\n\t");
+  testExpandArg("@t@n", "\t\n");
+  testExpandArg("@@", "@");
+  testExpandArg("@@@t@", "@\t@");
 }
 
 TEST_CASE("Chapter 2 - translit - single character replacement") {
@@ -60,7 +71,7 @@ void testExpandArg(
     std::string arg,
     std::string expected
 ) {
-  DYNAMIC_SECTION("expandArgument('" << arg << "') gives '" << expected << "'") {
+  DYNAMIC_SECTION("expandArgument('" << arg << "') gives '" << escape(expected) << "'") {
     REQUIRE(stiX::translitArgument(arg) == expected);
   }
 }
