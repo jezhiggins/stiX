@@ -39,6 +39,10 @@ namespace {
         const std::string &arg,
         const std::string::const_iterator &c
     ) {
+      if ((c == arg.begin())
+       || (c+1 == arg.end()))
+        return false;
+
       auto prev = *(c - 1);
       auto next = *(c + 1);
 
@@ -61,4 +65,4 @@ namespace {
 
       c++;
     } // expand_dash_range
-}
+} // namespace
