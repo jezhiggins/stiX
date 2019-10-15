@@ -24,3 +24,9 @@
 // string; i.e. that are all deleted if dest is absent, or
 // they are all collapsed if the last character in dest is
 // present.
+
+#include <iostream>
+
+int main(int argc, char const* argv[]) {
+  std::cout << "Not done yet" << std::endl;
+}
