@@ -1,6 +1,7 @@
 #include "../../testlib/testlib.h"
 
 #include "translit.hpp"
+#include "translit-args.hpp"
 
 void testExpandArg(
         std::string arg,
