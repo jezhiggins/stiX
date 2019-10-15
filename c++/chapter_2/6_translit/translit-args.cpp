@@ -42,10 +42,13 @@ namespace {
       auto prev = *(c - 1);
       auto next = *(c + 1);
 
+      if (prev >= next)
+        return false;
+
       return
-          std::isalnum(prev)
-          && std::isalnum(next)
-          && (prev < next);
+          (std::isdigit(prev) && std::isdigit(next))
+       || (std::islower(prev) && std::islower(next))
+       || (std::isupper(prev) && std::isupper(next));
     } // in_valid_dash_range
 
     template<typename Dest, typename Src>
