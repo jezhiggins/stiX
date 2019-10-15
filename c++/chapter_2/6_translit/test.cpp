@@ -71,6 +71,32 @@ TEST_CASE("Chapter 2 - translit - replacement") {
     }
 }
 
+TEST_CASE("Chapter 2 - translit - deletion") {
+    SECTION("single character replacement") {
+        testTranslit("x", "", "abc", "abc");
+        testTranslit("x", "", "xyz", "yz");
+        testTranslit("y", "", "xyz", "xz");
+        testTranslit("z", "", "xyz", "xy");
+        testTranslit("x", "", "xxz", "z");
+        testTranslit("x", "", "zxx", "z");
+        testTranslit("x", "", "xxx", "");
+        testTranslit("x", "", "axxxa", "aa");
+        testTranslit("x", "", "axaxa", "aaa");
+    }
+
+    SECTION("two character replacement") {
+        testTranslit("xy", "", "abc", "abc");
+        testTranslit("xy", "", "xyz", "z");
+        testTranslit("yz", "", "xyz", "x");
+        testTranslit("xz", "", "xyz", "y");
+        testTranslit("xy", "", "xxz", "z");
+        testTranslit("xy", "", "zxx", "z");
+        testTranslit("xy", "", "xxx", "");
+        testTranslit("xy", "", "axxxa", "aa");
+        testTranslit("xy", "", "axaxa", "aaa");
+    }
+}
+
 void testExpandArg(
     std::string arg,
     std::string expected
