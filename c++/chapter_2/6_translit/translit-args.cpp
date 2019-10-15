@@ -12,16 +12,20 @@ namespace {
         const std::string::const_iterator& c
     );
 
-    template<typename Dest, typename Src>
-    void expand_dash_range(Dest& dest, Src& c);
+    void expand_dash_range(
+        std::back_insert_iterator<std::string>& dest,
+        std::string::const_iterator& c
+    );
 
     bool is_valid_escape_sequence(
         const std::string& arg,
         const std::string::const_iterator& c
     );
 
-    template<typename Dest, typename Src>
-    void expand_escape_sequence(Dest& dest, Src& c);
+    void expand_escape_sequence(
+        std::back_insert_iterator<std::string>& dest,
+        std::string::const_iterator& c
+    );
 }
 
 std::string stiX::translitArgument(
@@ -36,15 +40,12 @@ std::string stiX::translitArgument(
       expand_escape_sequence(insert, c);
       continue;
     }
-    if (*c != Dash) {
-      *insert++ = *c++;
-      continue;
-    }
     if (is_valid_dash_range(arg, c)) {
       expand_dash_range(insert, c);
       continue;
     }
-    *insert++ = *c++;
+
+    insert = *c++;
   }
   return expanded;
 }
@@ -73,13 +74,14 @@ namespace {
        || (std::isupper(prev) && std::isupper(next));
     } // in_valid_dash_range
 
-    template<typename Dest, typename Src>
-    void expand_dash_range(Dest &dest, Src &c) {
+    void expand_dash_range(
+        std::back_insert_iterator<std::string>& dest,
+        std::string::const_iterator &c) {
       char from = *(c - 1) + 1;
       char to = *++c;
 
       while (from <= to)
-        *dest++ = from++;
+        dest = from++;
 
       c++;
     } // expand_dash_range
@@ -94,8 +96,10 @@ namespace {
       return (c+1 != arg.end());
     } // is_valid_escape_sequence
 
-    template<typename Dest, typename Src>
-    void expand_escape_sequence(Dest &dest, Src &c) {
+    void expand_escape_sequence(
+        std::back_insert_iterator<std::string>& dest,
+        std::string::const_iterator& c
+    ) {
       static const std::map<char, char> escapes = {
           { 't', '\t' },
           { 'n', '\n' }
@@ -104,7 +108,7 @@ namespace {
       auto candidate = *++c;
       auto escape = escapes.find(candidate);
 
-      *dest++ = escape != escapes.end()
+      dest = escape != escapes.end()
           ? escape->second
           : candidate;
 
