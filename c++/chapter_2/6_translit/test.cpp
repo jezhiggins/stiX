@@ -71,8 +71,40 @@ TEST_CASE("Chapter 2 - translit - replacement") {
     }
 }
 
+TEST_CASE("Chapter 2 - translit - squashing") {
+    SECTION("two onto one replacement") {
+        testTranslit("xy", "X", "abc", "abc");
+        testTranslit("xy", "X", "xyz", "Xz");
+        testTranslit("yz", "Y", "xyz", "xY");
+        testTranslit("xz", "X", "xyz", "XyX");
+        testTranslit("xy", "X", "xxz", "Xz");
+        testTranslit("xy", "X", "zxx", "zX");
+        testTranslit("xy", "X", "xxx", "X");
+        testTranslit("xy", "X", "axxxa", "aXa");
+        testTranslit("xy", "X", "ayyya", "aXa");
+        testTranslit("xy", "X", "axyxa", "aXa");
+        testTranslit("xy", "X", "axaxa", "aXaXa");
+    }
+    SECTION("three onto two character replacement") {
+        testTranslit("xyz", "XY", "abc", "abc");
+        testTranslit("xyz", "XY", "xyz", "XY");
+        testTranslit("yzx", "YZ", "xyz", "ZYZ");
+        testTranslit("zxy", "ZX", "xyz", "XZ");
+        testTranslit("xyz", "XY", "xxz", "XXY");
+        testTranslit("xyz", "XY", "zxx", "YXX");
+        testTranslit("xyz", "XY", "xxx", "XXX");
+        testTranslit("xyz", "XY", "yyy", "Y");
+        testTranslit("xyz", "XY", "zzz", "Y");
+        testTranslit("xyz", "XY", "xxxyyyzzz", "XXXY");
+        testTranslit("xyz", "XY", "yyyxxxzzz", "YXXXY");
+        testTranslit("xyz", "XY", "zzzyyyxxx", "YXXX");
+        testTranslit("xyz", "XY", "ayyya", "aYa");
+        testTranslit("xyz", "XY", "ayaya", "aYaYa");
+    }
+}
+
 TEST_CASE("Chapter 2 - translit - deletion") {
-    SECTION("single character replacement") {
+    SECTION("single character removal") {
         testTranslit("x", "", "abc", "abc");
         testTranslit("x", "", "xyz", "yz");
         testTranslit("y", "", "xyz", "xz");
@@ -84,7 +116,7 @@ TEST_CASE("Chapter 2 - translit - deletion") {
         testTranslit("x", "", "axaxa", "aaa");
     }
 
-    SECTION("two character replacement") {
+    SECTION("two character removal") {
         testTranslit("xy", "", "abc", "abc");
         testTranslit("xy", "", "xyz", "z");
         testTranslit("yz", "", "xyz", "x");
