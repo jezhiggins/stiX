@@ -13,6 +13,11 @@ void testTranslit(
     std::string input, std::string expected
 );
 
+void testNegateTranslit(
+    std::string replace, std::string with,
+    std::string input, std::string expected
+);
+
 TEST_CASE("Chapter 2 - translit - argument expansion") {
     SECTION("good argument expansions") {
         testExpandArg("abcdef", "abcdef");
@@ -129,6 +134,35 @@ TEST_CASE("Chapter 2 - translit - deletion") {
     }
 }
 
+TEST_CASE("Chapter 2 - translit - negated deletion") {
+    testNegateTranslit("xy", "", "abc", "");
+    testNegateTranslit("xy", "", "xyz", "xy");
+    testNegateTranslit("yz", "", "xyz", "yz");
+    testNegateTranslit("xz", "", "xyz", "xz");
+    testNegateTranslit("xy", "", "xxz", "xx");
+    testNegateTranslit("xy", "", "zxx", "xx");
+    testNegateTranslit("xy", "", "xxx", "xxx");
+    testNegateTranslit("xy", "", "axxxa", "xxx");
+    testNegateTranslit("xy", "", "axaxa", "xx");
+}
+
+TEST_CASE("Chapter 2 - translit - negated squashing") {
+    testNegateTranslit("xy", "X", "abc", "X");
+    testNegateTranslit("xy", "X", "xyz", "xyX");
+    testNegateTranslit("yz", "X", "xyz", "Xyz");
+    testNegateTranslit("xz", "X", "xyz", "xXz");
+    testNegateTranslit("xy", "X", "xxz", "xxX");
+    testNegateTranslit("xy", "X", "zxx", "Xxx");
+    testNegateTranslit("xy", "X", "xxx", "xxx");
+    testNegateTranslit("xy", "X", "axxxa", "XxxxX");
+    testNegateTranslit("xy", "X", "axaxa", "XxXxX");
+    testNegateTranslit("xy", "Y", "xxxyyyzzz", "xxxyyyY");
+    testNegateTranslit("xz", "Y", "yyyxxxzzz", "Yxxxzzz");
+    testNegateTranslit("yz", "Y", "zzzyyyxxx", "zzzyyyY");
+    testNegateTranslit("xyz", "Y", "ayyya", "YyyyY");
+    testNegateTranslit("xyz", "Y", "ayaya", "YyYyY");
+}
+
 void testExpandArg(
     std::string arg,
     std::string expected
@@ -138,16 +172,39 @@ void testExpandArg(
   }
 }
 
+void exerciseTranslit(
+    std::string replace, std::string with,
+    stiX::Selection selectionMode,
+    std::string input, std::string expected
+) {
+  auto mode = (selectionMode == stiX::Selection::Normal)
+      ? "Normal"
+      : "Negate";
+  DYNAMIC_SECTION("translit(" << replace << ", " << with << ", " << mode << ") on '" << input << "' gives '" << expected << "'") {
+    std::istringstream is(input);
+    std::ostringstream os;
+
+    stiX::translit(replace, with, selectionMode, is, os);
+
+    REQUIRE(os.str() == expected);
+  }
+}
+
 void testTranslit(
     std::string replace, std::string with,
     std::string input, std::string expected
 ) {
-  DYNAMIC_SECTION("translit(" << replace << ", " << with << ") on '" << input << "' gives '" << expected << "'") {
-    std::istringstream is(input);
-    std::ostringstream os;
-
-    stiX::translit(replace, with, is, os);
-
-    REQUIRE(os.str() == expected);
-  }
+    exerciseTranslit(
+        replace, with, stiX::Selection::Normal,
+        input, expected
+    );
+}
+void testNegateTranslit(
+    std::string replace, std::string with,
+    std::string input, std::string expected
+) {
+    exerciseTranslit(
+        replace, with, stiX::Selection::Negate,
+        input, expected
+    );
 }
