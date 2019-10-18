@@ -10,7 +10,7 @@ void testFilter(
     std::string expected,
     void (*fn)(std::istream&, std::ostream&)
 ) {
-  DYNAMIC_SECTION(label << "(\"" << escape(input) << "\")") {
+  DYNAMIC_SECTION(label << "(\"" << escape(input) << "\") -> \"" << escape(expected) << "\"") {
     std::istringstream is(input);
     std::ostringstream os;
 
