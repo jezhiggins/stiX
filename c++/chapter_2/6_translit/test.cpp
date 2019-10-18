@@ -3,7 +3,7 @@
 #include "translit.hpp"
 #include "translit-args.hpp"
 
-void testExpandArg(
+void testExpandCharacterClasses(
     std::string arg,
     std::string expected
 );
@@ -20,33 +20,33 @@ void testNegateTranslit(
 
 TEST_CASE("Chapter 2 - translit - argument expansion") {
     SECTION("good argument expansions") {
-        testExpandArg("abcdef", "abcdef");
-        testExpandArg("a-d", "abcd");
-        testExpandArg("a-dA-D", "abcdABCD");
-        testExpandArg("0-9", "0123456789");
-        testExpandArg("a-c-e", "abcde");
+        testExpandCharacterClasses("abcdef", "abcdef");
+        testExpandCharacterClasses("a-d", "abcd");
+        testExpandCharacterClasses("a-dA-D", "abcdABCD");
+        testExpandCharacterClasses("0-9", "0123456789");
+        testExpandCharacterClasses("a-c-e", "abcde");
     }
     SECTION("malformed") {
-        testExpandArg("a-0", "a-0");
-        testExpandArg("9-0", "9-0");
-        testExpandArg("0-a", "0-a");
-        testExpandArg("z-a", "z-a");
-        testExpandArg("a-Z", "a-Z");
-        testExpandArg("A-z", "A-z");
-        testExpandArg("---", "---");
-        testExpandArg("-z", "-z");
-        testExpandArg("a-", "a-");
-        testExpandArg("{-}", "{-}");
+        testExpandCharacterClasses("a-0", "a-0");
+        testExpandCharacterClasses("9-0", "9-0");
+        testExpandCharacterClasses("0-a", "0-a");
+        testExpandCharacterClasses("z-a", "z-a");
+        testExpandCharacterClasses("a-Z", "a-Z");
+        testExpandCharacterClasses("A-z", "A-z");
+        testExpandCharacterClasses("---", "---");
+        testExpandCharacterClasses("-z", "-z");
+        testExpandCharacterClasses("a-", "a-");
+        testExpandCharacterClasses("{-}", "{-}");
     }
     SECTION("escape sequence") {
-        testExpandArg("@", "@");
-        testExpandArg("@a", "a");
-        testExpandArg("@n", "\n");
-        testExpandArg("@t", "\t");
-        testExpandArg("@n@t", "\n\t");
-        testExpandArg("@t@n", "\t\n");
-        testExpandArg("@@", "@");
-        testExpandArg("@@@t@", "@\t@");
+        testExpandCharacterClasses("@", "@");
+        testExpandCharacterClasses("@a", "a");
+        testExpandCharacterClasses("@n", "\n");
+        testExpandCharacterClasses("@t", "\t");
+        testExpandCharacterClasses("@n@t", "\n\t");
+        testExpandCharacterClasses("@t@n", "\t\n");
+        testExpandCharacterClasses("@@", "@");
+        testExpandCharacterClasses("@@@t@", "@\t@");
     }
 }
 
@@ -163,7 +163,7 @@ TEST_CASE("Chapter 2 - translit - negated squashing") {
     testNegateTranslit("xyz", "Y", "ayaya", "YyYyY");
 }
 
-void testExpandArg(
+void testExpandCharacterClasses(
     std::string arg,
     std::string expected
 ) {
