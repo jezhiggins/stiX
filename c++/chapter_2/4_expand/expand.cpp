@@ -26,27 +26,27 @@ public:
         lastChar = c;
 
         switch (state) {
-            case haveMarker: {
-                    count = decodeCount(c);
-                    if (count == std::string::npos)
-                        return recover(c);
-                    state = haveCount;
-                    return empty;
-                }
-            case haveCount:
-                state = passthrough;
-                return std::string(count, c);
             case passthrough:
                 if (ismarker(c)) {
                     state = haveMarker;
                     return empty;
                 }
+                return std::string(1, c);
+            case haveMarker: {
+                count = decodeCount(c);
+                if (count == std::string::npos)
+                    return recover(c);
+                state = haveCount;
+                return empty;
+            }
+            case haveCount:
+                state = passthrough;
+                return std::string(count, c);
         }
-        return std::string(1, c);
     }
 
 private:
-    bool ismarker(char c) { return c == '~'; }
+    bool ismarker(char c) { return c == marker; }
 
     size_t decodeCount(char c) {
         auto position = countEncoding.find(c);
@@ -71,7 +71,8 @@ private:
 
     std::string const countEncoding =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    std::string const recoveryString = "~";
+    char const marker = '~';
+    std::string const recoveryString = std::string(1, marker);
     std::string const empty;
 };
 
