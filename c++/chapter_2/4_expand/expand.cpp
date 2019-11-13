@@ -32,13 +32,12 @@ public:
                     return empty;
                 }
                 return std::string(1, c);
-            case haveMarker: {
+            case haveMarker:
                 count = decodeCount(c);
                 if (count == std::string::npos)
                     return recover(c);
                 state = haveCount;
                 return empty;
-            }
             case haveCount:
                 state = passthrough;
                 return std::string(count, c);
