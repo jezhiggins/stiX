@@ -16,7 +16,7 @@ public:
             return empty;
         }
 
-        output = repeated(repeat);
+        std::string output = repeated(repeat);
         repeat = 0;
 
         lastChar = c;
@@ -52,7 +52,6 @@ private:
     std::ostream& out_;
     char lastChar = 0;
     size_t repeat = 0;
-    std::string output;
 };
 
 namespace stiX {
