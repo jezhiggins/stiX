@@ -17,11 +17,15 @@ namespace stiX {
         return dest;
     }
 
+    template<typename InputRange, typename OutputIt, typename Separator = std::string>
+    constexpr OutputIt join(InputRange&& range, OutputIt out, Separator sep = " ") {
+      return join(std::begin(range), std::end(range), out, sep);
+    }
+
     void echo(int argc, char const* argv[], std::ostream &out) {
         auto arguments = make_arguments(argc, argv);
         join(
-            arguments.begin(), 
-            arguments.end(), 
+            arguments,
             std::ostream_iterator<std::string>(out)
         );
     }
