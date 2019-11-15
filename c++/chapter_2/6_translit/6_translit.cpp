@@ -26,7 +26,23 @@
 // present.
 
 #include <iostream>
+#include "../../lib/arguments.h"
+#include "translit-args.hpp"
+#include "translit.hpp"
 
 int main(int argc, char const* argv[]) {
-  std::cout << "Not done yet" << std::endl;
+  auto arguments = stiX::make_arguments(argc, argv);
+  if (arguments.size() < 1 || arguments.size() > 2) {
+    std::cout << argv[0] << "[^]src [dest]" << std::endl;
+    return 0;
+  }
+  arguments.emplace_back("");
+
+  stiX::translit(
+      stiX::translitSrcArgument(arguments[0]),
+      stiX::translitDestArgument(arguments[1]),
+      stiX::Selection(stiX::isNegatedArgument(arguments[0])),
+      std::cin,
+      std::cout
+  );
 }
