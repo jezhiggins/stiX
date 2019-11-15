@@ -4,6 +4,7 @@
 #include <map>
 
 namespace {
+    const char Caret = '^';
     const char Dash = '-';
     const char Escape = '@';
 
@@ -27,6 +28,13 @@ namespace {
         std::string::const_iterator& c
     );
 }
+
+bool stiX::isNegatedArgument(
+    const std::string& arg
+) {
+  return arg.size() && arg[0] == Caret;
+}
+
 
 std::string stiX::translitArgument(
     const std::string &arg

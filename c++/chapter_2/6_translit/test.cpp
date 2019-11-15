@@ -19,6 +19,14 @@ void testNegateTranslit(
 );
 
 TEST_CASE("Chapter 2 - translit - argument expansion") {
+    SECTION("is negated argument") {
+        SECTION("'normal' is not") {
+            REQUIRE(stiX::isNegatedArgument("normal") == false);
+        }
+        SECTION("'^negate' is") {
+            REQUIRE(stiX::isNegatedArgument("^negated") == true);
+        }
+    }
     SECTION("good argument expansions") {
         testExpandCharacterClasses("abcdef", "abcdef");
         testExpandCharacterClasses("a-d", "abcd");

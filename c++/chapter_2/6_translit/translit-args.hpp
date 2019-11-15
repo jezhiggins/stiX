@@ -4,6 +4,10 @@
 #include <string>
 
 namespace stiX {
+    bool isNegatedArgument(
+        const std::string& arg
+    );
+
     std::string translitArgument(
         const std::string& arg
     );
