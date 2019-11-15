@@ -8,6 +8,11 @@ void testExpandCharacterClasses(
     std::string expected
 );
 
+void testExpandSrcCharacterClasses(
+    std::string arg,
+    std::string expected
+);
+
 void testTranslit(
     std::string replace, std::string with,
     std::string input, std::string expected
@@ -28,11 +33,29 @@ TEST_CASE("Chapter 2 - translit - argument expansion") {
         }
     }
     SECTION("good argument expansions") {
+        testExpandCharacterClasses("", "");
         testExpandCharacterClasses("abcdef", "abcdef");
         testExpandCharacterClasses("a-d", "abcd");
         testExpandCharacterClasses("a-dA-D", "abcdABCD");
         testExpandCharacterClasses("0-9", "0123456789");
         testExpandCharacterClasses("a-c-e", "abcde");
+        testExpandCharacterClasses("^abcdef", "^abcdef");
+        testExpandCharacterClasses("^a-d", "^abcd");
+        testExpandCharacterClasses("^a-dA-D", "^abcdABCD");
+        testExpandCharacterClasses("^0-9", "^0123456789");
+        testExpandCharacterClasses("^a-c-e", "^abcde");
+        testExpandSrcCharacterClasses("abcdef", "abcdef");
+        testExpandSrcCharacterClasses("a-d", "abcd");
+        testExpandSrcCharacterClasses("a-dA-D", "abcdABCD");
+        testExpandSrcCharacterClasses("0-9", "0123456789");
+        testExpandSrcCharacterClasses("a-c-e", "abcde");
+        testExpandSrcCharacterClasses("^abcdef", "abcdef");
+        testExpandSrcCharacterClasses("^a-d", "abcd");
+        testExpandSrcCharacterClasses("^a-dA-D", "abcdABCD");
+        testExpandSrcCharacterClasses("^0-9", "0123456789");
+        testExpandSrcCharacterClasses("^a-c-e", "abcde");
+        testExpandSrcCharacterClasses("", "");
+        testExpandSrcCharacterClasses("^", "");
     }
     SECTION("malformed") {
         testExpandCharacterClasses("a-0", "a-0");
@@ -175,8 +198,17 @@ void testExpandCharacterClasses(
     std::string arg,
     std::string expected
 ) {
-  DYNAMIC_SECTION("expandArgument('" << arg << "') gives '" << escape(expected) << "'") {
-    REQUIRE(stiX::translitArgument(arg) == expected);
+  DYNAMIC_SECTION("expandDestArgument('" << arg << "') gives '" << escape(expected) << "'") {
+    REQUIRE(stiX::translitDestArgument(arg) == expected);
+  }
+}
+
+void testExpandSrcCharacterClasses(
+    std::string arg,
+    std::string expected
+) {
+  DYNAMIC_SECTION("expandSrcArgument('" << arg << "') gives '" << escape(expected) << "'") {
+    REQUIRE(stiX::translitSrcArgument(arg) == expected);
   }
 }
 

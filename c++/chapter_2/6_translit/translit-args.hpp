@@ -8,7 +8,11 @@ namespace stiX {
         const std::string& arg
     );
 
-    std::string translitArgument(
+    std::string translitSrcArgument(
+        const std::string& arg
+    );
+
+    std::string translitDestArgument(
         const std::string& arg
     );
 }

@@ -8,6 +8,11 @@ namespace {
     const char Dash = '-';
     const char Escape = '@';
 
+    std::string translitArgument(
+        const std::string &arg,
+        bool ignoreInitialCaret
+    );
+
     bool is_valid_dash_range(
         const std::string& arg,
         const std::string::const_iterator& c
@@ -35,30 +40,45 @@ bool stiX::isNegatedArgument(
   return arg.size() && arg[0] == Caret;
 }
 
-
-std::string stiX::translitArgument(
+std::string stiX::translitSrcArgument(
     const std::string &arg
 ) {
-  std::string expanded;
-  auto insert = std::back_inserter(expanded);
+  return translitArgument(arg, true);
+}
 
-  auto c = arg.begin();
-  while (c != arg.end()) {
-    if (is_valid_escape_sequence(arg, c)) {
-      expand_escape_sequence(insert, c);
-      continue;
-    }
-    if (is_valid_dash_range(arg, c)) {
-      expand_dash_range(insert, c);
-      continue;
-    }
-
-    insert = *c++;
-  }
-  return expanded;
+std::string stiX::translitDestArgument(
+    const std::string &arg
+) {
+  return translitArgument(arg, false);
 }
 
 namespace {
+    std::string translitArgument(
+        const std::string &arg,
+        bool ignoreInitialCaret
+    ) {
+      std::string expanded;
+      auto insert = std::back_inserter(expanded);
+
+      auto c = arg.begin();
+      if (ignoreInitialCaret && *c == Caret)
+        ++c;
+
+      while (c != arg.end()) {
+        if (is_valid_escape_sequence(arg, c)) {
+          expand_escape_sequence(insert, c);
+          continue;
+        }
+        if (is_valid_dash_range(arg, c)) {
+          expand_dash_range(insert, c);
+          continue;
+        }
+
+        insert = *c++;
+      }
+      return expanded;
+    } // translitArgument
+
     bool is_valid_dash_range(
         const std::string &arg,
         const std::string::const_iterator &c
