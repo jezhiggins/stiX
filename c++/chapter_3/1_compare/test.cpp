@@ -32,7 +32,6 @@ You better watch out
 You better not cry
 You better not pout
 I'm telling you why
-Santa Claus is comin' to town
 )c";
 
 TEST_CASE("Chapter 3 - compare") {
@@ -61,14 +60,31 @@ TEST_CASE("Chapter 3 - compare") {
         testCompare(
             mary_had_a_little_lamb_its_fleece_was_white,
             mary_had_a_little_lamb_its_fleece_was_kind_of_creamy,
-        "something"
+        R"c(
+2:
+Its fleece was white as snow
+Its fleece was a sort of porridge colour
+)c"
         );
     }
     SECTION("contents are entirely different") {
         testCompare(
             mary_had_a_little_lamb_its_fleece_was_white,
             santa_claus_is_coming_to_town,
-        "something"
+        R"c(
+1:
+Mary had a little lamb
+You better watch out
+2:
+Its fleece was white as snow
+You better not cry
+3:
+And everywhere that Mary went
+You better not pout
+4:
+The lamb was sure to go
+I'm telling you why
+)c"
         );
     }
 }
