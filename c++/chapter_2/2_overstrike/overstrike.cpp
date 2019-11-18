@@ -2,13 +2,8 @@
 #include "../../lib/filter.h"
 #include "../../lib/chars.h"
 
-struct overstriker {
-    std::string const empty;
-    std::string const skip = " ";
-    std::string const noskip = "\n+";
-
-    size_t position_;
-    size_t backspaced_;
+class overstriker {
+public:
     std::string operator()(char c) {
         if (stiX::isbackspace(c)) {
             ++backspaced_;
@@ -34,6 +29,13 @@ struct overstriker {
 
         return output;
     }
+private:
+    std::string const empty;
+    std::string const skip = " ";
+    std::string const noskip = "\n+";
+
+    size_t position_;
+    size_t backspaced_;
 };
 
 namespace stiX {
