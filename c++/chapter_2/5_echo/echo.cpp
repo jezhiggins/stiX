@@ -18,7 +18,7 @@ namespace stiX {
     }
 
     template<typename InputRange, typename OutputIt, typename Separator = std::string>
-    constexpr OutputIt join(InputRange&& range, OutputIt out, Separator sep = " ") {
+    OutputIt join(InputRange&& range, OutputIt out, Separator sep = " ") {
       return join(std::begin(range), std::end(range), out, sep);
     }
 
