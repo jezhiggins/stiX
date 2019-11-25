@@ -61,8 +61,8 @@ namespace {
             [&replace, &with](char c) {
                 auto replacement = replace.find(c);
                 return replacement != std::string::npos
-                ? with[replacement]
-                : c;;
+                    ? with[replacement]
+                    : c;
             }
         );
     } // transliterate
