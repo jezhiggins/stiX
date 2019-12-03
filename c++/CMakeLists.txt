@@ -57,6 +57,10 @@ add_executable(6_translit chapter_2/6_translit/6_translit.cpp chapter_2/6_transl
 add_executable(6_translit_test chapter_2/6_translit/test.cpp chapter_2/6_translit/translit.cpp chapter_2/6_translit/translit.hpp chapter_2/6_translit/translit-args.cpp chapter_2/6_translit/translit-args.hpp)
 target_link_libraries(6_translit_test testsupport)
 
-add_executable(1_compare chapter_3/1_compare/compare.cpp  chapter_3/1_compare/compare.hpp chapter_3/1_compare/1_compare.cpp)
-add_executable(1_compare_test chapter_3/1_compare/test.cpp chapter_3/1_compare/compare.cpp  chapter_3/1_compare/compare.hpp)
+add_executable(1_compare chapter_3/1_compare/1_compare.cpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp)
+add_executable(1_compare_test chapter_3/1_compare/test.cpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp)
 target_link_libraries(1_compare_test testsupport)
+
+add_executable(2_include chapter_3/2_include/2_include.cpp chapter_3/2_include/include.cpp chapter_3/2_include/include.hpp)
+add_executable(2_include_test chapter_3/2_include/test.cpp chapter_3/2_include/include.cpp chapter_3/2_include/include.hpp)
+target_link_libraries(2_include_test testsupport)
