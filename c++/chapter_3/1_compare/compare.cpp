@@ -15,15 +15,13 @@ namespace stiX {
         std::ostream& out
     ) {
         size_t line = 1;
-        while(true) {
+        do {
             std::string leftline;
             std::string rightline;
 
             std::getline(left, leftline);
             std::getline(right, rightline);
 
-            if (left.eof() && right.eof())
-                return;
             if (left.eof() && !right.eof()) {
                 out << end_of_file << left_file_name << '\n';
                 return;
@@ -40,6 +38,6 @@ namespace stiX {
             }
 
             ++line;
-        }
+        } while (left && right);
     } // compare
 }
