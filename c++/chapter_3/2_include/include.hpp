@@ -7,10 +7,9 @@
 
 namespace stiX {
     std::string getline(std::istream& input);
-    std::string extract_included(std::string include_line);
-    std::ifstream file_opener(std::string filename);
-
-    const std::string hash_include("#include \"");
+    bool is_include(const std::string& line);
+    std::string extract_included(const std::string& include_line);
+    std::ifstream file_opener(const std::string& filename);
 
     template<typename IncludeOpener = typeof(file_opener)>
     void expand_include(
@@ -21,7 +20,7 @@ namespace stiX {
         while(input) {
             std::string line = getline(input);
 
-            if (line.find(hash_include) == std::string::npos) {
+            if (!is_include(line)) {
                 output << line
                        << (!input.eof() ? "\n" : "");
             } else {
