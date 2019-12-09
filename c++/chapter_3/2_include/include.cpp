@@ -7,6 +7,10 @@ namespace stiX {
         return line;
     } // getline
 
+    std::ifstream file_opener(std::string filename) {
+        return std::ifstream(filename);
+    } // file_opener
+
     std::string extract_included(std::string include_line)
     {
         size_t first_quote = stiX::hash_include.size();

@@ -8,14 +8,15 @@
 namespace stiX {
     std::string getline(std::istream& input);
     std::string extract_included(std::string include_line);
+    std::ifstream file_opener(std::string filename);
 
     const std::string hash_include("#include \"");
 
-    template<typename IncludeOpener>
+    template<typename IncludeOpener = typeof(file_opener)>
     void expand_include(
         std::istream& input,
         std::ostream& output,
-        IncludeOpener openFn
+        IncludeOpener openFn = file_opener
     ) {
         while(input) {
             std::string line = getline(input);

@@ -11,6 +11,12 @@
 // A file that includes itself will not be diagnosed, but
 // will eventually cause something to break.
 
+#include "include.hpp"
+
 int main() {
+    stiX::expand_include(
+        std::cin,
+        std::cout
+    );
 }
 
