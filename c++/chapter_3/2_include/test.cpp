@@ -15,17 +15,37 @@ And everywhere that Mary went
 The lamb was sure to go
 )c";
 
+const std::string line_without_newline =
+    "Fruit!";
+const std::string line_with_newline =
+    "Fruit!\n";
+
+const std::string include_mary =
+    "#include \"mary\"";
+
 TEST_CASE("Chapter 3 - include") {
     SECTION("no include directive") {
+        for (auto l : { line_with_newline, line_without_newline, mary_had_a_little_lamb })
+            testInclude(
+                l,
+                l
+            );
+    }
+
+    SECTION("include directive") {
         testInclude(
-            mary_had_a_little_lamb,
+            include_mary,
             mary_had_a_little_lamb
         );
     }
-}
+
+} // TEST_CASE
 
 std::istringstream testIncludeOpener(std::string openname) {
-    return std::istringstream("what");
+    std::string output = "error";
+    if (openname == "mary")
+        output = mary_had_a_little_lamb;
+    return std::istringstream(mary_had_a_little_lamb);
 }
 
 void testInclude(
