@@ -9,7 +9,7 @@ namespace stiX {
         std::string filename,
         std::istream& input,
         std::ostream& output,
-        size_t pageLength
+        size_t pageLength = 64
     );
 }
 

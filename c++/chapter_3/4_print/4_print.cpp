@@ -20,6 +20,20 @@
 #include "print.hpp"
 
 int main(int argc, char const* argv[]) {
-  auto arguments = stiX::make_arguments(argc, argv);
+  auto filenames = stiX::make_arguments(argc, argv);
 
+  if (filenames.empty()) {
+    stiX::print("null", std::cin, std::cout);
+    return 0;
+  }
+
+  for (auto filename : filenames) {
+    std::ifstream file(filename);
+    if (!file) {
+      std::cerr << "Could not open '" << filename << "'\n";
+      continue;
+    }
+
+    stiX::print(filename, file, std::cout);
+  }
 }
