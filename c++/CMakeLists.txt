@@ -64,3 +64,5 @@ target_link_libraries(1_compare_test testsupport)
 add_executable(2_include chapter_3/2_include/2_include.cpp chapter_3/2_include/include.cpp chapter_3/2_include/include.hpp)
 add_executable(2_include_test chapter_3/2_include/test.cpp chapter_3/2_include/include.cpp chapter_3/2_include/include.hpp)
 target_link_libraries(2_include_test testsupport)
+
+add_executable(3_concat chapter_3/3_concat/3_concat.cpp)
