@@ -71,3 +71,5 @@ add_executable(3_concat chapter_3/3_concat/3_concat.cpp)
 add_executable(4_print chapter_3/4_print/4_print.cpp chapter_3/4_print/print.cpp chapter_3/4_print/print.hpp)
 add_executable(4_print_test chapter_3/4_print/test.cpp chapter_3/4_print/print.cpp chapter_3/4_print/print.hpp)
 target_link_libraries(4_print_test testsupport)
+
+add_executable(5_makecopy chapter_3/5_makecopy/5_makecopy.cpp)
