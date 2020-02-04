@@ -7,6 +7,12 @@ namespace {
 }
 
 namespace stiX {
+    std::string getline(std::istream& in) {
+      std::string line;
+      std::getline(in, line);
+      return line;
+    } // getline
+
     void compare(
         std::string left_file_name,
         std::istream& left,
@@ -14,13 +20,10 @@ namespace stiX {
         std::istream& right,
         std::ostream& out
     ) {
-        size_t line = 1;
+        size_t line_count = 1;
         do {
-            std::string leftline;
-            std::string rightline;
-
-            std::getline(left, leftline);
-            std::getline(right, rightline);
+            std::string left_line = getline(left);
+            std::string right_line = getline(right);
 
             if (left.eof() && !right.eof()) {
                 out << end_of_file << left_file_name << '\n';
@@ -31,13 +34,13 @@ namespace stiX {
                 return;
             }
 
-            if (leftline != rightline) {
-                out << line << ':' << '\n'
-                    << leftline << '\n'
-                    << rightline << '\n';
+            if (left_line != right_line) {
+                out << line_count << ':' << '\n'
+                    << left_line << '\n'
+                    << right_line << '\n';
             }
 
-            ++line;
+            ++line_count;
         } while (left && right);
     } // compare
 }
