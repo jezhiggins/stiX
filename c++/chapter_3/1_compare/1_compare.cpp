@@ -15,7 +15,7 @@
 #include "../../lib/arguments.h"
 #include "compare.hpp"
 
-std::ifstream openfile(std::string filename);
+std::ifstream openfile(std::string const& filename);
 
 int main(int argc, char const* argv[]) {
   auto arguments = stiX::make_arguments(argc, argv);
@@ -39,7 +39,7 @@ int main(int argc, char const* argv[]) {
   );
 }
 
-std::ifstream openfile(std::string filename) {
+std::ifstream openfile(std::string const& filename) {
     std::ifstream f(filename);
     if (!f)
         std::cout << "Could not open '" << filename << "'\n";

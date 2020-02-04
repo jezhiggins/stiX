@@ -3,31 +3,31 @@
 #include "compare.hpp"
 
 void testCompare(
-    std::string left,
-    std::string right,
-    std::string expectedOutput
+    std::string const& left,
+    std::string const& right,
+    std::string const& expectedOutput
 );
 
-const std::string mary_had_a_little_lamb_its_fleece_was_white =
+std::string const mary_had_a_little_lamb_its_fleece_was_white =
 R"c(Mary had a little lamb
 Its fleece was white as snow
 And everywhere that Mary went
 The lamb was sure to go
 )c";
 
-const std::string mary_had_a_little_lamb_its_fleece_was_kind_of_creamy =
+std::string const mary_had_a_little_lamb_its_fleece_was_kind_of_creamy =
 R"c(Mary had a little lamb
 Its fleece was a sort of porridge colour
 And everywhere that Mary went
 The lamb was sure to go
 )c";
 
-const std::string mary_had_a_little_lamb =
+std::string const mary_had_a_little_lamb =
 R"c(Mary had a little lamb
 Its fleece was white as snow
 )c";
 
-const std::string santa_claus_is_coming_to_town =
+std::string const santa_claus_is_coming_to_town =
 R"c(You better watch out
 You better not cry
 You better not pout
@@ -88,9 +88,9 @@ I'm telling you why
 }
 
 void testCompare(
-    std::string left,
-    std::string right,
-    std::string expectedOutput
+    std::string const& left,
+    std::string const& right,
+    std::string const& expectedOutput
 ) {
     std::istringstream lefts(left);
     std::istringstream rights(right);
