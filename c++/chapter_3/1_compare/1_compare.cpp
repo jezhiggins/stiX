@@ -18,25 +18,25 @@
 std::ifstream openfile(std::string const& filename);
 
 int main(int argc, char const* argv[]) {
-  auto arguments = stiX::make_arguments(argc, argv);
-  if (arguments.size() != 2) {
-    std::cout << argv[0] << " file1 file2" << std::endl;
-    return 0;
-  }
+    auto arguments = stiX::make_arguments(argc, argv);
+    if (arguments.size() != 2) {
+        std::cout << argv[0] << " file1 file2" << std::endl;
+        return 0;
+    }
 
-  std::ifstream left = openfile(arguments[0]);
-  std::ifstream right = openfile(arguments[1]);
+    auto left = openfile(arguments[0]);
+    auto right = openfile(arguments[1]);
 
-  if (!left || !right)
-      return 0;
+    if (!left || !right)
+        return 0;
 
-  stiX::compare(
-      arguments[0],
+    stiX::compare(
+        arguments[0],
       left,
       arguments[1],
       right,
       std::cout
-  );
+    );
 }
 
 std::ifstream openfile(std::string const& filename) {

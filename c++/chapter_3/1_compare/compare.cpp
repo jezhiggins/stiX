@@ -4,15 +4,15 @@
 
 namespace {
     const std::string end_of_file = "end of file on ";
+
+    std::string getline(std::istream& in) {
+        std::string line;
+        std::getline(in, line);
+        return line;
+    } // getline
 }
 
 namespace stiX {
-    std::string getline(std::istream& in) {
-      std::string line;
-      std::getline(in, line);
-      return line;
-    } // getline
-
     void compare(
         std::string left_file_name,
         std::istream& left,
@@ -22,8 +22,8 @@ namespace stiX {
     ) {
         size_t line_count = 1;
         do {
-            std::string left_line = getline(left);
-            std::string right_line = getline(right);
+            auto left_line = getline(left);
+            auto right_line = getline(right);
 
             if (left.eof() && !right.eof()) {
                 out << end_of_file << left_file_name << '\n';
