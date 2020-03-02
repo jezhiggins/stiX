@@ -13,8 +13,6 @@
 #include <fstream>
 #include "../../lib/arguments.h"
 
-std::ifstream openfile(std::string filename);
-
 int main(int argc, char const* argv[]) {
   auto filenames = stiX::make_arguments(argc, argv);
 
