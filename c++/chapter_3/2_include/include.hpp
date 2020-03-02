@@ -36,7 +36,7 @@ namespace stiX {
     ) {
         bool good = true;
         while(input && good) {
-            std::string line = getline(input);
+            auto line = getline(input);
 
             if (!is_include(line)) {
                 output << line
