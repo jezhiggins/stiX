@@ -131,7 +131,7 @@ namespace {
       static const std::map<char, char> escapes = {
           { 't', '\t' },
           { 'n', '\n' }
-      }; // expand_dash_range
+      }; // escapes
 
       auto candidate = *++c;
       auto escape = escapes.find(candidate);
