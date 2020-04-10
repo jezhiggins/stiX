@@ -34,8 +34,7 @@ namespace stiX {
         std::ostream& output,
         IncludeOpener openFn = file_opener
     ) {
-        bool good = true;
-        while(input && good) {
+        while(input) {
             auto line = getline(input);
 
             if (!is_include(line)) {
@@ -50,14 +49,14 @@ namespace stiX {
                 if (!included)
                     return false;
 
-                good = expand_include(
+                expand_include(
                     included,
                     output,
                     openFn
                 );
             }
         } // while
-        return good;
+        return true;
     } // include
 }
 #endif //STICPP_INCLUDE_HPP
