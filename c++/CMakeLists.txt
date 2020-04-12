@@ -3,6 +3,14 @@ project(sticpp)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_library(stix STATIC
+        lib/arguments.h
+        lib/chars.h
+        lib/copy.cpp
+        lib/copy.h
+        lib/filter.h
+        lib/tab_stops.h)
+
 add_library(testsupport STATIC
         testlib/testlib.h
         testlib/label_escape.cpp
@@ -14,9 +22,10 @@ add_library(testsupport STATIC
         testlib/verify_with_samples.cpp
         testlib/verify_with_samples.h)
 
-add_executable(1_copy chapter_1/1_copy/1_copy.cpp chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h)
-add_executable(1_copy_test chapter_1/1_copy/test.cpp chapter_1/1_copy/copy.cpp chapter_1/1_copy/copy.h)
-target_link_libraries(1_copy_test testsupport)
+add_executable(1_copy chapter_1/1_copy/1_copy.cpp)
+target_link_libraries(1_copy stix)
+add_executable(1_copy_test chapter_1/1_copy/test.cpp)
+target_link_libraries(1_copy_test testsupport stix)
 
 add_executable(2_charcount chapter_1/2_charcount/2_charcount.cpp chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h)
 add_executable(2_charcount_test chapter_1/2_charcount/test.cpp chapter_1/2_charcount/charcount.cpp chapter_1/2_charcount/charcount.h)
@@ -67,6 +76,7 @@ add_executable(2_include_test chapter_3/2_include/test.cpp chapter_3/2_include/i
 target_link_libraries(2_include_test testsupport)
 
 add_executable(3_concat chapter_3/3_concat/3_concat.cpp)
+target_link_libraries(3_concat stix)
 
 add_executable(4_print chapter_3/4_print/4_print.cpp chapter_3/4_print/print.cpp chapter_3/4_print/print.hpp)
 add_executable(4_print_test chapter_3/4_print/test.cpp chapter_3/4_print/print.cpp chapter_3/4_print/print.hpp)

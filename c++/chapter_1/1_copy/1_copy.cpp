@@ -7,7 +7,7 @@
 // copying from a file to a terminal.
 //
 
-#include "copy.h"
+#include "../../lib/copy.h"
 #include <iostream>
 
 int main() {

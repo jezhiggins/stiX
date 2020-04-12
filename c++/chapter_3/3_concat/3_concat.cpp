@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include "../../lib/arguments.h"
+#include "../../lib/copy.h"
 
 int main(int argc, char const* argv[]) {
   auto filenames = stiX::make_arguments(argc, argv);
@@ -23,10 +24,6 @@ int main(int argc, char const* argv[]) {
       continue;
     }
 
-    std::copy(
-        std::istreambuf_iterator<char>(file),
-        std::istreambuf_iterator<char>(),
-        std::ostreambuf_iterator<char>(std::cout)
-    );
+    stiX::copy(file, std::cout);
   }
 }
