@@ -5,8 +5,7 @@
 
 void testInclude(
     std::string input,
-    std::string expectedOutput,
-    bool good = true
+    std::string expectedOutput
 );
 
 const std::string mary_had_a_little_lamb =
@@ -65,8 +64,7 @@ TEST_CASE("Chapter 3 - include") {
     SECTION("include non-existant file") {
         testInclude(
             bad_include,
-            expanded_bad_include,
-            false
+            expanded_bad_include
         );
     }
 
@@ -86,17 +84,15 @@ std::istringstream testIncludeOpener(std::string const& openname) {
 
 void testInclude(
     std::string input,
-    std::string expected,
-    bool expectedGood
+    std::string expected
 ) {
     std::istringstream inputs(input);
     std::ostringstream output;
 
-    bool ok = stiX::expand_include(
+    stiX::expand_include(
         inputs,
         output,
         testIncludeOpener
     );
     REQUIRE(output.str() == expected);
-    REQUIRE(ok == expectedGood);
 }

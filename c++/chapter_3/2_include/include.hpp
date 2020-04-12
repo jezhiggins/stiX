@@ -29,7 +29,7 @@ namespace stiX {
     }
 
     template<typename IncludeOpener>
-    bool expand_include(
+    void expand_include(
         std::istream& input,
         std::ostream& output,
         IncludeOpener openFn = file_opener
@@ -47,7 +47,7 @@ namespace stiX {
                     openFn
                 );
                 if (!included)
-                    return false;
+                    return;
 
                 expand_include(
                     included,
@@ -56,7 +56,6 @@ namespace stiX {
                 );
             }
         } // while
-        return true;
     } // include
 }
 #endif //STICPP_INCLUDE_HPP
