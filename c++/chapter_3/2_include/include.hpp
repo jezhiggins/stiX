@@ -7,13 +7,13 @@
 
 namespace stiX {
     std::string getline(std::istream& input);
-    bool is_include(const std::string& line);
-    std::string extract_included(const std::string& include_line);
-    std::ifstream file_opener(const std::string& filename);
+    bool is_include(std::string const& line);
+    std::string extract_included(std::string const& include_line);
+    std::ifstream file_opener(std::string const& filename);
 
     template<typename IncludeOpener>
     decltype(auto) open_include(
-        const std::string& include_line,
+        std::string const& include_line,
         std::ostream& output,
         IncludeOpener openFn
     ) {
@@ -28,7 +28,7 @@ namespace stiX {
         return included;
     }
 
-    template<typename IncludeOpener = typeof(file_opener)>
+    template<typename IncludeOpener>
     bool expand_include(
         std::istream& input,
         std::ostream& output,

@@ -9,11 +9,11 @@ namespace stiX {
 
     const std::string hash_include("#include \"");
 
-    bool is_include(const std::string& line) {
+    bool is_include(std::string const& line) {
         return line.find(hash_include) != std::string::npos;
     }
 
-   std::string extract_included(const std::string& include_line)
+   std::string extract_included(std::string const& include_line)
     {
         size_t first_quote = stiX::hash_include.size();
         size_t second_quote = include_line.find('"', first_quote+1);
@@ -23,7 +23,7 @@ namespace stiX {
         );
     }
 
-    std::ifstream file_opener(const std::string& filename) {
+    std::ifstream file_opener(std::string const& filename) {
         return std::ifstream(filename);
     } // file_opener
 }

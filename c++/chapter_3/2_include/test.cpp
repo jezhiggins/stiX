@@ -72,7 +72,7 @@ TEST_CASE("Chapter 3 - include") {
 
 } // TEST_CASE
 
-std::istringstream testIncludeOpener(std::string openname) {
+std::istringstream testIncludeOpener(std::string const& openname) {
     std::string output;
     if (openname == "mary")
         output = mary_had_a_little_lamb;
