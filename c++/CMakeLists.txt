@@ -4,6 +4,7 @@ project(sticpp)
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(stix STATIC
+        lib/arguments.cpp
         lib/arguments.h
         lib/chars.h
         lib/copy.cpp
@@ -60,14 +61,17 @@ add_executable(4_expand_test chapter_2/4_expand/test.cpp chapter_2/4_expand/expa
 target_link_libraries(4_expand_test testsupport)
 
 add_executable(5_echo chapter_2/5_echo/5_echo.cpp chapter_2/5_echo/echo.cpp chapter_2/5_echo/echo.h)
+target_link_libraries(5_echo stix)
 add_executable(5_echo_test chapter_2/5_echo/test.cpp chapter_2/5_echo/echo.cpp chapter_2/5_echo/echo.h)
-target_link_libraries(5_echo_test testsupport)
+target_link_libraries(5_echo_test stix testsupport)
 
 add_executable(6_translit chapter_2/6_translit/6_translit.cpp chapter_2/6_translit/translit.cpp chapter_2/6_translit/translit.hpp chapter_2/6_translit/translit-args.cpp chapter_2/6_translit/translit-args.hpp)
+target_link_libraries(6_translit stix)
 add_executable(6_translit_test chapter_2/6_translit/test.cpp chapter_2/6_translit/translit.cpp chapter_2/6_translit/translit.hpp chapter_2/6_translit/translit-args.cpp chapter_2/6_translit/translit-args.hpp)
 target_link_libraries(6_translit_test testsupport)
 
 add_executable(1_compare chapter_3/1_compare/1_compare.cpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp)
+target_link_libraries(1_compare stix)
 add_executable(1_compare_test chapter_3/1_compare/test.cpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp)
 target_link_libraries(1_compare_test testsupport)
 
@@ -79,7 +83,9 @@ add_executable(3_concat chapter_3/3_concat/3_concat.cpp)
 target_link_libraries(3_concat stix)
 
 add_executable(4_print chapter_3/4_print/4_print.cpp chapter_3/4_print/print.cpp chapter_3/4_print/print.hpp)
+target_link_libraries(4_print stix)
 add_executable(4_print_test chapter_3/4_print/test.cpp chapter_3/4_print/print.cpp chapter_3/4_print/print.hpp)
 target_link_libraries(4_print_test testsupport)
 
 add_executable(5_makecopy chapter_3/5_makecopy/5_makecopy.cpp)
+target_link_libraries(5_makecopy stix)
