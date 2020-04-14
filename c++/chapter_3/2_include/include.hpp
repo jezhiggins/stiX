@@ -28,7 +28,7 @@ namespace stiX {
         return included;
     }
 
-    template<typename IncludeOpener>
+    template<typename IncludeOpener = decltype(file_opener)>
     void expand_include(
         std::istream& input,
         std::ostream& output,
