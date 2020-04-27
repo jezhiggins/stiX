@@ -2,6 +2,7 @@
 #include "../../lib/getline.hpp"
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 void header(
   std::string const& filename,
