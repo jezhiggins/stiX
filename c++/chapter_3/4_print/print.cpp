@@ -44,10 +44,8 @@ namespace stiX {
     }
 
     if (lineCount != 0) {
-      while (lineCount != lastLine) {
+      for ( ; lineCount != lastLine; ++lineCount)
         output << '\n';
-        ++lineCount;
-      }
       footer(output);
     }
 
