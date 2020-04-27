@@ -1,12 +1,7 @@
 #include "include.hpp"
+#include "../../lib/getline.h"
 
 namespace stiX {
-    std::string getline(std::istream &input) {
-        std::string line;
-        std::getline(input, line);
-        return line;
-    } // getline
-
     const std::string hash_include("#include \"");
 
     bool is_include(std::string const& line) {

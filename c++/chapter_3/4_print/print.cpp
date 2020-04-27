@@ -1,5 +1,5 @@
 #include "print.hpp"
-
+#include "../../lib/getline.h"
 #include <iostream>
 #include <sstream>
 
@@ -67,12 +67,6 @@ void header(
 void footer(std::ostream& output) {
   output << "\n\n";
 } // footer
-
-std::string getline(std::istream& input) {
-  std::string line;
-  std::getline(input, line);
-  return line;
-} // getline
 
 size_t countLines(std::string const& s) {
   return std::count(s.cbegin(), s.cend(), '\n');

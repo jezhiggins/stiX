@@ -10,7 +10,9 @@ add_library(stix STATIC
         lib/copy.cpp
         lib/copy.h
         lib/filter.h
-        lib/tab_stops.h)
+        lib/tab_stops.h
+        lib/getline.cpp
+        lib/getline.h)
 
 add_library(testsupport STATIC
         testlib/testlib.h
@@ -68,16 +70,17 @@ target_link_libraries(5_echo_test stix testsupport)
 add_executable(6_translit chapter_2/6_translit/6_translit.cpp chapter_2/6_translit/translit.cpp chapter_2/6_translit/translit.hpp chapter_2/6_translit/translit-args.cpp chapter_2/6_translit/translit-args.hpp)
 target_link_libraries(6_translit stix)
 add_executable(6_translit_test chapter_2/6_translit/test.cpp chapter_2/6_translit/translit.cpp chapter_2/6_translit/translit.hpp chapter_2/6_translit/translit-args.cpp chapter_2/6_translit/translit-args.hpp)
-target_link_libraries(6_translit_test testsupport)
+target_link_libraries(6_translit_test stix testsupport)
 
 add_executable(1_compare chapter_3/1_compare/1_compare.cpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp)
 target_link_libraries(1_compare stix)
 add_executable(1_compare_test chapter_3/1_compare/test.cpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp)
-target_link_libraries(1_compare_test testsupport)
+target_link_libraries(1_compare_test stix testsupport)
 
 add_executable(2_include chapter_3/2_include/2_include.cpp chapter_3/2_include/include.cpp chapter_3/2_include/include.hpp)
+target_link_libraries(2_include stix)
 add_executable(2_include_test chapter_3/2_include/test.cpp chapter_3/2_include/include.cpp chapter_3/2_include/include.hpp)
-target_link_libraries(2_include_test testsupport)
+target_link_libraries(2_include_test stix testsupport)
 
 add_executable(3_concat chapter_3/3_concat/3_concat.cpp)
 target_link_libraries(3_concat stix)
@@ -85,7 +88,7 @@ target_link_libraries(3_concat stix)
 add_executable(4_print chapter_3/4_print/4_print.cpp chapter_3/4_print/print.cpp chapter_3/4_print/print.hpp)
 target_link_libraries(4_print stix)
 add_executable(4_print_test chapter_3/4_print/test.cpp chapter_3/4_print/print.cpp chapter_3/4_print/print.hpp)
-target_link_libraries(4_print_test testsupport)
+target_link_libraries(4_print_test stix testsupport)
 
 add_executable(5_makecopy chapter_3/5_makecopy/5_makecopy.cpp)
 target_link_libraries(5_makecopy stix)

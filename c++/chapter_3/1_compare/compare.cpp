@@ -1,15 +1,10 @@
 
 #include "compare.hpp"
 #include <iostream>
+#include "../../lib/getline.h"
 
 namespace {
     const std::string end_of_file = "end of file on ";
-
-    std::string getline(std::istream& in) {
-        std::string line;
-        std::getline(in, line);
-        return line;
-    } // getline
 }
 
 namespace stiX {
