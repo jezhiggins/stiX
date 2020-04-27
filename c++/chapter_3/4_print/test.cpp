@@ -89,7 +89,7 @@ void testPrint(
     filename,
     inputs,
     output,
-    pageLength
+    totalPageLength
   );
 
   REQUIRE(pageCount == expectedPageCount);
