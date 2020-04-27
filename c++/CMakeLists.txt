@@ -5,14 +5,14 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(stix STATIC
         lib/arguments.cpp
-        lib/arguments.h
-        lib/chars.h
+        lib/arguments.hpp
+        lib/chars.hpp
         lib/copy.cpp
-        lib/copy.h
-        lib/filter.h
-        lib/tab_stops.h
+        lib/copy.hpp
+        lib/filter.hpp
+        lib/tab_stops.hpp
         lib/getline.cpp
-        lib/getline.h)
+        lib/getline.hpp)
 
 add_library(testsupport STATIC
         testlib/testlib.h
@@ -42,24 +42,24 @@ add_executable(4_wordcount chapter_1/4_wordcount/4_wordcount.cpp chapter_1/4_wor
 add_executable(4_wordcount_test chapter_1/4_wordcount/test.cpp chapter_1/4_wordcount/wordcount.cpp chapter_1/4_wordcount/wordcount.h)
 target_link_libraries(4_wordcount_test testsupport)
 
-add_executable(5_detab chapter_1/5_detab/5_detab.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.h lib/chars.h)
-add_executable(5_detab_test chapter_1/5_detab/test.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.h lib/chars.h)
+add_executable(5_detab chapter_1/5_detab/5_detab.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.hpp lib/chars.hpp)
+add_executable(5_detab_test chapter_1/5_detab/test.cpp chapter_1/5_detab/detab.cpp chapter_1/5_detab/detab.h lib/tab_stops.hpp lib/chars.hpp)
 target_link_libraries(5_detab_test testsupport)
 
-add_executable(1_entab chapter_2/1_entab/1_entab.cpp chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h lib/tab_stops.h lib/chars.h lib/filter.h)
-add_executable(1_entab_test chapter_2/1_entab/test.cpp chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h lib/filter.h)
+add_executable(1_entab chapter_2/1_entab/1_entab.cpp chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h lib/tab_stops.hpp lib/chars.hpp lib/filter.hpp)
+add_executable(1_entab_test chapter_2/1_entab/test.cpp chapter_2/1_entab/entab.cpp chapter_2/1_entab/entab.h lib/filter.hpp)
 target_link_libraries(1_entab_test testsupport)
 
-add_executable(2_overstrike chapter_2/2_overstrike/2_overstrike.cpp chapter_2/2_overstrike/overstrike.cpp chapter_2/2_overstrike/overstrike.h lib/filter.h)
-add_executable(2_overstrike_test chapter_2/2_overstrike/test.cpp chapter_2/2_overstrike/overstrike.cpp chapter_2/2_overstrike/overstrike.h lib/filter.h)
+add_executable(2_overstrike chapter_2/2_overstrike/2_overstrike.cpp chapter_2/2_overstrike/overstrike.cpp chapter_2/2_overstrike/overstrike.h lib/filter.hpp)
+add_executable(2_overstrike_test chapter_2/2_overstrike/test.cpp chapter_2/2_overstrike/overstrike.cpp chapter_2/2_overstrike/overstrike.h lib/filter.hpp)
 target_link_libraries(2_overstrike_test testsupport)
 
-add_executable(3_compress chapter_2/3_compress/3_compress.cpp chapter_2/3_compress/compress.cpp chapter_2/3_compress/compress.h lib/filter.h)
-add_executable(3_compress_test chapter_2/3_compress/test.cpp chapter_2/3_compress/compress.cpp chapter_2/3_compress/compress.h lib/filter.h)
+add_executable(3_compress chapter_2/3_compress/3_compress.cpp chapter_2/3_compress/compress.cpp chapter_2/3_compress/compress.h lib/filter.hpp)
+add_executable(3_compress_test chapter_2/3_compress/test.cpp chapter_2/3_compress/compress.cpp chapter_2/3_compress/compress.h lib/filter.hpp)
 target_link_libraries(3_compress_test testsupport)
 
-add_executable(4_expand chapter_2/4_expand/4_expand.cpp chapter_2/4_expand/expand.cpp chapter_2/4_expand/expand.h lib/filter.h)
-add_executable(4_expand_test chapter_2/4_expand/test.cpp chapter_2/4_expand/expand.cpp chapter_2/4_expand/expand.h lib/filter.h)
+add_executable(4_expand chapter_2/4_expand/4_expand.cpp chapter_2/4_expand/expand.cpp chapter_2/4_expand/expand.h lib/filter.hpp)
+add_executable(4_expand_test chapter_2/4_expand/test.cpp chapter_2/4_expand/expand.cpp chapter_2/4_expand/expand.h lib/filter.hpp)
 target_link_libraries(4_expand_test testsupport)
 
 add_executable(5_echo chapter_2/5_echo/5_echo.cpp chapter_2/5_echo/echo.cpp chapter_2/5_echo/echo.h)

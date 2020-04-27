@@ -11,8 +11,8 @@
 
 #include <iostream>
 #include <fstream>
-#include "../../lib/arguments.h"
-#include "../../lib/copy.h"
+#include "../../lib/arguments.hpp"
+#include "../../lib/copy.hpp"
 
 int main(int argc, char const* argv[]) {
   auto filenames = stiX::make_arguments(argc, argv);

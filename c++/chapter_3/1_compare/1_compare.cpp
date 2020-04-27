@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "../../lib/arguments.h"
+#include "../../lib/arguments.hpp"
 #include "compare.hpp"
 
 std::ifstream openfile(std::string const& filename);

@@ -26,7 +26,7 @@
 // present.
 
 #include <iostream>
-#include "../../lib/arguments.h"
+#include "../../lib/arguments.hpp"
 #include "translit-args.hpp"
 #include "translit.hpp"
 

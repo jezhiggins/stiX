@@ -1,5 +1,5 @@
 #include "compress.h"
-#include "../../lib/filter.h"
+#include "../../lib/filter.hpp"
 
 class compressor {
 public:

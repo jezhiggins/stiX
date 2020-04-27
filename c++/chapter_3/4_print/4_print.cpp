@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "../../lib/arguments.h"
+#include "../../lib/arguments.hpp"
 #include "print.hpp"
 
 int main(int argc, char const* argv[]) {

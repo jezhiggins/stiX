@@ -1,6 +1,6 @@
 #include <optional>
 #include "expand.h"
-#include "../../lib/filter.h"
+#include "../../lib/filter.hpp"
 
 enum ExpandState {
     passthrough,

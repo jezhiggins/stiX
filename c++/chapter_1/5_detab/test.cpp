@@ -2,7 +2,7 @@
 #include "../../testlib/testlib.h"
 
 #include "detab.h"
-#include "../../lib/tab_stops.h"
+#include "../../lib/tab_stops.hpp"
 
 void testDetab(std::string input, std::string expected);
 

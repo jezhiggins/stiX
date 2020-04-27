@@ -1,7 +1,7 @@
 
 #include "compare.hpp"
 #include <iostream>
-#include "../../lib/getline.h"
+#include "../../lib/getline.hpp"
 
 namespace {
     const std::string end_of_file = "end of file on ";

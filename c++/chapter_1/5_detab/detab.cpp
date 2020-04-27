@@ -1,6 +1,6 @@
 #include "detab.h"
-#include "../../lib/chars.h"
-#include "../../lib/tab_stops.h"
+#include "../../lib/chars.hpp"
+#include "../../lib/tab_stops.hpp"
 
 #include <algorithm>
 #include <iostream>

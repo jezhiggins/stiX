@@ -1,5 +1,5 @@
 #include "include.hpp"
-#include "../../lib/getline.h"
+#include "../../lib/getline.hpp"
 
 namespace stiX {
     const std::string hash_include("#include \"");

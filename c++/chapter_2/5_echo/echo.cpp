@@ -1,5 +1,5 @@
 #include "echo.h"
-#include "../../lib/arguments.h"
+#include "../../lib/arguments.hpp"
 
 #include <algorithm>
 #include <iostream>

@@ -1,5 +1,5 @@
-#ifndef STICPP_FILTER_H
-#define STICPP_FILTER_H
+#ifndef STICPP_FILTER_HPP
+#define STICPP_FILTER_HPP
 
 #include <iostream>
 #include <iterator>
@@ -34,4 +34,4 @@ namespace stiX {
     }
 }
 
-#endif //STICPP_FILTER_H
+#endif //STICPP_FILTER_HPP

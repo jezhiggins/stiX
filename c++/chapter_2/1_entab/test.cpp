@@ -3,7 +3,7 @@
 #include "../../testlib/testlib.h"
 
 #include "entab.h"
-#include "../../lib/tab_stops.h"
+#include "../../lib/tab_stops.hpp"
 
 void testEntab(std::string input, std::string expected);
 

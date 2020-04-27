@@ -1,6 +1,6 @@
 #include "overstrike.h"
-#include "../../lib/filter.h"
-#include "../../lib/chars.h"
+#include "../../lib/filter.hpp"
+#include "../../lib/chars.hpp"
 
 class overstriker {
 public:

@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <filesystem>
-#include "../../lib/arguments.h"
+#include "../../lib/arguments.hpp"
 
 namespace fs = std::filesystem;
 

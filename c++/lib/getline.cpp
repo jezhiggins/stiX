@@ -1,4 +1,4 @@
-#include "getline.h"
+#include "getline.hpp"
 #include <iostream>
 
 std::string stiX::getline(std::istream& input) {

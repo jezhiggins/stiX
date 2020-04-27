@@ -1,4 +1,4 @@
-#include "arguments.h"
+#include "arguments.hpp"
 
 namespace stiX {
     std::vector<std::string> make_arguments(int argc, char const* argv[]) {

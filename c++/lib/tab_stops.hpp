@@ -1,5 +1,5 @@
-#ifndef STICPP_TAB_STOPS_H
-#define STICPP_TAB_STOPS_H
+#ifndef STICPP_TAB_STOPS_HPP
+#define STICPP_TAB_STOPS_HPP
 
 namespace stiX {
     inline const size_t tabSize = 4;
@@ -20,4 +20,4 @@ namespace stiX {
     }
 }
 
-#endif //STICPP_TAB_STOPS_H
+#endif //STICPP_TAB_STOPS_HPP

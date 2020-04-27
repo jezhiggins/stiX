@@ -1,6 +1,6 @@
 #include "translit.hpp"
 
-#include "../../lib/filter.h"
+#include "../../lib/filter.hpp"
 #include <string>
 #include <algorithm>
 #include <functional>

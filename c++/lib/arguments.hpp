@@ -1,5 +1,5 @@
-#ifndef STICPP_ARGUMENTS_H
-#define STICPP_ARGUMENTS_H
+#ifndef STICPP_ARGUMENTS_HPP
+#define STICPP_ARGUMENTS_HPP
 
 #include <string>
 #include <vector>

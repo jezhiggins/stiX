@@ -1,7 +1,7 @@
 #include "entab.h"
-#include "../../lib/chars.h"
-#include "../../lib/tab_stops.h"
-#include "../../lib/filter.h"
+#include "../../lib/chars.hpp"
+#include "../../lib/tab_stops.hpp"
+#include "../../lib/filter.hpp"
 
 class entabber {
 public:
