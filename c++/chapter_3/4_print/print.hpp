@@ -5,12 +5,12 @@
 #include <string>
 
 namespace stiX {
-    int print(
-        std::string filename,
-        std::istream& input,
-        std::ostream& output,
-        size_t pageLength = 64
-    );
+  int print(
+    std::string const& filename,
+    std::istream& input,
+    std::ostream& output,
+    size_t pageLength = 64
+  );
 }
 
 #endif

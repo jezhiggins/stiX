@@ -2,61 +2,69 @@
 
 #include <iostream>
 
-void header(std::string filename, size_t pageNumber, std::ostream& output);
+void header(
+  std::string const& filename,
+  size_t pageNumber,
+  std::ostream& output
+);
 void footer(std::ostream& output);
-std::string getline(std::istream &input);
+std::string getline(std::istream& input);
 
 namespace stiX {
-    int print(
-        std::string filename,
-        std::istream& input,
-        std::ostream& output,
-        size_t pageLength
-    ) {
-      size_t pageCount = 0;
-      size_t lineCount = 0;
+  int print(
+    std::string const& filename,
+    std::istream& input,
+    std::ostream& output,
+    size_t pageLength
+  ) {
+    size_t pageCount = 0;
+    size_t lineCount = 0;
 
-      while(input && !input.eof()) {
-        if (lineCount == 0) {
-          ++pageCount;
-          header(filename, pageCount, output);
-        }
-
-        std::string line = getline(input);
-
-        output << line << '\n';
-        ++lineCount;
-
-        if (lineCount == pageLength) {
-          footer(output);
-          lineCount = 0;
-        }
+    while(input && !input.eof()) {
+      if (lineCount == 0) {
+        ++pageCount;
+        header(filename, pageCount, output);
       }
 
-      if (lineCount != 0) {
-        while (lineCount != pageLength) {
-          output << '\n';
-          ++lineCount;
-        }
+      std::string line = getline(input);
+
+      output << line << '\n';
+      ++lineCount;
+
+      if (lineCount == pageLength) {
         footer(output);
+        lineCount = 0;
       }
-
-      return pageCount;
     }
-}
 
-void header(std::string filename, size_t pageNumber, std::ostream& output) {
+    if (lineCount != 0) {
+      while (lineCount != pageLength) {
+        output << '\n';
+        ++lineCount;
+      }
+      footer(output);
+    }
+
+    return pageCount;
+  } // print
+} // namespace stiX
+
+void header(
+  std::string const& filename,
+  size_t pageNumber,
+  std::ostream& output
+) {
   output << "\n\n"
          << filename
          << " Page " << pageNumber << '\n'
          << "\n\n";
-}
+} // header
 
 void footer(std::ostream& output) {
   output << "\n\n";
-}
+} // footer
 
-std::string getline(std::istream &input) {
+std::string getline(std::istream& input) {
   std::string line;
   std::getline(input, line);
   return line;
