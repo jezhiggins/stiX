@@ -6,16 +6,16 @@
 
 void header(
   std::string const& filename,
-  size_t pageNumber,
+  size_t page_number,
   std::ostream& output
 );
 void footer(std::ostream& output);
 std::string getline(std::istream& input);
-size_t countHeaderLines();
-size_t countFooterLines();
+size_t count_header_lines();
+size_t count_footer_lines();
 
-size_t const headerLines = countHeaderLines();
-size_t const footerLines = countFooterLines();
+auto const header_lines = count_header_lines();
+auto const footer_lines = count_footer_lines();
 
 class page_printer
 {
@@ -24,15 +24,15 @@ public:
     std::string const& filename,
     std::istream& input,
     std::ostream& output,
-    size_t pageLength
+    size_t page_length
   ) :
-    filename_(filename),
-    input_(input),
-    output_(output),
-    pageLength_(pageLength),
-    pageCount_(0),
-    lineCount_(0),
-    lastLine_(pageLength - footerLines) {
+      filename_(filename),
+      input_(input),
+      output_(output),
+      page_length_(page_length),
+      page_count_(0),
+      line_count_(0),
+      last_line_(page_length - footer_lines) {
   } // page_printer
 
   page_printer() = delete;
@@ -45,51 +45,56 @@ public:
 
       print_line();
 
-      if (at_page_end())
+      if (at_last_line())
         print_footer();
     } // while ...
 
-    if (!at_page_start()) {
-      while (!at_page_end())
-        print_blank_line();
-      print_footer();
-    }
+    pad_to_page_end();
 
-    return pageCount_;
+    return page_count_;
   } // print
 private:
   bool input_available() const { return input_ && !input_.eof(); }
-  bool at_page_start() const { return lineCount_ == 0; }
-  bool at_page_end() const { return lineCount_ == lastLine_; }
+  bool at_page_start() const { return line_count_ == 0; }
+  bool at_last_line() const { return line_count_ == last_line_; }
 
   void print_header() {
-    header(filename_, ++pageCount_, output_);
-    lineCount_ += headerLines;
+    header(filename_, ++page_count_, output_);
+    line_count_ += header_lines;
   } // print_header
 
   void print_line() {
     std::string line = stiX::getline(input_);
     output_ << line << '\n';
-    ++lineCount_;
+    ++line_count_;
   } // print_line
 
   void print_blank_line() {
     output_ << '\n';
-    ++lineCount_;
+    ++line_count_;
   } // print_blank_line
 
   void print_footer() {
     footer(output_);
-    lineCount_ = 0;
+    line_count_ = 0;
   } // print_footer
+
+  void pad_to_page_end() {
+    if (at_page_start())
+      return;
+
+    while (!at_last_line())
+      print_blank_line();
+    print_footer();
+  } // pad_to_page_end
 
   std::string const& filename_;
   std::istream& input_;
   std::ostream& output_;
-  size_t const pageLength_;
-  size_t pageCount_;
-  size_t lineCount_;
-  size_t const lastLine_;
+  size_t const page_length_;
+  size_t page_count_;
+  size_t line_count_;
+  size_t const last_line_;
 };
 
 namespace stiX {
@@ -97,13 +102,13 @@ namespace stiX {
     std::string const& filename,
     std::istream& input,
     std::ostream& output,
-    size_t pageLength
+    size_t page_length
   ) {
     auto printer = page_printer(
-      filename,
-      input,
-      output,
-      pageLength
+        filename,
+        input,
+        output,
+        page_length
     );
 
     return printer.print();
@@ -112,12 +117,12 @@ namespace stiX {
 
 void header(
   std::string const& filename,
-  size_t pageNumber,
+  size_t page_number,
   std::ostream& output
 ) {
   output << "\n\n"
          << filename
-         << " Page " << pageNumber << '\n'
+         << " Page " << page_number << '\n'
          << "\n\n";
 } // header
 
@@ -129,15 +134,15 @@ size_t countLines(std::string const& s) {
   return std::count(s.cbegin(), s.cend(), '\n');
 } // countLines
 
-size_t countHeaderLines() {
+size_t count_header_lines() {
   std::stringstream ss;
   header("", 0, ss);
   return countLines(ss.str());
-} // countHeaderLines
+} // count_header_lines
 
-size_t countFooterLines() {
+size_t count_footer_lines() {
   std::stringstream ss;
   footer(ss);
   return countLines(ss.str());
-} // countFooterLines
+} // count_footer_lines
 
