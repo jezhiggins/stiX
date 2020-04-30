@@ -17,6 +17,81 @@ size_t countFooterLines();
 size_t const headerLines = countHeaderLines();
 size_t const footerLines = countFooterLines();
 
+class page_printer
+{
+public:
+  page_printer(
+    std::string const& filename,
+    std::istream& input,
+    std::ostream& output,
+    size_t pageLength
+  ) :
+    filename_(filename),
+    input_(input),
+    output_(output),
+    pageLength_(pageLength),
+    pageCount_(0),
+    lineCount_(0),
+    lastLine_(pageLength - footerLines) {
+  } // page_printer
+
+  page_printer() = delete;
+  page_printer(page_printer const&) = delete;
+
+  size_t print() {
+    while(input_available()) {
+      if (at_page_start())
+        print_header();
+
+      print_line();
+
+      if (at_page_end())
+        print_footer();
+    } // while ...
+
+    if (!at_page_start()) {
+      while (!at_page_end())
+        print_blank_line();
+      print_footer();
+    }
+
+    return pageCount_;
+  } // print
+private:
+  bool input_available() const { return input_ && !input_.eof(); }
+  bool at_page_start() const { return lineCount_ == 0; }
+  bool at_page_end() const { return lineCount_ == lastLine_; }
+
+  void print_header() {
+    header(filename_, ++pageCount_, output_);
+    lineCount_ += headerLines;
+  } // print_header
+
+  void print_line() {
+    std::string line = stiX::getline(input_);
+    output_ << line << '\n';
+    ++lineCount_;
+  } // print_line
+
+  void print_blank_line() {
+    output_ << '\n';
+    ++lineCount_;
+  } // print_blank_line
+
+  void print_footer() {
+    footer(output_);
+    lineCount_ = 0;
+  } // print_footer
+
+  std::string const& filename_;
+  std::istream& input_;
+  std::ostream& output_;
+  size_t const pageLength_;
+  size_t pageCount_;
+  size_t lineCount_;
+  size_t const lastLine_;
+};
+
 namespace stiX {
   int print(
     std::string const& filename,
@@ -24,33 +99,14 @@ namespace stiX {
     std::ostream& output,
     size_t pageLength
   ) {
-    size_t pageCount = 0;
-    size_t lineCount = 0;
-    size_t const lastLine = pageLength - footerLines;
+    auto printer = page_printer(
+      filename,
+      input,
+      output,
+      pageLength
+    );
 
-    while(input && !input.eof()) {
-      if (lineCount == 0) {
-        header(filename, ++pageCount, output);
-        lineCount += headerLines;
-      }
-
-      std::string line = getline(input);
-      output << line << '\n';
-      ++lineCount;
-
-      if (lineCount == lastLine) {
-        footer(output);
-        lineCount = 0;
-      }
-    }
-
-    if (lineCount != 0) {
-      for ( ; lineCount != lastLine; ++lineCount)
-        output << '\n';
-      footer(output);
-    }
-
-    return pageCount;
+    return printer.print();
   } // print
 } // namespace stiX
 
