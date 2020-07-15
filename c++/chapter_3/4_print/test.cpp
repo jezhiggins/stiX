@@ -38,7 +38,7 @@ Its fleece was white as snow
 And everywhere that Mary went
 The lamb was sure to go)c";
 
-TEST_CASE("Chapter 4 - print") {
+TEST_CASE("Chapter 3 - print") {
   SECTION("no pages") {
     testPrint(
       std::string(),
