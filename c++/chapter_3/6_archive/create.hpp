@@ -11,9 +11,6 @@ namespace stiX {
   };
 
   void create_archive(
-    std::ostream& archive_out
-  );
-  void create_archive(
     input_file input,
     std::ostream& archive_out
   );
