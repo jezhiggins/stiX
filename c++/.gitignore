@@ -26,8 +26,11 @@
 5_echo
 5_echo_test
 5_makecopy
+6_archive
+6_archive_test
 6_translit
 6_translit_test
+libstix.a
 libtestsupport.a
 sticpp.cbp
 
