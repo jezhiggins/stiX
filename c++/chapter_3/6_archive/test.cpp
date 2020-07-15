@@ -2,35 +2,41 @@
 #include "create.hpp"
 
 TEST_CASE("Chapter 3 - archive create") {
-  SECTION("no input files creates empty archive") {
-    std::ostringstream archiveOut;
+  struct createArchiveTest {
+    std::string const title;
+    std::vector<stiX::input_file> const inputs;
+    std::string const expected;
+  };
 
-    stiX::create_archive({ }, archiveOut);
+  createArchiveTest tests[] = {
+    {
+      "no input files creates empty archive",
+      { },
+      ""
+    },
+    {
+      "one zero-length input file",
+      { { "nothing", 0 } },
+      "-h- nothing 0\n"
+    },
+    {
+      "two zero-length input files",
+      {
+        {"nothing", 0},
+        {"empty", 0}
+      },
+      "-h- nothing 0\n-h- empty 0\n"
+    }
+  };
 
-    auto archive = archiveOut.str();
-    REQUIRE(archive.empty());
-  }
+  for (auto t : tests) {
+    DYNAMIC_SECTION(t.title) {
+      std::ostringstream archiveOut;
 
-  SECTION("one zero-length input file") {
-    std::ostringstream archiveOut;
+      create_archive(t.inputs, archiveOut);
 
-    auto input = std::vector<stiX::input_file> { { "nothing", 0 } };
-    stiX::create_archive(input, archiveOut);
-
-    auto archive = archiveOut.str();
-    REQUIRE(archive == "-h- nothing 0\n");
-  }
-
-  SECTION("two zero-length input files") {
-    std::ostringstream archiveOut;
-
-    auto input = std::vector<stiX::input_file> {
-      {"nothing", 0},
-      {"empty", 0}
-    };
-    stiX::create_archive(input, archiveOut);
-
-    auto archive = archiveOut.str();
-    REQUIRE(archive == "-h- nothing 0\n-h- empty 0\n");
+      auto archive = archiveOut.str();
+      REQUIRE(archive == t.expected);
+    }
   }
 }
