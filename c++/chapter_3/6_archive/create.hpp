@@ -3,15 +3,16 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 
 namespace stiX {
   struct input_file {
-    std::string name;
-    size_t filesize;
+    std::string const name;
+    size_t const filesize;
   };
 
   void create_archive(
-    input_file input,
+    std::vector<input_file> const& input,
     std::ostream& archive_out
   );
 }

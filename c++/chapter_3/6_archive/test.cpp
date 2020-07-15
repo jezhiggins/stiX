@@ -14,10 +14,23 @@ TEST_CASE("Chapter 3 - archive create") {
   SECTION("one zero-length input file") {
     std::ostringstream archiveOut;
 
-    auto input = stiX::input_file { "nothing", 0 };
+    auto input = std::vector<stiX::input_file> { { "nothing", 0 } };
     stiX::create_archive(input, archiveOut);
 
     auto archive = archiveOut.str();
     REQUIRE(archive == "-h- nothing 0\n");
+  }
+
+  SECTION("two zero-length input files") {
+    std::ostringstream archiveOut;
+
+    auto input = std::vector<stiX::input_file> {
+      {"nothing", 0},
+      {"empty", 0}
+    };
+    stiX::create_archive(input, archiveOut);
+
+    auto archive = archiveOut.str();
+    REQUIRE(archive == "-h- nothing 0\n-h- empty 0\n");
   }
 }
