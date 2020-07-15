@@ -1,0 +1,4 @@
+#ifndef STICPP_ARCHIVE_CREATE_HPP
+#define STICPP_ARCHIVE_CREATE_HPP
+
+#endif

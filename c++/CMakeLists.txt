@@ -92,3 +92,8 @@ target_link_libraries(4_print_test stix testsupport)
 
 add_executable(5_makecopy chapter_3/5_makecopy/5_makecopy.cpp)
 target_link_libraries(5_makecopy stix)
+
+add_executable(6_archive chapter_3/6_archive/6_archive.cpp chapter_3/6_archive/create.cpp chapter_3/6_archive/create.hpp)
+target_link_libraries(6_archive stix)
+add_executable(6_archive_test chapter_3/6_archive/test.cpp chapter_3/6_archive/create.cpp chapter_3/6_archive/create.hpp)
+target_link_libraries(6_archive_test stix testsupport)
