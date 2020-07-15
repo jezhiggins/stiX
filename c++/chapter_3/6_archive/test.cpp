@@ -10,4 +10,14 @@ TEST_CASE("Chapter 3 - archive create") {
     auto archive = archiveOut.str();
     REQUIRE(archive.empty());
   }
+
+  SECTION("one zero-length input file") {
+    std::ostringstream archiveOut;
+
+    auto input = stiX::input_file { "nothing", 0 };
+    stiX::create_archive(input, archiveOut);
+
+    auto archive = archiveOut.str();
+    REQUIRE(archive == "-h- nothing 0\n");
+  }
 }
