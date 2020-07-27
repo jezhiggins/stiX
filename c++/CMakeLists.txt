@@ -12,7 +12,7 @@ add_library(stix STATIC
         lib/filter.hpp
         lib/tab_stops.hpp
         lib/getline.cpp
-        lib/getline.hpp)
+        lib/getline.hpp lib/file_open.hpp lib/file_open.cpp)
 
 add_library(testsupport STATIC
         testlib/testlib.h
