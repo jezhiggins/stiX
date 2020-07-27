@@ -1,29 +1,31 @@
+#include <filesystem>
 #include "../../testlib/testlib.h"
 #include "create.hpp"
 
-std::string testFile1 = "I am a test file\n";
-std::string testFile2 = "I am another file\n";
+std::string mock_file_1= "I am a test file\n";
+std::string mock_file_2 = "I am another file\n";
 
-std::map<std::string, std::string> testFiles = {
-    { "testFile1", testFile1 },
-    { "testFile2", testFile2 }
+std::map<std::string, std::string> mock_files = {
+    { "testFile1", mock_file_1 },
+    { "testFile2", mock_file_2 }
 };
 
-std::istringstream testFileContents(std::string const& name) {
-  auto tf = testFiles.find(name);
-  if (tf == testFiles.end())
+std::istringstream mock_file_contents(std::string const& name) {
+  auto tf = mock_files.find(name);
+  if (tf == mock_files.end())
     return std::istringstream();
   return std::istringstream(tf->second);
-} // testFileContents
+} // mock_file_contents
+
 
 TEST_CASE("Chapter 3 - archive create") {
-  struct createArchiveTest {
+  struct mock_create_test {
     std::string const title;
     std::vector<stiX::input_file> const inputs;
     std::string const expected;
   };
 
-  createArchiveTest tests[] = {
+  mock_create_test mocked_tests[] = {
     {
       "no input files creates empty archive",
       { },
@@ -44,28 +46,28 @@ TEST_CASE("Chapter 3 - archive create") {
     },
     {
       "one file, with contents",
-      { { "testFile1", testFile1.size() } },
-      "-h- testFile1 " + std::to_string(testFile1.size()) + "\n" + testFile1
+      { { "testFile1", mock_file_1.size() } },
+      "-h- testFile1 " + std::to_string(mock_file_1.size()) + "\n" + mock_file_1
     },
     {
       "two files, with contents",
       {
-        { "testFile1", testFile1.size() },
-        { "testFile2", testFile2.size() }
+        { "testFile1", mock_file_1.size() },
+        { "testFile2", mock_file_2.size() }
       },
-      "-h- testFile1 " + std::to_string(testFile1.size()) + "\n" + testFile1 +
-      "-h- testFile2 " + std::to_string(testFile2.size()) + "\n" + testFile2
+      "-h- testFile1 " + std::to_string(mock_file_1.size()) + "\n" + mock_file_1 +
+      "-h- testFile2 " + std::to_string(mock_file_2.size()) + "\n" + mock_file_2
     }
   };
 
-  for (auto t : tests) {
-    DYNAMIC_SECTION(t.title) {
-      std::ostringstream archiveOut;
+  for (auto m : mocked_tests) {
+    DYNAMIC_SECTION("Mocked " << m.title) {
+      std::ostringstream archive_out;
 
-      create_archive(t.inputs, archiveOut, testFileContents);
+      create_archive(m.inputs, archive_out, mock_file_contents);
 
-      auto archive = archiveOut.str();
-      REQUIRE(archive == t.expected);
+      auto archive = archive_out.str();
+      REQUIRE(archive == m.expected);
     }
   }
 }
