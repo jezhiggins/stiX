@@ -95,5 +95,5 @@ target_link_libraries(5_makecopy stix)
 
 add_executable(6_archive chapter_3/6_archive/6_archive.cpp chapter_3/6_archive/create.cpp chapter_3/6_archive/create.hpp chapter_3/6_archive/table.hpp chapter_3/6_archive/table.cpp)
 target_link_libraries(6_archive stix)
-add_executable(6_archive_test chapter_3/6_archive/test.cpp chapter_3/6_archive/test/test_create.inc chapter_3/6_archive/create.cpp chapter_3/6_archive/create.hpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp chapter_3/6_archive/test/test_table.inc chapter_3/6_archive/table.hpp)
+add_executable(6_archive_test chapter_3/6_archive/test.cpp chapter_3/6_archive/test/test_create.inc chapter_3/6_archive/create.cpp chapter_3/6_archive/create.hpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp chapter_3/6_archive/test/test_table.inc chapter_3/6_archive/table.hpp chapter_3/6_archive/table.cpp)
 target_link_libraries(6_archive_test stix testsupport)
