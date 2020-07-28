@@ -9,8 +9,8 @@
 
 namespace stiX {
     struct input_file {
-        std::string const name;
-        size_t const filesize;
+        std::string name;
+        size_t filesize;
     };
 
     void write_header(
@@ -30,8 +30,8 @@ namespace stiX {
 
     template<typename FileReader>
     void create_archive(
-        std::vector<input_file> const &input,
-        std::ostream &archive_out,
+        std::vector<input_file> const& input,
+        std::ostream& archive_out,
         FileReader fileReader
     ) {
       for (auto i : input) {
