@@ -101,7 +101,8 @@ void file_test(std::string const& title, fs::path const& directory) {
 
       auto result = matches_expected(directory);
 
-      REQUIRE(result == "");
+      INFO(result);
+      REQUIRE(result.empty());
     }
 } // file_test_fixture
 
