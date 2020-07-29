@@ -32,7 +32,7 @@ namespace stiX {
       auto header_line = getline(archive);
       auto header = parse_header(header_line);
 
-      out << header.name << '\n';
+      out << header.name << '\t' << header.filesize << '\n';
 
       archive.peek();
     }

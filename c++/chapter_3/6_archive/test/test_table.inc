@@ -20,7 +20,7 @@ TEST_CASE("Chapter 3 - archive table") {
   SECTION("One zero length file") {
     test_table(
       "-h- nothing 0\n",
-      "nothing\n"
+      "nothing\t0\n"
     );
   }
 }
