@@ -23,4 +23,11 @@ TEST_CASE("Chapter 3 - archive table") {
       "nothing\t0\n"
     );
   }
+
+  SECTION("Two zero length files") {
+    test_table(
+      "-h- nothing 0\n-h- empty 0\n",
+      "nothing\t0\nempty\t0\n"
+    );
+  }
 }
