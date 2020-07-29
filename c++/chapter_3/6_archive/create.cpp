@@ -2,7 +2,7 @@
 
 namespace stiX {
   void write_header(
-    stiX::input_file const& input,
+    stiX::archive_file const& input,
     std::ostream& archive_out
   ) {
     archive_out
@@ -12,4 +12,4 @@ namespace stiX {
       << input.filesize
       << "\n";
   } // write_header
-}
+} // namespace stiX

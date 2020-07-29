@@ -2,14 +2,11 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+
 #include "../../lib/getline.hpp"
+#include "./archive_file.hpp"
 
 namespace stiX {
-  struct archive_file {
-    std::string name;
-    size_t filesize;
-  };
-
   archive_file parse_header(std::string const& header) {
     if (header.find("-h- ") != 0)
       throw std::logic_error("Not a header line");
@@ -34,6 +31,7 @@ namespace stiX {
 
       out << header.name << '\t' << header.filesize << '\n';
 
+      archive.seekg(header.filesize, std::ios_base::cur);
       archive.peek();
     }
   } // table_archive

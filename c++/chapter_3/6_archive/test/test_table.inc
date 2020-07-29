@@ -30,4 +30,11 @@ TEST_CASE("Chapter 3 - archive table") {
       "nothing\t0\nempty\t0\n"
     );
   }
+
+  SECTION("Two files with contents") {
+    test_table(
+      "-h- testFile1 17\nI am a test file\n-h- testFile2 14\nAnother file!\n",
+      "testFile1\t17\ntestFile2\t14\n"
+    );
+  }
 }

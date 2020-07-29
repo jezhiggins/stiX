@@ -6,21 +6,17 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "./archive_file.hpp"
 
 namespace stiX {
-    struct input_file {
-        std::string name;
-        size_t filesize;
-    };
-
     void write_header(
-        stiX::input_file const& input,
+        stiX::archive_file const& input,
         std::ostream& archive_out
     ); // write_header
 
     template<typename FileReader>
     void write_contents(
-        stiX::input_file const& input,
+        stiX::archive_file const& input,
         std::ostream& archive_out,
         FileReader fileReader
     ) {
@@ -30,7 +26,7 @@ namespace stiX {
 
     template<typename FileReader>
     void create_archive(
-        std::vector<input_file> const& input,
+        std::vector<archive_file> const& input,
         std::ostream& archive_out,
         FileReader fileReader
     ) {

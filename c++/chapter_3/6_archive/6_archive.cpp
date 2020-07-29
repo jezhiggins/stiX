@@ -37,6 +37,11 @@
 // each consisting of a header and an exact copy of the
 // original file. The header format is
 //  -h- name length
-int main(int argc, const char* argv[]) {
 
-}
+#include "../../lib/arguments.hpp"
+#include "./archive.hpp"
+
+int main(int argc, const char* argv[]) {
+  auto arguments = stiX::make_arguments(argc, argv);
+  stiX::archive(arguments);
+} // main
