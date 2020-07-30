@@ -6,12 +6,22 @@ void test_delete(
   std::string const& expected
 );
 
+std::string const archiveWithContents =
+  "-h- testFile1 17\nI am a test file\n-h- testFile2 14\nAnother file!\n";
+
 TEST_CASE("Chapter 3 - archive delete mock") {
   SECTION("Empty archive") {
     test_delete(
       "",
-      { "fruit" },
+      {"fruit"},
       ""
+    );
+  }
+  SECTION("Remove nothing from the archive") {
+    test_delete(
+      archiveWithContents,
+      { },
+      archiveWithContents
     );
   }
 }

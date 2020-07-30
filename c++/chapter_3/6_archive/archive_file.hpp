@@ -8,5 +8,8 @@ namespace stiX {
     std::string name;
     size_t filesize;
   };
+
+  archive_file parse_header(std::string const& header);
 } // namespace stiX
+
 #endif
