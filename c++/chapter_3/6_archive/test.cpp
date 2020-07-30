@@ -4,3 +4,4 @@
 
 #include "test/test_create.inc"
 #include "test/test_table.inc"
+#include "test/test_delete.inc"
