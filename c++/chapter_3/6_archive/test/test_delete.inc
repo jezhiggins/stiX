@@ -6,8 +6,11 @@ void test_delete(
   std::string const& expected
 );
 
+std::string const archiveTestFile1 = "-h- testFile1 17\nI am a test file\n";
+std::string const archiveTestFile2 = "-h- testFile2 14\nAnother file!\n";
 std::string const archiveWithContents =
-  "-h- testFile1 17\nI am a test file\n-h- testFile2 14\nAnother file!\n";
+  archiveTestFile1 + archiveTestFile2;
+
 
 TEST_CASE("Chapter 3 - archive delete mock") {
   SECTION("Empty archive") {
@@ -22,6 +25,20 @@ TEST_CASE("Chapter 3 - archive delete mock") {
       archiveWithContents,
       { },
       archiveWithContents
+    );
+  }
+  SECTION("Remove first file in two file archive") {
+    test_delete(
+      archiveWithContents,
+      { "testFile1" },
+      archiveTestFile2
+    );
+  }
+  SECTION("Remove second file in two file archive") {
+    test_delete(
+      archiveWithContents,
+      { "testFile2" },
+      archiveTestFile1
     );
   }
 }
