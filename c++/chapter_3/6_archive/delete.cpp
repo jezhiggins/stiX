@@ -10,11 +10,6 @@ bool should_remove(
   stiX::archive_file const& name
 );
 
-void skip_entry(
-  std::istream& archive_in,
-  stiX::archive_file const& header
-);
-
 void copy_to_out(
   std::istream& archive_in,
   stiX::archive_file const& header,
@@ -47,13 +42,6 @@ bool should_remove(
 ) {
   return std::find(files_to_remove.begin(), files_to_remove.end(), header.name) != files_to_remove.end();
 } // should_remove
-
-void skip_entry(
-  std::istream& archive_in,
-  stiX::archive_file const& header
-) {
-  archive_in.seekg(header.filesize, std::ios_base::cur);
-} // skip_entry
 
 void copy_to_out(
   std::istream& archive_in,

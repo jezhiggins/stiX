@@ -6,19 +6,20 @@
 
 namespace stiX {
   void table_archive(
-    std::istream& archive,
+    std::istream& archive_in,
     std::ostream& out
   ) {
-    archive.peek();
+    archive_in.peek();
 
-    while (archive && !archive.eof()) {
-      auto header_line = getline(archive);
+    while (archive_in && !archive_in.eof()) {
+      auto header_line = getline(archive_in);
       auto header = parse_header(header_line);
 
       out << header.name << '\t' << header.filesize << '\n';
 
-      archive.seekg(header.filesize, std::ios_base::cur);
-      archive.peek();
+      skip_entry(archive_in, header);
+
+      archive_in.peek();
     }
   } // table_archive
 }

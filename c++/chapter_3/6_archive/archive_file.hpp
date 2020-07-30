@@ -11,6 +11,11 @@ namespace stiX {
   };
 
   archive_file parse_header(std::string const& header);
+
+  void skip_entry(
+    std::istream& archive_in,
+    stiX::archive_file const& header
+  );
 } // namespace stiX
 
 std::ostream& operator<<(std::ostream& os, stiX::archive_file const& af);

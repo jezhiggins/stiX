@@ -22,3 +22,11 @@ std::ostream& operator<<(std::ostream& os, stiX::archive_file const& af) {
      << '\n';
   return os;
 } // operator<<
+
+void stiX::skip_entry(
+  std::istream& archive_in,
+  stiX::archive_file const& header
+) {
+  archive_in.seekg(header.filesize, std::ios_base::cur);
+} // skip_entry
+
