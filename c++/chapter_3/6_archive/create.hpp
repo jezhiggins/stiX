@@ -9,11 +9,6 @@
 #include "./archive_file.hpp"
 
 namespace stiX {
-    void write_header(
-        stiX::archive_file const& input,
-        std::ostream& archive_out
-    ); // write_header
-
     template<typename FileReader>
     void write_contents(
         stiX::archive_file const& input,
@@ -31,7 +26,7 @@ namespace stiX {
         FileReader fileReader
     ) {
       for (auto i : input) {
-        write_header(i, archive_out);
+        archive_out << i;
         write_contents(i, archive_out, fileReader);
       } // for ...
     } // create_archive

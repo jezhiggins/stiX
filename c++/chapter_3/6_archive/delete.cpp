@@ -17,11 +17,7 @@ void stiX::delete_from_archive(
     auto header_line = getline(archive_in);
     auto header = parse_header(header_line);
 
-    archive_out << "-h- "
-      << header.name
-      << ' '
-      << header.filesize
-      << '\n';
+    archive_out << header;
 
     std::copy_n(
       std::istreambuf_iterator<char>(archive_in),
