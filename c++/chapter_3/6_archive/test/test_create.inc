@@ -39,8 +39,8 @@ private:
   fs::path cwd_;
 };
 
-std::vector<stiX::input_file> list_input_files(fs::path const& directory) {
-  auto files = std::vector<stiX::input_file>();
+std::vector<stiX::archive_file> list_input_files(fs::path const& directory) {
+  auto files = std::vector<stiX::archive_file>();
 
   auto wd = working_directory(directory / "input");
   for(auto& p: fs::directory_iterator(wd)) {
@@ -52,11 +52,11 @@ std::vector<stiX::input_file> list_input_files(fs::path const& directory) {
 
     auto size = fs::file_size(filepath);
 
-    files.emplace_back(stiX::input_file { filename, size });
+    files.emplace_back(stiX::archive_file { filename, size });
   }
 
   std::sort(files.begin(), files.end(),
-            [](stiX::input_file const& lhs, stiX::input_file const& rhs) -> bool
+            [](stiX::archive_file const& lhs, stiX::archive_file const& rhs) -> bool
             {
               return lhs.name < rhs.name;
             }
@@ -128,7 +128,7 @@ void file_fixture(std::string const& name) {
 TEST_CASE("Chapter 3 - archive create mock") {
   struct mock_create_test {
     std::string const title;
-    std::vector<stiX::input_file> const inputs;
+    std::vector<stiX::archive_file> const inputs;
     std::string const expected;
   };
 
