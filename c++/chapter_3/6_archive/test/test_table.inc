@@ -3,16 +3,9 @@
 void test_table(
   std::string const& archive,
   std::string const& expected
-) {
-  auto archive_in = std::istringstream(archive);
-  auto out = std::ostringstream();
+);
 
-  stiX::table_archive(archive_in, out);
-
-  REQUIRE(out.str() == expected);
-} // test_table
-
-TEST_CASE("Chapter 3 - archive table") {
+TEST_CASE("Chapter 3 - archive table mock") {
   SECTION("Empty archive") {
     test_table("", "");
   }
@@ -38,3 +31,16 @@ TEST_CASE("Chapter 3 - archive table") {
     );
   }
 }
+
+void test_table(
+  std::string const& archive,
+  std::string const& expected
+) {
+  auto archive_in = std::istringstream(archive);
+  auto out = std::ostringstream();
+
+  stiX::table_archive(archive_in, out);
+
+  REQUIRE(out.str() == expected);
+} // test_table
+

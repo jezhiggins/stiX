@@ -18,112 +18,7 @@ std::istringstream mock_file_contents(std::string const& name) {
   return std::istringstream(tf->second);
 } // mock_file_contents
 
-class working_directory {
-public:
-  working_directory(std::string const& fixture) :
-      pwd_(fs::current_path()),
-      cwd_(fs::current_path() / "fixture" / fixture) {
-    fs::current_path(cwd_);
-  } // FileTestFixture
-
-  operator fs::path() const {
-    return cwd_;
-  } // operation fs::path
-
-  ~working_directory() {
-    fs::current_path(pwd_);
-  } // ~FileTestFixture
-
-private:
-  fs::path pwd_;
-  fs::path cwd_;
-};
-
-std::vector<stiX::archive_file> list_input_files(fs::path const& directory) {
-  auto files = std::vector<stiX::archive_file>();
-
-  auto wd = working_directory(directory / "input");
-  for(auto& p: fs::directory_iterator(wd)) {
-    auto filepath = p.path();
-    auto filename = fs::relative(filepath, wd).string();
-
-    if (filename[0] == '.')
-      continue;
-
-    auto size = fs::file_size(filepath);
-
-    files.emplace_back(stiX::archive_file { filename, size });
-  }
-
-  std::sort(files.begin(), files.end(),
-            [](stiX::archive_file const& lhs, stiX::archive_file const& rhs) -> bool
-            {
-              return lhs.name < rhs.name;
-            }
-  );
-
-  return files;
-} // list_input_files
-
-fs::path output_file_name(fs::path const& directory) {
-  return directory / "output" / "result";
-} // output_file_name
-
-fs::path expected_file_name(fs::path const& directory) {
-  return directory / "expected" / "result";;
-} // expected_file_name
-
-std::string matches_expected(fs::path const& name) {
-  auto output = output_file_name(name);
-  auto expected = expected_file_name(name);
-
-  auto output_is = std::ifstream(output);
-  auto expected_is = std::ifstream(expected);
-
-  auto result = std::ostringstream();
-
-  stiX::compare(
-      output,
-      output_is,
-      expected,
-      expected_is,
-      result
-  );
-
-  return result.str();
-} // matches_expected
-
-void file_test(std::string const& title, fs::path const& directory) {
-  DYNAMIC_SECTION("Fixture " << title) {
-    auto input_files = list_input_files(directory);
-
-    {
-      auto archive_out = std::ofstream(output_file_name(directory));
-      auto wd = working_directory(directory / "input");
-      stiX::create_archive(input_files, archive_out, stiX::file_opener);
-    }
-
-    auto result = matches_expected(directory);
-
-    INFO(result);
-    REQUIRE(result.empty());
-  }
-} // file_test_fixture
-
-void file_fixture(std::string const& name) {
-  auto fixture_dir = working_directory(name);
-
-  for (auto& p : fs::directory_iterator(fixture_dir)) {
-    auto title = fs::relative(p.path()).string();
-
-    auto output_file = output_file_name(p.path());
-    if (fs::exists(output_file))
-      fs::remove(output_file);
-
-
-    file_test(title, p.path());
-  }
-}
+void file_fixture(std::string const& name);
 
 TEST_CASE("Chapter 3 - archive create mock") {
   struct mock_create_test {
@@ -182,3 +77,118 @@ TEST_CASE("Chapter 3 - archive create mock") {
 TEST_CASE("Chapter 3 - archive create") {
   file_fixture("create");
 }
+
+/////////////////////////////////////////////
+class working_directory {
+public:
+  working_directory(std::string const& fixture) :
+    pwd_(fs::current_path()),
+    cwd_(fs::current_path() / "fixture" / fixture) {
+    fs::current_path(cwd_);
+  } // FileTestFixture
+
+  operator fs::path() const {
+    return cwd_;
+  } // operation fs::path
+
+  ~working_directory() {
+    fs::current_path(pwd_);
+  } // ~FileTestFixture
+
+private:
+  fs::path pwd_;
+  fs::path cwd_;
+}; // working_directory
+
+std::vector<stiX::archive_file> list_input_files(fs::path const& directory);
+fs::path output_file_name(fs::path const& directory);
+fs::path expected_file_name(fs::path const& directory);
+std::string matches_expected(fs::path const& name);
+
+void file_test(std::string const& title, fs::path const& directory);
+
+void file_fixture(std::string const& name) {
+  auto fixture_dir = working_directory(name);
+
+  for (auto& p : fs::directory_iterator(fixture_dir)) {
+    auto title = fs::relative(p.path()).string();
+
+    auto output_file = output_file_name(p.path());
+    if (fs::exists(output_file))
+      fs::remove(output_file);
+
+
+    file_test(title, p.path());
+  }
+} // file_fixture
+
+void file_test(std::string const& title, fs::path const& directory) {
+  DYNAMIC_SECTION("Fixture " << title) {
+    auto input_files = list_input_files(directory);
+
+    {
+      auto archive_out = std::ofstream(output_file_name(directory));
+      auto wd = working_directory(directory / "input");
+      stiX::create_archive(input_files, archive_out, stiX::file_opener);
+    }
+
+    auto result = matches_expected(directory);
+
+    INFO(result);
+    REQUIRE(result.empty());
+  }
+} // file_test
+
+std::vector<stiX::archive_file> list_input_files(fs::path const& directory) {
+  auto files = std::vector<stiX::archive_file>();
+
+  auto wd = working_directory(directory / "input");
+  for(auto& p: fs::directory_iterator(wd)) {
+    auto filepath = p.path();
+    auto filename = fs::relative(filepath, wd).string();
+
+    if (filename[0] == '.')
+      continue;
+
+    auto size = fs::file_size(filepath);
+
+    files.emplace_back(stiX::archive_file { filename, size });
+  }
+
+  std::sort(files.begin(), files.end(),
+            [](stiX::archive_file const& lhs, stiX::archive_file const& rhs) -> bool
+            {
+              return lhs.name < rhs.name;
+            }
+  );
+
+  return files;
+} // list_input_files
+
+fs::path output_file_name(fs::path const& directory) {
+  return directory / "output" / "result";
+} // output_file_name
+
+fs::path expected_file_name(fs::path const& directory) {
+  return directory / "expected" / "result";;
+} // expected_file_name
+
+std::string matches_expected(fs::path const& name) {
+  auto output = output_file_name(name);
+  auto expected = expected_file_name(name);
+
+  auto output_is = std::ifstream(output);
+  auto expected_is = std::ifstream(expected);
+
+  auto result = std::ostringstream();
+
+  stiX::compare(
+    output,
+    output_is,
+    expected,
+    expected_is,
+    result
+  );
+
+  return result.str();
+} // matches_expected
