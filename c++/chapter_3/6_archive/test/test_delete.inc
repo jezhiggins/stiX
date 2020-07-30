@@ -8,8 +8,10 @@ void test_delete(
 
 std::string const archiveTestFile1 = "-h- testFile1 17\nI am a test file\n";
 std::string const archiveTestFile2 = "-h- testFile2 14\nAnother file!\n";
+std::string const archiveTestFile3 = "-h- testFile3 18\nYet another file!\n";
+
 std::string const archiveWithContents =
-  archiveTestFile1 + archiveTestFile2;
+  archiveTestFile1 + archiveTestFile2 + archiveTestFile3;
 
 
 TEST_CASE("Chapter 3 - archive delete mock") {
@@ -27,18 +29,53 @@ TEST_CASE("Chapter 3 - archive delete mock") {
       archiveWithContents
     );
   }
-  SECTION("Remove first file in two file archive") {
+  SECTION("Remove first file in three file archive") {
     test_delete(
       archiveWithContents,
       { "testFile1" },
-      archiveTestFile2
+      archiveTestFile2 + archiveTestFile3
     );
   }
-  SECTION("Remove second file in two file archive") {
+  SECTION("Remove second file in three file archive") {
     test_delete(
       archiveWithContents,
       { "testFile2" },
+      archiveTestFile1 + archiveTestFile3
+    );
+  }
+  SECTION("Remove third file in three file archive") {
+    test_delete(
+      archiveWithContents,
+      { "testFile3" },
+      archiveTestFile1 + archiveTestFile2
+    );
+  }
+  SECTION("Remove first and second file in three file archive") {
+    test_delete(
+      archiveWithContents,
+      { "testFile1", "testFile2" },
+      archiveTestFile3
+    );
+  }
+  SECTION("Remove first and third file in three file archive") {
+    test_delete(
+      archiveWithContents,
+      { "testFile1", "testFile3" },
+      archiveTestFile2
+    );
+  }
+  SECTION("Remove second and third file in three file archive") {
+    test_delete(
+      archiveWithContents,
+      { "testFile3", "testFile2" },
       archiveTestFile1
+    );
+  }
+  SECTION("Remove all files in three file archive") {
+    test_delete(
+      archiveWithContents,
+      { "testFile1", "testFile2", "testFile3" },
+      ""
     );
   }
 }
