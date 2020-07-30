@@ -2,8 +2,10 @@
 #include <iostream>
 #include <stdexcept>
 
+std::string const HEADER_TAG = "-h- ";
+
 stiX::archive_file stiX::parse_header(std::string const& header) {
-  if (header.find("-h- ") != 0)
+  if (header.find(HEADER_TAG) != 0)
     throw std::logic_error("Not a header line");
 
   auto lastspace = header.find_last_of(' ');
@@ -15,7 +17,7 @@ stiX::archive_file stiX::parse_header(std::string const& header) {
 } // parse_header
 
 std::ostream& operator<<(std::ostream& os, stiX::archive_file const& af) {
-  os << "-h- "
+  os << HEADER_TAG
      << af.name
      << ' '
      << af.filesize
@@ -29,4 +31,3 @@ void stiX::skip_entry(
 ) {
   archive_in.seekg(header.filesize, std::ios_base::cur);
 } // skip_entry
-
