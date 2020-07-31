@@ -1,6 +1,7 @@
 #include "./archive.hpp"
 #include "./create.hpp"
 #include "./table.hpp"
+#include "./delete.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -10,6 +11,7 @@ namespace fs = std::filesystem;
 
 void create(std::string const& archive, std::vector<std::string> const& files);
 void table(std::string const& archive);
+void remove(std::string const& archive, std::vector<std::string> const& files);
 void print_help();
 
 void stiX::archive(std::vector<std::string> const& arguments) {
@@ -26,6 +28,8 @@ void stiX::archive(std::vector<std::string> const& arguments) {
     create(archive, files);
   else if (cmd == "-t")
     table(archive);
+  else if (cmd == "-d")
+    remove(archive, files);
   else
     print_help();
 } // archive
@@ -35,20 +39,32 @@ fs::path working_file();
 
 void create(std::string const& archive, std::vector<std::string> const& files) {
   auto input_files = gather_input_files(files);
-  auto archive_file = working_file();
+  auto working = working_file();
 
   {
-    auto archive_out = std::ofstream(archive_file);
+    auto archive_out = std::ofstream(working);
     stiX::create_archive(input_files, archive_out);
   }
 
-  fs::rename(archive_file, fs::path(archive));
+  fs::rename(working, archive);
 } // create
 
 void table(std::string const& archive) {
   auto archive_in = std::ifstream(archive);
   stiX::table_archive(archive_in, std::cout);
 } // table
+
+void remove(std::string const& archive, std::vector<std::string> const& files) {
+  auto working = working_file();
+
+  {
+    auto archive_in = std::ifstream(archive);
+    auto archive_out = std::ofstream(working);
+    stiX::delete_from_archive(archive_in, files, archive_out);
+  }
+
+  fs::rename(working, archive);
+} // delete
 
 void print_help() {
   std::cout << R"c( archive -cmd aname [ file ... ]
