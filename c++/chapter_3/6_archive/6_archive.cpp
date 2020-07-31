@@ -10,7 +10,7 @@
 // determines the operation to be performed.
 //
 //  -c  create a new archive with named members
-//  -d  deleted named members from archive
+//  -d  delete named members from archive
 //  -p  print named members on standard output
 //  -t  print table of archive contents
 //  -u  update named members or add at end

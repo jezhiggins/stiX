@@ -1,9 +1,13 @@
 #include "./archive.hpp"
+#include "./create.hpp"
 
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 
-using namespace stiX;
+namespace fs = std::filesystem;
 
+void create(std::string const& archive, std::vector<std::string> const& files);
 void print_help();
 
 void stiX::archive(std::vector<std::string> const& arguments) {
@@ -16,8 +20,24 @@ void stiX::archive(std::vector<std::string> const& arguments) {
   auto const archive = arguments[1];
   auto const files = std::vector<std::string>(arguments.begin() + 2, arguments.end());
 
-  print_help();
+  if (cmd == "-c")
+    create(archive, files);
+  else
+    print_help();
 } // archive
+
+std::vector<stiX::archive_file> gather_input_files(std::vector<std::string> const& files);
+fs::path working_file();
+
+void create(std::string const& archive, std::vector<std::string> const& files) {
+  auto input_files = gather_input_files(files);
+  auto archive_file = working_file();
+
+  auto archive_out = std::ofstream(archive_file);
+  stiX::create_archive(input_files, archive_out);
+
+  fs::rename(archive_file, fs::path(archive));
+} // create
 
 void print_help() {
   std::cout << R"c( archive -cmd aname [ file ... ]
@@ -36,3 +56,19 @@ void print_help() {
   -x  extract named members from archive
 )c";
 }
+
+std::vector<stiX::archive_file> gather_input_files(std::vector<std::string> const& files) {
+  auto input_files = std::vector<stiX::archive_file>();
+
+  for (auto f : files) {
+    auto path = fs::path(f);
+
+    input_files.push_back({ path.string(), fs::file_size(path) });
+  }
+
+  return input_files;
+} // gather_input_file
+
+fs::path working_file() {
+  return fs::temp_directory_path() / "working_archive";
+} // working_file
