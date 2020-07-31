@@ -1,4 +1,5 @@
 #include "../create.hpp"
+#include "../archive.hpp"
 #include "../../1_compare/compare.hpp"
 
 namespace fs = std::filesystem;
@@ -19,6 +20,8 @@ std::istringstream mock_file_contents(std::string const& name) {
 } // mock_file_contents
 
 void file_fixture(std::string const& name);
+
+void app_fixture(std::string const& name, std::string const& cmd);
 
 TEST_CASE("Chapter 3 - archive create mock") {
   struct mock_create_test {
@@ -78,6 +81,10 @@ TEST_CASE("Chapter 3 - archive create") {
   file_fixture("create");
 }
 
+TEST_CASE("Chapter 3 - create") {
+  app_fixture("create", "-c");
+}
+
 /////////////////////////////////////////////
 class working_directory {
 public:
@@ -106,6 +113,12 @@ fs::path expected_file_name(fs::path const& directory);
 std::string matches_expected(fs::path const& name);
 
 void file_test(std::string const& title, fs::path const& directory);
+void app_file_test(
+  std::string const& title,
+  fs::path const& directory,
+  std::string const& cmd,
+  std::string const& output_file_name
+);
 
 void file_fixture(std::string const& name) {
   auto fixture_dir = working_directory(name);
@@ -138,6 +151,45 @@ void file_test(std::string const& title, fs::path const& directory) {
     REQUIRE(result.empty());
   }
 } // file_test
+
+void app_fixture(std::string const& name, std::string const& cmd) {
+  auto fixture_dir = working_directory(name);
+
+  for (auto& p : fs::directory_iterator(fixture_dir)) {
+    auto title = fs::relative(p.path()).string();
+
+    auto output_file = output_file_name(p.path());
+    if (fs::exists(output_file))
+      fs::remove(output_file);
+
+    app_file_test(title, p.path(), cmd, output_file);
+  }
+} // app_fixture
+
+void app_file_test(
+  std::string const& title,
+  fs::path const& directory,
+  std::string const& cmd,
+  std::string const& output_file_name
+) {
+  DYNAMIC_SECTION("App " << title) {
+    auto input_files = list_input_files(directory);
+
+    auto arguments = std::vector { cmd, output_file_name };
+    for (auto i : input_files)
+      arguments.push_back(i.name);
+
+    {
+      auto wd = working_directory(directory / "input");
+      stiX::archive(arguments);
+    }
+
+    auto result = matches_expected(directory);
+
+    INFO(result);
+    REQUIRE(result.empty());
+  }
+} // app_file_test
 
 std::vector<stiX::archive_file> list_input_files(fs::path const& directory) {
   auto files = std::vector<stiX::archive_file>();
