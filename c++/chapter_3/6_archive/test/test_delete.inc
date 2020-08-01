@@ -6,14 +6,6 @@ void test_delete(
   std::string const& expected
 );
 
-std::string const archiveTestFile1 = "-h- testFile1 17\nI am a test file\n";
-std::string const archiveTestFile2 = "-h- testFile2 14\nAnother file!\n";
-std::string const archiveTestFile3 = "-h- testFile3 18\nYet another file!\n";
-
-std::string const archiveWithContents =
-  archiveTestFile1 + archiveTestFile2 + archiveTestFile3;
-
-
 TEST_CASE("Chapter 3 - archive delete mock") {
   SECTION("Empty archive") {
     test_delete(

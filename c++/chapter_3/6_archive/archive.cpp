@@ -2,16 +2,19 @@
 #include "./create.hpp"
 #include "./table.hpp"
 #include "./delete.hpp"
+#include "./print.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <cstdlib>
 
 namespace fs = std::filesystem;
 
 void create(std::string const& archive, std::vector<std::string> const& files);
 void table(std::string const& archive);
 void remove(std::string const& archive, std::vector<std::string> const& files);
+void print(std::string const& archive, std::vector<std::string> const& files);
 void print_help();
 
 void stiX::archive(std::vector<std::string> const& arguments) {
@@ -30,6 +33,8 @@ void stiX::archive(std::vector<std::string> const& arguments) {
     table(archive);
   else if (cmd == "-d")
     remove(archive, files);
+  else if (cmd == "-p")
+    print(archive, files);
   else
     print_help();
 } // archive
@@ -66,6 +71,11 @@ void remove(std::string const& archive, std::vector<std::string> const& files) {
   fs::rename(working, archive);
 } // delete
 
+void print(std::string const& archive, std::vector<std::string> const& files) {
+  auto archive_in = std::ifstream(archive);
+  stiX::print_files(archive_in, files, std::cout);
+} // print
+
 void print_help() {
   std::cout << R"c( archive -cmd aname [ file ... ]
 
@@ -98,5 +108,6 @@ std::vector<stiX::archive_file> gather_input_files(std::vector<std::string> cons
 } // gather_input_file
 
 fs::path working_file() {
-  return fs::temp_directory_path() / "working_archive";
+  auto name = std::string { "working_archive_" } + std::to_string(std::rand());
+  return fs::temp_directory_path() / name;
 } // working_file

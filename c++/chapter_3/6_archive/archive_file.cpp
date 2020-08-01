@@ -1,6 +1,7 @@
 #include "archive_file.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 std::string const HEADER_TAG = "-h- ";
 
@@ -31,3 +32,25 @@ void stiX::skip_entry(
 ) {
   archive_in.seekg(header.filesize, std::ios_base::cur);
 } // skip_entry
+
+bool stiX::of_interest(
+  std::vector<std::string> const& files_to_remove,
+  stiX::archive_file const& name
+) {
+  return std::find(files_to_remove.begin(), files_to_remove.end(), name.name) != files_to_remove.end();
+} // of_interest
+
+void stiX::copy_contents(
+  std::istream& archive_in,
+  stiX::archive_file const& header,
+  std::ostream& archive_out
+) {
+  std::copy_n(
+    std::istreambuf_iterator<char>(archive_in),
+    header.filesize,
+    std::ostreambuf_iterator<char>(archive_out)
+  );
+
+  archive_in.get();
+} // copy_contents
+

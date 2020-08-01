@@ -2,6 +2,7 @@
 #define STICPP_ARCHIVE_FILE_HPP
 
 #include <string>
+#include <vector>
 #include <iosfwd>
 
 namespace stiX {
@@ -15,6 +16,17 @@ namespace stiX {
   void skip_entry(
     std::istream& archive_in,
     stiX::archive_file const& header
+  );
+
+  bool of_interest(
+    std::vector<std::string> const& files_to_remove,
+    stiX::archive_file const& name
+  );
+
+  void copy_contents(
+    std::istream& archive_in,
+    stiX::archive_file const& header,
+    std::ostream& archive_out
   );
 } // namespace stiX
 
