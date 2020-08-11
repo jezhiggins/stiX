@@ -2,8 +2,6 @@
 #include "../archive.hpp"
 #include "../../1_compare/compare.hpp"
 
-namespace fs = std::filesystem;
-
 std::string mock_file_1= "I am a test file\n";
 std::string mock_file_2 = "I am another file\n";
 
@@ -86,38 +84,17 @@ TEST_CASE("Chapter 3 - create") {
 }
 
 /////////////////////////////////////////////
-class working_directory {
-public:
-  working_directory(std::string const& fixture) :
-    pwd_(fs::current_path()),
-    cwd_(fs::current_path() / "fixture" / fixture) {
-    fs::current_path(cwd_);
-  } // FileTestFixture
-
-  operator fs::path() const {
-    return cwd_;
-  } // operation fs::path
-
-  ~working_directory() {
-    fs::current_path(pwd_);
-  } // ~FileTestFixture
-
-private:
-  fs::path pwd_;
-  fs::path cwd_;
-}; // working_directory
-
 std::vector<stiX::archive_file> list_input_files(fs::path const& directory);
+void clean_output_directory(fs::path const& directory);
 fs::path output_file_name(fs::path const& directory);
-fs::path expected_file_name(fs::path const& directory);
-std::string matches_expected(fs::path const& name);
+void matches_expected(fs::path const& name);
 
 void file_test(std::string const& title, fs::path const& directory);
 void app_file_test(
   std::string const& title,
   fs::path const& directory,
   std::string const& cmd,
-  std::string const& output_file_name
+  std::string const& archive_file_name
 );
 
 void file_fixture(std::string const& name) {
@@ -126,10 +103,7 @@ void file_fixture(std::string const& name) {
   for (auto& p : fs::directory_iterator(fixture_dir)) {
     auto title = fs::relative(p.path()).string();
 
-    auto output_file = output_file_name(p.path());
-    if (fs::exists(output_file))
-      fs::remove(output_file);
-
+    clean_output_directory(p);
 
     file_test(title, p.path());
   }
@@ -145,10 +119,7 @@ void file_test(std::string const& title, fs::path const& directory) {
       stiX::create_archive(input_files, archive_out, stiX::file_opener);
     }
 
-    auto result = matches_expected(directory);
-
-    INFO(result);
-    REQUIRE(result.empty());
+    matches_expected(directory);
   }
 } // file_test
 
@@ -158,10 +129,9 @@ void app_fixture(std::string const& name, std::string const& cmd) {
   for (auto& p : fs::directory_iterator(fixture_dir)) {
     auto title = fs::relative(p.path()).string();
 
-    auto output_file = output_file_name(p.path());
-    if (fs::exists(output_file))
-      fs::remove(output_file);
+    clean_output_directory(p);
 
+    auto output_file = output_file_name(p.path());
     app_file_test(title, p.path(), cmd, output_file);
   }
 } // app_fixture
@@ -170,12 +140,12 @@ void app_file_test(
   std::string const& title,
   fs::path const& directory,
   std::string const& cmd,
-  std::string const& output_file_name
+  std::string const& archive_file_name
 ) {
   DYNAMIC_SECTION("App " << title) {
     auto input_files = list_input_files(directory);
 
-    auto arguments = std::vector { cmd, output_file_name };
+    auto arguments = std::vector {cmd, archive_file_name };
     for (auto i : input_files)
       arguments.push_back(i.name);
 
@@ -184,10 +154,7 @@ void app_file_test(
       stiX::archive(arguments);
     }
 
-    auto result = matches_expected(directory);
-
-    INFO(result);
-    REQUIRE(result.empty());
+    matches_expected(directory);
   }
 } // app_file_test
 
@@ -217,30 +184,48 @@ std::vector<stiX::archive_file> list_input_files(fs::path const& directory) {
   return files;
 } // list_input_files
 
+void clean_output_directory(fs::path const& directory) {
+  auto output_dir = directory / "output";
+
+  for (auto& p: fs::directory_iterator(output_dir)) {
+    if (fs::relative(p, output_dir).string()[0] == '.')
+        continue;
+    fs::remove(p);
+  }
+} // clean_output_directory
+
 fs::path output_file_name(fs::path const& directory) {
-  return directory / "output" / "result";
+  return directory / "output" / "archive";
 } // output_file_name
 
-fs::path expected_file_name(fs::path const& directory) {
-  return directory / "expected" / "result";;
-} // expected_file_name
+void matches_expected(fs::path const& name) {
+  auto output_dir = name / "output";
+  auto expected_dir = name / "expected";
 
-std::string matches_expected(fs::path const& name) {
-  auto output = output_file_name(name);
-  auto expected = expected_file_name(name);
+  for(auto& p: fs::directory_iterator(output_dir)) {
+    auto output_file = p.path();
+    auto filename = fs::relative(output_file, output_dir).string();
 
-  auto output_is = std::ifstream(output);
-  auto expected_is = std::ifstream(expected);
+    if (filename[0] == '.')
+      continue;
 
-  auto result = std::ostringstream();
+    auto expected_file = expected_dir / filename;
 
-  stiX::compare(
-    output,
-    output_is,
-    expected,
-    expected_is,
-    result
-  );
+    auto output_is = std::ifstream(output_file);
+    auto expected_is = std::ifstream(expected_file);
 
-  return result.str();
+    auto result = std::ostringstream();
+
+    stiX::compare(
+      output_file,
+      output_is,
+      expected_file,
+      expected_is,
+      result
+    );
+
+
+    INFO(result.str());
+    REQUIRE(result.str().empty());
+  }
 } // matches_expected
