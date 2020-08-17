@@ -1,5 +1,4 @@
 #include "../create.hpp"
-#include "../archive.hpp"
 
 std::string mock_file_1= "I am a test file\n";
 std::string mock_file_2 = "I am another file\n";
@@ -86,46 +85,3 @@ TEST_CASE("Chapter 3 - archive create") {
 TEST_CASE("Chapter 3 - create") {
   app_fixture("create", "-c");
 }
-
-/////////////////////////////////////////////
-void app_file_test(
-  std::string const& title,
-  fs::path const& directory,
-  std::string const& cmd,
-  std::string const& archive_file_name
-);
-
-void app_fixture(std::string const& name, std::string const& cmd) {
-  auto fixture_dir = working_directory(name);
-
-  for (auto& p : fs::directory_iterator(fixture_dir)) {
-    auto title = fs::relative(p.path()).string();
-
-    clean_output_directory(p);
-
-    auto output_file = output_file_name(p.path());
-    app_file_test(title, p.path(), cmd, output_file);
-  }
-} // app_fixture
-
-void app_file_test(
-  std::string const& title,
-  fs::path const& directory,
-  std::string const& cmd,
-  std::string const& archive_file_name
-) {
-  DYNAMIC_SECTION("App " << title) {
-    auto input_files = list_input_files(directory);
-
-    auto arguments = std::vector {cmd, archive_file_name };
-    for (auto i : input_files)
-      arguments.push_back(i.name);
-
-    {
-      auto wd = working_directory(directory / "input");
-      stiX::archive(arguments);
-    }
-
-    matches_expected(directory);
-  }
-} // app_file_test
