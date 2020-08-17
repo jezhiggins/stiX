@@ -88,15 +88,27 @@ void clean_output_directory(fs::path const& directory) {
   }
 } // clean_output_directory
 
+bool is_hidden_file(fs::path const& p) {
+  return p.filename().string()[0] == '.';
+} // is_hidden_file
+
+int count_files(fs::path const& dir) {
+  return std::count_if(
+      fs::directory_iterator(dir),
+      fs::directory_iterator(),
+      [](auto const& p) { return !is_hidden_file(p); }
+  );
+} // count_files
+
 void matches_expected(fs::path const& name) {
   auto output_dir = name / "output";
   auto expected_dir = name / "expected";
 
   for(auto& p: fs::directory_iterator(output_dir)) {
     auto output_file = p.path();
-    auto filename = fs::relative(output_file, output_dir).string();
+    auto filename = output_file.filename();
 
-    if (filename[0] == '.')
+    if (is_hidden_file(filename))
       continue;
 
     auto expected_file = expected_dir / filename;
@@ -118,6 +130,12 @@ void matches_expected(fs::path const& name) {
     INFO(result.str());
     REQUIRE(result.str().empty());
   }
+
+  auto output_file_count = count_files(output_dir);
+  auto expected_file_count = count_files(expected_dir);
+
+  INFO("Expected output files")
+  REQUIRE(output_file_count == expected_file_count);
 } // matches_expected
 
 fs::path output_file_name(fs::path const& directory) {
