@@ -15,6 +15,7 @@ void create(std::string const& archive, std::vector<std::string> const& files);
 void table(std::string const& archive);
 void remove(std::string const& archive, std::vector<std::string> const& files);
 void print(std::string const& archive, std::vector<std::string> const& files);
+void update(std::string const& archive, std::vector<std::string> const& files);
 void print_help();
 
 void stiX::archive(std::vector<std::string> const& arguments) {
@@ -35,6 +36,8 @@ void stiX::archive(std::vector<std::string> const& arguments) {
     remove(archive, files);
   else if (cmd == "-p")
     print(archive, files);
+  else if (cmd == "-u")
+    update(archive, files);
   else
     print_help();
 } // archive
@@ -75,6 +78,21 @@ void print(std::string const& archive, std::vector<std::string> const& files) {
   auto archive_in = std::ifstream(archive);
   stiX::print_files(archive_in, files, std::cout);
 } // print
+
+void update(std::string const& archive, std::vector<std::string> const& files) {
+  auto working = working_file();
+
+  {
+    auto archive_in = std::ifstream(archive);
+    auto archive_out = std::ofstream(working);
+    stiX::delete_from_archive(archive_in, files, archive_out);
+
+    auto input_files = gather_input_files(files);
+    stiX::create_archive(input_files, archive_out);
+  }
+
+  fs::rename(working, archive);
+} // update
 
 void print_help() {
   std::cout << R"c( archive -cmd aname [ file ... ]
