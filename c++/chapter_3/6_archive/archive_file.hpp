@@ -3,7 +3,8 @@
 
 #include <string>
 #include <vector>
-#include <iosfwd>
+#include <iostream>
+#include "../../lib/getline.hpp"
 
 namespace stiX {
   struct archive_file {
@@ -28,6 +29,23 @@ namespace stiX {
     stiX::archive_file const& header,
     std::ostream& archive_out
   );
+
+    template<typename ArchiveReader>
+    void read_archive(
+        std::istream& archive_in,
+        ArchiveReader reader
+    ) {
+      archive_in.peek();
+
+      while(archive_in && !archive_in.eof()) {
+        auto header_line = getline(archive_in);
+        auto header = parse_header(header_line);
+
+        reader(archive_in, header);
+
+        archive_in.peek();
+      } // while ...
+    } // read_archive
 } // namespace stiX
 
 std::ostream& operator<<(std::ostream& os, stiX::archive_file const& af);

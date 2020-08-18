@@ -7,22 +7,21 @@
 void stiX::delete_from_archive(
   std::istream& archive_in,
   std::vector<std::string> const& files_to_remove,
-  std::ostream& archive_out
+  std::ostream& out
 ) {
-  archive_in.peek();
-
-  while (archive_in && !archive_in.eof()) {
-    auto header_line = getline(archive_in);
-    auto header = parse_header(header_line);
-
-    if (of_interest(files_to_remove, header))
-      skip_entry(archive_in, header);
-    else {
-      archive_out << header;
-      copy_contents(archive_in, header, archive_out);
-    }
-
-    archive_in.peek();
-  } // while ...
+  read_archive(
+      archive_in,
+      [&files_to_remove, &out](
+        std::istream& archive_in,
+        stiX::archive_file const& header
+      ) {
+        if (of_interest(files_to_remove, header))
+          skip_entry(archive_in, header);
+        else {
+          out << header;
+          copy_contents(archive_in, header, out);
+        }
+      }
+  );
 } // delete_from_archive
 
