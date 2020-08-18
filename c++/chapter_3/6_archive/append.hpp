@@ -22,7 +22,7 @@ namespace stiX {
   } // write_contents
 
   template<typename FileReader = decltype(file_opener)>
-  void create_archive(
+  void append_archive(
     std::vector<archive_file> const& input,
     std::ostream& archive_out,
     FileReader fileReader = file_opener
@@ -31,6 +31,6 @@ namespace stiX {
       archive_out << i;
       write_contents(i, archive_out, fileReader);
     } // for ...
-  } // create_archive
+  } // append_archive
 } // namespace stiX
 #endif

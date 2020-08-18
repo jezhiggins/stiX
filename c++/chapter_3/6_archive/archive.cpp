@@ -1,5 +1,5 @@
 #include "./archive.hpp"
-#include "./create.hpp"
+#include "./append.hpp"
 #include "./table.hpp"
 #include "./delete.hpp"
 #include "./print.hpp"
@@ -51,7 +51,7 @@ void create(std::string const& archive, std::vector<std::string> const& files) {
 
   {
     auto archive_out = std::ofstream(working);
-    stiX::create_archive(input_files, archive_out);
+    stiX::append_archive(input_files, archive_out);
   }
 
   fs::rename(working, archive);
@@ -88,7 +88,7 @@ void update(std::string const& archive, std::vector<std::string> const& files) {
     stiX::delete_from_archive(archive_in, files, archive_out);
 
     auto input_files = gather_input_files(files);
-    stiX::create_archive(input_files, archive_out);
+    stiX::append_archive(input_files, archive_out);
   }
 
   fs::rename(working, archive);

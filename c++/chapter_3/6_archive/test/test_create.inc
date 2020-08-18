@@ -1,4 +1,4 @@
-#include "../create.hpp"
+#include "../append.hpp"
 
 std::string mock_file_1= "I am a test file\n";
 std::string mock_file_2 = "I am another file\n";
@@ -65,7 +65,7 @@ TEST_CASE("Chapter 3 - archive create mock") {
     DYNAMIC_SECTION("Mocked " << m.title) {
       std::ostringstream archive_out;
 
-      create_archive(m.inputs, archive_out, mock_file_contents);
+      append_archive(m.inputs, archive_out, mock_file_contents);
 
       auto archive = archive_out.str();
       REQUIRE(archive == m.expected);
@@ -77,7 +77,7 @@ TEST_CASE("Chapter 3 - archive create") {
   file_fixture(
     "create",
     [](std::vector<stiX::archive_file> const& input, std::ostream& archive_out) {
-      stiX::create_archive(input, archive_out, stiX::file_opener);
+        stiX::append_archive(input, archive_out, stiX::file_opener);
     }
   );
 }
