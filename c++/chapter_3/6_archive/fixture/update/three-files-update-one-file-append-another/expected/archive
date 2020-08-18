@@ -1,0 +1,10 @@
+-h- test.txt 23
+A short piece of text.
+-h- yet-another-file.txt 17
+Still more text.
+-h- biscuits.txt 28
+Bourbon creams are the best
+-h- test2.txt 77
+An entire new piece of text
+which is going to replace what
+was there before.
