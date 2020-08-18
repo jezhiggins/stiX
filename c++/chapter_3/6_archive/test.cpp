@@ -78,19 +78,34 @@ std::vector<stiX::archive_file> list_input_files(fs::path const& directory) {
   return files;
 } // list_input_files
 
+bool is_hidden_file(fs::path const& p) {
+  return p.filename().string()[0] == '.';
+} // is_hidden_file
+
 void clean_output_directory(fs::path const& directory) {
   auto output_dir = directory / "output";
 
   for (auto& p: fs::directory_iterator(output_dir)) {
-    if (fs::relative(p, output_dir).string()[0] == '.')
+    if (is_hidden_file(p))
       continue;
     fs::remove(p);
   }
 } // clean_output_directory
 
-bool is_hidden_file(fs::path const& p) {
-  return p.filename().string()[0] == '.';
-} // is_hidden_file
+void setup_initial_files(fs::path const& directory) {
+  auto initial_dir = directory / "initial";
+  if (!fs::exists(initial_dir))
+    return;
+
+  auto output_dir = directory / "output";
+  for (auto& p: fs::directory_iterator(initial_dir)) {
+    if (is_hidden_file(p))
+      continue;
+
+    auto filename = p.path().filename();
+    fs::copy(p, output_dir / filename);
+  }
+}
 
 int count_files(fs::path const& dir) {
   return std::count_if(
@@ -207,6 +222,7 @@ void app_fixture(std::string const& name, std::string const& cmd) {
     auto title = fs::relative(p.path()).string();
 
     clean_output_directory(p);
+    setup_initial_files(p);
 
     auto output_file = output_file_name(p.path());
     app_file_test(title, p.path(), cmd, output_file);
