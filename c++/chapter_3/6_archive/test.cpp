@@ -233,4 +233,5 @@ void app_fixture(std::string const& name, std::string const& cmd) {
 #include "test/test_table.inc"
 #include "test/test_delete.inc"
 #include "test/test_print.inc"
+#include "test/test_extract.inc"
 #include "test/test_update.inc"
