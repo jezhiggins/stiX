@@ -7,8 +7,7 @@
 namespace stiX {
   void print_files(
     std::istream& archive,
-    std::vector<std::string> const& files,
-    std::ostream& out
+    std::vector<std::string> const& files
   );
 }
 

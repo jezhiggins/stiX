@@ -80,7 +80,7 @@ void remove(std::string const& archive, std::vector<std::string> const& files) {
 
 void print(std::string const& archive, std::vector<std::string> const& files) {
   auto archive_in = std::ifstream(archive);
-  stiX::print_files(archive_in, files, std::cout);
+  stiX::print_files(archive_in, files);
 } // print
 
 void update(std::string const& archive, std::vector<std::string> const& files) {

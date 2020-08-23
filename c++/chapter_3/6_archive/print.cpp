@@ -1,24 +1,20 @@
 #include "./print.hpp"
 
-#include "./archive_file.hpp"
+#include "./extract.hpp"
 
 namespace stiX {
+  std::ostream& send_to_stdout(std::string const&) {
+    return std::cout;
+  } // send_to_stdout
+
   void print_files(
     std::istream& archive_in,
-    std::vector<std::string> const& files,
-    std::ostream& out
+    std::vector<std::string> const& files
   ) {
-    read_archive(
-        archive_in,
-        [&files, &out](
-          std::istream& archive_in,
-          stiX::archive_file const& header
-        ) {
-           if (of_interest(files, header))
-             copy_contents(archive_in, header, out);
-           else
-             skip_entry(archive_in, header);
-       }
+    extract_files(
+      archive_in,
+      files,
+      send_to_stdout
     );
   } // print_files
 } // namespace stiX
