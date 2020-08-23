@@ -2,6 +2,7 @@
 #define STICPP_ARCHIVE_CREATE_HPP
 
 #include "../../lib/copy.hpp"
+#include "../../lib/file_open.hpp"
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -9,8 +10,6 @@
 #include "./archive_file.hpp"
 
 namespace stiX {
-  std::ifstream file_opener(std::string const& filename);
-
   template<typename FileReader>
   void write_contents(
     stiX::archive_file const& input,
