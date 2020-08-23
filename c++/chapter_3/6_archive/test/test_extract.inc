@@ -61,3 +61,7 @@ void test_extract(
     REQUIRE(filename == to_extract[0]);
   REQUIRE(out.str() == expected);
 }
+
+TEST_CASE("Chapter 3 - extract") {
+  app_fixture("extract", "-x");
+}
