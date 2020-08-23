@@ -121,13 +121,33 @@ void print_help() {
 )c";
 }
 
+bool is_good_path(fs::path const& path) {
+  if (!fs::exists(path)) {
+    std::cerr << "Can't add " << path << "\n";
+    return false;
+  }
+  auto wd = fs::canonical(fs::current_path()).string();
+  auto p = fs::canonical(path).string();
+
+  if (p.find(wd) != 0) {
+    std::cerr << "Can't add files outside current directory " << path << "\n";
+    return false;
+  }
+
+
+  return true;
+} // is_good_path
+
 std::vector<stiX::archive_file> gather_input_files(std::vector<std::string> const& files) {
   auto input_files = std::vector<stiX::archive_file>();
 
   for (auto f : files) {
     auto path = fs::path(f);
 
-    input_files.push_back({ path.string(), fs::file_size(path) });
+    if (!is_good_path(path))
+      continue;
+
+    input_files.push_back({ fs::relative(path).string(), fs::file_size(path) });
   }
 
   return input_files;
