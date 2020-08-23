@@ -2,7 +2,6 @@
 #include "./append.hpp"
 #include "./table.hpp"
 #include "./delete.hpp"
-#include "./print.hpp"
 #include "./extract.hpp"
 
 #include <iostream>
