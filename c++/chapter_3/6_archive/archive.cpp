@@ -5,7 +5,6 @@
 #include "./extract.hpp"
 
 #include <iostream>
-#include <fstream>
 #include <filesystem>
 #include <cstdlib>
 

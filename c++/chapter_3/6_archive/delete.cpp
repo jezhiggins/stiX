@@ -10,18 +10,18 @@ void stiX::delete_from_archive(
   std::ostream& out
 ) {
   read_archive(
-      archive_in,
-      [&files_to_remove, &out](
-        std::istream& archive_in,
-        stiX::archive_file const& header
-      ) {
-        if (of_interest(files_to_remove, header))
-          skip_entry(archive_in, header);
-        else {
-          out << header;
-          copy_contents(archive_in, header, out);
-        }
+    archive_in,
+    [&files_to_remove, &out](
+      std::istream& archive_in,
+      stiX::archive_file const& header
+    ) {
+      if (of_interest(files_to_remove, header))
+        skip_entry(archive_in, header);
+      else {
+        out << header;
+        copy_contents(archive_in, header, out);
       }
+    }
   );
 } // delete_from_archive
 

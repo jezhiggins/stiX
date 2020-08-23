@@ -8,15 +8,15 @@ namespace stiX {
     std::ostream& out
   ) {
     read_archive(
-    archive_in,
-       [&out](
-         std::istream& archive_in,
-         stiX::archive_file const& header
-       ) {
-         out << header.name << '\t' << header.filesize << '\n';
+      archive_in,
+      [&out](
+        std::istream& archive_in,
+        stiX::archive_file const& header
+      ) {
+        out << header.name << '\t' << header.filesize << '\n';
 
-         skip_entry(archive_in, header);
-       }
+        skip_entry(archive_in, header);
+      }
     );
   } // table_archive
 }
