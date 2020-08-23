@@ -3,6 +3,7 @@
 #include "./table.hpp"
 #include "./delete.hpp"
 #include "./print.hpp"
+#include "./extract.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -16,6 +17,7 @@ void table(std::string const& archive);
 void remove(std::string const& archive, std::vector<std::string> const& files);
 void print(std::string const& archive, std::vector<std::string> const& files);
 void update(std::string const& archive, std::vector<std::string> const& files);
+void extract(std::string const& archive, std::vector<std::string> const& files);
 void print_help();
 
 void stiX::archive(std::vector<std::string> const& arguments) {
@@ -38,6 +40,8 @@ void stiX::archive(std::vector<std::string> const& arguments) {
     print(archive, files);
   else if (cmd == "-u")
     update(archive, files);
+  else if (cmd == "-x")
+    extract(archive, files);
   else
     print_help();
 } // archive
@@ -93,6 +97,11 @@ void update(std::string const& archive, std::vector<std::string> const& files) {
 
   fs::rename(working, archive);
 } // update
+
+void extract(std::string const& archive, std::vector<std::string> const& files) {
+  auto archive_in = std::ifstream(archive);
+  stiX::extract_files(archive_in, files);
+} // extract
 
 void print_help() {
   std::cout << R"c( archive -cmd aname [ file ... ]
