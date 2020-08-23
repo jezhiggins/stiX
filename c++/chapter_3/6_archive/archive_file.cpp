@@ -54,3 +54,19 @@ void stiX::copy_contents(
   archive_in.get();
 } // copy_contents
 
+void stiX::read_archive(
+  std::istream& archive_in,
+  stiX::ArchiveReader reader
+) {
+  archive_in.peek();
+
+  while(archive_in && !archive_in.eof()) {
+    auto header_line = getline(archive_in);
+    auto header = parse_header(header_line);
+
+    reader(archive_in, header);
+
+    archive_in.peek();
+  } // while ...
+} // read_archive
+
