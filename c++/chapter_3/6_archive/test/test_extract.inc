@@ -63,5 +63,5 @@ void test_extract(
 }
 
 TEST_CASE("Chapter 3 - extract") {
-  app_fixture("extract", "-x");
+  app_fixture("extract", "-x", false);
 }

@@ -196,7 +196,8 @@ void app_file_test(
   std::string const& title,
   fs::path const& directory,
   std::string const& cmd,
-  std::string const& archive_file_name
+  std::string const& archive_file_name,
+  bool input
 ) {
   DYNAMIC_SECTION("App " << title) {
     auto input_files = list_input_files(directory);
@@ -206,7 +207,7 @@ void app_file_test(
       arguments.push_back(i.name);
 
     {
-      auto wd = working_directory(directory / "input");
+      auto wd = working_directory(directory / (input ? "input" : "output"));
       stiX::archive(arguments);
     }
 
@@ -215,7 +216,7 @@ void app_file_test(
 } // app_file_test
 
 
-void app_fixture(std::string const& name, std::string const& cmd) {
+void app_fixture(std::string const& name, std::string const& cmd, bool input = true) {
   auto fixture_dir = working_directory(name);
 
   for (auto& p : fs::directory_iterator(fixture_dir)) {
@@ -225,7 +226,7 @@ void app_fixture(std::string const& name, std::string const& cmd) {
     setup_initial_files(p);
 
     auto output_file = output_file_name(p.path());
-    app_file_test(title, p.path(), cmd, output_file);
+    app_file_test(title, p.path(), cmd, output_file, input);
   }
 } // app_fixture
 

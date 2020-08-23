@@ -15,10 +15,6 @@ std::istringstream mock_file_contents(std::string const& name) {
   return std::istringstream(tf->second);
 } // mock_file_contents
 
-void file_fixture(std::string const& name);
-
-void app_fixture(std::string const& name, std::string const& cmd);
-
 TEST_CASE("Chapter 3 - archive create mock") {
   struct mock_create_test {
     std::string const title;
