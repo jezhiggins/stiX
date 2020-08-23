@@ -6,6 +6,7 @@
 
 namespace stiX {
     std::ifstream file_opener(std::string const& filename);
+    std::ofstream file_write_opener(std::string const& filename);
 }
 
 #endif //STICPP_FILE_OPEN_HPP
