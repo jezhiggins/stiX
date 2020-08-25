@@ -14,7 +14,7 @@ namespace stiX {
         stiX::archive_file const& header
       ) {
         if (of_interest(files, header)) {
-          decltype(file_writer(std::string())) out = file_writer(header.name);
+          decltype(auto) out = file_writer(header.name);
           copy_contents(archive_in, header, out);
         }
         else
