@@ -7,13 +7,14 @@ namespace stiX {
     std::vector<std::string> const& files,
     FileWriteOpener file_writer
   ) {
+    const auto all_files = files.empty();
     read_archive(
       archive_in,
-      [&files, &file_writer](
+      [&files, &file_writer, all_files](
         std::istream& archive_in,
         stiX::archive_file const& header
       ) {
-        if (of_interest(files, header)) {
+        if (of_interest(files, header) || all_files) {
           decltype(auto) out = file_writer(header.name);
           copy_contents(archive_in, header, out);
         }
