@@ -1,12 +1,13 @@
 #define CATCH_CONFIG_MAIN
 #include "../../testlib/catch.hpp"
+#include <iterator>
 #include <list>
 
 namespace stiX {
   template<class Iterator, class Comparator = std::less<>>
   void bubble_sort(Iterator begin, Iterator end, Comparator comparator = std::less<>()) {
-    for (auto boundary = std::prev(end); boundary != begin; --boundary) {
-      for (auto cur = begin; cur != boundary; ++cur) {
+    for (auto boundary = std::prev(end); boundary != begin; std::advance(boundary, -1)) {
+      for (auto cur = begin; cur != boundary; std::advance(cur, 1)) {
         auto next = std::next(cur);
         if (comparator(*next, *cur)) {
           std::iter_swap(next, cur);
