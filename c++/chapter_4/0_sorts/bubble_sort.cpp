@@ -59,4 +59,14 @@ TEST_CASE("Chapter 4 - bubble_sort") {
 
     REQUIRE(sample == exemplar);
   }
+
+  SECTION("sort an array") {
+    int sample[] = { 3, 4, 2, 1, 5 };
+
+    stiX::bubble_sort(sample);
+
+    int expected[] = { 1, 2, 3, 4, 5 };
+    for (auto i = 0; i != 5; ++i)
+      REQUIRE(sample[i] == expected[i]);
+  }
 }
