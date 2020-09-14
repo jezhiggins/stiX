@@ -6,8 +6,10 @@
 namespace stiX {
   template<class Iterator, class Comparator = std::less<>>
   void bubble_sort(Iterator begin, Iterator end, Comparator comparator = std::less<>()) {
-    for (auto boundary = std::prev(end); boundary != begin; std::advance(boundary, -1)) {
-      for (auto cur = begin; cur != boundary; std::advance(cur, 1)) {
+    if (std::distance(begin, end) <= 0) return;
+
+    for (auto boundary = std::prev(end); boundary != begin; boundary = std::prev(boundary)) {
+      for (auto cur = begin; cur != boundary; cur = std::next(cur)) {
         auto next = std::next(cur);
         if (comparator(*next, *cur)) {
           std::iter_swap(next, cur);
@@ -68,5 +70,11 @@ TEST_CASE("Chapter 4 - bubble_sort") {
     int expected[] = { 1, 2, 3, 4, 5 };
     for (auto i = 0; i != 5; ++i)
       REQUIRE(sample[i] == expected[i]);
+  }
+
+  SECTION("empty container") {
+    auto sample = std::vector<int> {};
+
+    stiX::bubble_sort(sample);
   }
 }
