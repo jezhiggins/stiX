@@ -5,7 +5,7 @@
 
 namespace stiX {
   template<class Iterator, class Comparator = std::less<>>
-  void bubble_sort(Iterator begin, Iterator end, Comparator comparator = std::less<>()) {
+  void bubble_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
     if (std::distance(begin, end) <= 0) return;
 
     for (auto boundary = std::prev(end); boundary != begin; boundary = std::prev(boundary)) {
@@ -19,7 +19,7 @@ namespace stiX {
   }
 
   template<class Container, class Comparator = std::less<>>
-  void bubble_sort(Container&& sample, Comparator comparator = std::less<>()) {
+  void bubble_sort(Container&& sample, Comparator comparator = Comparator()) {
     bubble_sort(std::begin(sample), std::end(sample), comparator);
   }
 }
