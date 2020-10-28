@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(sticpp)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 add_library(stix STATIC
         lib/arguments.cpp
@@ -100,5 +100,8 @@ target_link_libraries(6_archive stix)
 add_executable(6_archive_test chapter_3/6_archive/test.cpp chapter_3/6_archive/test/test_create.inc chapter_3/6_archive/append.hpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp chapter_3/6_archive/test/test_table.inc chapter_3/6_archive/table.hpp chapter_3/6_archive/table.cpp chapter_3/6_archive/archive_file.hpp chapter_3/6_archive/archive.hpp chapter_3/6_archive/archive.cpp chapter_3/6_archive/test/test_delete.inc chapter_3/6_archive/delete.hpp chapter_3/6_archive/delete.cpp chapter_3/6_archive/archive_file.cpp chapter_3/6_archive/test/test_print.inc chapter_3/6_archive/test/test_update.inc chapter_3/6_archive/test/test_extract.inc chapter_3/6_archive/extract.hpp chapter_3/6_archive/extract.cpp)
 target_link_libraries(6_archive_test stix testsupport)
 
-add_executable(0_sorts chapter_4/0_sorts/bubble_sort.cpp)
-target_link_libraries(0_sorts)
+add_executable(0_bubble_sort chapter_4/0_sorts/bubble_sort.cpp)
+target_link_libraries(0_bubble_sort)
+
+add_executable(0_merge_sort chapter_4/0_sorts/merge_sort.cpp)
+target_link_libraries(0_merge_sort)
