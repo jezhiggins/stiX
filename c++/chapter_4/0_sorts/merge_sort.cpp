@@ -7,9 +7,14 @@ namespace stiX {
   void insertion_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
 
     for (auto cur = begin; cur != std::prev(end); cur = std::next(cur)) {
-      auto next = std::next(cur);
-      if (*next < *cur)
-        std::iter_swap(cur, next);
+      auto ref = cur;
+      auto next = std::next(ref);
+      while ((next != begin) && (*next < *ref)) {
+        auto prev = std::prev(ref);
+        std::iter_swap(ref, next);
+        next = ref;
+        ref = prev;
+      }
     }
   } // insertion_sort
 
@@ -34,7 +39,8 @@ TEST_CASE("Chapter 4 - insertion sort") {
   const auto samples = std::vector<std::vector<int>> {
     { 1, 2 },
     { 2, 1 },
-    { 1, 3, 2 }
+    { 1, 3, 2 },
+    { 3, 2, 1 }
   };
 
   for (auto sample : samples) {
