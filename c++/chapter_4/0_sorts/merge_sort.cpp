@@ -9,7 +9,7 @@ namespace stiX {
     for (auto cur = begin; cur != std::prev(end); cur = std::next(cur)) {
       auto ref = cur;
       auto next = std::next(ref);
-      while ((next != begin) && (*next < *ref)) {
+      while ((next != begin) && comparator(*next, *ref)) {
         auto prev = std::prev(ref);
         std::iter_swap(ref, next);
         next = ref;
@@ -40,7 +40,8 @@ TEST_CASE("Chapter 4 - insertion sort") {
     { 1, 2 },
     { 2, 1 },
     { 1, 3, 2 },
-    { 3, 2, 1 }
+    { 3, 2, 1 },
+    { 5, 4, 1, 2, 3 }
   };
 
   for (auto sample : samples) {
@@ -50,6 +51,18 @@ TEST_CASE("Chapter 4 - insertion sort") {
     DYNAMIC_SECTION("sort " << as_string(sample)) {
       auto under_test = sample;
       stiX::insertion_sort(under_test);
+
+      REQUIRE(under_test == expected);
+    }
+  }
+
+  for (auto sample : samples) {
+    auto expected = sample;
+    std::sort(std::begin(expected), std::end(expected), std::greater<>());
+
+    DYNAMIC_SECTION("reverse sort " << as_string(sample)) {
+      auto under_test = sample;
+      stiX::insertion_sort(under_test, std::greater<>());
 
       REQUIRE(under_test == expected);
     }
