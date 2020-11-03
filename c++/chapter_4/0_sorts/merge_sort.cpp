@@ -5,9 +5,12 @@
 namespace stiX {
   template<class Iterator, class Comparator = std::less<>>
   void insertion_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
-    auto next = std::next(begin);
-    if (*next < *begin)
-      std::iter_swap(begin, next);
+
+    for (auto cur = begin; cur != std::prev(end); cur = std::next(cur)) {
+      auto next = std::next(cur);
+      if (*next < *cur)
+        std::iter_swap(cur, next);
+    }
   } // insertion_sort
 
   template<class Container, class Comparator = std::less<>>
@@ -30,7 +33,8 @@ std::string as_string(auto sample) {
 TEST_CASE("Chapter 4 - insertion sort") {
   const auto samples = std::vector<std::vector<int>> {
     { 1, 2 },
-    { 2, 1 }
+    { 2, 1 },
+    { 1, 3, 2 }
   };
 
   for (auto sample : samples) {
