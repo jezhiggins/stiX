@@ -4,7 +4,7 @@
 
 namespace stiX {
   template<class Iterator, class Comparator = std::less<>>
-  void insertion_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
+  void insertion_sort(Iterator begin, Iterator end, size_t gap, Comparator comparator = Comparator()) {
 
     for (auto cur = begin; cur != std::prev(end); cur = std::next(cur)) {
       auto ref = cur;
@@ -19,8 +19,8 @@ namespace stiX {
   } // insertion_sort
 
   template<class Container, class Comparator = std::less<>>
-  void insertion_sort(Container&& sample, Comparator comparator = Comparator()) {
-    insertion_sort(std::begin(sample), std::end(sample), comparator);
+  void insertion_sort(Container&& sample, size_t gap, Comparator comparator = Comparator()) {
+    insertion_sort(std::begin(sample), std::end(sample), gap, comparator);
   }
 }
 
@@ -50,7 +50,7 @@ TEST_CASE("Chapter 4 - insertion sort") {
 
     DYNAMIC_SECTION("sort " << as_string(sample)) {
       auto under_test = sample;
-      stiX::insertion_sort(under_test);
+      stiX::insertion_sort(under_test, 1);
 
       REQUIRE(under_test == expected);
     }
@@ -62,9 +62,16 @@ TEST_CASE("Chapter 4 - insertion sort") {
 
     DYNAMIC_SECTION("reverse sort " << as_string(sample)) {
       auto under_test = sample;
-      stiX::insertion_sort(under_test, std::greater<>());
+      stiX::insertion_sort(under_test, 1, std::greater<>());
 
       REQUIRE(under_test == expected);
     }
+  }
+
+  SECTION("sort { 3, 8, 2, 9, 1 } with gap 2") {
+    auto sample = std::vector { 3, 9, 2, 8, 1 };
+    stiX::insertion_sort(sample, 2);
+
+    REQUIRE(sample == std::vector { 1, 9, 2, 8, 3 });
   }
 }
