@@ -55,8 +55,7 @@ std::string as_string(auto sample) {
   return out.str();
 }
 
-TEST_CASE("Chapter 4 - insertion sort") {
-  const auto samples = std::vector<std::vector<int>> {
+auto const samples = std::vector<std::vector<int>> {
     { },
     { 1 },
     { 1, 2 },
@@ -64,8 +63,14 @@ TEST_CASE("Chapter 4 - insertion sort") {
     { 1, 3, 2 },
     { 3, 2, 1 },
     { 5, 4, 1, 2, 3 }
-  };
+};
 
+auto const long_samples = std::vector<std::vector<int>> {
+    {13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1},
+    {3, 10, 9, 12, 8, 4, 1, 6, 5, 13, 2, 7, 11}
+};
+
+TEST_CASE("Chapter 4 - insertion sort") {
   for (auto sample : samples) {
     auto expected = sample;
     std::sort(std::begin(expected), std::end(expected));
@@ -108,11 +113,6 @@ TEST_CASE("Chapter 4 - insertion sort") {
     REQUIRE(sample == std::vector { 3, 8, 2, 9, 1 });
   }
 
-  auto long_samples = std::vector<std::vector<int>> {
-      {13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1},
-      {3, 10, 9, 12, 8, 4, 1, 6, 5, 13, 2, 7, 11}
-  };
-
   for (auto sample : long_samples) {
     auto expected = sample;
     std::sort(std::begin(expected), std::end(expected));
@@ -130,3 +130,16 @@ TEST_CASE("Chapter 4 - insertion sort") {
     }
   }
 }
+
+TEST_CASE("Chapter 4 - merge_sort") {
+  for (auto sample : samples) {
+    auto expected = sample;
+    std::sort(std::begin(expected), std::end(expected));
+
+    DYNAMIC_SECTION("sort " << as_string(sample)) {
+      auto under_test = sample;
+      stiX::merge_sort(under_test);
+
+      REQUIRE(under_test == expected);
+    }
+  }
