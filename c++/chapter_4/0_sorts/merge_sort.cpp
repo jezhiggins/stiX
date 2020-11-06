@@ -3,24 +3,35 @@
 #include <iterator>
 
 namespace stiX {
+  template<class Iterator, class Comparator>
+  void back_propagate(Iterator current, Iterator const begin, size_t gap, Comparator comparator) {
+    if (current == begin)
+      return;
+
+    auto prev = std::prev(current, gap);
+    if (comparator(*current, *prev)) {
+      std::iter_swap(prev, current);
+      back_propagate(prev, begin, gap, comparator);
+    }
+  }
+
   template<class Iterator, class Comparator = std::less<>>
   void insertion_sort(Iterator begin, Iterator end, size_t gap, Comparator comparator = Comparator()) {
     auto length = std::distance(begin, end);
     if (length <= gap)
       return;
 
-    auto boundary = std::distance(begin, end) - gap;
-    auto cur = begin;
-    for (auto i = 0; i < boundary; i += gap) {
-      auto ref = cur;
-      auto next = std::next(ref, gap);
-      while ((next != begin) && comparator(*next, *ref)) {
-        auto prev = std::prev(ref, gap);  // this is a bug
-        std::iter_swap(ref, next);
-        next = ref;
-        ref = prev;
+    auto steps = length - gap;
+    auto current = begin;
+    for (auto i = 0; i < steps; i += gap) {
+      auto next = std::next(current, gap);
+
+      if (comparator(*next, *current)) {
+        std::iter_swap(current, next);
+        back_propagate(current, begin, gap, comparator);
       }
-      cur = std::next(cur, gap);
+
+      current = next;
     }
   } // insertion_sort
 
