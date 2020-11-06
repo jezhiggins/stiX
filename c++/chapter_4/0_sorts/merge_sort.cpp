@@ -1,6 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include "../../testlib/catch.hpp"
 #include <iterator>
+#include <list>
 
 namespace stiX {
   template<class Iterator, class Comparator>
@@ -173,4 +174,36 @@ TEST_CASE("Chapter 4 - merge_sort") {
     test_merge_sort(sample);
   for (auto sample : long_samples)
     test_merge_sort(sample);
+
+  SECTION("sort a list") {
+    auto sample = std::list{5, 3, 1, 2, 3};
+    auto expected = sample;
+    expected.sort();
+
+    auto under_test = sample;
+    stiX::merge_sort(under_test);
+
+    REQUIRE(under_test == expected);
+  }
+
+  SECTION("sort a std::array") {
+    auto sample = std::array {5, 3, 1, 2, 3};
+    auto expected = sample;
+    std::sort(std::begin(expected), std::end(expected));
+
+    auto under_test = sample;
+    stiX::merge_sort(under_test);
+
+    REQUIRE(under_test == expected);
+  }
+
+  SECTION("sort an array") {
+    int under_test[6] = { 7, 3, 0, 8, 1, 2 };
+
+    stiX::merge_sort(under_test);
+
+    int expected[6] = { 0, 1, 2, 3, 7, 8 };
+    for (auto i = 0; i != 6; ++i)
+      REQUIRE(under_test[i] == expected[i]);
+  }
 }
