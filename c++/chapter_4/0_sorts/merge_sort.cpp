@@ -5,16 +5,18 @@
 namespace stiX {
   template<class Iterator, class Comparator = std::less<>>
   void insertion_sort(Iterator begin, Iterator end, size_t gap, Comparator comparator = Comparator()) {
-
-    for (auto cur = begin; cur != std::prev(end); cur = std::next(cur)) {
+    auto boundary = std::distance(begin, end) - gap;
+    auto cur = begin;
+    for (auto i = 0; i < boundary; i += gap) {
       auto ref = cur;
-      auto next = std::next(ref);
+      auto next = std::next(ref, gap);
       while ((next != begin) && comparator(*next, *ref)) {
-        auto prev = std::prev(ref);
+        auto prev = std::prev(ref, gap);
         std::iter_swap(ref, next);
         next = ref;
         ref = prev;
       }
+      cur = std::next(cur, gap);
     }
   } // insertion_sort
 
@@ -74,4 +76,5 @@ TEST_CASE("Chapter 4 - insertion sort") {
 
     REQUIRE(sample == std::vector { 1, 9, 2, 8, 3 });
   }
+
 }
