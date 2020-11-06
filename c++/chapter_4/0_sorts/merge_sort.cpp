@@ -8,12 +8,13 @@ namespace stiX {
     if (current == begin)
       return;
 
-    auto prev = std::prev(current, gap);
-    if (comparator(*current, *prev)) {
-      std::iter_swap(prev, current);
-      back_propagate(prev, begin, gap, comparator);
-    }
-  }
+    do {
+      auto prev = std::prev(current, gap);
+      if (comparator(*current, *prev))
+        std::iter_swap(prev, current);
+      current = prev;
+    } while (current != begin);
+  } // back_propagate
 
   template<class Iterator, class Comparator = std::less<>>
   void insertion_sort(Iterator begin, Iterator end, size_t gap, Comparator comparator = Comparator()) {
