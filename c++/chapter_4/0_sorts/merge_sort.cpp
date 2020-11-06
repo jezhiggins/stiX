@@ -147,12 +147,22 @@ TEST_CASE("Chapter 4 - insertion sort") {
 }
 
 void test_merge_sort(auto sample) {
-  auto expected = sample;
-  std::sort(std::begin(expected), std::end(expected));
-
   DYNAMIC_SECTION("sort " << as_string(sample)) {
+    auto expected = sample;
+    std::sort(std::begin(expected), std::end(expected));
+
     auto under_test = sample;
     stiX::merge_sort(under_test);
+
+    REQUIRE(under_test == expected);
+  }
+
+  DYNAMIC_SECTION("reverse sort " << as_string(sample)) {
+    auto expected = sample;
+    std::sort(std::begin(expected), std::end(expected), std::greater<>());
+
+    auto under_test = sample;
+    stiX::merge_sort(under_test, std::greater<>());
 
     REQUIRE(under_test == expected);
   }
