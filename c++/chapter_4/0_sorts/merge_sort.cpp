@@ -5,6 +5,10 @@
 namespace stiX {
   template<class Iterator, class Comparator = std::less<>>
   void insertion_sort(Iterator begin, Iterator end, size_t gap, Comparator comparator = Comparator()) {
+    auto length = std::distance(begin, end);
+    if (length <= gap)
+      return;
+
     auto boundary = std::distance(begin, end) - gap;
     auto cur = begin;
     for (auto i = 0; i < boundary; i += gap) {
@@ -28,7 +32,9 @@ namespace stiX {
 
 std::string as_string(auto sample) {
   auto out = std::ostringstream();
-  auto delim = "{ ";
+  out << "{ ";
+
+  auto delim = "";
   for (auto i : sample) {
     out << delim << i;
     delim = ", ";
@@ -39,6 +45,8 @@ std::string as_string(auto sample) {
 
 TEST_CASE("Chapter 4 - insertion sort") {
   const auto samples = std::vector<std::vector<int>> {
+    { },
+    { 1 },
     { 1, 2 },
     { 2, 1 },
     { 1, 3, 2 },
