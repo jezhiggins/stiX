@@ -77,4 +77,10 @@ TEST_CASE("Chapter 4 - insertion sort") {
     REQUIRE(sample == std::vector { 1, 9, 2, 8, 3 });
   }
 
+  SECTION("sort { 3, 8, 2, 9, 1 } with gap 2, offset 1") {
+    auto sample = std::vector { 3, 9, 2, 8, 1 };
+    stiX::insertion_sort(sample, 2);
+
+    REQUIRE(sample == std::vector { 3, 8, 2, 9, 1 });
+  }
 }
