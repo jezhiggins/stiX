@@ -40,7 +40,22 @@ namespace stiX {
   void insertion_sort(Container&& sample, size_t gap, Comparator comparator = Comparator()) {
     insertion_sort(std::begin(sample), std::end(sample), gap, comparator);
   }
-}
+
+  template<class Iterator, class Comparator = std::less<>>
+  void merge_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
+    auto length = std::distance(begin, end);
+    for (auto gap = length/2; gap != 0; gap /= 2) {
+      auto from = begin;
+      for (auto offset = 0; offset != gap; ++offset, std::advance(from, 1))
+        stiX::insertion_sort(from, end, gap, comparator);
+    }
+  } // merge_sort
+
+  template<class Container, class Comparator = std::less<>>
+  void merge_sort(Container&& sample, Comparator comparator = Comparator()) {
+    merge_sort(std::begin(sample), std::end(sample), comparator);
+  } // merge_sort
+} // namespace stiX
 
 std::string as_string(auto sample) {
   auto out = std::ostringstream();
@@ -131,15 +146,21 @@ TEST_CASE("Chapter 4 - insertion sort") {
   }
 }
 
-TEST_CASE("Chapter 4 - merge_sort") {
-  for (auto sample : samples) {
-    auto expected = sample;
-    std::sort(std::begin(expected), std::end(expected));
+void test_merge_sort(auto sample) {
+  auto expected = sample;
+  std::sort(std::begin(expected), std::end(expected));
 
-    DYNAMIC_SECTION("sort " << as_string(sample)) {
-      auto under_test = sample;
-      stiX::merge_sort(under_test);
+  DYNAMIC_SECTION("sort " << as_string(sample)) {
+    auto under_test = sample;
+    stiX::merge_sort(under_test);
 
-      REQUIRE(under_test == expected);
-    }
+    REQUIRE(under_test == expected);
   }
+}
+
+TEST_CASE("Chapter 4 - merge_sort") {
+  for (auto sample : samples)
+    test_merge_sort(sample);
+  for (auto sample : long_samples)
+    test_merge_sort(sample);
+}
