@@ -103,5 +103,5 @@ target_link_libraries(6_archive_test stix testsupport)
 add_executable(0_bubble_sort chapter_4/0_sorts/bubble_sort.cpp)
 target_link_libraries(0_bubble_sort)
 
-add_executable(0_merge_sort chapter_4/0_sorts/merge_sort.cpp)
-target_link_libraries(0_merge_sort)
+add_executable(0_shell_sort chapter_4/0_sorts/shell_sort.cpp)
+target_link_libraries(0_shell_sort)

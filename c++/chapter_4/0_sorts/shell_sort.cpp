@@ -40,19 +40,19 @@ namespace stiX {
   } // namespace impl
 
   template<class Iterator, class Comparator = std::less<>>
-  void merge_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
+  void shell_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
     auto length = std::distance(begin, end);
     for (auto gap = length/2; gap != 0; gap /= 2) {
       auto from = begin;
       for (auto offset = 0; offset != gap; ++offset, std::advance(from, 1))
         stiX::impl::insertion_sort(from, end, gap, comparator);
     }
-  } // merge_sort
+  } // shell_sort
 
   template<class Container, class Comparator = std::less<>>
-  void merge_sort(Container&& sample, Comparator comparator = Comparator()) {
-    merge_sort(std::begin(sample), std::end(sample), comparator);
-  } // merge_sort
+  void shell_sort(Container&& sample, Comparator comparator = Comparator()) {
+    shell_sort(std::begin(sample), std::end(sample), comparator);
+  } // shell_sort
 } // namespace stiX
 
 std::string as_string(auto sample) {
@@ -140,13 +140,13 @@ TEST_CASE("Chapter 4 - insertion sort") {
   }
 }
 
-void test_merge_sort(auto sample) {
+void test_shell_sort(auto sample) {
   DYNAMIC_SECTION("sort " << as_string(sample)) {
     auto expected = sample;
     std::sort(std::begin(expected), std::end(expected));
 
     auto under_test = sample;
-    stiX::merge_sort(under_test);
+    stiX::shell_sort(under_test);
 
     REQUIRE(under_test == expected);
   }
@@ -156,17 +156,17 @@ void test_merge_sort(auto sample) {
     std::sort(std::begin(expected), std::end(expected), std::greater<>());
 
     auto under_test = sample;
-    stiX::merge_sort(under_test, std::greater<>());
+    stiX::shell_sort(under_test, std::greater<>());
 
     REQUIRE(under_test == expected);
   }
 }
 
-TEST_CASE("Chapter 4 - merge_sort") {
+TEST_CASE("Chapter 4 - shell_sort") {
   for (auto sample : samples)
-    test_merge_sort(sample);
+    test_shell_sort(sample);
   for (auto sample : long_samples)
-    test_merge_sort(sample);
+    test_shell_sort(sample);
 
   SECTION("sort a list") {
     auto sample = std::list{5, 3, 1, 2, 3};
@@ -174,7 +174,7 @@ TEST_CASE("Chapter 4 - merge_sort") {
     expected.sort();
 
     auto under_test = sample;
-    stiX::merge_sort(under_test);
+    stiX::shell_sort(under_test);
 
     REQUIRE(under_test == expected);
   }
@@ -185,7 +185,7 @@ TEST_CASE("Chapter 4 - merge_sort") {
     std::sort(std::begin(expected), std::end(expected));
 
     auto under_test = sample;
-    stiX::merge_sort(under_test);
+    stiX::shell_sort(under_test);
 
     REQUIRE(under_test == expected);
   }
@@ -193,7 +193,7 @@ TEST_CASE("Chapter 4 - merge_sort") {
   SECTION("sort an array") {
     int under_test[6] = { 7, 3, 0, 8, 1, 2 };
 
-    stiX::merge_sort(under_test);
+    stiX::shell_sort(under_test);
 
     int expected[6] = { 0, 1, 2, 3, 7, 8 };
     for (auto i = 0; i != 6; ++i)
