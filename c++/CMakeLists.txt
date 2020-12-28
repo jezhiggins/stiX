@@ -105,3 +105,6 @@ target_link_libraries(0_bubble_sort)
 
 add_executable(0_shell_sort chapter_4/0_sorts/shell_sort.cpp)
 target_link_libraries(0_shell_sort)
+
+add_executable(1_sort chapter_4/1_sort/1_sort.cpp)
+target_link_libraries(1_sort stix)
