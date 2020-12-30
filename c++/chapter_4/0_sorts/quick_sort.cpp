@@ -24,7 +24,8 @@ namespace stiX {
         std::iter_swap(left, right);
     }
 
-    left = std::prev(left);
+    if (*left >= pivot)
+      left = std::prev(left);
     std::iter_swap(left, begin);
 
     quick_sort(begin, left);
