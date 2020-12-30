@@ -4,8 +4,8 @@
 #include <list>
 
 namespace stiX {
-  template<class Iterator, class Comparator = std::less<>>
-  void quick_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
+  template<class Iterator>
+  void quick_sort(Iterator begin, Iterator end) {
     if(std::distance(begin, end) <= 1)
       return;
 
@@ -14,10 +14,10 @@ namespace stiX {
     auto right = std::prev(end);
 
     while (left != right) {
-      while ((left != right) && comparator(*left, pivot))
+      while ((left != right) && (*left < pivot))
         left = std::next(left);
 
-      while ((left != right) && comparator(pivot, *right))
+      while ((left != right) && (*right >= pivot))
         right = std::prev(right);
 
       if (left != right)
@@ -31,8 +31,8 @@ namespace stiX {
     quick_sort(right, end);
   } // quick_sort
 
-  template<class Container, class Comparator = std::less<>>
-  void quick_sort(Container&& sample, Comparator comparator = Comparator()) {
+  template<class Container>
+  void quick_sort(Container&& sample) {
     quick_sort(std::begin(sample), std::end(sample));
   }
 } // namespace stiX
@@ -57,14 +57,14 @@ auto const samples = std::vector<std::vector<int>> {
   { 2, 1 },
   { 1, 3, 2 },
   { 3, 2, 1 },
-  { 5, 4, 1, 2, 3 }
+  { 5, 4, 1, 2, 3 },
+  { 4, 9, 1, 8, 2, 7 }
 };
 
 auto const long_samples = std::vector<std::vector<int>> {
   {13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1},
   {3, 10, 9, 12, 8, 4, 1, 6, 5, 13, 2, 7, 11}
 };
-
 
 void test_quick_sort(auto sample) {
   DYNAMIC_SECTION("sort " << as_string(sample)) {
