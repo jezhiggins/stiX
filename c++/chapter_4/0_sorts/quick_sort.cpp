@@ -1,13 +1,30 @@
 #define CATCH_CONFIG_MAIN
 #include "../../testlib/catch.hpp"
+#include <iterator>
 
 namespace stiX {
   template<class Iterator>
   void quick_sort(Iterator begin, Iterator end) {
-    if (std::distance(begin, end) <= 1)
+    if(std::distance(begin, end) <= 1)
       return;
-    
-    throw std::runtime_error("Oops");
+
+    auto pivot = *begin;
+    auto left = std::next(begin);
+    auto right = std::prev(end);
+
+    while (left != right) {
+      while ((left != right) && (*left < pivot))
+        left = std::next(left);
+
+      while ((left != right) && (*right >= pivot))
+        right = std::prev(right);
+
+      if (left != right)
+        std::iter_swap(left, right);
+    }
+
+    left = std::prev(left);
+    std::iter_swap(left, begin);
   } // quick_sort
 
   template<class Container>
@@ -27,5 +44,12 @@ TEST_CASE("Chapter 4 - quick sort") {
     stiX::quick_sort(sample);
 
     REQUIRE(sample == std::vector { 1 });
+  }
+
+  SECTION("first partition") {
+    auto sample = std::vector { 4, 9, 1, 8, 2, 7 };
+    stiX::quick_sort(sample);
+
+    REQUIRE(sample == std::vector { 1, 2, 4, 8, 9, 7 });
   }
 }
