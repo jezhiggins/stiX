@@ -25,6 +25,9 @@ namespace stiX {
 
     left = std::prev(left);
     std::iter_swap(left, begin);
+
+    quick_sort(begin, left);
+    quick_sort(right, end);
   } // quick_sort
 
   template<class Container>
@@ -50,6 +53,6 @@ TEST_CASE("Chapter 4 - quick sort") {
     auto sample = std::vector { 4, 9, 1, 8, 2, 7 };
     stiX::quick_sort(sample);
 
-    REQUIRE(sample == std::vector { 1, 2, 4, 8, 9, 7 });
+    REQUIRE(sample == std::vector { 1, 2, 4, 7, 8, 9 });
   }
 }
