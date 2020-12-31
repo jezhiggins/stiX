@@ -4,8 +4,8 @@
 #include <list>
 
 namespace stiX {
-  template<class Iterator>
-  void quick_sort(Iterator begin, Iterator end) {
+  template<class Iterator, class Comparator = std::less<>>
+  void quick_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
     if(std::distance(begin, end) <= 1)
       return;
 
@@ -14,10 +14,10 @@ namespace stiX {
     auto right = std::prev(end);
 
     while (left != right) {
-      while ((left != right) && (*left < pivot))
+      while ((left != right) && comparator(*left, pivot))
         left = std::next(left);
 
-      while ((left != right) && (*right >= pivot))
+      while ((left != right) && !comparator(*right, pivot))
         right = std::prev(right);
 
       if (left != right)
@@ -32,8 +32,8 @@ namespace stiX {
     quick_sort(right, end);
   } // quick_sort
 
-  template<class Container>
-  void quick_sort(Container&& sample) {
+  template<class Container, class Comparator = std::less<>>
+  void quick_sort(Container&& sample, Comparator comparator = Comparator()) {
     quick_sort(std::begin(sample), std::end(sample));
   }
 } // namespace stiX
