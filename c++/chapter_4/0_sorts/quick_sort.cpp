@@ -3,6 +3,8 @@
 #include <iterator>
 #include <list>
 
+using namespace std::literals::string_literals;
+
 namespace stiX {
   template<class Iterator, class Comparator = std::less<>>
   void quick_sort(Iterator begin, Iterator end, Comparator comparator = Comparator()) {
@@ -125,5 +127,16 @@ TEST_CASE("Chapter 4 - quick sort") {
     int expected[6] = { 0, 1, 2, 3, 7, 8 };
     for (auto i = 0; i != 6; ++i)
       REQUIRE(under_test[i] == expected[i]);
+  }
+
+  SECTION("sort some strings") {
+    auto sample = std::vector { "dog"s, "aardvark"s, "panda"s, "marmoset"s };
+    auto expected = sample;
+    std::sort(std::begin(expected), std::end(expected));
+
+    auto under_test = sample;
+    stiX::quick_sort(under_test);
+
+    REQUIRE(under_test == expected);
   }
 }
