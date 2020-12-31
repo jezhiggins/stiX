@@ -34,7 +34,7 @@ namespace stiX {
 
   template<class Container, class Comparator = std::less<>>
   void quick_sort(Container&& sample, Comparator comparator = Comparator()) {
-    quick_sort(std::begin(sample), std::end(sample));
+    quick_sort(std::begin(sample), std::end(sample), comparator);
   }
 } // namespace stiX
 
@@ -77,7 +77,7 @@ void test_quick_sort(auto sample) {
 
     REQUIRE(under_test == expected);
   }
-/*
+
   DYNAMIC_SECTION("reverse sort " << as_string(sample)) {
     auto expected = sample;
     std::sort(std::begin(expected), std::end(expected), std::greater<>());
@@ -87,7 +87,6 @@ void test_quick_sort(auto sample) {
 
     REQUIRE(under_test == expected);
   }
-  */
 }
 
 TEST_CASE("Chapter 4 - quick sort") {
