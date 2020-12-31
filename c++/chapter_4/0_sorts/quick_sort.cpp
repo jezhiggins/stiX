@@ -24,7 +24,7 @@ namespace stiX {
         std::iter_swap(left, right);
     }
 
-    if (*left >= pivot)
+    if (!comparator(*left, pivot))
       left = std::prev(left);
     std::iter_swap(left, begin);
 
