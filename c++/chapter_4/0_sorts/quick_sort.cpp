@@ -28,8 +28,8 @@ namespace stiX {
       left = std::prev(left);
     std::iter_swap(left, begin);
 
-    quick_sort(begin, left);
-    quick_sort(right, end);
+    quick_sort(begin, left, comparator);
+    quick_sort(right, end, comparator);
   } // quick_sort
 
   template<class Container, class Comparator = std::less<>>
