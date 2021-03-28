@@ -47,7 +47,7 @@ lines_t read_lines(std::istream& in, int max_lines) {
   auto count = 0;
   while (in && count++ != max_lines) {
     auto line = stiX::getline(in);
-    if (!line.empty())
+    if (in)
       lines.emplace_back(line);
   }
   return lines;

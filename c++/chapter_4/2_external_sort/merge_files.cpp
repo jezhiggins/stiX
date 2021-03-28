@@ -8,7 +8,7 @@ public:
     next();
   }
 
-  bool good() const { return stream_->good() && !line_.empty(); }
+  bool good() const { return stream_->good(); }
   std::string const& line() const { return line_; }
   void next() { std::getline(*stream_, line_); }
 
