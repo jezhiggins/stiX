@@ -13,7 +13,7 @@ std::filesystem::path write_lines(lines_t const& lines);
 void write_lines(std::filesystem::path const&, lines_t const& lines);
 
 auto const merge_order = 5;
-auto const max_lines_to_read = 25;
+auto const max_lines_to_read = 25000;
 
 working_files_t read_to_files(std::istream& in) {
   auto working_files = std::vector<std::filesystem::path>{};
@@ -33,7 +33,6 @@ working_files_t read_to_files(std::istream& in) {
       auto merge_file = std::ofstream{merge_filename};
       merge_files(merge_file, working_files);
 
-      remove_all(working_files);
       working_files.clear();
       working_files.push_back(merge_filename);
     }
@@ -69,7 +68,3 @@ void write_lines(std::filesystem::path const& filename, lines_t const& lines) {
   );
 } // write_lines
 
-void remove_all(std::vector<std::filesystem::path> &working_files) {
-  for (auto const& working_file : working_files)
-    std::filesystem::remove(working_file);
-}

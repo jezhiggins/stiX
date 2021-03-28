@@ -6,7 +6,5 @@ int main() {
   auto working_files = read_to_files(std::cin);
 
   merge_files(std::cout, working_files);
-
-  remove_all(working_files);
 } // main
 

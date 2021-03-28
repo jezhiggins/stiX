@@ -21,6 +21,9 @@ bool operator <(const merge_source &a, const merge_source &b) {
   return a.line() < b.line();
 }
 
+void merge_all(std::ostream& out, std::deque<merge_source>& merge_sources);
+void remove_all(std::vector<std::filesystem::path> const& working_files);
+
 void merge_files(std::ostream& out, std::vector<std::filesystem::path> const& working_files) {
   auto file_sources = std::vector<std::ifstream> { };
   auto merge_sources = std::deque<merge_source> { };
@@ -32,6 +35,12 @@ void merge_files(std::ostream& out, std::vector<std::filesystem::path> const& wo
     merge_sources.emplace_back( file_source );
   }
 
+  merge_all(out, merge_sources);
+
+  remove_all(working_files);
+} // merge_files
+
+void merge_all(std::ostream& out, std::deque<merge_source>& merge_sources) {
   while(!merge_sources.empty()) {
     std::sort(merge_sources.begin(), merge_sources.end());
 
@@ -41,4 +50,9 @@ void merge_files(std::ostream& out, std::vector<std::filesystem::path> const& wo
     if (!first->good())
       merge_sources.pop_front();
   }
+}
+
+void remove_all(std::vector<std::filesystem::path> const& working_files) {
+  for (auto const& working_file : working_files)
+    std::filesystem::remove(working_file);
 }
