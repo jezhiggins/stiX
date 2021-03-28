@@ -1,7 +1,7 @@
 #include "working_filepaths.hpp"
 #include <filesystem>
 
-std::string new_working_filepath() {
+std::filesystem::path new_working_filepath() {
   static auto const started_at = std::to_string(std::time(nullptr)) + "_" + std::to_string(std::rand()) + "_";
   static auto count = 0;
 
