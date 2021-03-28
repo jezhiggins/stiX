@@ -7,7 +7,6 @@ int main() {
 
   merge_files(std::cout, working_files);
 
-  for (auto const& working_file : working_files)
-    std::filesystem::remove(working_file);
+  remove_all(working_files);
 } // main
 
