@@ -112,7 +112,12 @@ target_link_libraries(1_sort stix)
 add_executable(0_quick_sort chapter_4/0_sorts/quick_sort.cpp)
 target_link_libraries(0_quick_sort)
 
-add_executable(2_external_sort chapter_4/2_external_sort/2_external_sort.cpp chapter_4/2_external_sort/working_filepaths.hpp chapter_4/2_external_sort/working_filepaths.cpp)
+add_executable(2_external_sort
+        chapter_4/2_external_sort/2_external_sort.cpp
+        chapter_4/2_external_sort/working_filepaths.hpp
+        chapter_4/2_external_sort/working_filepaths.cpp
+        chapter_4/2_external_sort/read_to_files.hpp
+        chapter_4/2_external_sort/read_to_files.cpp chapter_4/2_external_sort/merge_files.cpp chapter_4/2_external_sort/merge_files.hpp)
 target_link_libraries(2_external_sort stix)
 add_executable(2_external_sort_test chapter_4/2_external_sort/test.cpp chapter_4/2_external_sort/working_filepaths.hpp chapter_4/2_external_sort/working_filepaths.cpp)
 target_link_libraries(2_external_sort_test stix testsupport)

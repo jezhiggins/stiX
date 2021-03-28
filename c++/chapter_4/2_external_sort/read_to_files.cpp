@@ -11,7 +11,7 @@ lines_t read_lines(std::istream& in, int max_lines);
 std::filesystem::path write_lines(lines_t const& lines);
 void write_lines(std::filesystem::path const&, lines_t const& lines);
 
-auto const max_lines_to_read = 10000;
+auto const max_lines_to_read = 25;
 
 working_files_t read_to_files(std::istream& in) {
   auto working_files = std::vector < std::filesystem::path > {};
