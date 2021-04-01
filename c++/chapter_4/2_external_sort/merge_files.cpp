@@ -4,13 +4,16 @@
 
 class merge_source {
 public:
-  explicit merge_source(std::istream& str) : stream_(&str) {
+  explicit merge_source(std::istream& str)
+    : stream_(&str) {
     next();
   }
 
-  bool good() const { return stream_->good(); }
   std::string const& line() const { return line_; }
-  void next() { std::getline(*stream_, line_); }
+  bool next() {
+    std::getline(*stream_, line_);
+    return stream_->good();
+  }
 
 private:
   std::istream* stream_;
@@ -31,9 +34,8 @@ void merge_files(std::ostream& out, std::vector<std::filesystem::path> const& wo
   for (auto const& working_file : working_files)
     file_sources.emplace_back(working_file);
 
-  for (auto& file_source: file_sources) {
-    merge_sources.emplace_back( file_source );
-  }
+  for (auto& file_source: file_sources)
+    merge_sources.emplace_back(file_source);
 
   merge_all(out, merge_sources);
 
@@ -46,8 +48,8 @@ void merge_all(std::ostream& out, std::deque<merge_source>& merge_sources) {
 
     auto first = merge_sources.begin();
     out << first->line() << "\n";
-    first->next();
-    if (!first->good())
+
+    if (!first->next())
       merge_sources.pop_front();
   }
 }

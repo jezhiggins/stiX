@@ -16,7 +16,7 @@ auto const merge_order = 5;
 auto const max_lines_to_read = 25000;
 
 working_files_t read_to_files(std::istream& in) {
-  auto working_files = std::vector<std::filesystem::path>{};
+  auto working_files = working_files_t { };
 
   while (in) {
     while (in && working_files.size() < merge_order) {
@@ -42,7 +42,7 @@ working_files_t read_to_files(std::istream& in) {
 }
 
 lines_t read_lines(std::istream& in, int max_lines) {
-  auto lines = std::vector<std::string> { };
+  auto lines = lines_t { };
 
   auto count = 0;
   while (in && count++ != max_lines) {
