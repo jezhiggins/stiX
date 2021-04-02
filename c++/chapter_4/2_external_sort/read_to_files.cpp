@@ -11,6 +11,7 @@ using lines_t = std::vector<std::string>;
 lines_t read_lines(std::istream& in, int max_lines);
 std::filesystem::path write_lines(lines_t const& lines);
 void write_lines(std::filesystem::path const&, lines_t const& lines);
+working_files_t merge_intermediates(working_files_t const& working_files);
 
 auto const merge_order = 5;
 auto const max_lines_to_read = 25000;
@@ -28,14 +29,8 @@ working_files_t read_to_files(std::istream& in) {
       working_files.push_back(new_file);
     };
 
-    if (in) {
-      auto merge_filename = new_working_filepath();
-      auto merge_file = std::ofstream{merge_filename};
-      merge_files(merge_file, working_files);
-
-      working_files.clear();
-      working_files.push_back(merge_filename);
-    }
+    if (in) // merge if there's still input to process
+      working_files = merge_intermediates(working_files);
   }
 
   return working_files;
@@ -68,3 +63,10 @@ void write_lines(std::filesystem::path const& filename, lines_t const& lines) {
   );
 } // write_lines
 
+working_files_t merge_intermediates(working_files_t const& working_files) {
+  auto merge_filename = new_working_filepath();
+  auto merge_file = std::ofstream{merge_filename};
+  merge_files(merge_file, working_files);
+
+  return { merge_filename };
+}
