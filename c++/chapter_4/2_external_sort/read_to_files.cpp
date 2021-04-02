@@ -15,6 +15,7 @@ working_files_t merge_intermediates(working_files_t const& working_files);
 
 auto const merge_order = 5;
 auto const max_lines_to_read = 25000;
+auto const eof = std::char_traits<char>::eof();
 
 working_files_t read_to_files(std::istream& in) {
   auto working_files = working_files_t { };
@@ -40,10 +41,9 @@ lines_t read_lines(std::istream& in, int max_lines) {
   auto lines = lines_t { };
 
   auto count = 0;
-  while (in && count++ != max_lines) {
+  while (in.peek() != eof && count++ != max_lines) {
     auto line = stiX::getline(in);
-    if (in)
-      lines.emplace_back(line);
+    lines.emplace_back(line);
   }
   return lines;
 } // read_lines
