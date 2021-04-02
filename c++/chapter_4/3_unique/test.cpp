@@ -57,6 +57,19 @@ TEST_CASE("Chapter 4 - unique") {
     };
     testUnique(marymary, mary);
   }
+  SECTION("multiple lines with blanks") {
+    auto blonk = lines_t {
+      "",
+      "",
+      "",
+      "the lamb was sure to go",
+    };
+    auto stripped = lines_t {
+      "",
+      "the lamb was sure to go",
+    };
+    testUnique(blonk, stripped);
+  }
 }
 
 std::string join(lines_t const& lines) {
