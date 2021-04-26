@@ -134,13 +134,13 @@ add_executable(3_unique_test
 target_link_libraries(3_unique_test stix testsupport)
 
 add_executable(4_kwic
-        chapter_4/4_kwic/main.cpp
+        chapter_4/4_kwic/4_kwic.cpp
         chapter_4/4_kwic/kwic.cpp
-        chapter_4/4_kwic/kwic.h)
+        chapter_4/4_kwic/kwic.hpp)
 target_link_libraries(4_kwic stix)
 add_executable(4_kwic_test
         chapter_4/4_kwic/test.cpp
         chapter_4/4_kwic/kwic.cpp
-        chapter_4/4_kwic/kwic.h)
+        chapter_4/4_kwic/kwic.hpp)
 target_link_libraries(4_kwic_test stix testsupport)
 
