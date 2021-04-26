@@ -122,3 +122,13 @@ target_link_libraries(2_external_sort stix)
 add_executable(2_external_sort_test chapter_4/2_external_sort/test.cpp chapter_4/2_external_sort/working_filepaths.hpp chapter_4/2_external_sort/working_filepaths.cpp)
 target_link_libraries(2_external_sort_test stix testsupport)
 
+add_executable(3_unique
+        chapter_4/3_unique/3_unique.cpp
+        chapter_4/3_unique/unique.cpp
+        chapter_4/3_unique/unique.h)
+target_link_libraries(3_unique stix)
+add_executable(3_unique_test
+        chapter_4/3_unique/test.cpp
+        chapter_4/3_unique/unique.cpp
+        chapter_4/3_unique/unique.h)
+target_link_libraries(3_unique_test stix testsupport)
