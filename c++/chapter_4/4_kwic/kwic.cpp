@@ -1,10 +1,23 @@
 #include "kwic.hpp"
 #include "../../lib/join.hpp"
+#include "../../lib/getline.hpp"
 #include <sstream>
 #include <iterator>
 
 static std::vector<std::string> split_into_words(std::string const& input);
 static std::string make_rotation(std::vector<std::string> const& words);
+
+auto const eof = std::char_traits<char>::eof();
+
+void stiX::kwic(std::istream& in, std::ostream& out) {
+  while(in.peek() != eof) {
+    auto line = stiX::getline(in);
+
+    auto rotations = kwic_line(line);
+    for (auto& rotation: rotations)
+      out << rotation << "\n";
+  };
+}
 
 std::vector<std::string> stiX::kwic_line(const std::string &line) {
   if (line.empty())
