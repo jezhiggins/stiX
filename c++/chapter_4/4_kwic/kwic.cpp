@@ -4,9 +4,9 @@
 #include <sstream>
 #include <iterator>
 
-static std::vector<std::string> kwic_line(std::string const &line);
+static std::vector<std::string> generate_rotations(std::string const &line);
 static std::vector<std::string> split_into_words(std::string const& input);
-static std::string make_rotation(std::vector<std::string> const& words);
+static std::string make_rotated_line(std::vector<std::string> const& words);
 
 auto const eof = std::char_traits<char>::eof();
 
@@ -14,13 +14,13 @@ void stiX::kwic(std::istream& in, std::ostream& out) {
   while(in.peek() != eof) {
     auto line = stiX::getline(in);
 
-    auto rotations = kwic_line(line);
+    auto rotations = generate_rotations(line);
     for (auto& rotation: rotations)
       out << rotation << "\n";
   };
 }
 
-std::vector<std::string> kwic_line(const std::string &line) {
+std::vector<std::string> generate_rotations(const std::string &line) {
   if (line.empty())
     return { };
 
@@ -29,7 +29,7 @@ std::vector<std::string> kwic_line(const std::string &line) {
   auto rotations = std::vector<std::string> { };
 
   for (size_t rotation = 0; rotation != words.size(); ++rotation) {
-    rotations.emplace_back(make_rotation(words));
+    rotations.emplace_back(make_rotated_line(words));
     std::rotate(words.begin(), words.begin()+1, words.end());
   }
 
@@ -51,7 +51,7 @@ std::vector<std::string> split_into_words(std::string const& input) {
   return words;
 }
 
-std::string make_rotation(std::vector<std::string> const& words) {
+std::string make_rotated_line(std::vector<std::string> const& words) {
   auto out = std::ostringstream { };
   stiX::join(words, std::ostream_iterator<std::string>(out), "");
   return out.str();
