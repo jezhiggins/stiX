@@ -1,3 +1,18 @@
+//
+// sort
+//
+// sort sorts its input into ascending lexographic order.
+// Two lines are in order if they are identical or if the
+// leftmost character position in which they differ
+// contains characters which are in order, using the
+// internal numeric representation of the characters. If
+// a line is a proper prefix of another line, it precedes
+// that line in sort order.
+//
+// To print the sorted output of a program
+//   program | sort | print
+//
+
 #include <vector>
 #include <string>
 #include <iostream>
