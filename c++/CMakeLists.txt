@@ -144,3 +144,8 @@ add_executable(kwic_test
         chapter_4/4_kwic/kwic.hpp)
 target_link_libraries(kwic_test stix testsupport)
 
+add_executable(unrotate
+        chapter_4/5_unrotate/5_unrotate.cpp)
+add_executable(unrotate_test
+        chapter_4/5_unrotate/test.cpp)
+target_link_libraries(unrotate_test stix testsupport)
