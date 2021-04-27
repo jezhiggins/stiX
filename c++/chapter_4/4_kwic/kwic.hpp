@@ -5,6 +5,6 @@
 #include <string>
 
 namespace stiX {
-  void kwic(std::istream& in, std::ostream& out);
+  void kwic(std::istream& in, std::ostream& out, char fold_marker);
 }
 #endif //STICPP_KWIC_HPP

@@ -53,5 +53,9 @@ TEST_CASE("Chapter 4 - kwic") {
 }
 
 void testKwic(std::string const& input, std::string const& expected) {
-  testFilter("kwic", input, expected, stiX::kwic);
+  testFilter("kwic", input, expected,
+ [](std::istream& in, std::ostream& out) {
+      stiX::kwic(in, out, '$');
+    }
+  );
 }
