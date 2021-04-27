@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iterator>
 
+static std::vector<std::string> kwic_line(std::string const &line);
 static std::vector<std::string> split_into_words(std::string const& input);
 static std::string make_rotation(std::vector<std::string> const& words);
 
@@ -19,7 +20,7 @@ void stiX::kwic(std::istream& in, std::ostream& out) {
   };
 }
 
-std::vector<std::string> stiX::kwic_line(const std::string &line) {
+std::vector<std::string> kwic_line(const std::string &line) {
   if (line.empty())
     return { };
 

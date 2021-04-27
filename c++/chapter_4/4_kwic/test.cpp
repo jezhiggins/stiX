@@ -2,49 +2,9 @@
 #include "kwic.hpp"
 
 using lines_t = std::vector<std::string>;
-void testKwicLine(std::string const& input, lines_t const& expected);
 void testKwic(std::string const& input, std::string const& expected);
 
 TEST_CASE("Chapter 4 - kwic") {
-  SECTION("empty input line") {
-    testKwicLine("", {});
-  }
-  SECTION("line of one word") {
-    testKwicLine("hotpot", {"hotpot$"});
-  }
-  SECTION("four word line has four rotations") {
-    testKwicLine(
-      "This is a test.",
-      {
-        "This is a test.$",
-        "is a test.$This ",
-        "a test.$This is ",
-        "test.$This is a "
-      }
-    );
-  }
-  SECTION("trim leading spaces from line") {
-    testKwicLine(
-      "              This is a test.",
-      {
-        "This is a test.$",
-        "is a test.$This ",
-        "a test.$This is ",
-        "test.$This is a "
-      }
-    );
-  }
-  SECTION("trim trailing space from line") {
-    testKwicLine(
-      "This is a test.                 ",
-      {
-        "This is a test.$",
-        "is a test.$This ",
-        "a test.$This is ",
-        "test.$This is a "
-      }
-    );
-  }
   SECTION("empty input") {
     testKwic("", "");
   }
@@ -69,15 +29,27 @@ TEST_CASE("Chapter 4 - kwic") {
       "Its fleece was white$\n"
       "fleece was white$Its \n"
       "was white$Its fleece \n"
-      "fleece was white$Its \n"
+      "white$Its fleece was \n"
     );
   }
-}
-
-void testKwicLine(std::string const& input, lines_t const& expected) {
-  auto rotations = stiX::kwic_line(input);
-  REQUIRE(rotations.size() == expected.size());
-  REQUIRE(rotations == expected);
+  SECTION("trim leading spaces from line") {
+    testKwic(
+      "              This is a test.",
+      "This is a test.$\n"
+      "is a test.$This \n"
+      "a test.$This is \n"
+      "test.$This is a \n"
+    );
+  }
+  SECTION("trim trailing space from line") {
+    testKwic(
+      "This is a test.                 ",
+      "This is a test.$\n"
+      "is a test.$This \n"
+      "a test.$This is \n"
+      "test.$This is a \n"
+    );
+  }
 }
 
 void testKwic(std::string const& input, std::string const& expected) {
