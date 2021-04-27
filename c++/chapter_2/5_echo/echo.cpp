@@ -1,4 +1,4 @@
-#include "echo.h"
+#include "echo.hpp"
 #include "../../lib/arguments.hpp"
 #include "../../lib/join.hpp"
 

@@ -1,5 +1,5 @@
-#include "../../testlib/testlib.h"
-#include "unique.h"
+#include "../../testlib/testlib.hpp"
+#include "unique.hpp"
 
 using lines_t = std::vector<std::string>;
 void testUnique(lines_t const& input, lines_t const& expected);

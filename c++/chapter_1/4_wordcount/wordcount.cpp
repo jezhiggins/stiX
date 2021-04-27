@@ -1,4 +1,4 @@
-#include "wordcount.h"
+#include "wordcount.hpp"
 
 #include <algorithm>
 #include <iostream>

@@ -1,6 +1,6 @@
 #include "catch.hpp"
-#include "test_filter.h"
-#include "label_escape.h"
+#include "test_filter.hpp"
+#include "label_escape.hpp"
 
 #include <sstream>
 

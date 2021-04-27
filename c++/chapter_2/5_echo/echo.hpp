@@ -1,5 +1,5 @@
-#ifndef STICPP_ECHO_H
-#define STICPP_ECHO_H
+#ifndef STICPP_ECHO_HPP
+#define STICPP_ECHO_HPP
 
 #include <iosfwd>
 
@@ -7,4 +7,4 @@ namespace stiX {
     void echo(int argc, char const* argv[], std::ostream &out);
 }
 
-#endif //STICPP_ECHO_H
+#endif //STICPP_ECHO_HPP

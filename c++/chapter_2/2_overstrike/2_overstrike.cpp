@@ -11,7 +11,7 @@
 // before print and causes the remainder of the line to
 // overstrike the previous line.
 
-#include "overstrike.h"
+#include "overstrike.hpp"
 #include <iostream>
 
 int main() {

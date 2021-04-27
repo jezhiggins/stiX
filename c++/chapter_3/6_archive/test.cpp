@@ -1,5 +1,5 @@
 #include <filesystem>
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 #include "../../lib/file_open.hpp"
 #include "../1_compare/compare.hpp"
 #include "archive_file.hpp"

@@ -10,7 +10,7 @@
 // on. Runs longer than 26 are broken into several shorter
 // ones. Runs of ~'s of any length are encoded.
 
-#include "compress.h"
+#include "compress.hpp"
 #include <iostream>
 
 int main() {

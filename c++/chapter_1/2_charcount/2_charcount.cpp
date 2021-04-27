@@ -7,7 +7,7 @@
 // plus the number of characters within each line.
 //
 
-#include "charcount.h"
+#include "charcount.hpp"
 #include <iostream>
 
 int main() {

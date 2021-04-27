@@ -1,7 +1,7 @@
 
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 
-#include "compress.h"
+#include "compress.hpp"
 
 void testCompress(std::string input, std::string expected);
 

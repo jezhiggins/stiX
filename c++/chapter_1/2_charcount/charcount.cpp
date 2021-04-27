@@ -1,4 +1,4 @@
-#include "charcount.h"
+#include "charcount.hpp"
 
 #include <algorithm>
 #include <iostream>

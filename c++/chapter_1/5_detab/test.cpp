@@ -1,7 +1,7 @@
 
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 
-#include "detab.h"
+#include "detab.hpp"
 #include "../../lib/tab_stops.hpp"
 
 void testDetab(std::string input, std::string expected);

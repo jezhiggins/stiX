@@ -9,7 +9,7 @@
 // tab stop is replaced by a tab character.
 //
 
-#include "entab.h"
+#include "entab.hpp"
 #include <iostream>
 
 int main() {

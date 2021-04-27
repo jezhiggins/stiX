@@ -154,7 +154,7 @@ void stiX::delete_from_archive(
 
 -h- test.cpp 5885
 #include <filesystem>
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 #include "../../lib/file_open.hpp"
 #include "../1_compare/compare.hpp"
 #include "archive_file.hpp"

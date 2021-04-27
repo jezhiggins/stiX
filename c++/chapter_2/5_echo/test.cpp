@@ -1,6 +1,6 @@
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 
-#include "echo.h"
+#include "echo.hpp"
 
 char const* argv[] = {
     "fruit",

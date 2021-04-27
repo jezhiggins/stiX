@@ -1,6 +1,6 @@
 
-#include "../../testlib/testlib.h"
-#include "linecount.h"
+#include "../../testlib/testlib.hpp"
+#include "linecount.hpp"
 
 void verifyLineCount(std::string input);
 

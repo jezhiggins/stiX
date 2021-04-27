@@ -1,5 +1,5 @@
 
-#include "linecount.h"
+#include "linecount.hpp"
 
 #include <algorithm>
 #include <iostream>

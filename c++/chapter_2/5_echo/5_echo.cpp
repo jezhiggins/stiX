@@ -5,7 +5,7 @@
 // line of text with one space between each argument. If
 // there are no arguments, no output is produced,
 
-#include "echo.h"
+#include "echo.hpp"
 #include <iostream>
 
 int main(int argc, char const* argv[]) {

@@ -1,6 +1,6 @@
 #include <vector>
 #include <string>
-#include "sample_strings.h"
+#include "sample_strings.hpp"
 
 const std::string empty;
 const std::string one_character("1");

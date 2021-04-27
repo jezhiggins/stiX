@@ -1,4 +1,4 @@
-#include "entab.h"
+#include "entab.hpp"
 #include "../../lib/chars.hpp"
 #include "../../lib/tab_stops.hpp"
 #include "../../lib/filter.hpp"

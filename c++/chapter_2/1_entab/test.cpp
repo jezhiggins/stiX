@@ -1,8 +1,8 @@
 
 #define CATCH_CONFIG_MAIN
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 
-#include "entab.h"
+#include "entab.hpp"
 #include "../../lib/tab_stops.hpp"
 
 void testEntab(std::string input, std::string expected);

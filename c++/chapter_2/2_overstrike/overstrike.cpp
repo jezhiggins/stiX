@@ -1,4 +1,4 @@
-#include "overstrike.h"
+#include "overstrike.hpp"
 #include "../../lib/filter.hpp"
 #include "../../lib/chars.hpp"
 

@@ -9,7 +9,7 @@
 // one to four blanks.
 //
 
-#include "detab.h"
+#include "detab.hpp"
 #include <iostream>
 
 int main() {

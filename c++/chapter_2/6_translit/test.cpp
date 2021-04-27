@@ -1,4 +1,4 @@
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 
 #include "translit.hpp"
 #include "translit-args.hpp"

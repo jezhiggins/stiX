@@ -1,7 +1,7 @@
 
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 
-#include "overstrike.h"
+#include "overstrike.hpp"
 
 void testOverstrike(std::string input, std::string expected);
 

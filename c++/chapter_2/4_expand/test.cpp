@@ -1,7 +1,7 @@
 
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 
-#include "expand.h"
+#include "expand.hpp"
 
 void testExpand(std::string input, std::string expected = "");
 

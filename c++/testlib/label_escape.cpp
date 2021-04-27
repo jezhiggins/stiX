@@ -1,6 +1,6 @@
 
 #include <string>
-#include "label_escape.h"
+#include "label_escape.hpp"
 #include <vector>
 #include <tuple>
 

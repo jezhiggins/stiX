@@ -1,5 +1,5 @@
-#ifndef STICPP_TEST_FILTER_H
-#define STICPP_TEST_FILTER_H
+#ifndef STICPP_TEST_FILTER_HPP
+#define STICPP_TEST_FILTER_HPP
 
 void testFilter(
     std::string label,
@@ -8,4 +8,4 @@ void testFilter(
     void (*fn)(std::istream&, std::ostream&)
 );
 
-#endif //STICPP_TEST_FILTER_H
+#endif //STICPP_TEST_FILTER_HPP

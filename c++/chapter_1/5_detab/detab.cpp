@@ -1,4 +1,4 @@
-#include "detab.h"
+#include "detab.hpp"
 #include "../../lib/chars.hpp"
 #include "../../lib/tab_stops.hpp"
 

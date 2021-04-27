@@ -1,6 +1,6 @@
 
-#include "../../testlib/testlib.h"
-#include "charcount.h"
+#include "../../testlib/testlib.hpp"
+#include "charcount.hpp"
 
 void verifyCharCount(std::string input);
 TEST_CASE("Chapter 1 - charcount") {

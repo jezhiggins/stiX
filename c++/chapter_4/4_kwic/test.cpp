@@ -1,4 +1,4 @@
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 #include "kwic.hpp"
 
 using lines_t = std::vector<std::string>;

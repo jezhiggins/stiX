@@ -1,5 +1,5 @@
 #include <optional>
-#include "expand.h"
+#include "expand.hpp"
 #include "../../lib/filter.hpp"
 
 enum ExpandState {

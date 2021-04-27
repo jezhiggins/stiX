@@ -1,5 +1,5 @@
 
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 #include "../../lib/copy.hpp"
 
 void verifyCopyString(std::string input);

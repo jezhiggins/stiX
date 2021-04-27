@@ -1,6 +1,6 @@
 
-#include "../../testlib/testlib.h"
-#include "wordcount.h"
+#include "../../testlib/testlib.hpp"
+#include "wordcount.hpp"
 
 void verifyWordCount(std::string input);
 

@@ -6,7 +6,7 @@
 // of characters not containing a blank, a tab, or a newline
 //
 
-#include "wordcount.h"
+#include "wordcount.hpp"
 #include <iostream>
 
 int main() {

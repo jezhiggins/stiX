@@ -1,4 +1,4 @@
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 
 #include "compare.hpp"
 

@@ -1,4 +1,4 @@
-#include "compress.h"
+#include "compress.hpp"
 #include "../../lib/filter.hpp"
 
 class compressor {

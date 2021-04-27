@@ -5,7 +5,7 @@
 // as line of text to the output
 //
 
-#include "linecount.h"
+#include "linecount.hpp"
 #include <iostream>
 
 int main() {

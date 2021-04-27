@@ -1,5 +1,5 @@
 #include <sstream>
-#include "../../testlib/testlib.h"
+#include "../../testlib/testlib.hpp"
 #include "print.hpp"
 
 void testPrint(

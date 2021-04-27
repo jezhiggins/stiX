@@ -10,7 +10,7 @@
 // calls for one instance of the following character, 'B' calls
 // for two, and so on up to 'Z'.
 
-#include "expand.h"
+#include "expand.hpp"
 #include <iostream>
 
 int main() {
