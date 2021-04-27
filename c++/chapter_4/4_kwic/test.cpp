@@ -53,10 +53,5 @@ TEST_CASE("Chapter 4 - kwic") {
 }
 
 void testKwic(std::string const& input, std::string const& expected) {
-  auto in = std::istringstream { input };
-  auto out = std::ostringstream { };
-
-  stiX::kwic(in, out);
-
-  REQUIRE(out.str() == expected);
+  testFilter("kwic", input, expected, stiX::kwic);
 }
