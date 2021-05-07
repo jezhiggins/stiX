@@ -7,7 +7,7 @@
 // $; "unfolding" involves writing from the end of the line
 // down to but not including the old character, starting in
 // column 39 of the output line, wrapping characters that
-// would thes appear before column 1 around to the end of
+// would thus appear before column 1 around to the end of
 // the line, then writing the remainder of the line
 // starting at column 41 and wrapping around at column 80
 // if necessary.
