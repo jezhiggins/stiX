@@ -32,6 +32,12 @@ TEST_CASE("Chapter 4 - unrotate") {
       " out! Much girthier  test.         Watch"
     );
   }
+  SECTION("line is far too long") {
+    testUnrotateLine(
+      "test.$Watch out! Much, much, much girthier",
+      ",much, much girthier  test. Watch out!"
+    );
+  }
 }
 
 void testUnrotateLine(std::string const& input, std::string const& expected) {
