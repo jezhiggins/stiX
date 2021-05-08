@@ -1,7 +1,19 @@
 #include "unrotate.hpp"
+#include "../../lib/getline.hpp"
+
+#include <iostream>
 
 static std::pair<std::string, size_t>
 wrap_long_line(std::string const& after_fold, size_t before_fold_length, size_t half_length);
+
+auto const eof = std::char_traits<char>::eof();
+
+void stiX::unrotate(std::istream &in, std::ostream &out, size_t line_length, char fold_marker) {
+  while(in.peek() != eof) {
+    auto line = stiX::getline(in);
+    out << unrotateLine(line, line_length, fold_marker) << '\n';
+  };
+}
 
 std::string stiX::unrotateLine(std::string const& line, size_t line_length, char fold_marker) {
   auto fold_position = line.find(fold_marker);

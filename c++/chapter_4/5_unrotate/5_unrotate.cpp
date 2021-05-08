@@ -25,6 +25,12 @@
 //                          This is a  test.
 //                                     This is a test.
 //
-int main() {
+#include "unrotate.hpp"
+#include <iostream>
 
+auto const fold_marker = '$';
+auto const line_length = 80;
+
+int main() {
+  stiX::unrotate(std::cin, std::cout, line_length, fold_marker);
 }
