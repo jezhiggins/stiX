@@ -1,8 +1,7 @@
 #ifndef STICPP_KWIC_HPP
 #define STICPP_KWIC_HPP
 
-#include <vector>
-#include <string>
+#include <ios>
 
 namespace stiX {
   void kwic(std::istream& in, std::ostream& out, char fold_marker);
