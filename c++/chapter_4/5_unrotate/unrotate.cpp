@@ -1,6 +1,6 @@
 #include "unrotate.hpp"
 
-static std::pair<std::string, std::string>
+static std::pair<std::string, size_t>
 wrap_long_line(std::string const& after_fold, size_t before_fold_length, size_t half_length);
 
 std::string stiX::unrotateLine(std::string const& line, size_t line_length, char fold_marker) {
@@ -13,9 +13,9 @@ std::string stiX::unrotateLine(std::string const& line, size_t line_length, char
   auto after_fold = line.substr(fold_position + 1);
   auto before_fold = line.substr(0, fold_position);
 
-  auto [post_padding, wrapped] = wrap_long_line(after_fold, before_fold.length(), half_length);
-  if (!wrapped.empty())
-    after_fold = after_fold.substr(wrapped.length());
+  auto [wrapped, wrap_at] = wrap_long_line(after_fold, before_fold.length(), half_length);
+  if (wrap_at)
+    after_fold = after_fold.substr(wrap_at);
   auto lead_padding = std::string(half_length - after_fold.length(), ' ');
 
   auto output =
@@ -23,24 +23,25 @@ std::string stiX::unrotateLine(std::string const& line, size_t line_length, char
     after_fold +
     "  " +
     before_fold +
-    post_padding +
     wrapped;
 
-  return output.erase(output.find_last_not_of(' ') + 1);
+  return output.substr(0, line_length);
 }
 
-std::pair<std::string, std::string>
+std::pair<std::string, size_t>
 wrap_long_line(std::string const& after_fold, size_t before_fold_length, size_t half_length) {
-  auto post_padding = std::string();
-  auto wrapped = std::string();
+  if (after_fold.length() <= half_length)
+    return std::pair<std::string, size_t>();
 
-  if (after_fold.length() > half_length) {
-    auto wrap_at = after_fold.length() - half_length;
-    wrapped = after_fold.substr(0, wrap_at);
-    auto padding = before_fold_length + wrap_at;
-    post_padding = std::string(half_length - padding, ' ');
-  }
+  auto wrap_at = after_fold.length() - half_length;
+  auto wrapped = after_fold.substr(0, wrap_at);
+  auto taken = before_fold_length + wrap_at;
 
-  return std::make_pair(post_padding, wrapped);
+  if (taken < half_length)
+    wrapped.insert(0, half_length - taken, ' ');
+  else
+    wrapped.insert(0, 1, ' ');
+
+  return std::make_pair(wrapped, wrap_at);
 }
 

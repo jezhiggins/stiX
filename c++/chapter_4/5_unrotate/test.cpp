@@ -32,10 +32,10 @@ TEST_CASE("Chapter 4 - unrotate") {
       " out! Much girthier  test.         Watch"
     );
   }
-  SECTION("line is far too long") {
+  SECTION("line is far too long, get truncated") {
     testUnrotateLine(
       "test.$Watch out! Much, much, much girthier",
-      ",much, much girthier  test. Watch out!"
+      "much, much girthier  test. Watch out! Mu"
     );
   }
 }
