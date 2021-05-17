@@ -46,13 +46,11 @@ wrap_long_line(std::string const& after_fold, size_t before_fold_length, size_t 
     return std::pair<std::string, size_t>();
 
   auto wrap_at = after_fold.length() - half_length;
-  auto wrapped = after_fold.substr(0, wrap_at);
   auto taken = before_fold_length + wrap_at;
+  auto padding = (taken < half_length) ? half_length - taken : 1;
 
-  if (taken < half_length)
-    wrapped.insert(0, half_length - taken, ' ');
-  else
-    wrapped.insert(0, 1, ' ');
+  auto after_fold_padding = std::string(padding, ' ');
+  auto wrapped = after_fold_padding + after_fold.substr(0, wrap_at);
 
   return std::make_pair(wrapped, wrap_at);
 }
