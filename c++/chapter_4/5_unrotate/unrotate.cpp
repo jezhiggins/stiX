@@ -26,8 +26,7 @@ std::string stiX::unrotateLine(std::string const& line, size_t line_length, char
   auto before_fold = line.substr(0, fold_position);
 
   auto [wrapped, wrap_at] = wrap_long_line(after_fold, before_fold.length(), half_length);
-  if (wrap_at)
-    after_fold = after_fold.substr(wrap_at);
+  after_fold = after_fold.substr(wrap_at);
   auto lead_padding = std::string(half_length - after_fold.length(), ' ');
 
   auto output =
