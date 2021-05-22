@@ -44,21 +44,51 @@ TEST_CASE("Chapter 4 - unrotate") {
     );
   }
 
-  SECTION("line is far too long, wrap left and get truncated") {
-    testUnrotateLine(
-      "test.$Watch out! Much, much, much girthier",
-      "much, much girthier  test. Watch out! Mu"
-    );
-  }
   SECTION("line is far too long, wrap right and get truncated") {
     testUnrotateLine(
       "out! Much, much, much girthier test.$Watch",
       "irthier test. Watch  out! Much, much, mu"
     );
   }
+  SECTION("line is far too long, wrap left and get truncated") {
+    testUnrotateLine(
+      "test.$Watch out! Much, much, much girthier",
+      "much, much girthier  test. Watch out! Mu"
+    );
+  }
+  SECTION("line is far, far too long, wrap right and get truncated") {
+    testUnrotateLine(
+      "out! Much, much, much and so very excessively girthier test.$Watch",
+      "irthier test. Watch  out! Much, much, mu"
+    );
+  }
+  SECTION("line is far, far too long, wrap left and get truncated") {
+    testUnrotateLine(
+      "test.$Watch out! Much, and so very excessively much, much girthier",
+      "much, much girthier  test. Watch out! Mu"
+    );
+  }
+  SECTION("line is far too long at both ends") {
+    testUnrotateLine(
+      "Much, much, much girthier test.$Watch out! This line is excessive.",
+      " line is excessive.  Much, much, much gi"
+    );
+  }
+  SECTION("line is far too long at both ends") {
+    testUnrotateLine(
+      "Much, much, much girthier test.$Watch out! This line is excessive.",
+      " line is excessive.  Much, much, much gi"
+    );
+  }
+  SECTION("line is far, far too long at both ends") {
+    testUnrotateLine(
+      "Much, much, much girthier test. But this chunk will be trimmed.$Watch out! There's stuff you'll never see. This line is excessive.",
+      " line is excessive.  Much, much, much gi"
+    );
+  }
 }
 
 void testUnrotateLine(std::string const& input, std::string const& expected) {
-  auto result = stiX::unrotateLine(input, 40, '$');
+  auto result = stiX::unrotate_line(input, 40, '$');
   REQUIRE(result == expected);
 }
