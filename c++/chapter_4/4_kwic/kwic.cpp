@@ -4,9 +4,11 @@
 #include <sstream>
 #include <iterator>
 
-static std::vector<std::string> generate_rotations(std::string const &line, char fold_marker);
-static std::vector<std::string> split_into_words(std::string const& input);
-static std::string make_rotated_line(std::vector<std::string> const& words, size_t fold_word, char fold_marker);
+using strings = std::vector<std::string>;
+
+static strings generate_rotations(std::string const &line, char fold_marker);
+static strings split_into_words(std::string const& input);
+static std::string make_rotated_line(strings const& words, size_t fold_word, char fold_marker);
 
 auto const eof = std::char_traits<char>::eof();
 
@@ -20,13 +22,13 @@ void stiX::kwic(std::istream& in, std::ostream& out, char fold_marker) {
   };
 }
 
-std::vector<std::string> generate_rotations(const std::string &line, char fold_marker) {
+strings generate_rotations(const std::string &line, char fold_marker) {
   if (line.empty())
     return { };
 
   auto words = split_into_words(line);
 
-  auto rotations = std::vector<std::string> { };
+  auto rotations = strings { };
 
   size_t fold_word = words.size() - 1;
   for (size_t rotation = 0; rotation != words.size(); ++rotation, --fold_word) {
@@ -37,16 +39,16 @@ std::vector<std::string> generate_rotations(const std::string &line, char fold_m
   return rotations;
 }
 
-std::vector<std::string> split_into_words(std::string const& input) {
+strings split_into_words(std::string const& input) {
   auto iss = std::istringstream { input };
-  auto words = std::vector<std::string> {
+  auto words = strings {
     std::istream_iterator<std::string>{iss},
     std::istream_iterator<std::string>()
   };
   return words;
 }
 
-std::string make_rotated_line(std::vector<std::string> const& words, size_t fold_word, char fold_marker) {
+std::string make_rotated_line(strings const& words, size_t fold_word, char fold_marker) {
   auto out = std::ostringstream { };
 
   for (size_t i = 0; i != words.size(); ++i) {
