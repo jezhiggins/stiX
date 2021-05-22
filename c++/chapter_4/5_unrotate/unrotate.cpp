@@ -3,10 +3,8 @@
 
 #include <iostream>
 
-static std::pair<std::string, size_t>
-wrap_long_line(std::string const& after_fold, size_t before_fold_length, size_t half_length);
-
 auto const eof = std::char_traits<char>::eof();
+auto const gap = 2;
 
 void stiX::unrotate(std::istream &in, std::ostream &out, size_t line_length, char fold_marker) {
   while(in.peek() != eof) {
@@ -15,42 +13,56 @@ void stiX::unrotate(std::istream &in, std::ostream &out, size_t line_length, cha
   };
 }
 
-std::string stiX::unrotateLine(std::string const& line, size_t line_length, char fold_marker) {
-  auto fold_position = line.find(fold_marker);
+void copy_and_wrap_left(std::string& output_line, std::string const& input, size_t half_length);
+void copy_and_wrap_right(std::string& output_line, std::string const& input, size_t half_length);
+std::string trim_trailing_blanks(std::string const& line);
+
+
+std::string stiX::unrotateLine(std::string const& input_line, size_t output_line_length, char fold_marker) {
+  auto fold_position = input_line.find(fold_marker);
   if (fold_position == std::string::npos)
-    return line;
+    return input_line;
 
-  auto half_length = (line_length / 2) - 1;
+  auto half_length = (output_line_length / 2) - (gap / 2);
+  auto output_line = std::string(output_line_length, ' ');
 
-  auto after_fold = line.substr(fold_position + 1);
-  auto before_fold = line.substr(0, fold_position);
+  // copy after the fold into first half of the output
+  auto after_fold = input_line.substr(fold_position+1);
+  copy_and_wrap_left(output_line, after_fold, half_length);
 
-  auto [wrapped, wrap_at] = wrap_long_line(after_fold, before_fold.length(), half_length);
-  after_fold = after_fold.substr(wrap_at);
-  auto lead_padding = std::string(half_length - after_fold.length(), ' ');
+  // copy before the fold into the second half of the output
+  auto before_fold = input_line.substr(0, fold_position);
+  copy_and_wrap_right(output_line, before_fold, half_length);
 
-  auto output =
-    lead_padding +
-    after_fold +
-    "  " +
-    before_fold +
-    wrapped;
-
-  return output.substr(0, line_length);
+  return trim_trailing_blanks(output_line);
 }
 
-std::pair<std::string, size_t>
-wrap_long_line(std::string const& after_fold, size_t before_fold_length, size_t half_length) {
-  if (after_fold.length() <= half_length)
-    return std::pair<std::string, size_t>();
-
-  auto wrap_at = after_fold.length() - half_length;
-  auto taken = before_fold_length + wrap_at;
-  auto padding = (taken < half_length) ? half_length - taken : 1;
-
-  auto after_fold_padding = std::string(padding, ' ');
-  auto wrapped = after_fold_padding + after_fold.substr(0, wrap_at);
-
-  return std::make_pair(wrapped, wrap_at);
+void copy_and_wrap_left(std::string& output_line, std::string const& input, size_t half_length) {
+  auto output_index = half_length - 1;
+  for (auto ai = input.rbegin(); ai != input.rend() && output_index != half_length + 1; ++ai) {
+    output_line[output_index] = *ai;
+    if (output_index == 0)
+      output_index = output_line.length();
+    --output_index;
+  }
 }
 
+void copy_and_wrap_right(std::string& output_line, std::string const& input, size_t half_length) {
+  auto output_index = output_line.length() - half_length;
+  for (auto bi = input.begin(); bi != input.end() && output_index != half_length - 1; ++bi) {
+    output_line[output_index] = *bi;
+    ++output_index;
+    if (output_index >= output_line.length())
+      output_index = 0;
+  }
+}
+
+std::string trim_trailing_blanks(std::string const& line) {
+  auto last_space = std::find_if(
+    line.rbegin(),
+    line.rend(),
+    [](unsigned char ch) {
+      return !std::isspace(ch);
+    }).base();
+  return std::string(line.begin(), last_space);
+}

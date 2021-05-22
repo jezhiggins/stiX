@@ -8,6 +8,10 @@ TEST_CASE("Chapter 4 - unrotate") {
     testUnrotateLine("", "");
   }
 
+  SECTION("no marker") {
+    testUnrotateLine("Hello", "Hello");
+  }
+
   SECTION("marker at end") {
     testUnrotateLine(
       "This is a test.$",
@@ -26,15 +30,29 @@ TEST_CASE("Chapter 4 - unrotate") {
       "            This is  a test."
     );
   }
-  SECTION("line is too long") {
+  SECTION("line is too long, wrap left") {
     testUnrotateLine(
       "test.$Watch out! Much girthier",
       " out! Much girthier  test.         Watch"
     );
   }
-  SECTION("line is far too long, get truncated") {
+
+  SECTION("line is too long, wrap right") {
+    testUnrotateLine(
+      "out! Much girthier test.$Watch",
+      "test.         Watch  out! Much girthier"
+    );
+  }
+
+  SECTION("line is far too long, wrap left and get truncated") {
     testUnrotateLine(
       "test.$Watch out! Much, much, much girthier",
+      "much, much girthier  test. Watch out! Mu"
+    );
+  }
+  SECTION("line is far too long, wrap right and get truncated") {
+    testUnrotateLine(
+      "out! Much, much, much girthier test.$Watch",
       "much, much girthier  test. Watch out! Mu"
     );
   }
