@@ -13,7 +13,19 @@ void stiX::unrotate(std::istream &in, std::ostream &out, size_t line_length, cha
   };
 }
 
-std::string trim_and_unrotate(std::string const& input_line, size_t fold_position, size_t half_length, size_t output_line_length, char fold_marker);
+struct output_sizes {
+  size_t const full_width;
+  size_t const available;
+  size_t const half;
+
+  output_sizes(size_t width):
+    full_width(width),
+    available(width - gap),
+    half(available / 2) {
+  }
+};
+
+std::string trim_and_unrotate(std::string const& input_line, size_t fold_position, output_sizes const& output_length, char fold_marker);
 void copy_and_wrap_left(std::string& output_line, std::string const& input, size_t half_length);
 void copy_and_wrap_right(std::string& output_line, std::string const& input, size_t half_length);
 std::string trim_trailing_blanks(std::string const& line);
@@ -23,35 +35,36 @@ std::string stiX::unrotate_line(std::string const& input_line, size_t output_lin
   if (fold_position == std::string::npos)
     return input_line;
 
-  auto available_output = output_line_length - gap;
-  auto half_length = (output_line_length / 2) - (gap / 2);
-  if (input_line.length() > available_output)
-    return trim_and_unrotate(input_line, fold_position, half_length, output_line_length, fold_marker);
+  auto output_length = output_sizes { output_line_length };
+  if (input_line.length() > output_length.available)
+    return trim_and_unrotate(input_line, fold_position, output_length, fold_marker);
 
   auto output_line = std::string(output_line_length, ' ');
 
   // copy after the fold into first half of the output
   auto after_fold = input_line.substr(fold_position+1);
-  copy_and_wrap_left(output_line, after_fold, half_length);
+  copy_and_wrap_left(output_line, after_fold, output_length.half);
 
   // copy before the fold into the second half of the output
   auto before_fold = input_line.substr(0, fold_position);
-  copy_and_wrap_right(output_line, before_fold, half_length);
+  copy_and_wrap_right(output_line, before_fold, output_length.half);
 
   return trim_trailing_blanks(output_line);
 }
 
-std::string trim_and_unrotate(std::string const& input_line, size_t fold_position, size_t half_length, size_t output_line_length, char fold_marker)
+std::string trim_and_unrotate(std::string const& input_line, size_t fold_position, output_sizes const& output_length, char fold_marker)
 {
-  auto excess = input_line.length() - (half_length * 2);
+  auto excess = input_line.length() - output_length.available;
 
-  auto double_trim = (fold_position >= half_length) && (fold_position <= (input_line.length() - fold_position));
+  auto needs_double_trim =
+    (fold_position >= output_length.half) &&
+    (fold_position <= (input_line.length() - fold_position));
 
-  auto trimmed = double_trim
-    ? input_line.substr(0, half_length) + fold_marker + input_line.substr(input_line.length() - (half_length-1))
-    : input_line.substr(0, half_length) + input_line.substr(half_length + excess);
+  auto trimmed = needs_double_trim
+    ? input_line.substr(0, output_length.half) + fold_marker + input_line.substr(input_line.length() - (output_length.half-1))
+    : input_line.substr(0, output_length.half) + input_line.substr(output_length.half + excess);
 
-  return stiX::unrotate_line(trimmed, output_line_length, fold_marker);
+  return stiX::unrotate_line(trimmed, output_length.full_width, fold_marker);
 }
 
 void copy_and_wrap_left(std::string& output_line, std::string const& input, size_t half_length) {
