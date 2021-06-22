@@ -26,13 +26,17 @@ auto is_one_of_matcher(const std::string &targets) {
   };
 }
 
-stiX::matcher stiX::make_matcher(const std::string& characters) {
+stiX::match_fn make_matcher_fn(const std::string& characters) {
   if (characters.size() > 1)
-    return matcher(is_one_of_matcher(characters));
+    return is_one_of_matcher(characters);
 
   char c = characters[0];
   if (c == '?')
-    return stiX::matcher(is_any_char);
+    return is_any_char;
 
-  return stiX::matcher(is_char_matcher(c));
+  return is_char_matcher(c);
+}
+
+stiX::matcher stiX::make_matcher(const std::string& characters) {
+  return stiX::matcher(make_matcher_fn(characters));
 }
