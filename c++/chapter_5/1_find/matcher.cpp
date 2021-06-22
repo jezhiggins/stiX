@@ -9,3 +9,7 @@ stiX::matcher::matcher(std::string  character)
 bool stiX::matcher::match(char candidate) const {
   return pattern_.find(candidate) != std::string::npos;
 }
+
+stiX::matcher stiX::make_matcher(const std::string &character) {
+  return stiX::matcher(character);
+}
