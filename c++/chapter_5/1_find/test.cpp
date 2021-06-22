@@ -8,6 +8,14 @@ TEST_CASE("Chapter 5 - find - matcher") {
     REQUIRE(m.match('a'));
     REQUIRE_FALSE(m.match('b'));
   }
+  SECTION("any character match") {
+    auto m = stiX::make_matcher("?");
+    REQUIRE(m.match('a'));
+    REQUIRE(m.match('A'));
+    REQUIRE(m.match('?'));
+    REQUIRE(m.match(' '));
+    REQUIRE_FALSE(m.match('\n'));
+  }
   SECTION("multi-character match") {
     auto m = stiX::make_matcher("abc");
     REQUIRE(m.match('a'));
