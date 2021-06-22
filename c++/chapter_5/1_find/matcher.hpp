@@ -2,21 +2,24 @@
 #define STICPP_MATCHER_HPP
 
 #include <string>
+#include <functional>
 
 namespace stiX {
+  using match_fn = std::function<bool(char)>;
+
   class matcher {
   public:
     bool match(char candidate) const;
 
   private:
-    explicit matcher(std::string  character);
+    explicit matcher(match_fn fn);
 
-    std::string pattern_;
+    match_fn fn_;
 
-    friend matcher make_matcher(const std::string& character);
+    friend matcher make_matcher(const std::string&);
   };
 
-  matcher make_matcher(const std::string& character);
+  matcher make_matcher(const std::string& characters);
 }
 
 #endif //STICPP_MATCHER_HPP
