@@ -29,10 +29,31 @@ TEST_CASE("Chapter 5 - find - single matcher") {
 }
 
 TEST_CASE("Chapter 5 - find - pattern matcher") {
-  SECTION("compile patterns") {
+  SECTION("simple single-char match") {
     auto p = stiX::compile_pattern("h");
     REQUIRE(p.size() == 1);
     REQUIRE(p.match("hello"));
     REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("char sequence match") {
+    auto p = stiX::compile_pattern("hello");
+    REQUIRE(p.size() == 5);
+    REQUIRE(p.match("hello"));
+    REQUIRE(p.match("hhhhhhello"));
+    REQUIRE(p.match("kellohelloyellow"));
+    REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("char sequence with wild card") {
+    auto p = stiX::compile_pattern("he??o");
+    REQUIRE(p.size() == 5);
+    REQUIRE(p.match("hello"));
+    REQUIRE(p.match("hellhello"));
+    REQUIRE(p.match("xxxxheXXo"));
+    REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match("hell"));
+    REQUIRE_FALSE(p.match("hel"));
+    REQUIRE_FALSE(p.match(""));
   }
 }

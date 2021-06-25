@@ -2,19 +2,18 @@
 #define STICPP_PATTERN_MATCHER_HPP
 
 #include "matcher.hpp"
+#include <vector>
 
 namespace stiX {
   class pattern_matcher {
   public:
-    bool match(const std::string& line) const {
-      return m_.match(line[0]);
-    }
-    size_t size() const { return 1; }
+    bool match(const std::string& line) const;
+    size_t size() const { return m_.size(); }
 
   private:
-    explicit pattern_matcher(matcher m);
+    explicit pattern_matcher(std::vector<matcher> m);
 
-    matcher m_;
+    std::vector<matcher> m_;
 
     friend pattern_matcher compile_pattern(const std::string&);
   };
