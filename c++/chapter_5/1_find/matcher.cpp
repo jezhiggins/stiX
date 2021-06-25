@@ -3,7 +3,7 @@
 #include <utility>
 
 stiX::matcher::matcher(match_fn fn)
-  : fn_(fn) {
+  : fn_(std::move(fn)) {
 }
 
 bool stiX::matcher::match(char candidate) const {

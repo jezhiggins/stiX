@@ -5,14 +5,14 @@
 //
 // find treads its input a line at a time and writes to its output
 // those lines that match the specified text pattern. A text
-// pattern is a concetaenation of the follwing elements
+// pattern is a concatenation of the following elements
 //   c        literal character c
 //   ?        any character except newline
 //   %        beginning of the line
 //   $        end of the line (null string before newline)
 //   [...]    character class (any of these characters)
 //   [^...]   negated character class (all but these characters)
-//   *        closure (zero or more occurences of previous pattern)
+//   *        closure (zero or more occurrences of previous pattern)
 //   @c       escaped character (eg @%, @[, @*)
 // Special meaning of characters in a text pattern is lost when
 // escaped, inside [...] (except @]), or for:

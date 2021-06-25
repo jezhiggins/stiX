@@ -152,8 +152,8 @@ add_executable(unrotate_test
 target_link_libraries(unrotate_test stix testsupport)
 
 add_executable(find
-        chapter_5/1_find/1_find.cpp chapter_5/1_find/matcher.cpp chapter_5/1_find/matcher.hpp)
+        chapter_5/1_find/1_find.cpp chapter_5/1_find/matcher.cpp chapter_5/1_find/matcher.hpp chapter_5/1_find/pattern_matcher.hpp chapter_5/1_find/pattern_matcher.cpp)
 target_link_libraries(find stix)
 add_executable(find_test
-        chapter_5/1_find/test.cpp chapter_5/1_find/matcher.cpp chapter_5/1_find/matcher.hpp)
+        chapter_5/1_find/test.cpp chapter_5/1_find/matcher.cpp chapter_5/1_find/matcher.hpp chapter_5/1_find/pattern_matcher.hpp chapter_5/1_find/pattern_matcher.cpp)
 target_link_libraries(find_test stix testsupport)
