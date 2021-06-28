@@ -12,7 +12,8 @@ bool match_all(const std::vector<stiX::matcher>& matchers, stiX::character_seque
       return false;
     if (seq.is_eol())
       return false;
-    seq.advance();
+    if (m.consumes())
+      seq.advance();
   }
   return true;
 }

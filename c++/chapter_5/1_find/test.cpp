@@ -75,6 +75,19 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     REQUIRE(m.match(cs("c")));
     REQUIRE_FALSE(m.match(cs("v")));
   }
+  SECTION("start of line match") {
+    auto m = stiX::make_matcher("%");
+
+    auto emptyseq = stiX::character_sequence("");
+    REQUIRE(m.match(emptyseq));
+
+    auto seq = stiX::character_sequence("abc");
+    REQUIRE(m.match(seq));
+    seq.advance();
+    REQUIRE_FALSE(m.match(seq));
+    seq.advance();
+    REQUIRE_FALSE(m.match(seq));
+  }
 }
 
 TEST_CASE("Chapter 5 - find - pattern matcher") {
@@ -104,6 +117,17 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match("hell"));
     REQUIRE_FALSE(p.match("hel"));
+    REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("char sequence anchored to start of line") {
+    auto p = stiX::compile_pattern("%hello");
+    REQUIRE(p.size() == 6);
+    REQUIRE(p.match("hello"));
+    REQUIRE(p.match("hello friend"));
+    REQUIRE_FALSE(p.match("hell"));
+    REQUIRE_FALSE(p.match("hhhhhhello"));
+    REQUIRE_FALSE(p.match("kellohelloyellow"));
+    REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match(""));
   }
 }
