@@ -1,26 +1,26 @@
 #include "pattern_matcher.hpp"
+#include "char_seq.hpp"
 
 stiX::pattern_matcher::pattern_matcher(std::vector<stiX::matcher> m)
   : m_(std::move(m)){
 }
 
 
-bool match_all(const std::vector<stiX::matcher>& matchers, const std::string& line, int i) {
+bool match_all(const std::vector<stiX::matcher>& matchers, stiX::character_sequence seq) {
   for(auto& m : matchers) {
-    if (!m.match(line[i]))
+    if (!m.match(seq))
       return false;
-    if (++i > line.length())
+    if (seq.is_eol())
       return false;
+    seq.advance();
   }
   return true;
 }
 
 bool stiX::pattern_matcher::match(const std::string& line) const {
-  int i = 0;
-  while (i != line.length()) {
-    if (match_all(m_, line, i))
+  for (auto seq = stiX::character_sequence(line); !seq.is_eol(); seq.advance()) {
+    if (match_all(m_, seq))
       return true;
-    ++i;
   }
   return false;
 }

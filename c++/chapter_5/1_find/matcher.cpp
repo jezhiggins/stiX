@@ -1,28 +1,28 @@
 #include "matcher.hpp"
-
+#include "char_seq.hpp"
 #include <utility>
 
 stiX::matcher::matcher(match_fn fn)
   : fn_(std::move(fn)) {
 }
 
-bool stiX::matcher::match(char candidate) const {
+bool stiX::matcher::match(const stiX::character_sequence& candidate) const {
   return fn_(candidate);
 }
 
-bool is_any_char(char target) {
-  return target != '\n';
+bool is_any_char(const stiX::character_sequence& c) {
+  return *c != '\n';
 }
 
 auto is_char_matcher(char target) {
-  return [target](char c) {
-    return c == target;
+  return [target](const stiX::character_sequence& c) {
+    return *c == target;
   };
 }
 
 auto is_one_of_matcher(const std::string &targets) {
-  return [targets](char c) {
-    return targets.find(c) != std::string::npos;
+  return [targets](const stiX::character_sequence& c) {
+    return targets.find(*c) != std::string::npos;
   };
 }
 

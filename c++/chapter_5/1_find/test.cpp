@@ -53,29 +53,32 @@ TEST_CASE("Chapter 5 - character_sequence") {
 }
 
 TEST_CASE("Chapter 5 - find - single matcher") {
+  using cs = stiX::character_sequence;
+
   SECTION("single character match") {
     auto m = stiX::make_matcher("a");
-    REQUIRE(m.match('a'));
-    REQUIRE_FALSE(m.match('b'));
+    REQUIRE(m.match(cs("a")));
+    REQUIRE_FALSE(m.match(cs("b")));
   }
   SECTION("any character match") {
     auto m = stiX::make_matcher("?");
-    REQUIRE(m.match('a'));
-    REQUIRE(m.match('A'));
-    REQUIRE(m.match('?'));
-    REQUIRE(m.match(' '));
-    REQUIRE_FALSE(m.match('\n'));
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("A")));
+    REQUIRE(m.match(cs("?")));
+    REQUIRE(m.match(cs(" ")));
+    REQUIRE_FALSE(m.match(cs("\n")));
   }
   SECTION("multi-character match") {
     auto m = stiX::make_matcher("abc");
-    REQUIRE(m.match('a'));
-    REQUIRE(m.match('b'));
-    REQUIRE(m.match('c'));
-    REQUIRE_FALSE(m.match('v'));
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("b")));
+    REQUIRE(m.match(cs("c")));
+    REQUIRE_FALSE(m.match(cs("v")));
   }
 }
 
 TEST_CASE("Chapter 5 - find - pattern matcher") {
+  using cs = stiX::character_sequence;
   SECTION("simple single-char match") {
     auto p = stiX::compile_pattern("h");
     REQUIRE(p.size() == 1);

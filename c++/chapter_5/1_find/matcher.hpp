@@ -5,11 +5,12 @@
 #include <functional>
 
 namespace stiX {
-  using match_fn = std::function<bool(char)>;
+  class character_sequence;
+  using match_fn = std::function<bool(const character_sequence&)>;
 
   class matcher {
   public:
-    bool match(char candidate) const;
+    bool match(const character_sequence& candidate) const;
 
   private:
     explicit matcher(match_fn fn);
