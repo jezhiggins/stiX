@@ -56,27 +56,27 @@ TEST_CASE("Chapter 5 - find - single matcher") {
   using cs = stiX::character_sequence;
 
   SECTION("single character match") {
-    auto m = stiX::make_matcher("a");
+    auto m = stiX::make_matcher(cs("a"));
     REQUIRE(m.match(cs("a")));
     REQUIRE_FALSE(m.match(cs("b")));
   }
   SECTION("any character match") {
-    auto m = stiX::make_matcher("?");
+    auto m = stiX::make_matcher(cs("?"));
     REQUIRE(m.match(cs("a")));
     REQUIRE(m.match(cs("A")));
     REQUIRE(m.match(cs("?")));
     REQUIRE(m.match(cs(" ")));
     REQUIRE_FALSE(m.match(cs("\n")));
   }
-  SECTION("multi-character match") {
-    auto m = stiX::make_matcher("abc");
-    REQUIRE(m.match(cs("a")));
-    REQUIRE(m.match(cs("b")));
-    REQUIRE(m.match(cs("c")));
-    REQUIRE_FALSE(m.match(cs("v")));
-  }
+  //SECTION("multi-character match") {
+  //  auto m = stiX::make_matcher("abc");
+  //  REQUIRE(m.match(cs("a")));
+  //  REQUIRE(m.match(cs("b")));
+  //  REQUIRE(m.match(cs("c")));
+  //  REQUIRE_FALSE(m.match(cs("v")));
+  //}
   SECTION("start of line match") {
-    auto m = stiX::make_matcher("%");
+    auto m = stiX::make_matcher(cs("%"));
 
     auto emptyseq = stiX::character_sequence("");
     REQUIRE(m.match(emptyseq));
@@ -127,6 +127,14 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("hell"));
     REQUIRE_FALSE(p.match("hhhhhhello"));
     REQUIRE_FALSE(p.match("kellohelloyellow"));
+    REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("% is only special at start of pattern") {
+    auto p = stiX::compile_pattern("percent %");
+    REQUIRE(p.size() == 9);
+    REQUIRE(p.match("percent %"));
+    REQUIRE(p.match("percent %!"));
     REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match(""));
   }

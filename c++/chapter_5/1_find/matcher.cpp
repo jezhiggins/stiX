@@ -35,19 +35,19 @@ auto is_one_of_matcher(const std::string &targets) {
   };
 }
 
-stiX::match_fn_with_len make_matcher_fn(const std::string& characters) {
-  if (characters.size() > 1)
-    return stiX::match_fn_with_len(is_one_of_matcher(characters), true);
+stiX::match_fn_with_len make_matcher_fn(const stiX::character_sequence& characters) {
+  //if (characters.size() > 1)
+  //  return stiX::match_fn_with_len(is_one_of_matcher(characters), true);
 
-  char c = characters[0];
+  char c = *characters;
   if (c == '?')
     return stiX::match_fn_with_len(is_any_char, true);
-  if (c == '%')
+  if (c == '%' && characters.is_bol())
     return stiX::match_fn_with_len(is_bol, false);
 
   return stiX::match_fn_with_len(is_char_matcher(c), true);
 }
 
-stiX::matcher stiX::make_matcher(const std::string& characters) {
+stiX::matcher stiX::make_matcher(const stiX::character_sequence& characters) {
   return stiX::matcher(make_matcher_fn(characters));
 }
