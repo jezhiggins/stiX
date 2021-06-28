@@ -13,6 +13,8 @@ namespace stiX {
 
     char operator *() const;
 
+    void advance();
+
   private:
     const std::string input_;
     size_t pos_;

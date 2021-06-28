@@ -15,6 +15,40 @@ TEST_CASE("Chapter 5 - character_sequence") {
     REQUIRE(seq.is_bol());
     REQUIRE_FALSE(seq.is_eol());
     REQUIRE(*seq == 'a');
+
+    seq.advance();
+    REQUIRE_FALSE(seq.is_bol());
+    REQUIRE(seq.is_eol());
+  }
+  SECTION("longer string") {
+    auto seq = stiX::character_sequence("abcde");
+    REQUIRE(seq.is_bol());
+    REQUIRE_FALSE(seq.is_eol());
+
+    REQUIRE(*seq == 'a');
+    seq.advance();
+    REQUIRE_FALSE(seq.is_bol());
+    REQUIRE_FALSE(seq.is_eol());
+
+    REQUIRE(*seq == 'b');
+    seq.advance();
+    REQUIRE_FALSE(seq.is_bol());
+    REQUIRE_FALSE(seq.is_eol());
+
+    REQUIRE(*seq == 'c');
+    seq.advance();
+    REQUIRE_FALSE(seq.is_bol());
+    REQUIRE_FALSE(seq.is_eol());
+
+    REQUIRE(*seq == 'd');
+    seq.advance();
+    REQUIRE_FALSE(seq.is_bol());
+    REQUIRE_FALSE(seq.is_eol());
+
+    REQUIRE(*seq == 'e');
+    seq.advance();
+    REQUIRE_FALSE(seq.is_bol());
+    REQUIRE(seq.is_eol());
   }
 }
 

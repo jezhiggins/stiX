@@ -17,4 +17,8 @@ char stiX::character_sequence::operator*() const {
   return input_[pos_];
 }
 
+void stiX::character_sequence::advance() {
+  if (!is_eol()) ++pos_;
+}
+
 
