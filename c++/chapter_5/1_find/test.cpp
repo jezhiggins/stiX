@@ -2,8 +2,15 @@
 
 #include "pattern_matcher.hpp"
 #include "matcher.hpp"
-#include <ranges>
+#include "char_seq.hpp"
 
+TEST_CASE("Chapter 5 - character_sequence") {
+  SECTION("empty sequence") {
+    auto seq = stiX::character_sequence("");
+    REQUIRE(seq.is_bol());
+    REQUIRE(seq.is_eol());
+  }
+}
 
 TEST_CASE("Chapter 5 - find - single matcher") {
   SECTION("single character match") {
