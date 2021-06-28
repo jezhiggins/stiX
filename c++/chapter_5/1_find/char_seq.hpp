@@ -6,11 +6,16 @@
 namespace stiX {
   class character_sequence {
   public:
-    explicit character_sequence(std::string input)
-    {}
+    explicit character_sequence(std::string input);
 
     bool is_bol() const;
     bool is_eol() const;
+
+    char operator *() const;
+
+  private:
+    const std::string input_;
+    size_t pos_;
   };
 }
 

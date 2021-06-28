@@ -10,6 +10,12 @@ TEST_CASE("Chapter 5 - character_sequence") {
     REQUIRE(seq.is_bol());
     REQUIRE(seq.is_eol());
   }
+  SECTION("single character") {
+    auto seq = stiX::character_sequence("a");
+    REQUIRE(seq.is_bol());
+    REQUIRE_FALSE(seq.is_eol());
+    REQUIRE(*seq == 'a');
+  }
 }
 
 TEST_CASE("Chapter 5 - find - single matcher") {
