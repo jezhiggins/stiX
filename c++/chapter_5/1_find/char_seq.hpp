@@ -10,6 +10,7 @@ namespace stiX {
 
     bool is_bol() const;
     bool is_eol() const;
+    bool available() const;
 
     char operator *() const;
 

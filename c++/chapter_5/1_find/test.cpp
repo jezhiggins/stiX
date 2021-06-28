@@ -88,6 +88,21 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     seq.advance();
     REQUIRE_FALSE(m.match(seq));
   }
+  SECTION("end of line match") {
+    auto m = stiX::make_matcher(cs("$"));
+
+    auto emptyseq = stiX::character_sequence("");
+    REQUIRE(m.match(emptyseq));
+
+    auto seq = stiX::character_sequence("abc");
+    REQUIRE_FALSE(m.match(seq));
+    seq.advance();
+    REQUIRE_FALSE(m.match(seq));
+    seq.advance();
+    REQUIRE_FALSE(m.match(seq));
+    seq.advance();
+    REQUIRE(m.match(seq));
+  }
 }
 
 TEST_CASE("Chapter 5 - find - pattern matcher") {
@@ -135,6 +150,42 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE(p.size() == 9);
     REQUIRE(p.match("percent %"));
     REQUIRE(p.match("percent %!"));
+    REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("char sequence anchored to end of line") {
+    auto p = stiX::compile_pattern("hello$");
+    REQUIRE(p.size() == 6);
+    REQUIRE(p.match("hello"));
+    REQUIRE(p.match("oh hello"));
+    REQUIRE_FALSE(p.match("hell"));
+    REQUIRE_FALSE(p.match("hello friend"));
+    REQUIRE_FALSE(p.match("kellohelloyellow"));
+    REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("$ is only special at end of pattern") {
+    auto p = stiX::compile_pattern("what $ that");
+    REQUIRE(p.size() == 11);
+    REQUIRE(p.match("oh what $ that proot"));
+    REQUIRE(p.match("what $ that"));
+    REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("%$ matches empty string") {
+    auto p = stiX::compile_pattern("%$");
+    REQUIRE(p.size() == 2);
+    REQUIRE(p.match(""));
+    REQUIRE_FALSE(p.match("nope"));
+  }
+  SECTION("char sequence anchored at both ends") {
+    auto p = stiX::compile_pattern("%he??o$");
+    REQUIRE(p.size() == 7);
+    REQUIRE(p.match("hello"));
+    REQUIRE(p.match("heppo"));
+    REQUIRE_FALSE(p.match("hell"));
+    REQUIRE_FALSE(p.match("hhhhhhello"));
+    REQUIRE_FALSE(p.match("kellohelloyellow"));
     REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match(""));
   }

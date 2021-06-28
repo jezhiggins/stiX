@@ -13,8 +13,12 @@ bool stiX::character_sequence::is_eol() const {
   return pos_ == input_.length();
 }
 
+bool stiX::character_sequence::available() const {
+  return pos_ < (input_.length()-1);
+}
+
 char stiX::character_sequence::operator*() const {
-  return input_[pos_];
+  return !is_eol() ? input_[pos_] : char(0);
 }
 
 void stiX::character_sequence::advance() {

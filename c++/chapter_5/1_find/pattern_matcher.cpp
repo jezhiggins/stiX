@@ -10,8 +10,6 @@ bool match_all(const std::vector<stiX::matcher>& matchers, stiX::character_seque
   for(auto& m : matchers) {
     if (!m.match(seq))
       return false;
-    if (seq.is_eol())
-      return false;
     if (m.consumes())
       seq.advance();
   }
@@ -19,7 +17,8 @@ bool match_all(const std::vector<stiX::matcher>& matchers, stiX::character_seque
 }
 
 bool stiX::pattern_matcher::match(const std::string& line) const {
-  for (auto seq = stiX::character_sequence(line); !seq.is_eol(); seq.advance()) {
+  bool once = true; // need to try at least once, because even zero length input might match
+  for (auto seq = stiX::character_sequence(line); !seq.is_eol() || once; seq.advance(), once = false) {
     if (match_all(m_, seq))
       return true;
   }

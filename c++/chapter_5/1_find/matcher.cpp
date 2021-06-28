@@ -23,6 +23,10 @@ bool is_bol(const stiX::character_sequence& c) {
   return c.is_bol();
 }
 
+bool is_eol(const stiX::character_sequence& c) {
+  return c.is_eol();
+}
+
 auto is_char_matcher(char target) {
   return [target](const stiX::character_sequence& c) {
     return *c == target;
@@ -44,6 +48,8 @@ stiX::match_fn_with_len make_matcher_fn(const stiX::character_sequence& characte
     return stiX::match_fn_with_len(is_any_char, true);
   if (c == '%' && characters.is_bol())
     return stiX::match_fn_with_len(is_bol, false);
+  if (c == '$' && !characters.available())
+    return stiX::match_fn_with_len(is_eol, false);
 
   return stiX::match_fn_with_len(is_char_matcher(c), true);
 }
