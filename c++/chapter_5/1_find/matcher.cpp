@@ -39,11 +39,15 @@ auto is_one_of_matcher(const std::string &targets) {
   };
 }
 
-stiX::match_fn_with_len make_matcher_fn(const stiX::character_sequence& characters) {
+stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
   //if (characters.size() > 1)
   //  return stiX::match_fn_with_len(is_one_of_matcher(characters), true);
 
   char c = *characters;
+  if (c == '@') {
+    characters.advance();
+    return stiX::match_fn_with_len(is_char_matcher(*characters), true);
+  }
   if (c == '?')
     return stiX::match_fn_with_len(is_any_char, true);
   if (c == '%' && characters.is_bol())
@@ -54,6 +58,6 @@ stiX::match_fn_with_len make_matcher_fn(const stiX::character_sequence& characte
   return stiX::match_fn_with_len(is_char_matcher(c), true);
 }
 
-stiX::matcher stiX::make_matcher(const stiX::character_sequence& characters) {
+stiX::matcher stiX::make_matcher(stiX::character_sequence& characters) {
   return stiX::matcher(make_matcher_fn(characters));
 }

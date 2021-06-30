@@ -52,16 +52,21 @@ TEST_CASE("Chapter 5 - character_sequence") {
   }
 }
 
+stiX::matcher compile(const std::string& input) {
+  auto cs = stiX::character_sequence(input);
+  return stiX::make_matcher(cs);
+}
+
 TEST_CASE("Chapter 5 - find - single matcher") {
   using cs = stiX::character_sequence;
 
   SECTION("single character match") {
-    auto m = stiX::make_matcher(cs("a"));
+    auto m = compile("a");
     REQUIRE(m.match(cs("a")));
     REQUIRE_FALSE(m.match(cs("b")));
   }
   SECTION("any character match") {
-    auto m = stiX::make_matcher(cs("?"));
+    auto m = compile("?");
     REQUIRE(m.match(cs("a")));
     REQUIRE(m.match(cs("A")));
     REQUIRE(m.match(cs("?")));
@@ -76,7 +81,7 @@ TEST_CASE("Chapter 5 - find - single matcher") {
   //  REQUIRE_FALSE(m.match(cs("v")));
   //}
   SECTION("start of line match") {
-    auto m = stiX::make_matcher(cs("%"));
+    auto m = compile("%");
 
     auto emptyseq = stiX::character_sequence("");
     REQUIRE(m.match(emptyseq));
@@ -89,7 +94,7 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     REQUIRE_FALSE(m.match(seq));
   }
   SECTION("end of line match") {
-    auto m = stiX::make_matcher(cs("$"));
+    auto m = compile("$");
 
     auto emptyseq = stiX::character_sequence("");
     REQUIRE(m.match(emptyseq));
@@ -188,5 +193,11 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("kellohelloyellow"));
     REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("escape sequence") {
+    auto p = stiX::compile_pattern("@@");
+    REQUIRE(p.match("@"));
+    p = stiX::compile_pattern("@%");
+    REQUIRE(p.match("%"));
   }
 }

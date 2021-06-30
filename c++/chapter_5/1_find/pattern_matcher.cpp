@@ -27,8 +27,8 @@ bool stiX::pattern_matcher::match(const std::string& line) const {
 
 stiX::pattern_matcher stiX::compile_pattern(const std::string& pattern) {
   auto matches = std::vector<matcher> { };
-  for(auto pattern_seq = stiX::character_sequence(pattern); !pattern_seq.is_eol(); pattern_seq.advance())
-    matches.emplace_back(make_matcher(pattern_seq));
+  for(auto seq = stiX::character_sequence(pattern); !seq.is_eol(); seq.advance())
+    matches.emplace_back(make_matcher(seq));
 
   return pattern_matcher(matches);
 }

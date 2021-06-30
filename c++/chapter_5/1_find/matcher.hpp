@@ -20,10 +20,10 @@ namespace stiX {
     match_fn fn_;
     bool consume_;
 
-    friend matcher make_matcher(const stiX::character_sequence&);
+    friend matcher make_matcher(stiX::character_sequence&);
   };
 
-  matcher make_matcher(const stiX::character_sequence& characters);
+  matcher make_matcher(stiX::character_sequence& characters);
 }
 
 #endif //STICPP_MATCHER_HPP
