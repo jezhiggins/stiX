@@ -45,7 +45,7 @@ stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
   //  return stiX::match_fn_with_len(is_one_of_matcher(characters), true);
 
   char c = *characters;
-  if (c == stiX::Escape) {
+  if (c == stiX::Escape && characters.available()) {
     characters.advance();
     char escaped = stiX::expand_escape(*characters);
     return stiX::match_fn_with_len(is_char_matcher(escaped), true);

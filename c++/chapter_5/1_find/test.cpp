@@ -196,6 +196,7 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
   }
   SECTION("escape sequence") {
     auto escape_tests = std::vector<std::array<std::string, 2>> {
+      { "@", "@" },
       { "@@", "@" },
       { "@%", "%" },
       { "@[", "[" },
