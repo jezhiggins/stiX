@@ -139,7 +139,7 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("hel"));
     REQUIRE_FALSE(p.match(""));
   }
-  SECTION("char sequence anchored to start of line") {
+  SECTION("% anchors to start of line") {
     auto p = stiX::compile_pattern("%hello");
     REQUIRE(p.size() == 6);
     REQUIRE(p.match("hello"));
@@ -158,7 +158,7 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match(""));
   }
-  SECTION("char sequence anchored to end of line") {
+  SECTION("$ anchors to end of line") {
     auto p = stiX::compile_pattern("hello$");
     REQUIRE(p.size() == 6);
     REQUIRE(p.match("hello"));
