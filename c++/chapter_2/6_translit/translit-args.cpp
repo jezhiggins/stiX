@@ -2,11 +2,11 @@
 
 #include <cctype>
 #include <map>
+#include "../../lib/escapes.hpp"
 
 namespace {
     const char Caret = '^';
     const char Dash = '-';
-    const char Escape = '@';
 
     std::string translitArgument(
         const std::string &arg,
@@ -118,7 +118,7 @@ namespace {
         const std::string &arg,
         const std::string::const_iterator &c
     ) {
-      if (*c != Escape)
+      if (*c != stiX::Escape)
         return false;
 
       return (c+1 != arg.end());
@@ -134,11 +134,9 @@ namespace {
       }; // escapes
 
       auto candidate = *++c;
-      auto escape = escapes.find(candidate);
+      auto escaped = stiX::expand_escape(candidate);
 
-      dest = escape != escapes.end()
-          ? escape->second
-          : candidate;
+      dest = escaped;
 
       ++c;
     } // expand_escape_sequence

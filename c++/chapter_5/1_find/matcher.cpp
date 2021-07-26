@@ -1,6 +1,7 @@
 #include "matcher.hpp"
 #include "char_seq.hpp"
 #include <utility>
+#include "../../lib/escapes.hpp"
 
 stiX::matcher::matcher(match_fn_with_len match_fn)
   : fn_(std::move(match_fn.first)),
@@ -44,9 +45,10 @@ stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
   //  return stiX::match_fn_with_len(is_one_of_matcher(characters), true);
 
   char c = *characters;
-  if (c == '@') {
+  if (c == stiX::Escape) {
     characters.advance();
-    return stiX::match_fn_with_len(is_char_matcher(*characters), true);
+    char escaped = stiX::expand_escape(*characters);
+    return stiX::match_fn_with_len(is_char_matcher(escaped), true);
   }
   if (c == '?')
     return stiX::match_fn_with_len(is_any_char, true);

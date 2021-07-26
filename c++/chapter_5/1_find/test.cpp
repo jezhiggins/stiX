@@ -195,9 +195,21 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match(""));
   }
   SECTION("escape sequence") {
-    auto p = stiX::compile_pattern("@@");
-    REQUIRE(p.match("@"));
-    p = stiX::compile_pattern("@%");
-    REQUIRE(p.match("%"));
+    auto escape_tests = std::vector<std::array<std::string, 2>> {
+      { "@@", "@" },
+      { "@%", "%" },
+      { "@[", "[" },
+      { "@t", "\t" },
+      { "@n", "\n" }
+    };
+
+    for (auto escape_test : escape_tests) {
+      auto escape = escape_test[0];
+      auto expected = escape_test[1];
+      DYNAMIC_SECTION(escape) {
+        auto p = stiX::compile_pattern(escape);
+        REQUIRE(p.match(expected));
+      }
+    }
   }
 }

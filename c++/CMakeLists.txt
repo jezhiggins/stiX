@@ -69,9 +69,23 @@ target_link_libraries(echo stix)
 add_executable(echo_test chapter_2/5_echo/test.cpp chapter_2/5_echo/echo.cpp chapter_2/5_echo/echo.hpp)
 target_link_libraries(echo_test stix testsupport)
 
-add_executable(translit chapter_2/6_translit/6_translit.cpp chapter_2/6_translit/translit.cpp chapter_2/6_translit/translit.hpp chapter_2/6_translit/translit-args.cpp chapter_2/6_translit/translit-args.hpp)
+add_executable(translit
+        chapter_2/6_translit/6_translit.cpp
+        chapter_2/6_translit/translit.cpp
+        chapter_2/6_translit/translit.hpp
+        chapter_2/6_translit/translit-args.cpp
+        chapter_2/6_translit/translit-args.hpp
+        lib/escapes.cpp
+        lib/escapes.hpp)
 target_link_libraries(translit stix)
-add_executable(translit_test chapter_2/6_translit/test.cpp chapter_2/6_translit/translit.cpp chapter_2/6_translit/translit.hpp chapter_2/6_translit/translit-args.cpp chapter_2/6_translit/translit-args.hpp)
+add_executable(translit_test
+        chapter_2/6_translit/test.cpp
+        chapter_2/6_translit/translit.cpp
+        chapter_2/6_translit/translit.hpp
+        chapter_2/6_translit/translit-args.cpp
+        chapter_2/6_translit/translit-args.hpp
+        lib/escapes.cpp
+        lib/escapes.hpp)
 target_link_libraries(translit_test stix testsupport)
 
 add_executable(compare chapter_3/1_compare/1_compare.cpp chapter_3/1_compare/compare.cpp chapter_3/1_compare/compare.hpp chapter_3/6_archive/test/test_print.inc)
@@ -152,8 +166,24 @@ add_executable(unrotate_test
 target_link_libraries(unrotate_test stix testsupport)
 
 add_executable(find
-        chapter_5/1_find/1_find.cpp chapter_5/1_find/matcher.cpp chapter_5/1_find/matcher.hpp chapter_5/1_find/pattern_matcher.hpp chapter_5/1_find/pattern_matcher.cpp chapter_5/1_find/char_seq.cpp chapter_5/1_find/char_seq.hpp)
+        chapter_5/1_find/1_find.cpp
+        chapter_5/1_find/matcher.cpp
+        chapter_5/1_find/matcher.hpp
+        chapter_5/1_find/pattern_matcher.hpp
+        chapter_5/1_find/pattern_matcher.cpp
+        chapter_5/1_find/char_seq.cpp
+        chapter_5/1_find/char_seq.hpp
+        lib/escapes.cpp
+        lib/escapes.hpp)
 target_link_libraries(find stix)
 add_executable(find_test
-        chapter_5/1_find/test.cpp chapter_5/1_find/matcher.cpp chapter_5/1_find/matcher.hpp chapter_5/1_find/pattern_matcher.hpp chapter_5/1_find/pattern_matcher.cpp chapter_5/1_find/char_seq.cpp chapter_5/1_find/char_seq.hpp)
+        chapter_5/1_find/test.cpp
+        chapter_5/1_find/matcher.cpp
+        chapter_5/1_find/matcher.hpp
+        chapter_5/1_find/pattern_matcher.hpp
+        chapter_5/1_find/pattern_matcher.cpp
+        chapter_5/1_find/char_seq.cpp
+        chapter_5/1_find/char_seq.hpp
+        lib/escapes.cpp
+        lib/escapes.hpp)
 target_link_libraries(find_test stix testsupport)
