@@ -73,14 +73,7 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     REQUIRE(m.match(cs(" ")));
     REQUIRE_FALSE(m.match(cs("\n")));
   }
-  //SECTION("multi-character match") {
-  //  auto m = stiX::make_matcher("abc");
-  //  REQUIRE(m.match(cs("a")));
-  //  REQUIRE(m.match(cs("b")));
-  //  REQUIRE(m.match(cs("c")));
-  //  REQUIRE_FALSE(m.match(cs("v")));
-  //}
-  SECTION("start of line match") {
+  SECTION("% start of line match") {
     auto m = compile("%");
 
     auto emptyseq = stiX::character_sequence("");
@@ -93,7 +86,7 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     seq.advance();
     REQUIRE_FALSE(m.match(seq));
   }
-  SECTION("end of line match") {
+  SECTION("$ end of line match") {
     auto m = compile("$");
 
     auto emptyseq = stiX::character_sequence("");
@@ -107,6 +100,13 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     REQUIRE_FALSE(m.match(seq));
     seq.advance();
     REQUIRE(m.match(seq));
+  }
+  SECTION("character class match") {
+    auto m = compile("[abc]");
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("b")));
+    REQUIRE(m.match(cs("c")));
+    REQUIRE_FALSE(m.match(cs("v")));
   }
 }
 

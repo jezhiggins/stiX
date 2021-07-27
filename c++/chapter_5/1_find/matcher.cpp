@@ -40,6 +40,8 @@ auto is_one_of_matcher(const std::string &targets) {
   };
 }
 
+stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& characters);
+
 stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
   //if (characters.size() > 1)
   //  return stiX::match_fn_with_len(is_one_of_matcher(characters), true);
@@ -56,8 +58,28 @@ stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
     return stiX::match_fn_with_len(is_bol, false);
   if (c == '$' && !characters.available())
     return stiX::match_fn_with_len(is_eol, false);
+  if (c == '[' )
+    return make_character_class_matcher(characters);
 
   return stiX::match_fn_with_len(is_char_matcher(c), true);
+}
+
+stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& characters) {
+  auto character_class = std::string { };
+
+  characters.advance(); // step past '['
+  while (characters.available() && *characters != ']') {
+    char c = *characters;
+    if (c == stiX::Escape && characters.available()) {
+      characters.advance();
+      c = stiX::expand_escape(*characters);
+    }
+    characters.advance();
+
+    character_class += c;
+  }
+
+  return stiX::match_fn_with_len(is_one_of_matcher(character_class), true);
 }
 
 stiX::matcher stiX::make_matcher(stiX::character_sequence& characters) {

@@ -24,7 +24,7 @@
 //   c        literal character c, including [
 //   c1-c2    range of characters (digits, lower or upper case letters)
 //   ^        negated character class if at beginning
-//   @c       escaped character (eg @^, @-,, @@ @])
+//   @c       escaped character (eg @^ @- @@ @])
 // Special meaning of characters in a character class is lost when
 // escaped or for:
 //   ^        not at beginning
