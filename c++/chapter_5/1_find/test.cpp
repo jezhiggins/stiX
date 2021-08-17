@@ -334,4 +334,11 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
       }
     }
   }
+  SECTION("* by itself") {
+    auto p = stiX::compile_pattern("*");
+    REQUIRE(p.size() == 1);
+    REQUIRE(p.match("a star *"));
+    REQUIRE_FALSE(p.match("a hash #"));
+    REQUIRE_FALSE(p.match(""));
+  }
 }

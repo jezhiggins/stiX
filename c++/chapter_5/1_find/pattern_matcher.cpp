@@ -5,7 +5,6 @@ stiX::pattern_matcher::pattern_matcher(std::vector<stiX::matcher> m)
   : m_(std::move(m)){
 }
 
-
 bool match_all(const std::vector<stiX::matcher>& matchers, stiX::character_sequence seq) {
   for(auto& m : matchers) {
     if (!m.match(seq))
