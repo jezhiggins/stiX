@@ -12,7 +12,7 @@ stiX::pattern_matcher::pattern_matcher(match_stages m)
 using match_stages_iter = stiX::match_stages::const_iterator;
 
 static bool match_one(const stiX::matcher& matcher, stiX::character_sequence& seq);
-static bool match_with_closure(match_stages_iter mbegin, match_stages_iter& mend, stiX::character_sequence seq);
+static bool match_with_closure(match_stages_iter mbegin, const match_stages_iter& mend, stiX::character_sequence seq);
 static bool match_all(match_stages_iter mbegin, const match_stages_iter& mend, stiX::character_sequence seq);
 static bool match_all(const stiX::match_stages& matchers, stiX::character_sequence seq);
 
@@ -25,7 +25,8 @@ bool match_one(const stiX::matcher& matcher, stiX::character_sequence& seq) {
 }
 
 bool match_with_closure(match_stages_iter mbegin, const match_stages_iter& mend, stiX::character_sequence seq) {
-  while(match_one(mbegin->test, seq));
+  seq.checkpoint();
+  while(seq.available() && match_one(mbegin->test, seq));
   ++mbegin;
   do {
     if (match_all(mbegin, mend, seq))

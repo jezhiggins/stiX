@@ -8,7 +8,7 @@ void testFilter(
     std::string label,
     std::string input,
     std::string expected,
-    void (*fn)(std::istream&, std::ostream&)
+    std::function<void(std::istream&, std::ostream&)> fn
 ) {
   DYNAMIC_SECTION(label << "(\"" << escape(input) << "\") -> \"" << escape(expected) << "\"") {
     std::istringstream is(input);

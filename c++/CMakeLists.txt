@@ -174,7 +174,9 @@ add_executable(find
         chapter_5/1_find/char_seq.cpp
         chapter_5/1_find/char_seq.hpp
         lib/escapes.cpp
-        lib/escapes.hpp)
+        lib/escapes.hpp
+        chapter_5/1_find/find.cpp
+        chapter_5/1_find/find.hpp)
 target_link_libraries(find stix)
 add_executable(find_test
         chapter_5/1_find/test.cpp
@@ -185,5 +187,7 @@ add_executable(find_test
         chapter_5/1_find/char_seq.cpp
         chapter_5/1_find/char_seq.hpp
         lib/escapes.cpp
-        lib/escapes.hpp)
+        lib/escapes.hpp
+        chapter_5/1_find/find.cpp
+        chapter_5/1_find/find.hpp)
 target_link_libraries(find_test stix testsupport)

@@ -5,7 +5,7 @@ void testFilter(
     std::string label,
     std::string input,
     std::string expected,
-    void (*fn)(std::istream&, std::ostream&)
+    std::function<void(std::istream&, std::ostream&)> fn
 );
 
 #endif //STICPP_TEST_FILTER_HPP

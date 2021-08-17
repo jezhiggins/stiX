@@ -3,6 +3,7 @@
 #include "pattern_matcher.hpp"
 #include "matcher.hpp"
 #include "char_seq.hpp"
+#include "find.hpp"
 
 TEST_CASE("Chapter 5 - character_sequence") {
   SECTION("empty sequence") {
@@ -358,4 +359,33 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match(""));
   }
+}
+
+void testFind(
+  std::string const& input,
+  std::string const& expected,
+  std::string const& pattern
+);
+
+TEST_CASE("Chapter 5 - find") {
+  testFind(
+    "#include <iostream>\n#include \"local.h\"\nvoid fn(std::istream& in);",
+    "#include <iostream>\n#include \"local.h\"\n",
+    "%#include");
+  testFind(
+    "#include <iostream>\n#include \"local.h\"\nvoid fn(std::istream& in);",
+    "#include <iostream>\n",
+    "%#include *<?*> *");
+}
+
+void testFind(
+  std::string const& input,
+  std::string const& expected,
+  std::string const& pattern
+) {
+  testFilter("find", input, expected,
+             [pattern](std::istream& in, std::ostream& out) {
+    stiX::find(in, out, pattern);
+  }
+);
 }

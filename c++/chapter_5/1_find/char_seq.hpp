@@ -15,11 +15,14 @@ namespace stiX {
     char operator *() const;
 
     void advance();
+
+    void checkpoint();
     bool rewind();
 
   private:
     const std::string input_;
     size_t pos_;
+    size_t checkpoint_;
   };
 }
 

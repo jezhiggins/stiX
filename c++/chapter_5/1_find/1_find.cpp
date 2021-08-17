@@ -39,5 +39,16 @@
 //   find [a-zA-Z][a-zA-Z0-9]*$
 //
 
-int main() {
+#include "../../lib/arguments.hpp"
+#include "find.hpp"
+#include <iostream>
+
+int main(int argc, char const* argv[]) {
+  auto arguments = stiX::make_arguments(argc, argv);
+  if (arguments.size() != 1) {
+    std::cout << argv[0] << " pattern" << std::endl;
+    return 0;
+  }
+
+  stiX::find(std::cin, std::cout, arguments.front());
 }

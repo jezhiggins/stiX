@@ -25,8 +25,12 @@ void stiX::character_sequence::advance() {
   if (!is_eol()) ++pos_;
 }
 
+void stiX::character_sequence::checkpoint() {
+  checkpoint_ = pos_;
+}
+
 bool stiX::character_sequence::rewind() {
-  if (!is_bol())
+  if (checkpoint_ == pos_)
     return false;
 
   --pos_;
