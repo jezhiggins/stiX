@@ -30,8 +30,15 @@ bool stiX::pattern_matcher::match(const std::string& line) const {
 
 stiX::pattern_matcher stiX::compile_pattern(const std::string& pattern) {
   auto matches = match_stages { };
-  for(auto seq = stiX::character_sequence(pattern); !seq.is_eol(); seq.advance())
+
+  for(auto seq = stiX::character_sequence(pattern); !seq.is_eol(); seq.advance()) {
+    if (*seq == '*' && !matches.empty()) {
+      matches.back().count = match_count::zero_or_more;
+      continue;
+    }
+
     matches.emplace_back(make_matcher(seq));
+  }
 
   return pattern_matcher(matches);
 }
