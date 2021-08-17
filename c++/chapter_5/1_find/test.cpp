@@ -101,12 +101,62 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     seq.advance();
     REQUIRE(m.match(seq));
   }
-  SECTION("character class match") {
+  SECTION("[abc] match") {
     auto m = compile("[abc]");
     REQUIRE(m.match(cs("a")));
     REQUIRE(m.match(cs("b")));
     REQUIRE(m.match(cs("c")));
     REQUIRE_FALSE(m.match(cs("v")));
+  }
+  SECTION("[ab-] match") {
+    auto m = compile("[ab-]");
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("b")));
+    REQUIRE(m.match(cs("-")));
+    REQUIRE_FALSE(m.match(cs("v")));
+  }
+  SECTION("[-ab] match") {
+    auto m = compile("[-ab]");
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("b")));
+    REQUIRE(m.match(cs("-")));
+    REQUIRE_FALSE(m.match(cs("v")));
+  }
+  SECTION("[a-b] match") {
+    auto m = compile("[a-b]");
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("b")));
+    REQUIRE_FALSE(m.match(cs("-")));
+    REQUIRE_FALSE(m.match(cs("v")));
+  }
+  SECTION("[a-z] match") {
+    auto m = compile("[a-z]");
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("b")));
+    REQUIRE(m.match(cs("c")));
+    REQUIRE(m.match(cs("z")));
+    REQUIRE_FALSE(m.match(cs("-")));
+    REQUIRE_FALSE(m.match(cs("A")));
+  }
+  SECTION("[a-zA-Z] match") {
+    auto m = compile("[a-zA-Z]");
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("b")));
+    REQUIRE(m.match(cs("c")));
+    REQUIRE(m.match(cs("z")));
+    REQUIRE(m.match(cs("A")));
+    REQUIRE(m.match(cs("B")));
+    REQUIRE(m.match(cs("C")));
+    REQUIRE(m.match(cs("Z")));
+    REQUIRE_FALSE(m.match(cs("-")));
+    REQUIRE_FALSE(m.match(cs("0")));
+  }
+  SECTION("[@[@]] match") {
+    auto m = compile("[@[@]]");
+    REQUIRE(m.match(cs("[")));
+    REQUIRE(m.match(cs("]")));
+    REQUIRE_FALSE(m.match(cs("-")));
+    REQUIRE_FALSE(m.match(cs("0")));
   }
 }
 

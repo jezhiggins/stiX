@@ -65,16 +65,30 @@ stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
 }
 
 stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& characters) {
-  auto character_class = std::string { };
+  auto subpattern = std::string { };
 
   characters.advance(); // step past '['
-  while (characters.available() && *characters != ']') {
-    char c = *characters;
+  for (char c = *characters; characters.available() && *characters != ']'; characters.advance(), c = *characters) {
     if (c == stiX::Escape && characters.available()) {
       characters.advance();
       c = stiX::expand_escape(*characters);
     }
-    characters.advance();
+
+    subpattern += c;
+  }
+  characters.advance(); // step past ']'
+
+  auto character_class = std::string { };
+  auto subpat = stiX::character_sequence(subpattern);
+  for (char c = *subpat; !subpat.is_eol(); subpat.advance(), c = *subpat) {
+    if (c == '-' && subpat.available() && !subpat.is_bol()) {
+      subpat.advance();
+      c = character_class.back() + 1;
+      char to = *subpat;
+
+      while (c < to)
+        character_class += c++;
+    }
 
     character_class += c;
   }
