@@ -5,15 +5,29 @@
 #include <vector>
 
 namespace stiX {
+  enum class match_count {
+    one,
+    zero_or_more
+  };
+  struct match_stage {
+    matcher test;
+    match_count count;
+
+    match_stage() = delete;
+    match_stage(matcher t);
+  };
+
+  using match_stages = std::vector<match_stage>;
+
   class pattern_matcher {
   public:
     bool match(const std::string& line) const;
     size_t size() const { return m_.size(); }
 
   private:
-    explicit pattern_matcher(std::vector<matcher> m);
+    explicit pattern_matcher(match_stages m);
 
-    std::vector<matcher> m_;
+    match_stages m_;
 
     friend pattern_matcher compile_pattern(const std::string&);
   };
