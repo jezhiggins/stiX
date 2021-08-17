@@ -366,6 +366,35 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE(p.match("a"));
     REQUIRE(p.match(""));
   }
+  SECTION("?*$") {
+    auto p = stiX::compile_pattern("?*$");
+    REQUIRE(p.size() == 2);
+    REQUIRE(p.match("Fruit"));
+    REQUIRE(p.match("a"));
+    REQUIRE(p.match(""));
+  }
+  SECTION("[^0-9]*$") {
+    auto p = stiX::compile_pattern("[^0-9]*$");
+    REQUIRE(p.size() == 2);
+    REQUIRE(p.match("Fruit"));
+    REQUIRE(p.match("a"));
+    REQUIRE(p.match(""));
+    REQUIRE_FALSE(p.match("000"));
+  }
+  SECTION("%?*") {
+    auto p = stiX::compile_pattern("%?*");
+    REQUIRE(p.size() == 2);
+    REQUIRE(p.match("Fruit"));
+    REQUIRE(p.match("a"));
+    REQUIRE(p.match(""));
+  }
+  SECTION("%?*$") {
+    auto p = stiX::compile_pattern("%?*$");
+    REQUIRE(p.size() == 3);
+    REQUIRE(p.match("Fruit"));
+    REQUIRE(p.match("a"));
+    REQUIRE(p.match(""));
+  }
   SECTION("?*b") {
     auto p = stiX::compile_pattern("?*b");
     REQUIRE(p.size() == 2);

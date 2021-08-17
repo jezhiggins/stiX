@@ -18,7 +18,7 @@ bool stiX::matcher::consumes() const {
 }
 
 bool is_any_char(const stiX::character_sequence& c) {
-  return *c != '\n';
+  return !c.is_eol() && (*c != '\n');
 }
 
 bool is_bol(const stiX::character_sequence& c) {
@@ -43,7 +43,7 @@ auto is_one_of_matcher(const std::string &targets) {
 
 auto is_not_one_of_matcher(const std::string &targets) {
   return [targets](const stiX::character_sequence& c) {
-    return targets.find(*c) == std::string::npos;
+    return !c.is_eol() && (targets.find(*c) == std::string::npos);
   };
 }
 

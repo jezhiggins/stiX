@@ -14,7 +14,7 @@ using match_stages_iter = stiX::match_stages::const_iterator;
 static bool match_one(const stiX::matcher& matcher, stiX::character_sequence& seq);
 static bool match_with_closure(match_stages_iter mbegin, const match_stages_iter& mend, stiX::character_sequence seq);
 static bool match_all(match_stages_iter mbegin, const match_stages_iter& mend, stiX::character_sequence seq);
-static bool match_all(const stiX::match_stages& matchers, stiX::character_sequence seq);
+static bool match_all(const stiX::match_stages& matchers, stiX::character_sequence& seq);
 
 bool match_one(const stiX::matcher& matcher, stiX::character_sequence& seq) {
   if (!matcher.match(seq))
@@ -26,7 +26,7 @@ bool match_one(const stiX::matcher& matcher, stiX::character_sequence& seq) {
 
 bool match_with_closure(match_stages_iter mbegin, const match_stages_iter& mend, stiX::character_sequence seq) {
   seq.checkpoint();
-  while(seq.available() && match_one(mbegin->test, seq));
+  while(match_one(mbegin->test, seq));
   ++mbegin;
   do {
     if (match_all(mbegin, mend, seq))
@@ -50,10 +50,9 @@ bool match_all(match_stages_iter mbegin, const match_stages_iter& mend, stiX::ch
   return true;
 }
 
-bool match_all(const stiX::match_stages& matchers, stiX::character_sequence seq) {
+bool match_all(const stiX::match_stages& matchers, stiX::character_sequence& seq) {
   return match_all(matchers.cbegin(), matchers.cend(), seq);
 }
-
 
 bool stiX::pattern_matcher::match(const std::string& line) const {
   bool once = true; // need to try at least once, because even zero length input might match
