@@ -359,6 +359,23 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match(""));
   }
+  SECTION("?*") {
+    auto p = stiX::compile_pattern("?*");
+    REQUIRE(p.size() == 1);
+    REQUIRE(p.match("Fruit"));
+    REQUIRE(p.match("a"));
+    REQUIRE(p.match(""));
+  }
+  SECTION("?*b") {
+    auto p = stiX::compile_pattern("?*b");
+    REQUIRE(p.size() == 2);
+    REQUIRE(p.match("Fruitb"));
+    REQUIRE(p.match("ab"));
+    REQUIRE(p.match("b"));
+    REQUIRE_FALSE(p.match("Fruit"));
+    REQUIRE_FALSE(p.match("a"));
+    REQUIRE_FALSE(p.match(""));
+  }
 }
 
 void testFind(
