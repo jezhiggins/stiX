@@ -3,10 +3,10 @@
 #include <cctype>
 #include <map>
 #include "../../lib/escapes.hpp"
+#include "../../lib/dash_range.hpp"
 
 namespace {
     const char Caret = '^';
-    const char Dash = '-';
 
     std::string translitArgument(
         const std::string &arg,
@@ -83,7 +83,7 @@ namespace {
         const std::string &arg,
         const std::string::const_iterator &c
     ) {
-      if (*c != Dash)
+      if (*c != stiX::Dash)
         return false;
 
       if ((c == arg.begin())
@@ -93,13 +93,7 @@ namespace {
       auto prev = *(c - 1);
       auto next = *(c + 1);
 
-      if (prev >= next)
-        return false;
-
-      return
-          (std::isdigit(prev) && std::isdigit(next))
-       || (std::islower(prev) && std::islower(next))
-       || (std::isupper(prev) && std::isupper(next));
+      return stiX::is_dash_range(prev, next);
     } // in_valid_dash_range
 
     void expand_dash_range(
@@ -108,8 +102,7 @@ namespace {
       char from = *(c - 1) + 1;
       char to = *++c;
 
-      while (from <= to)
-        dest = from++;
+      stiX::expand_dash_range(from, to, dest);
 
       c++;
     } // expand_dash_range

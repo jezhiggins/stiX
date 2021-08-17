@@ -14,7 +14,7 @@ add_library(stix STATIC
         lib/getline.cpp
         lib/getline.hpp
         lib/file_open.hpp
-        lib/file_open.cpp)
+        lib/file_open.cpp lib/dash_range.cpp lib/dash_range.hpp)
 
 add_library(testsupport STATIC
         testlib/testlib.hpp

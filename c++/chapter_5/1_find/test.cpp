@@ -158,6 +158,14 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     REQUIRE_FALSE(m.match(cs("-")));
     REQUIRE_FALSE(m.match(cs("0")));
   }
+  SECTION("[a-Z] match (invalid dash range") {
+    auto m = compile("[a-Z]");
+    REQUIRE(m.match(cs("a")));
+    REQUIRE(m.match(cs("-")));
+    REQUIRE(m.match(cs("Z")));
+    REQUIRE_FALSE(m.match(cs("0")));
+    REQUIRE_FALSE(m.match(cs("b")));
+  }
 }
 
 TEST_CASE("Chapter 5 - find - pattern matcher") {

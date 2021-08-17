@@ -2,6 +2,7 @@
 #include "char_seq.hpp"
 #include <utility>
 #include "../../lib/escapes.hpp"
+#include "../../lib/dash_range.hpp"
 
 stiX::matcher::matcher(match_fn_with_len match_fn)
   : fn_(std::move(match_fn.first)),
@@ -82,12 +83,20 @@ stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& c
   auto subpat = stiX::character_sequence(subpattern);
   for (char c = *subpat; !subpat.is_eol(); subpat.advance(), c = *subpat) {
     if (c == '-' && subpat.available() && !subpat.is_bol()) {
+      char from = character_class.back() + 1;
+
       subpat.advance();
-      c = character_class.back() + 1;
       char to = *subpat;
 
-      while (c < to)
-        character_class += c++;
+      if (stiX::is_dash_range(from, to))
+        stiX::expand_dash_range(from, to, std::back_inserter(character_class));
+      else
+      {
+        character_class += stiX::Dash;
+        character_class += to;
+      }
+
+      continue;
     }
 
     character_class += c;
