@@ -14,24 +14,24 @@ namespace stiX {
     match_count count;
 
     match_stage() = delete;
-    match_stage(matcher t);
+    explicit match_stage(matcher t);
   };
 
   using match_stages = std::vector<match_stage>;
 
   class pattern_matcher {
   public:
-    bool match(const std::string& line) const;
+    bool match(std::string const& line) const;
     size_t size() const { return m_.size(); }
 
   private:
     explicit pattern_matcher(match_stages m);
 
-    match_stages m_;
+    match_stages const m_;
 
-    friend pattern_matcher compile_pattern(const std::string&);
+    friend pattern_matcher compile_pattern(std::string const&);
   };
 
-  pattern_matcher compile_pattern(const std::string& pattern);
+  pattern_matcher compile_pattern(std::string const& pattern);
 }
 #endif //STICPP_PATTERN_MATCHER_HPP

@@ -53,7 +53,7 @@ TEST_CASE("Chapter 5 - character_sequence") {
   }
 }
 
-stiX::matcher compile(const std::string& input) {
+stiX::matcher compile(std::string const& input) {
   auto cs = stiX::character_sequence(input);
   return stiX::make_matcher(cs);
 }

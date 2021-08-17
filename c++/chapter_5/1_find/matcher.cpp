@@ -9,7 +9,7 @@ stiX::matcher::matcher(match_fn_with_len match_fn)
     consume_(match_fn.second) {
 }
 
-bool stiX::matcher::match(const stiX::character_sequence& candidate) const {
+bool stiX::matcher::match(stiX::character_sequence const& candidate) const {
   return fn_(candidate);
 }
 
@@ -17,32 +17,32 @@ bool stiX::matcher::consumes() const {
   return consume_;
 }
 
-bool is_any_char(const stiX::character_sequence& c) {
+bool is_any_char(stiX::character_sequence const& c) {
   return !c.is_eol() && (*c != '\n');
 }
 
-bool is_bol(const stiX::character_sequence& c) {
+bool is_bol(stiX::character_sequence const& c) {
   return c.is_bol();
 }
 
-bool is_eol(const stiX::character_sequence& c) {
+bool is_eol(stiX::character_sequence const& c) {
   return c.is_eol();
 }
 
 auto is_char_matcher(char target) {
-  return [target](const stiX::character_sequence& c) {
+  return [target](stiX::character_sequence const& c) {
     return *c == target;
   };
 }
 
-auto is_one_of_matcher(const std::string &targets) {
-  return [targets](const stiX::character_sequence& c) {
+auto is_one_of_matcher(std::string const&targets) {
+  return [targets](stiX::character_sequence const& c) {
     return targets.find(*c) != std::string::npos;
   };
 }
 
-auto is_not_one_of_matcher(const std::string &targets) {
-  return [targets](const stiX::character_sequence& c) {
+auto is_not_one_of_matcher(std::string const& targets) {
+  return [targets](stiX::character_sequence const& c) {
     return !c.is_eol() && (targets.find(*c) == std::string::npos);
   };
 }

@@ -20,8 +20,8 @@ namespace stiX {
     bool rewind();
 
   private:
-    const std::string input_;
-    const size_t input_length_;
+    std::string const input_;
+    size_t const input_length_;
     size_t pos_;
     size_t checkpoint_;
   };
