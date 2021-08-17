@@ -15,6 +15,7 @@ namespace stiX {
     char operator *() const;
 
     void advance();
+    bool rewind();
 
   private:
     const std::string input_;

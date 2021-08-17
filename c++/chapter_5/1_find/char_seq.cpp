@@ -25,4 +25,12 @@ void stiX::character_sequence::advance() {
   if (!is_eol()) ++pos_;
 }
 
+bool stiX::character_sequence::rewind() {
+  if (!is_bol())
+    return false;
+
+  --pos_;
+  return true;
+}
+
 

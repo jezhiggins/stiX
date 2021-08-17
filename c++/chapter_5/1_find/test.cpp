@@ -341,4 +341,21 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("a hash #"));
     REQUIRE_FALSE(p.match(""));
   }
+  SECTION("hel*o") {
+    auto p = stiX::compile_pattern("hel*o");
+    REQUIRE(p.size() == 4);
+    REQUIRE(p.match("heo"));
+    REQUIRE(p.match("helo"));
+    REQUIRE(p.match("hello"));
+    REQUIRE(p.match("hhhhhhello"));
+    REQUIRE(p.match("hhhhhhellllllllo"));
+    REQUIRE(p.match("kellohelloyellow"));
+    REQUIRE_FALSE(p.match("hep"));
+    REQUIRE_FALSE(p.match("help"));
+    REQUIRE_FALSE(p.match("hellp"));
+    REQUIRE_FALSE(p.match("hhhhhhellp"));
+    REQUIRE_FALSE(p.match("hhhhhhellllllllp"));
+    REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
 }
