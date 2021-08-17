@@ -41,6 +41,13 @@ auto is_one_of_matcher(const std::string &targets) {
   };
 }
 
+auto is_not_one_of_matcher(const std::string &targets) {
+  return [targets](const stiX::character_sequence& c) {
+    return targets.find(*c) == std::string::npos;
+  };
+}
+
+
 stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& characters);
 
 stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
@@ -77,10 +84,15 @@ stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& c
 
     subpattern += c;
   }
-  characters.advance(); // step past ']'
 
   auto character_class = std::string { };
   auto subpat = stiX::character_sequence(subpattern);
+  bool negated = false;
+  if (*subpat == '^')
+  {
+    subpat.advance();
+    negated = true;
+  }
   for (char c = *subpat; !subpat.is_eol(); subpat.advance(), c = *subpat) {
     if (c == '-' && subpat.available() && !subpat.is_bol()) {
       char from = character_class.back() + 1;
@@ -102,6 +114,8 @@ stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& c
     character_class += c;
   }
 
+  if (negated)
+    return stiX::match_fn_with_len(is_not_one_of_matcher(character_class), true);
   return stiX::match_fn_with_len(is_one_of_matcher(character_class), true);
 }
 

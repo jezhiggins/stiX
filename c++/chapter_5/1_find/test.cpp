@@ -158,13 +158,32 @@ TEST_CASE("Chapter 5 - find - single matcher") {
     REQUIRE_FALSE(m.match(cs("-")));
     REQUIRE_FALSE(m.match(cs("0")));
   }
-  SECTION("[a-Z] match (invalid dash range") {
+  SECTION("[a-Z] match (invalid dash range)") {
     auto m = compile("[a-Z]");
     REQUIRE(m.match(cs("a")));
     REQUIRE(m.match(cs("-")));
     REQUIRE(m.match(cs("Z")));
     REQUIRE_FALSE(m.match(cs("0")));
     REQUIRE_FALSE(m.match(cs("b")));
+  }
+  SECTION("[!=-^] match") {
+    auto m = compile("[!=-^]");
+    REQUIRE(m.match(cs("!")));
+    REQUIRE(m.match(cs("=")));
+    REQUIRE(m.match(cs("-")));
+    REQUIRE(m.match(cs("^")));
+    REQUIRE_FALSE(m.match(cs("0")));
+    REQUIRE_FALSE(m.match(cs("b")));
+  }
+  SECTION("[^a-z] match")
+  {
+    auto m = compile("[^a-z]");
+    REQUIRE_FALSE(m.match(cs("a")));
+    REQUIRE_FALSE(m.match(cs("b")));
+    REQUIRE_FALSE(m.match(cs("c")));
+    REQUIRE_FALSE(m.match(cs("z")));
+    REQUIRE(m.match(cs("-")));
+    REQUIRE(m.match(cs("A")));
   }
 }
 
@@ -186,6 +205,24 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match("goodbye"));
     REQUIRE_FALSE(p.match(""));
   }
+  SECTION("character class match") {
+    auto p = stiX::compile_pattern("[helo]");
+    REQUIRE(p.size() == 1);
+    REQUIRE(p.match("hello"));
+    REQUIRE(p.match("hhhhhhello"));
+    REQUIRE(p.match("kellohelloyellow"));
+    REQUIRE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
+  SECTION("character and character class match") {
+    auto p = stiX::compile_pattern("h[el][el][el]o");
+    REQUIRE(p.size() == 5);
+    REQUIRE(p.match("hello"));
+    REQUIRE(p.match("hhhhhhello"));
+    REQUIRE(p.match("kellohelloyellow"));
+    REQUIRE_FALSE(p.match("goodbye"));
+    REQUIRE_FALSE(p.match(""));
+  }
   SECTION("char sequence with wild card") {
     auto p = stiX::compile_pattern("he??o");
     REQUIRE(p.size() == 5);
@@ -198,15 +235,28 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match(""));
   }
   SECTION("% anchors to start of line") {
-    auto p = stiX::compile_pattern("%hello");
-    REQUIRE(p.size() == 6);
-    REQUIRE(p.match("hello"));
-    REQUIRE(p.match("hello friend"));
-    REQUIRE_FALSE(p.match("hell"));
-    REQUIRE_FALSE(p.match("hhhhhhello"));
-    REQUIRE_FALSE(p.match("kellohelloyellow"));
-    REQUIRE_FALSE(p.match("goodbye"));
-    REQUIRE_FALSE(p.match(""));
+    SECTION("%hello") {
+      auto p = stiX::compile_pattern("%hello");
+      REQUIRE(p.size() == 6);
+      REQUIRE(p.match("hello"));
+      REQUIRE(p.match("hello friend"));
+      REQUIRE_FALSE(p.match("hell"));
+      REQUIRE_FALSE(p.match("hhhhhhello"));
+      REQUIRE_FALSE(p.match("kellohelloyellow"));
+      REQUIRE_FALSE(p.match("goodbye"));
+      REQUIRE_FALSE(p.match(""));
+    }
+    SECTION("%[helo]") {
+      auto p = stiX::compile_pattern("%[helo]");
+      REQUIRE(p.size() == 2);
+      REQUIRE(p.match("hello"));
+      REQUIRE(p.match("hello friend"));
+      REQUIRE(p.match("hell"));
+      REQUIRE(p.match("hhhhhhello"));
+      REQUIRE_FALSE(p.match("kellohelloyellow"));
+      REQUIRE_FALSE(p.match("goodbye"));
+      REQUIRE_FALSE(p.match(""));
+    }
   }
   SECTION("% is only special at start of pattern") {
     auto p = stiX::compile_pattern("percent %");
@@ -217,15 +267,28 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE_FALSE(p.match(""));
   }
   SECTION("$ anchors to end of line") {
-    auto p = stiX::compile_pattern("hello$");
-    REQUIRE(p.size() == 6);
-    REQUIRE(p.match("hello"));
-    REQUIRE(p.match("oh hello"));
-    REQUIRE_FALSE(p.match("hell"));
-    REQUIRE_FALSE(p.match("hello friend"));
-    REQUIRE_FALSE(p.match("kellohelloyellow"));
-    REQUIRE_FALSE(p.match("goodbye"));
-    REQUIRE_FALSE(p.match(""));
+    SECTION("hello$") {
+      auto p = stiX::compile_pattern("hello$");
+      REQUIRE(p.size() == 6);
+      REQUIRE(p.match("hello"));
+      REQUIRE(p.match("oh hello"));
+      REQUIRE_FALSE(p.match("hell"));
+      REQUIRE_FALSE(p.match("hello friend"));
+      REQUIRE_FALSE(p.match("kellohelloyellow"));
+      REQUIRE_FALSE(p.match("goodbye"));
+      REQUIRE_FALSE(p.match(""));
+    }
+    SECTION("[helo]$") {
+      auto p = stiX::compile_pattern("[helo]$");
+      REQUIRE(p.size() == 2);
+      REQUIRE(p.match("hello"));
+      REQUIRE(p.match("oh hello"));
+      REQUIRE(p.match("hell"));
+      REQUIRE_FALSE(p.match("hello friend"));
+      REQUIRE_FALSE(p.match("kellohelloyellow"));
+      REQUIRE(p.match("goodbye"));
+      REQUIRE_FALSE(p.match(""));
+    }
   }
   SECTION("$ is only special at end of pattern") {
     auto p = stiX::compile_pattern("what $ that");
