@@ -49,6 +49,7 @@ auto is_not_one_of_matcher(std::string const& targets) {
 
 static stiX::match_fn_with_consume
   make_character_class_matcher(stiX::character_sequence& characters);
+static std::string expand_dash(char from, char to);
 static char escape_char(stiX::character_sequence& characters);
 
 static char const match_any_char = '?';
@@ -100,17 +101,10 @@ stiX::match_fn_with_consume make_character_class_matcher(stiX::character_sequenc
   for (char c = *subpat; !subpat.is_eol(); subpat.advance(), c = *subpat) {
     if (c == stiX::Dash && subpat.available() && !subpat.is_bol()) {
       char from = character_class.back() + 1;
-
       subpat.advance();
       char to = *subpat;
 
-      if (stiX::is_dash_range(from, to))
-        stiX::expand_dash_range(from, to, std::back_inserter(character_class));
-      else
-      {
-        character_class += stiX::Dash;
-        character_class += to;
-      }
+      character_class += expand_dash(from, to);
     }
     else
       character_class += c;
@@ -119,6 +113,20 @@ stiX::match_fn_with_consume make_character_class_matcher(stiX::character_sequenc
   if (negated)
     return { is_not_one_of_matcher(character_class), true };
   return { is_one_of_matcher(character_class), true };
+}
+
+std::string expand_dash(char from, char to) {
+  auto expansion = std::string { };
+
+  if (stiX::is_dash_range(from, to))
+    stiX::expand_dash_range(from, to, std::back_inserter(expansion));
+  else
+  {
+    expansion += stiX::Dash;
+    expansion += to;
+  }
+
+  return expansion;
 }
 
 char escape_char(stiX::character_sequence& characters)
