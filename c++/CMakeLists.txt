@@ -191,3 +191,7 @@ add_executable(find_test
         chapter_5/1_find/find.cpp
         chapter_5/1_find/find.hpp)
 target_link_libraries(find_test stix testsupport)
+
+add_executable(find_cheating
+        chapter_5/1_find_cheating/1_find_cheating.cpp)
+target_link_libraries(find_cheating stix)
