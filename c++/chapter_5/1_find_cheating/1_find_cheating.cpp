@@ -44,6 +44,8 @@
 #include <regex>
 #include <iostream>
 
+using namespace std::string_literals;
+
 std::string translate_pattern(std::string const& pattern);
 
 int main(int argc, char const* argv[]) {
@@ -79,10 +81,8 @@ std::string translate_pattern(std::string const& pattern) {
       fixedUpPattern += '\\';
     } else if (c == '?' && !escaped) {
       fixedUpPattern += '.';
-    } else if (c == '\\') {
-      fixedUpPattern += "\\\\";
-    } else if (c == '.') {
-      fixedUpPattern += "\\.";
+    } else if (c == '\\' || c == '.' || c == '+') {
+      fixedUpPattern += ("\\"s + c);
     } else if (c == '^' && !classStart) {
       fixedUpPattern += "\\^";
     } else {
