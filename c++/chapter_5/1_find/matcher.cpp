@@ -4,7 +4,7 @@
 #include "../../lib/escapes.hpp"
 #include "../../lib/dash_range.hpp"
 
-stiX::matcher::matcher(match_fn_with_len match_fn)
+stiX::matcher::matcher(match_fn_with_consume match_fn)
   : fn_(std::move(match_fn.first)),
     consume_(match_fn.second) {
 }
@@ -47,7 +47,7 @@ auto is_not_one_of_matcher(std::string const& targets) {
   };
 }
 
-static stiX::match_fn_with_len
+static stiX::match_fn_with_consume
   make_character_class_matcher(stiX::character_sequence& characters);
 static char escape_char(stiX::character_sequence& characters);
 
@@ -58,7 +58,7 @@ static char const start_of_class = '[';
 static char const end_of_class = ']';
 static char const negate_class = '^';
 
-stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
+stiX::match_fn_with_consume make_matcher_fn(stiX::character_sequence& characters) {
   char c = *characters;
 
   if (c == match_any_char)
@@ -79,7 +79,7 @@ stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
   return { is_char_matcher(c), true };
 }
 
-stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& characters) {
+stiX::match_fn_with_consume make_character_class_matcher(stiX::character_sequence& characters) {
   auto subpattern = std::string { };
 
   characters.advance(); // step past '['

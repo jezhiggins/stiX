@@ -1,20 +1,20 @@
 #include "pattern_matcher.hpp"
 #include "char_seq.hpp"
 
-stiX::match_stage::match_stage(matcher t)
+stiX::pattern::pattern(matcher t)
   : test(std::move(t)), count(match_count::one) {
 }
 
-stiX::pattern_matcher::pattern_matcher(match_stages m)
+stiX::pattern_matcher::pattern_matcher(patterns m)
   : m_(std::move(m)){
 }
 
-using match_stages_iter = stiX::match_stages::const_iterator;
+using match_stages_iter = stiX::patterns::const_iterator;
 
 static bool match_one(stiX::matcher const& matcher, stiX::character_sequence& seq);
 static bool match_with_closure(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
 static bool match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
-static bool match_all(stiX::match_stages const& matchers, stiX::character_sequence& seq);
+static bool match_all(stiX::patterns const& matchers, stiX::character_sequence& seq);
 
 bool match_one(stiX::matcher const& matcher, stiX::character_sequence& seq) {
   if (!matcher.match(seq))
@@ -50,7 +50,7 @@ bool match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::ch
   return true;
 }
 
-bool match_all(stiX::match_stages const& matchers, stiX::character_sequence& seq) {
+bool match_all(stiX::patterns const& matchers, stiX::character_sequence& seq) {
   return match_all(matchers.cbegin(), matchers.cend(), seq);
 }
 
@@ -66,7 +66,7 @@ bool stiX::pattern_matcher::match(std::string const& line) const {
 static char const kleene_star = '*';
 
 stiX::pattern_matcher stiX::compile_pattern(std::string const& pattern) {
-  auto matches = match_stages { };
+  auto matches = patterns { };
 
   for(auto seq = stiX::character_sequence(pattern); !seq.is_eol(); seq.advance()) {
     if (*seq == kleene_star && !matches.empty()) {

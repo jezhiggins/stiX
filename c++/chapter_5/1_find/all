@@ -1,3 +1,329 @@
+//
+// find   find patterns in text
+//
+// find pattern
+//
+// find treads its input a line at a time and writes to its output
+// those lines that match the specified text pattern. A text
+// pattern is a concatenation of the following elements
+//   c        literal character c
+//   ?        any character except newline
+//   %        beginning of the line
+//   $        end of the line (null string before newline)
+//   [...]    character class (any of these characters)
+//   [^...]   negated character class (all but these characters)
+//   *        closure (zero or more occurrences of previous pattern)
+//   @c       escaped character (eg @%, @[, @*)
+// Special meaning of characters in a text pattern is lost when
+// escaped, inside [...] (except @]), or for:
+//   %        not at beginning
+//   $        not at end
+//   *        at beginning
+// A character class consists of zero of more of the following
+// elements, surrounded by [ and ]:
+//   c        literal character c, including [
+//   c1-c2    range of characters (digits, lower or upper case letters)
+//   ^        negated character class if at beginning
+//   @c       escaped character (eg @^ @- @@ @])
+// Special meaning of characters in a character class is lost when
+// escaped or for:
+//   ^        not at beginning
+//   -        at beginning or end
+// An escape sequence consists of the character @ followed by a
+// single character:
+//   @n       newline
+//   @t       tab
+//   @c       c (including @@)
+//
+// To print line ending in a Pascal keyword or identifier:
+//   find [a-zA-Z][a-zA-Z0-9]*$
+//
+
+#include "../../lib/arguments.hpp"
+#include "find.hpp"
+#include <iostream>
+
+int main(int argc, char const* argv[]) {
+  auto arguments = stiX::make_arguments(argc, argv);
+  if (arguments.size() != 1) {
+    std::cout << argv[0] << " pattern" << std::endl;
+    return 0;
+  }
+
+  stiX::find(std::cin, std::cout, arguments.front());
+}#include "char_seq.hpp"
+
+stiX::character_sequence::character_sequence(std::string const& input)
+  : input_(input),
+    input_length_(input_.size()),
+    pos_(0) {
+}
+
+bool stiX::character_sequence::is_bol() const {
+  return pos_ == 0;
+}
+
+bool stiX::character_sequence::is_eol() const {
+  return pos_ == input_length_;
+}
+
+bool stiX::character_sequence::available() const {
+  return (input_length_ != 0) && (pos_ < (input_length_ - 1));
+}
+
+char stiX::character_sequence::operator*() const {
+  return !is_eol() ? input_[pos_] : char(0);
+}
+
+void stiX::character_sequence::advance() {
+  if (!is_eol()) ++pos_;
+}
+
+void stiX::character_sequence::checkpoint() {
+  checkpoint_ = pos_;
+}
+
+bool stiX::character_sequence::rewind() {
+  if (checkpoint_ == pos_)
+    return false;
+
+  --pos_;
+  return true;
+}
+
+
+#include "find.hpp"
+#include "../../lib/getline.hpp"
+#include "pattern_matcher.hpp"
+
+#include <iostream>
+
+void stiX::find(std::istream& in, std::ostream& out, std::string const& pattern) {
+  auto matcher = stiX::compile_pattern(pattern);
+
+  while(in) {
+    auto line = stiX::getline(in);
+
+    if (matcher.match(line))
+      out << line << '\n';
+  }
+}
+#include "matcher.hpp"
+#include "char_seq.hpp"
+#include <utility>
+#include "../../lib/escapes.hpp"
+#include "../../lib/dash_range.hpp"
+
+stiX::matcher::matcher(match_fn_with_len match_fn)
+  : fn_(std::move(match_fn.first)),
+    consume_(match_fn.second) {
+}
+
+bool stiX::matcher::match(stiX::character_sequence const& candidate) const {
+  return fn_(candidate);
+}
+
+bool stiX::matcher::consumes() const {
+  return consume_;
+}
+
+bool is_any_char(stiX::character_sequence const& c) {
+  return !c.is_eol() && (*c != '\n');
+}
+
+bool is_bol(stiX::character_sequence const& c) {
+  return c.is_bol();
+}
+
+bool is_eol(stiX::character_sequence const& c) {
+  return c.is_eol();
+}
+
+auto is_char_matcher(char target) {
+  return [target](stiX::character_sequence const& c) {
+    return *c == target;
+  };
+}
+
+auto is_one_of_matcher(std::string const&targets) {
+  return [targets](stiX::character_sequence const& c) {
+    return targets.find(*c) != std::string::npos;
+  };
+}
+
+auto is_not_one_of_matcher(std::string const& targets) {
+  return [targets](stiX::character_sequence const& c) {
+    return !c.is_eol() && (targets.find(*c) == std::string::npos);
+  };
+}
+
+static stiX::match_fn_with_len
+  make_character_class_matcher(stiX::character_sequence& characters);
+static char escape_char(stiX::character_sequence& characters);
+
+static char const match_any_char = '?';
+static char const match_beginning_of_line = '%';
+static char const match_end_of_line = '$';
+static char const start_of_class = '[';
+static char const end_of_class = ']';
+static char const negate_class = '^';
+
+stiX::match_fn_with_len make_matcher_fn(stiX::character_sequence& characters) {
+  char c = *characters;
+
+  if (c == match_any_char)
+    return { is_any_char, true };
+
+  if (c == match_beginning_of_line && characters.is_bol())
+    return { is_bol, false };
+
+  if (c == match_end_of_line && !characters.available())
+    return { is_eol, false };
+
+  if (c == start_of_class)
+    return make_character_class_matcher(characters);
+
+  if (c == stiX::Escape)
+    c = escape_char(characters);
+
+  return { is_char_matcher(c), true };
+}
+
+stiX::match_fn_with_len make_character_class_matcher(stiX::character_sequence& characters) {
+  auto subpattern = std::string { };
+
+  characters.advance(); // step past '['
+  for (char c = *characters; characters.available() && *characters != end_of_class; characters.advance(), c = *characters) {
+    if (c == stiX::Escape)
+      c = escape_char(characters);
+    subpattern += c;
+  }
+
+  auto character_class = std::string { };
+  auto subpat = stiX::character_sequence(subpattern);
+  bool negated = false;
+  if (*subpat == negate_class)
+  {
+    subpat.advance();
+    negated = true;
+  }
+  for (char c = *subpat; !subpat.is_eol(); subpat.advance(), c = *subpat) {
+    if (c == stiX::Dash && subpat.available() && !subpat.is_bol()) {
+      char from = character_class.back() + 1;
+
+      subpat.advance();
+      char to = *subpat;
+
+      if (stiX::is_dash_range(from, to))
+        stiX::expand_dash_range(from, to, std::back_inserter(character_class));
+      else
+      {
+        character_class += stiX::Dash;
+        character_class += to;
+      }
+    }
+    else
+      character_class += c;
+  }
+
+  if (negated)
+    return { is_not_one_of_matcher(character_class), true };
+  return { is_one_of_matcher(character_class), true };
+}
+
+char escape_char(stiX::character_sequence& characters)
+{
+  if (!characters.available())
+    return *characters;
+
+  characters.advance();
+  return stiX::expand_escape(*characters);
+}
+
+stiX::matcher stiX::make_matcher(stiX::character_sequence& characters) {
+  return stiX::matcher(make_matcher_fn(characters));
+}
+#include "pattern_matcher.hpp"
+#include "char_seq.hpp"
+
+stiX::match_stage::match_stage(matcher t)
+  : test(std::move(t)), count(match_count::one) {
+}
+
+stiX::pattern_matcher::pattern_matcher(match_stages m)
+  : m_(std::move(m)){
+}
+
+using match_stages_iter = stiX::match_stages::const_iterator;
+
+static bool match_one(stiX::matcher const& matcher, stiX::character_sequence& seq);
+static bool match_with_closure(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
+static bool match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
+static bool match_all(stiX::match_stages const& matchers, stiX::character_sequence& seq);
+
+bool match_one(stiX::matcher const& matcher, stiX::character_sequence& seq) {
+  if (!matcher.match(seq))
+    return false;
+  if (matcher.consumes())
+    seq.advance();
+  return true;
+}
+
+bool match_with_closure(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq) {
+  seq.checkpoint();
+  while(match_one(mbegin->test, seq));
+  ++mbegin;
+  do {
+    if (match_all(mbegin, mend, seq))
+      return true;
+  } while(seq.rewind());
+
+  return false;
+}
+
+bool match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq) {
+  for(auto m = mbegin; m != mend; ++m) {
+    switch (m->count) {
+      case stiX::match_count::one:
+        if (!match_one(m->test, seq))
+          return false;
+        break;
+      case stiX::match_count::zero_or_more:
+        return match_with_closure(m, mend, seq);
+    }
+  }
+  return true;
+}
+
+bool match_all(stiX::match_stages const& matchers, stiX::character_sequence& seq) {
+  return match_all(matchers.cbegin(), matchers.cend(), seq);
+}
+
+bool stiX::pattern_matcher::match(std::string const& line) const {
+  bool once = true; // need to try at least once, because even zero length input might match
+  for (auto seq = stiX::character_sequence(line); !seq.is_eol() || once; seq.advance(), once = false) {
+    if (match_all(m_, seq))
+      return true;
+  }
+  return false;
+}
+
+static char const kleene_star = '*';
+
+stiX::pattern_matcher stiX::compile_pattern(std::string const& pattern) {
+  auto matches = match_stages { };
+
+  for(auto seq = stiX::character_sequence(pattern); !seq.is_eol(); seq.advance()) {
+    if (*seq == kleene_star && !matches.empty()) {
+      matches.back().count = match_count::zero_or_more;
+      continue;
+    }
+
+    matches.emplace_back(make_matcher(seq));
+  }
+
+  return pattern_matcher(matches);
+}
 #include "../../testlib/testlib.hpp"
 
 #include "pattern_matcher.hpp"
@@ -388,13 +714,6 @@ TEST_CASE("Chapter 5 - find - pattern matcher") {
     REQUIRE(p.match("a"));
     REQUIRE(p.match(""));
   }
-  SECTION("%?*?*") {
-    auto p = stiX::compile_pattern("%?*?*");
-    REQUIRE(p.size() == 3);
-    REQUIRE(p.match("Fruit"));
-    REQUIRE(p.match("a"));
-    REQUIRE(p.match(""));
-  }
   SECTION("%?*$") {
     auto p = stiX::compile_pattern("%?*$");
     REQUIRE(p.size() == 3);
@@ -442,3 +761,110 @@ void testFind(
   }
 );
 }
+#ifndef STICPP_CHAR_SEQ_HPP
+#define STICPP_CHAR_SEQ_HPP
+
+#include <string>
+
+namespace stiX {
+  class character_sequence {
+  public:
+    explicit character_sequence(std::string const& input);
+
+    bool is_bol() const;
+    bool is_eol() const;
+    bool available() const;
+
+    char operator *() const;
+
+    void advance();
+
+    void checkpoint();
+    bool rewind();
+
+  private:
+    std::string_view const input_;
+    size_t const input_length_;
+    size_t pos_;
+    size_t checkpoint_;
+  };
+}
+
+#endif //STICPP_CHAR_SEQ_HPP
+#ifndef STICPP_FIND_HPP
+#define STICPP_FIND_HPP
+
+#include <ios>
+#include <string>
+
+namespace stiX {
+  void find(std::istream& in, std::ostream& out, std::string const& pattern);
+}
+
+#endif //STICPP_FIND_HPP
+#ifndef STICPP_MATCHER_HPP
+#define STICPP_MATCHER_HPP
+
+#include <string>
+#include <functional>
+
+namespace stiX {
+  class character_sequence;
+  using match_fn = std::function<bool(character_sequence const&)>;
+  using match_fn_with_len = std::pair<match_fn, bool>;
+
+  class matcher {
+  public:
+    bool match(character_sequence const& candidate) const;
+    bool consumes() const;
+
+  private:
+    explicit matcher(match_fn_with_len fn);
+
+    match_fn fn_;
+    bool consume_;
+
+    friend matcher make_matcher(stiX::character_sequence&);
+  };
+
+  matcher make_matcher(stiX::character_sequence& characters);
+}
+
+#endif //STICPP_MATCHER_HPP
+#ifndef STICPP_PATTERN_MATCHER_HPP
+#define STICPP_PATTERN_MATCHER_HPP
+
+#include "matcher.hpp"
+#include <vector>
+
+namespace stiX {
+  enum class match_count {
+    one,
+    zero_or_more
+  };
+  struct match_stage {
+    matcher test;
+    match_count count;
+
+    match_stage() = delete;
+    explicit match_stage(matcher t);
+  };
+
+  using match_stages = std::vector<match_stage>;
+
+  class pattern_matcher {
+  public:
+    bool match(std::string const& line) const;
+    size_t size() const { return m_.size(); }
+
+  private:
+    explicit pattern_matcher(match_stages m);
+
+    match_stages const m_;
+
+    friend pattern_matcher compile_pattern(std::string const&);
+  };
+
+  pattern_matcher compile_pattern(std::string const& pattern);
+}
+#endif //STICPP_PATTERN_MATCHER_HPP

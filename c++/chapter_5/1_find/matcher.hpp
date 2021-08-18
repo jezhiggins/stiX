@@ -7,7 +7,7 @@
 namespace stiX {
   class character_sequence;
   using match_fn = std::function<bool(character_sequence const&)>;
-  using match_fn_with_len = std::pair<match_fn, bool>;
+  using match_fn_with_consume = std::pair<match_fn, bool>;
 
   class matcher {
   public:
@@ -15,7 +15,7 @@ namespace stiX {
     bool consumes() const;
 
   private:
-    explicit matcher(match_fn_with_len fn);
+    explicit matcher(match_fn_with_consume fn);
 
     match_fn fn_;
     bool consume_;

@@ -9,15 +9,15 @@ namespace stiX {
     one,
     zero_or_more
   };
-  struct match_stage {
+  struct pattern {
     matcher test;
     match_count count;
 
-    match_stage() = delete;
-    explicit match_stage(matcher t);
+    pattern() = delete;
+    explicit pattern(matcher t);
   };
 
-  using match_stages = std::vector<match_stage>;
+  using patterns = std::vector<pattern>;
 
   class pattern_matcher {
   public:
@@ -25,9 +25,9 @@ namespace stiX {
     size_t size() const { return m_.size(); }
 
   private:
-    explicit pattern_matcher(match_stages m);
+    explicit pattern_matcher(patterns m);
 
-    match_stages const m_;
+    patterns const m_;
 
     friend pattern_matcher compile_pattern(std::string const&);
   };
