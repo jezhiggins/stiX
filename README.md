@@ -2,9 +2,12 @@
 
 **Jez Higgins**, *jez@jezuk.co.uk*
 
-Reimplementing the programs described in Kernighan and Plauger's Software Tools in Pascal in other languages. 
+Reimplementing the programs described in Kernighan and Plauger's 
+[Software Tools in Pascal](ttps://archive.org/details/softwaretoolsinp00kern)
+in other languages. 
 
-## Chapter 1 - Getting Started
+## [C++](https://www.jezuk.co.uk/tags/software-tools-in-c++.html)
+### Chapter 1 - Getting Started
 
 1. [copy](https://www.jezuk.co.uk/blog/2019/08/sticpp-copy.html)
 2. [charcount](https://www.jezuk.co.uk/blog/2019/08/sticpp-charcount.html)
@@ -12,7 +15,7 @@ Reimplementing the programs described in Kernighan and Plauger's Software Tools 
 4. [wordcount](https://www.jezuk.co.uk/blog/2019/08/sticpp-wordcount.html)
 5. [detab](https://www.jezuk.co.uk/blog/2019/09/sticpp-detab.html)
 
-## Chapter 2 - Filters
+### Chapter 2 - Filters
 
 1. [entab](https://www.jezuk.co.uk/blog/2019/10/sticpp-entab.html)
 2. [overstrike](https://www.jezuk.co.uk/blog/2019/10/sticpp-overstrike.html)
@@ -21,23 +24,31 @@ Reimplementing the programs described in Kernighan and Plauger's Software Tools 
 5. [echo](https://www.jezuk.co.uk/blog/2019/11/sticpp-echo.html)
 6. [translit](https://www.jezuk.co.uk/blog/2019/11/sticpp-translit.html)
 
-## Chapter 3 - Files
+### Chapter 3 - Files
 
 1. [compare](https://www.jezuk.co.uk/blog/2020/02/sticpp-compare.html)
 2. [include](https://www.jezuk.co.uk/blog/2020/04/sticpp-include.html)
-3. [concat]()
-4. [print]()
-5. [makecopy]()
-6. archive - [create](),[contents, delete, print](), [update, extract]()
+3. [concat](https://www.jezuk.co.uk/blog/2020/04/sticpp-concat.html)
+4. [print](https://www.jezuk.co.uk/blog/2020/04/sticpp-print.html)
+5. [makecopy](https://www.jezuk.co.uk/blog/2020/06/sticpp-makecopy.html)
+6. archive - [create](https://www.jezuk.co.uk/blog/2020/07/sticpp-archive-create.html),
+[contents, delete, print](https://www.jezuk.co.uk/blog/2020/08/sticpp-archive-contents-print-delete.html), 
+[update, extract](https://www.jezuk.co.uk/blog/2020/08/sticpp-archive-update-extract.html)
 
-## Chapter 4 - Sorting
+### Chapter 4 - Sorting
 
 1. [bubble sort](https://www.jezuk.co.uk/blog/2020/09/sticpp-bubble-sort.html)
 2. [Shell sort](https://www.jezuk.co.uk/blog/2020/11/sticpp-shell-sort.html)
 3. [in-memory sort](https://www.jezuk.co.uk/blog/2020/12/sticpp-in-memory-text-sort.html)
-4. quick sort, parts [one](https://www.jezuk.co.uk/blog/2020/12/sticpp-quick-sort.html) and [two](https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html)
-5. external sort
+4. quick sort, parts [one](https://www.jezuk.co.uk/blog/2020/12/sticpp-quick-sort.html) 
+and [two](https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html)
+5. [external sort](https://www.jezuk.co.uk/blog/2021/03/sticpp-external-text-sort.html)
+6. [unique](https://www.jezuk.co.uk/blog/2021/04/sticpp-unique.html)
+7. [kwic and unrotate](https://www.jezuk.co.uk/blog/2021/05/sticpp-kwic-unrotate.html)
 
+### Chapter 5 - Text Patterns
+
+1. [find](https://www.jezuk.co.uk/blog/2021/08/sticpp-find.html)
 
 ## License
 
