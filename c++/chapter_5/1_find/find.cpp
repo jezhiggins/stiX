@@ -1,6 +1,6 @@
 #include "find.hpp"
 #include "../../lib/getline.hpp"
-#include "pattern_matcher.hpp"
+#include "../../lib/regex/pattern_matcher.hpp"
 
 #include <iostream>
 

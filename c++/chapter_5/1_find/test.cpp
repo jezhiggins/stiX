@@ -1,8 +1,8 @@
 #include "../../testlib/testlib.hpp"
 
-#include "pattern_matcher.hpp"
-#include "matcher.hpp"
-#include "char_seq.hpp"
+#include "../../lib/regex/pattern_matcher.hpp"
+#include "../../lib/regex/matcher.hpp"
+#include "../../lib/regex/char_seq.hpp"
 #include "find.hpp"
 
 TEST_CASE("Chapter 5 - character_sequence") {

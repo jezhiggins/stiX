@@ -14,7 +14,17 @@ add_library(stix STATIC
         lib/getline.cpp
         lib/getline.hpp
         lib/file_open.hpp
-        lib/file_open.cpp lib/dash_range.cpp lib/dash_range.hpp)
+        lib/file_open.cpp
+        lib/dash_range.cpp
+        lib/dash_range.hpp
+        lib/escapes.cpp
+        lib/escapes.hpp
+        lib/regex/matcher.cpp
+        lib/regex/matcher.hpp
+        lib/regex/pattern_matcher.hpp
+        lib/regex/pattern_matcher.cpp
+        lib/regex/char_seq.cpp
+        lib/regex/char_seq.hpp)
 
 add_library(testsupport STATIC
         testlib/testlib.hpp
@@ -75,7 +85,6 @@ add_executable(translit
         chapter_2/6_translit/translit.hpp
         chapter_2/6_translit/translit-args.cpp
         chapter_2/6_translit/translit-args.hpp
-        lib/escapes.cpp
         lib/escapes.hpp)
 target_link_libraries(translit stix)
 add_executable(translit_test
@@ -84,7 +93,6 @@ add_executable(translit_test
         chapter_2/6_translit/translit.hpp
         chapter_2/6_translit/translit-args.cpp
         chapter_2/6_translit/translit-args.hpp
-        lib/escapes.cpp
         lib/escapes.hpp)
 target_link_libraries(translit_test stix testsupport)
 
@@ -167,26 +175,18 @@ target_link_libraries(unrotate_test stix testsupport)
 
 add_executable(find
         chapter_5/1_find/1_find.cpp
-        chapter_5/1_find/matcher.cpp
-        chapter_5/1_find/matcher.hpp
-        chapter_5/1_find/pattern_matcher.hpp
-        chapter_5/1_find/pattern_matcher.cpp
-        chapter_5/1_find/char_seq.cpp
-        chapter_5/1_find/char_seq.hpp
-        lib/escapes.cpp
+        lib/regex/matcher.hpp
+        lib/regex/pattern_matcher.cpp
+        lib/regex/char_seq.hpp
         lib/escapes.hpp
         chapter_5/1_find/find.cpp
         chapter_5/1_find/find.hpp)
 target_link_libraries(find stix)
 add_executable(find_test
         chapter_5/1_find/test.cpp
-        chapter_5/1_find/matcher.cpp
-        chapter_5/1_find/matcher.hpp
-        chapter_5/1_find/pattern_matcher.hpp
-        chapter_5/1_find/pattern_matcher.cpp
-        chapter_5/1_find/char_seq.cpp
-        chapter_5/1_find/char_seq.hpp
-        lib/escapes.cpp
+        lib/regex/matcher.hpp
+        lib/regex/pattern_matcher.cpp
+        lib/regex/char_seq.hpp
         lib/escapes.hpp
         chapter_5/1_find/find.cpp
         chapter_5/1_find/find.hpp)

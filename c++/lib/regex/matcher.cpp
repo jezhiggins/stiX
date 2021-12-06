@@ -1,8 +1,8 @@
 #include "matcher.hpp"
 #include "char_seq.hpp"
 #include <utility>
-#include "../../lib/escapes.hpp"
-#include "../../lib/dash_range.hpp"
+#include "../escapes.hpp"
+#include "../dash_range.hpp"
 
 stiX::matcher::matcher(match_fn_with_consume match_fn)
   : fn_(std::move(match_fn.first)),
