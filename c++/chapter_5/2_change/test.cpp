@@ -29,4 +29,31 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
     REQUIRE(r.start == 4);
     REQUIRE(r.end == 5);
   }
+
+  SECTION("match at start of line") {
+    auto p = stiX::compile_pattern("%hell");
+
+    auto r = p.find("hello");
+    REQUIRE(r.match);
+    REQUIRE(r.start == 0);
+    REQUIRE(r.end == 4);
+  }
+
+  SECTION("match at end of line") {
+    auto p = stiX::compile_pattern("ello$");
+
+    auto r = p.find("hello");
+    REQUIRE(r.match);
+    REQUIRE(r.start == 1);
+    REQUIRE(r.end == 5);
+  }
+
+  SECTION("match in middle of line") {
+    auto p = stiX::compile_pattern("ell");
+
+    auto r = p.find("hello");
+    REQUIRE(r.match);
+    REQUIRE(r.start == 1);
+    REQUIRE(r.end == 4);
+  }
 }

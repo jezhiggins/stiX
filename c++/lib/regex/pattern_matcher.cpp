@@ -12,9 +12,11 @@ stiX::pattern_matcher::pattern_matcher(patterns m)
 using match_stages_iter = stiX::patterns::const_iterator;
 
 static bool match_one(stiX::matcher const& matcher, stiX::character_sequence& seq);
-static bool match_with_closure(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
-static bool match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
-static bool match_all(stiX::patterns const& matchers, stiX::character_sequence& seq);
+static stiX::match_location match_with_closure(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
+static stiX::match_location match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
+static stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_sequence& seq);
+
+static auto not_found = stiX::match_location { false, std::string::npos, std::string::npos };
 
 bool match_one(stiX::matcher const& matcher, stiX::character_sequence& seq) {
   if (!matcher.match(seq))
@@ -24,45 +26,49 @@ bool match_one(stiX::matcher const& matcher, stiX::character_sequence& seq) {
   return true;
 }
 
-bool match_with_closure(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq) {
+stiX::match_location match_with_closure(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq) {
   seq.checkpoint();
   while(match_one(mbegin->test, seq));
   ++mbegin;
   do {
-    if (match_all(mbegin, mend, seq))
-      return true;
+    auto m = match_all(mbegin, mend, seq);
+    if (m.match)
+      return m;
   } while(seq.rewind());
 
-  return false;
+  return not_found;
 }
 
-bool match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq) {
+stiX::match_location match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq) {
+  auto start = seq.position();
+
   for(auto m = mbegin; m != mend; ++m) {
     switch (m->count) {
       case stiX::match_count::one:
         if (!match_one(m->test, seq))
-          return false;
+          return not_found;
         break;
       case stiX::match_count::zero_or_more:
         return match_with_closure(m, mend, seq);
     }
   }
-  return true;
+
+  return { true, start, seq.position() };
 }
 
-bool match_all(stiX::patterns const& matchers, stiX::character_sequence& seq) {
+stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_sequence& seq) {
   return match_all(matchers.cbegin(), matchers.cend(), seq);
 }
 
 stiX::match_location stiX::pattern_matcher::find(std::string const& line) const {
   bool once = true; // need to try at least once, because even zero length input might match
   for (auto seq = stiX::character_sequence(line); !seq.is_eol() || once; seq.advance(), once = false) {
-    auto start = seq.position();
-    if (match_all(m_, seq)) {
-      return { true, start, seq.position()+1 };
+    auto match = match_all(m_, seq);
+    if (match.match) {
+      return match;
     }
   }
-  return { false, std::string::npos, std::string::npos };
+  return not_found;
 }
 
 bool stiX::pattern_matcher::match(std::string const& line) const {
