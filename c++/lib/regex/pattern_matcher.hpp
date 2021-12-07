@@ -23,8 +23,8 @@ namespace stiX {
     using size_type = std::string::size_type;
 
     bool const match;
-    size_type const start;
-    size_type const end;
+    size_type const from;
+    size_type const to;
   };
 
   class pattern_matcher {

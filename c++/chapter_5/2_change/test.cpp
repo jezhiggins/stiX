@@ -8,8 +8,8 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE_FALSE(r.match);
-    REQUIRE(r.start == std::string::npos);
-    REQUIRE(r.start == r.end);
+    REQUIRE(r.from == std::string::npos);
+    REQUIRE(r.from == r.to);
   }
 
   SECTION("single-char match at start of line") {
@@ -17,8 +17,8 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE(r.match);
-    REQUIRE(r.start == 0);
-    REQUIRE(r.end == 1);
+    REQUIRE(r.from == 0);
+    REQUIRE(r.to == 1);
   }
 
   SECTION("single-char match at end of line") {
@@ -26,8 +26,8 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE(r.match);
-    REQUIRE(r.start == 4);
-    REQUIRE(r.end == 5);
+    REQUIRE(r.from == 4);
+    REQUIRE(r.to == 5);
   }
 
   SECTION("match at start of line") {
@@ -35,8 +35,8 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE(r.match);
-    REQUIRE(r.start == 0);
-    REQUIRE(r.end == 4);
+    REQUIRE(r.from == 0);
+    REQUIRE(r.to == 4);
   }
 
   SECTION("match at end of line") {
@@ -44,8 +44,8 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE(r.match);
-    REQUIRE(r.start == 1);
-    REQUIRE(r.end == 5);
+    REQUIRE(r.from == 1);
+    REQUIRE(r.to == 5);
   }
 
   SECTION("match in middle of line") {
@@ -53,8 +53,8 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE(r.match);
-    REQUIRE(r.start == 1);
-    REQUIRE(r.end == 4);
+    REQUIRE(r.from == 1);
+    REQUIRE(r.to == 4);
   }
 
   SECTION("wildcard match at start of line") {
@@ -62,8 +62,8 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE(r.match);
-    REQUIRE(r.start == 0);
-    REQUIRE(r.end == 4);
+    REQUIRE(r.from == 0);
+    REQUIRE(r.to == 4);
   }
 
   SECTION("wildcard match at end of line") {
@@ -71,8 +71,8 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE(r.match);
-    REQUIRE(r.start == 1);
-    REQUIRE(r.end == 5);
+    REQUIRE(r.from == 1);
+    REQUIRE(r.to == 5);
   }
 
   SECTION("multiple wildcard match") {
@@ -80,7 +80,25 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
     auto r = p.find("hello");
     REQUIRE(r.match);
-    REQUIRE(r.start == 0);
-    REQUIRE(r.end == 5);
+    REQUIRE(r.from == 0);
+    REQUIRE(r.to == 5);
+  }
+
+  SECTION("whole line match") {
+    auto p = stiX::compile_pattern("%?*$");
+
+    auto r = p.find("hello");
+    REQUIRE(r.match);
+    REQUIRE(r.from == 0);
+    REQUIRE(r.to == 5);
+  }
+
+  SECTION("empty line match") {
+    auto p = stiX::compile_pattern("%$");
+
+    auto r = p.find("");
+    REQUIRE(r.match);
+    REQUIRE(r.from == 0);
+    REQUIRE(r.to == 0);
   }
 }

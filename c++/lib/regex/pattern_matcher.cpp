@@ -51,7 +51,7 @@ stiX::match_location match_all(match_stages_iter mbegin, match_stages_iter const
     }
   }
 
-  return { true, seq.from(), seq.position() };
+  return { true, seq.from(), seq.to() };
 }
 
 stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_sequence& seq) {
