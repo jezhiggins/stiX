@@ -197,9 +197,13 @@ add_executable(find_cheating
 target_link_libraries(find_cheating stix)
 
 add_executable(change
-        chapter_5/2_change/2_change.cpp)
+        chapter_5/2_change/2_change.cpp
+        chapter_5/2_change/change.cpp
+        chapter_5/2_change/change.hpp)
 target_link_libraries(change stix)
 
 add_executable(change_test
-        chapter_5/2_change/test.cpp)
+        chapter_5/2_change/test.cpp
+        chapter_5/2_change/change.cpp
+        chapter_5/2_change/change.hpp)
 target_link_libraries(change_test stix testsupport)

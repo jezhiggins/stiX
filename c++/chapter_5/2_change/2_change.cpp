@@ -18,6 +18,19 @@
 //   change "*[a-zA-Z][a-zA-Z0-9]*[ ]*[+-][ ]*[a-zA-Z][a-zA-Z0-9]*" (&)
 //
 
-int main() {
+#include "../../lib/arguments.hpp"
+#include "change.hpp"
+#include <iostream>
 
+int main(int argc, char const* argv[]) {
+  auto arguments = stiX::make_arguments(argc, argv);
+  if (arguments.size() < 1 || arguments.size() > 2) {
+    std::cout << argv[0] << " pattern [replacement]\n";
+    return 0;
+  }
+
+  auto& pattern = arguments.front();
+  auto replacement = arguments.size() == 2 ? arguments.back() : "";
+
+  stiX::change(std::cin, std::cout, pattern, replacement);
 }

@@ -46,7 +46,7 @@
 int main(int argc, char const* argv[]) {
   auto arguments = stiX::make_arguments(argc, argv);
   if (arguments.size() != 1) {
-    std::cout << argv[0] << " pattern" << std::endl;
+    std::cout << argv[0] << " pattern\n";
     return 0;
   }
 

@@ -1,5 +1,6 @@
 #include "../../testlib/testlib.hpp"
 
+#include "change.hpp"
 #include "../../lib/regex/pattern_matcher.hpp"
 
 TEST_CASE("Chapter 5 - change - pattern match location") {
@@ -101,4 +102,33 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
     REQUIRE(r.from == 0);
     REQUIRE(r.to == 0);
   }
+}
+
+void testChange(
+  std::string const& input,
+  std::string const& expected,
+  std::string const& pattern,
+  std::string const& replacement
+);
+
+TEST_CASE("Chapter 5 - change") {
+  testChange(
+    "hello world\nmake yourself at home\nhave a biscuit\n",
+    "hello world\nmake yourself at home\nhave a biscuit\n",
+    "123",
+    "");
+}
+
+
+void testChange(
+  std::string const& input,
+  std::string const& expected,
+  std::string const& pattern,
+  std::string const& replacement
+) {
+  testFilter("change", input, expected,
+             [pattern, replacement](std::istream& in, std::ostream& out) {
+               stiX::change(in, out, pattern, replacement);
+             }
+  );
 }
