@@ -66,12 +66,7 @@ stiX::match_location stiX::pattern_matcher::find(std::string const& line) const 
 }
 
 bool stiX::pattern_matcher::match(std::string const& line) const {
-  bool once = true; // need to try at least once, because even zero length input might match
-  for (auto seq = stiX::character_sequence(line); !seq.is_eol() || once; seq.advance(), once = false) {
-    if (match_all(m_, seq))
-      return true;
-  }
-  return false;
+  return find(line).match;
 }
 
 static char const kleene_star = '*';
