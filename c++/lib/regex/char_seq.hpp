@@ -21,10 +21,13 @@ namespace stiX {
     void checkpoint();
     bool rewind();
 
+    void mark_from() { from_ = pos_; }
+    size_type from() const { return from_; }
     size_type position() const { return pos_; }
   private:
     std::string const input_;
     size_type const input_length_;
+    size_type from_;
     size_type pos_;
     size_type checkpoint_;
   };

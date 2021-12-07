@@ -40,8 +40,6 @@ stiX::match_location match_with_closure(match_stages_iter mbegin, match_stages_i
 }
 
 stiX::match_location match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq) {
-  auto start = seq.position();
-
   for(auto m = mbegin; m != mend; ++m) {
     switch (m->count) {
       case stiX::match_count::one:
@@ -53,10 +51,11 @@ stiX::match_location match_all(match_stages_iter mbegin, match_stages_iter const
     }
   }
 
-  return { true, start, seq.position() };
+  return { true, seq.from(), seq.position() };
 }
 
 stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_sequence& seq) {
+  seq.mark_from();
   return match_all(matchers.cbegin(), matchers.cend(), seq);
 }
 

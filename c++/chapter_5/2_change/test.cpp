@@ -56,4 +56,31 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
     REQUIRE(r.start == 1);
     REQUIRE(r.end == 4);
   }
+
+  SECTION("wildcard match at start of line") {
+    auto p = stiX::compile_pattern("hel*");
+
+    auto r = p.find("hello");
+    REQUIRE(r.match);
+    REQUIRE(r.start == 0);
+    REQUIRE(r.end == 4);
+  }
+
+  SECTION("wildcard match at end of line") {
+    auto p = stiX::compile_pattern("el*o");
+
+    auto r = p.find("hello");
+    REQUIRE(r.match);
+    REQUIRE(r.start == 1);
+    REQUIRE(r.end == 5);
+  }
+
+  SECTION("multiple wildcard match") {
+    auto p = stiX::compile_pattern("h*e*l*o*");
+
+    auto r = p.find("hello");
+    REQUIRE(r.match);
+    REQUIRE(r.start == 0);
+    REQUIRE(r.end == 5);
+  }
 }
