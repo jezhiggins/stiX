@@ -189,7 +189,6 @@ TEST_CASE("Chapter 5 - find - single matcher") {
 }
 
 TEST_CASE("Chapter 5 - find - pattern matcher") {
-  using cs = stiX::character_sequence;
   SECTION("simple single-char match") {
     auto p = stiX::compile_pattern("h");
     REQUIRE(p.size() == 1);

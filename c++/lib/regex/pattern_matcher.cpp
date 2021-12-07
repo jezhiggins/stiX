@@ -54,6 +54,10 @@ bool match_all(stiX::patterns const& matchers, stiX::character_sequence& seq) {
   return match_all(matchers.cbegin(), matchers.cend(), seq);
 }
 
+stiX::match_location stiX::pattern_matcher::find(std::string const& line) const {
+  return { false, std::string::npos, std::string::npos };
+}
+
 bool stiX::pattern_matcher::match(std::string const& line) const {
   bool once = true; // need to try at least once, because even zero length input might match
   for (auto seq = stiX::character_sequence(line); !seq.is_eol() || once; seq.advance(), once = false) {
