@@ -55,6 +55,13 @@ bool match_all(stiX::patterns const& matchers, stiX::character_sequence& seq) {
 }
 
 stiX::match_location stiX::pattern_matcher::find(std::string const& line) const {
+  bool once = true; // need to try at least once, because even zero length input might match
+  for (auto seq = stiX::character_sequence(line); !seq.is_eol() || once; seq.advance(), once = false) {
+    auto start = seq.position();
+    if (match_all(m_, seq)) {
+      return { true, start, seq.position()+1 };
+    }
+  }
   return { false, std::string::npos, std::string::npos };
 }
 

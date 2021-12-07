@@ -6,6 +6,8 @@
 namespace stiX {
   class character_sequence {
   public:
+    using size_type = std::string::size_type;
+
     explicit character_sequence(std::string input);
 
     bool is_bol() const;
@@ -19,11 +21,12 @@ namespace stiX {
     void checkpoint();
     bool rewind();
 
+    size_type position() const { return pos_; }
   private:
     std::string const input_;
-    size_t const input_length_;
-    size_t pos_;
-    size_t checkpoint_;
+    size_type const input_length_;
+    size_type pos_;
+    size_type checkpoint_;
   };
 }
 
