@@ -16,7 +16,7 @@ static stiX::match_location match_with_closure(match_stages_iter mbegin, match_s
 static stiX::match_location match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
 static stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_sequence& seq);
 
-static auto not_found = stiX::match_location { false, std::string::npos, std::string::npos };
+static auto not_found = stiX::match_location { false, std::string_view::npos, std::string_view::npos };
 
 bool match_one(stiX::matcher const& matcher, stiX::character_sequence& seq) {
   if (!matcher.match(seq))
@@ -59,7 +59,7 @@ stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_s
   return match_all(matchers.cbegin(), matchers.cend(), seq);
 }
 
-stiX::match_location stiX::pattern_matcher::find(std::string const& line) const {
+stiX::match_location stiX::pattern_matcher::find(std::string_view line) const {
   bool once = true; // need to try at least once, because even zero length input might match
   for (auto seq = stiX::character_sequence(line); !seq.is_eol() || once; seq.advance(), once = false) {
     auto match = match_all(m_, seq);
@@ -70,13 +70,13 @@ stiX::match_location stiX::pattern_matcher::find(std::string const& line) const 
   return not_found;
 }
 
-bool stiX::pattern_matcher::match(std::string const& line) const {
+bool stiX::pattern_matcher::match(std::string_view line) const {
   return find(line).match;
 }
 
 static char const kleene_star = '*';
 
-stiX::pattern_matcher stiX::compile_pattern(std::string const& pattern) {
+stiX::pattern_matcher stiX::compile_pattern(std::string_view pattern) {
   auto matches = patterns { };
 
   for(auto seq = stiX::character_sequence(pattern); !seq.is_eol(); seq.advance()) {

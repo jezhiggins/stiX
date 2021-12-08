@@ -20,7 +20,7 @@ namespace stiX {
   using patterns = std::vector<pattern>;
 
   struct match_location {
-    using size_type = std::string::size_type;
+    using size_type = std::string_view::size_type;
 
     bool const match;
     size_type const from;
@@ -29,8 +29,8 @@ namespace stiX {
 
   class pattern_matcher {
   public:
-    match_location find(std::string const& line) const;
-    bool match(std::string const& line) const;
+    match_location find(std::string_view line) const;
+    bool match(std::string_view line) const;
 
     size_t size() const { return m_.size(); }
 
@@ -39,9 +39,9 @@ namespace stiX {
 
     patterns const m_;
 
-    friend pattern_matcher compile_pattern(std::string const&);
+    friend pattern_matcher compile_pattern(std::string_view);
   };
 
-  pattern_matcher compile_pattern(std::string const& pattern);
+  pattern_matcher compile_pattern(std::string_view pattern);
 }
 #endif //STICPP_PATTERN_MATCHER_HPP

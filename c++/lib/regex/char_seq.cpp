@@ -1,6 +1,6 @@
 #include "char_seq.hpp"
 
-stiX::character_sequence::character_sequence(std::string input)
+stiX::character_sequence::character_sequence(std::string_view input)
   : input_(std::move(input)),
     input_length_(input_.size()),
     pos_(0) {

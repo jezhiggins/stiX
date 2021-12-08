@@ -6,9 +6,9 @@
 namespace stiX {
   class character_sequence {
   public:
-    using size_type = std::string::size_type;
+    using size_type = std::string_view::size_type;
 
-    explicit character_sequence(std::string input);
+    explicit character_sequence(std::string_view input);
 
     bool is_bol() const;
     bool is_eol() const;
@@ -25,7 +25,7 @@ namespace stiX {
     size_type from() const { return from_; }
     size_type to() const { return pos_; }
   private:
-    std::string const input_;
+    std::string_view const input_;
     size_type const input_length_;
     size_type from_;
     size_type pos_;

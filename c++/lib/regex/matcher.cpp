@@ -35,7 +35,7 @@ auto is_char_matcher(char target) {
   };
 }
 
-auto is_one_of_matcher(std::string const&targets) {
+auto is_one_of_matcher(std::string const& targets) {
   return [targets](stiX::character_sequence const& c) {
     return targets.find(*c) != std::string::npos;
   };
