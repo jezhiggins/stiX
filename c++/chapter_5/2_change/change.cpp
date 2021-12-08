@@ -17,6 +17,18 @@ void stiX::change(
   while(in.peek() != eof) {
     auto line = stiX::getline(in);
 
-    out << line << '\n';
+    auto remainder = std::string_view(line);
+
+    while(true) {
+      auto loc = matcher.find(remainder);
+      if (!loc.match)
+        break;
+
+      auto prefix = remainder.substr(0, loc.from);
+      remainder = remainder.substr(loc.to);
+
+      out << prefix << replacement;
+    }
+    out << remainder << '\n';
   }
 }

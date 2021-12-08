@@ -113,10 +113,28 @@ void testChange(
 
 TEST_CASE("Chapter 5 - change") {
   testChange(
-    "hello world\nmake yourself at home\nhave a biscuit\n",
-    "hello world\nmake yourself at home\nhave a biscuit\n",
+    "hello world\nsit down\nhave a biscuit\n",
+    "hello world\nsit down\nhave a biscuit\n",
     "123",
     "");
+
+  testChange(
+    "hello world\nsit down\nhave a biscuit\n",
+    "hello world\nsit down\nhave a digestive\n",
+    "biscuit",
+    "digestive");
+
+  testChange(
+    "hello world\nsit down\nhave a biscuit\n",
+    "hll wrld\nst dwn\nhv  bsct\n",
+    "[aeiou]",
+    "");
+
+  testChange(
+    "hello world\nsit down\nhave a biscuit\n",
+    "Hello world\nsit down\nHave a biscuit\n",
+    "%h",
+    "H");
 }
 
 
