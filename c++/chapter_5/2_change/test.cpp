@@ -49,6 +49,34 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
     REQUIRE(r.to == 5);
   }
 
+  SECTION("match only end of line") {
+    auto p = stiX::compile_pattern("$");
+
+    auto r = p.find("");
+    REQUIRE(r.match);
+    REQUIRE(r.from == 0);
+    REQUIRE(r.to == 0);
+
+    auto q = p.find("help");
+    REQUIRE(q.match);
+    REQUIRE(q.from == 4);
+    REQUIRE(q.to == 4);
+  }
+
+  SECTION("match only start of line") {
+    auto p = stiX::compile_pattern("%");
+
+    auto r = p.find("");
+    REQUIRE(r.match);
+    REQUIRE(r.from == 0);
+    REQUIRE(r.to == 0);
+
+    auto q = p.find("help");
+    REQUIRE(q.match);
+    REQUIRE(q.from == 0);
+    REQUIRE(q.to == 0);
+  }
+
   SECTION("match in middle of line") {
     auto p = stiX::compile_pattern("ell");
 
@@ -135,6 +163,14 @@ TEST_CASE("Chapter 5 - change") {
     "Hello world\nsit down\nHave a biscuit\n",
     "%h",
     "H");
+
+  /*
+  testChange(
+    "hello world\nsit down\nhave a biscuit\n",
+    "hello world!\nsit down!\nhave a biscuit!\n",
+    "$",
+    "!");
+  */
 }
 
 

@@ -37,6 +37,8 @@ namespace stiX {
   private:
     explicit pattern_matcher(patterns m);
 
+    bool is_terminal_only() const;
+
     patterns const m_;
 
     friend pattern_matcher compile_pattern(std::string_view);
