@@ -169,8 +169,19 @@ TEST_CASE("Chapter 5 - change") {
     "hello world!\nsit down!\nhave a biscuit!\n",
     "$",
     "!");
-}
 
+  testChange(
+    "hello world\nsit down\nhave a biscuit\n",
+    "--- hello world\n--- sit down\n--- have a biscuit\n",
+    "%",
+    "--- ");
+
+  testChange(
+    "12345\n",
+    "!1!2!3!4!5!\n",
+    "a*",
+    "!");
+}
 
 void testChange(
   std::string const& input,

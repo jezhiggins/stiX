@@ -37,6 +37,12 @@ void stiX::change(
         offset = loc.from+1;
       }
     }
-    out << line.substr(offset) << '\n';
+
+    if (offset != line.size())
+      out << line.substr(offset);
+    else if (!matcher.is_terminal_only() && matcher.find(line, line.size()).match)
+      out << replacement;
+
+    out << '\n';
   }
 }
