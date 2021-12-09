@@ -6,6 +6,10 @@
 
 auto const eof = std::char_traits<char>::eof();
 
+static bool is_zero_width_match(stiX::match_location loc) {
+  return loc.from == loc.to;
+}
+
 void stiX::change(
   std::istream& in,
   std::ostream& out,
@@ -15,23 +19,24 @@ void stiX::change(
   auto matcher = stiX::compile_pattern(pattern);
 
   while(in.peek() != eof) {
-    auto line = stiX::getline(in);
-
-    auto remainder = std::string_view(line);
+    auto input = stiX::getline(in);
+    auto line = std::string_view(input);
 
     auto offset = 0;
     while(offset != line.size()) {
-      auto loc = matcher.find(remainder);
+      auto loc = matcher.find(line, offset);
       if (!loc.match)
         break;
 
-      auto prefix = remainder.substr(0, loc.from);
-      remainder = remainder.substr(loc.to);
-
+      auto prefix = line.substr(offset, loc.from-offset);
       out << prefix << replacement;
 
       offset = loc.to;
+      if (is_zero_width_match(loc) && offset != line.size()) {
+        out << line[loc.from];
+        offset = loc.from+1;
+      }
     }
-    out << remainder << '\n';
+    out << line.substr(offset) << '\n';
   }
 }
