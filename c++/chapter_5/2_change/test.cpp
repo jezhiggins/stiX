@@ -164,13 +164,11 @@ TEST_CASE("Chapter 5 - change") {
     "%h",
     "H");
 
-  /*
   testChange(
     "hello world\nsit down\nhave a biscuit\n",
     "hello world!\nsit down!\nhave a biscuit!\n",
     "$",
     "!");
-  */
 }
 
 

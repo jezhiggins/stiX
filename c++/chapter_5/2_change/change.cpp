@@ -19,7 +19,8 @@ void stiX::change(
 
     auto remainder = std::string_view(line);
 
-    while(true) {
+    auto offset = 0;
+    while(offset != line.size()) {
       auto loc = matcher.find(remainder);
       if (!loc.match)
         break;
@@ -28,6 +29,8 @@ void stiX::change(
       remainder = remainder.substr(loc.to);
 
       out << prefix << replacement;
+
+      offset = loc.to;
     }
     out << remainder << '\n';
   }
