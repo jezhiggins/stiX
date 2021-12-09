@@ -178,9 +178,15 @@ TEST_CASE("Chapter 5 - change") {
 
   testChange(
     "12345\n",
-    "!1!2!3!4!5!\n",
+    "-1-2-3-4-5-\n",
     "a*",
-    "!");
+    "-");
+
+  testChange(
+    "abc\n",
+    "-b-c-\n",
+    "a*",
+    "-");
 }
 
 void testChange(
