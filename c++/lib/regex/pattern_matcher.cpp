@@ -15,7 +15,7 @@ static bool match_one(stiX::matcher const& matcher, stiX::character_sequence& se
 static stiX::match_location match_with_closure(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
 static stiX::match_location match_all(match_stages_iter mbegin, match_stages_iter const& mend, stiX::character_sequence seq);
 static stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_sequence& seq);
-static stiX::match_location match_terminal_only(stiX::matcher const& matcher, std::string_view line);
+static stiX::match_location match_terminal_only(stiX::matcher const& matcher, stiX::character_sequence& seq);
 
 static auto not_found = stiX::match_location { false, std::string_view::npos, std::string_view::npos };
 
@@ -60,20 +60,21 @@ stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_s
   return match_all(matchers.cbegin(), matchers.cend(), seq);
 }
 
-stiX::match_location match_terminal_only(stiX::matcher const& matcher, std::string_view line) {
-  auto seq = stiX::character_sequence(line);
+stiX::match_location match_terminal_only(stiX::matcher const& matcher, stiX::character_sequence& seq) {
   auto match_at_bol = match_one(matcher, seq);
-  auto location = match_at_bol  ? 0 : line.size();
+  auto location = match_at_bol  ? 0 : seq.size();
 
   return { true, location, location };
 }
 
-stiX::match_location stiX::pattern_matcher::find(std::string_view line) const {
+stiX::match_location stiX::pattern_matcher::find(std::string_view line, size_type offset) const {
+  auto seq = stiX::character_sequence(line, offset);
+
   if (is_terminal_only())
-    return match_terminal_only(m_.front().test, line);
+    return match_terminal_only(m_.front().test, seq);
 
   bool once = true; // need to try at least once, because even zero length input might match
-  for (auto seq = stiX::character_sequence(line); !seq.is_eol() || once; seq.advance(), once = false) {
+  for (; !seq.is_eol() || once; seq.advance(), once = false) {
     auto match = match_all(m_, seq);
     if (match.match) {
       return match;
@@ -82,8 +83,8 @@ stiX::match_location stiX::pattern_matcher::find(std::string_view line) const {
   return not_found;
 }
 
-bool stiX::pattern_matcher::match(std::string_view line) const {
-  return find(line).match;
+bool stiX::pattern_matcher::match(std::string_view line, size_type offset) const {
+  return find(line, offset).match;
 }
 
 bool stiX::pattern_matcher::is_terminal_only() const {

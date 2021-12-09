@@ -1,9 +1,11 @@
 #include "char_seq.hpp"
 
-stiX::character_sequence::character_sequence(std::string_view input)
-  : input_(std::move(input)),
+stiX::character_sequence::character_sequence(
+  std::string_view input,
+  size_type offset
+) : input_(std::move(input)),
     input_length_(input_.size()),
-    pos_(0) {
+    pos_(offset) {
 }
 
 bool stiX::character_sequence::is_bol() const {

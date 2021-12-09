@@ -8,7 +8,7 @@ namespace stiX {
   public:
     using size_type = std::string_view::size_type;
 
-    explicit character_sequence(std::string_view input);
+    explicit character_sequence(std::string_view input, size_type offset = 0);
 
     bool is_bol() const;
     bool is_eol() const;
@@ -24,6 +24,7 @@ namespace stiX {
     void mark_from() { from_ = pos_; }
     size_type from() const { return from_; }
     size_type to() const { return pos_; }
+    size_type size() const { return input_.size(); }
   private:
     std::string_view const input_;
     size_type const input_length_;

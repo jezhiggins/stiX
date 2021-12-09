@@ -29,8 +29,10 @@ namespace stiX {
 
   class pattern_matcher {
   public:
-    match_location find(std::string_view line) const;
-    bool match(std::string_view line) const;
+    using size_type = std::string_view::size_type;
+
+    match_location find(std::string_view line, size_type offset = 0) const;
+    bool match(std::string_view line, size_type offset = 0) const;
 
     size_t size() const { return m_.size(); }
 
