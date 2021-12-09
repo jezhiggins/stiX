@@ -28,6 +28,10 @@ void stiX::character_sequence::advance() {
   if (!is_eol()) ++pos_;
 }
 
+void stiX::character_sequence::skip_to_end() {
+  pos_ = input_length_;
+}
+
 void stiX::character_sequence::checkpoint() {
   checkpoint_ = pos_;
 }

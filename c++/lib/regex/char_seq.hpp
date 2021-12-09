@@ -17,6 +17,7 @@ namespace stiX {
     char operator *() const;
 
     void advance();
+    void skip_to_end();
 
     void checkpoint();
     bool rewind();
@@ -24,7 +25,6 @@ namespace stiX {
     void mark_from() { from_ = pos_; }
     size_type from() const { return from_; }
     size_type to() const { return pos_; }
-    size_type size() const { return input_.size(); }
   private:
     std::string_view const input_;
     size_type const input_length_;

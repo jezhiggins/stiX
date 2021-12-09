@@ -61,10 +61,14 @@ stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_s
 }
 
 stiX::match_location match_terminal_only(stiX::matcher const& matcher, stiX::character_sequence& seq) {
-  auto match_at_bol = match_one(matcher, seq);
-  auto location = match_at_bol  ? 0 : seq.size();
+  if (match_one(matcher, seq))
+    return { true, 0, 0 };
 
-  return { true, location, location };
+  seq.skip_to_end();
+  if (match_one(matcher, seq))
+    return { true, seq.to(), seq.to() };
+
+  return not_found;
 }
 
 stiX::match_location stiX::pattern_matcher::find(std::string_view line, size_type offset) const {
