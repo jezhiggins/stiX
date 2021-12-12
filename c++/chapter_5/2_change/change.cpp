@@ -6,8 +6,10 @@
 
 auto const eof = std::char_traits<char>::eof();
 
+using site_type = stiX::pattern_matcher::size_type;
+
 static bool is_zero_width_match(stiX::match_location loc);
-static bool not_at_end(int offset, std::string_view line);
+static bool not_at_end(site_type offset, std::string_view line);
 
 static void apply_change(
   stiX::pattern_matcher const& matcher,
@@ -37,8 +39,9 @@ void apply_change(
   std::string_view line,
   std::ostream &out
 ) {
-  auto offset = 0;
-  auto last_match = -1;
+  site_type offset = 0;
+  site_type last_match = -1;
+
   while(not_at_end(offset, line)) {
     auto loc = matcher.find(line, offset);
     if (!loc.match)
@@ -69,6 +72,6 @@ bool is_zero_width_match(stiX::match_location loc) {
   return loc.from == loc.to;
 }
 
-bool not_at_end(int offset, std::string_view line) {
+bool not_at_end(site_type offset, std::string_view line) {
   return offset != line.size();
 }
