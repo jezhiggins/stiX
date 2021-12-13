@@ -62,7 +62,7 @@ stiX::match_location match_all(stiX::patterns const& matchers, stiX::character_s
 
 stiX::match_location match_terminal_only(stiX::matcher const& matcher, stiX::character_sequence& seq) {
   if (match_one(matcher, seq))
-    return { true, 0, 0 };
+    return { true, seq.from(), seq.from() };
 
   seq.skip_to_end();
   if (match_one(matcher, seq))

@@ -5,6 +5,7 @@ stiX::character_sequence::character_sequence(
   size_type offset
 ) : input_(std::move(input)),
     input_length_(input_.size()),
+    from_(offset),
     pos_(offset) {
 }
 
