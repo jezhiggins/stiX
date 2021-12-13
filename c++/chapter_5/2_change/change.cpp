@@ -9,6 +9,7 @@ auto const eof = std::char_traits<char>::eof();
 using site_type = stiX::pattern_matcher::size_type;
 
 static bool is_zero_width_match(stiX::match_location loc);
+static bool at_end(site_type offset, std::string_view line);
 static bool not_at_end(site_type offset, std::string_view line);
 
 static void apply_change(
@@ -33,6 +34,19 @@ void stiX::change(
   }
 }
 
+class replacement_state {
+public:
+  replacement_state() :
+    state_(0) {
+  }
+
+  void next(bool at_end) { state_ = (state_ == 1) ? 2 : at_end; };
+  bool completed() const { return state_ == 2; }
+
+private:
+  int state_;
+};
+
 void apply_change(
   stiX::pattern_matcher const& matcher,
   std::string const& replacement,
@@ -42,14 +56,15 @@ void apply_change(
   site_type offset = 0;
   site_type last_match = -1;
 
-  while(not_at_end(offset, line)) {
+  for (auto state = replacement_state(); !state.completed(); state.next(at_end(offset, line))) {
     auto loc = matcher.find(line, offset);
     if (!loc.match)
       break;
 
-    auto prefix = line.substr(offset, loc.from - offset);
-    if (last_match != loc.from)
-      out << prefix << replacement;
+    if (last_match != loc.from) {
+      auto up_to_match = line.substr(offset, loc.from - offset);
+      out << up_to_match << replacement;
+    }
 
     offset = loc.to;
     last_match = loc.to;
@@ -62,8 +77,6 @@ void apply_change(
 
   if (not_at_end(offset, line))
     out << line.substr(offset);
-  else if (!matcher.is_terminal_only() && matcher.find(line, line.size()).match)
-    out << replacement;
 
   out << '\n';
 }
@@ -72,6 +85,9 @@ bool is_zero_width_match(stiX::match_location loc) {
   return loc.from == loc.to;
 }
 
+bool at_end(site_type offset, std::string_view line) {
+  return offset == line.size();
+}
 bool not_at_end(site_type offset, std::string_view line) {
-  return offset != line.size();
+  return !at_end(offset, line);
 }
