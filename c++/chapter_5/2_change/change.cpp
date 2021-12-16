@@ -1,6 +1,7 @@
 #include "change.hpp"
 #include "../../lib/getline.hpp"
 #include "../../lib/regex/pattern_matcher.hpp"
+#include "replacement.hpp"
 
 #include <iostream>
 
@@ -23,9 +24,10 @@ void stiX::change(
   std::istream& in,
   std::ostream& out,
   std::string const& pattern,
-  std::string const& replacement
+  std::string const& subst
 ) {
   auto matcher = stiX::compile_pattern(pattern);
+  auto replacement = stiX::prepare_replacement(subst);
 
   while(in.peek() != eof) {
     auto input = stiX::getline(in);

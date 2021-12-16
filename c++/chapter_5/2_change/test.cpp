@@ -2,6 +2,7 @@
 
 #include "change.hpp"
 #include "../../lib/regex/pattern_matcher.hpp"
+#include "replacement.hpp"
 
 TEST_CASE("Chapter 5 - change - pattern match location") {
   SECTION("no match") {
@@ -129,6 +130,26 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
     REQUIRE(r.match);
     REQUIRE(r.from == 0);
     REQUIRE(r.to == 0);
+  }
+}
+
+TEST_CASE("Chapter 5 - prepare replacement")
+{
+  SECTION("simple replacement") {
+    auto strs = std::vector {
+      "",
+      "hello",
+      "fruit"
+    };
+
+    for (auto& str : strs)
+      REQUIRE(str == stiX::prepare_replacement(str));
+  }
+
+  SECTION("with escapes") {
+    REQUIRE("hello" == stiX::prepare_replacement("@h@e@l@l@o"));
+    REQUIRE("hi\tthere" == stiX::prepare_replacement("hi@tthere"));
+    REQUIRE("hello@" == stiX::prepare_replacement("hello@"));
   }
 }
 
