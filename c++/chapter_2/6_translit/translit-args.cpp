@@ -121,11 +121,6 @@ namespace {
         std::back_insert_iterator<std::string>& dest,
         std::string::const_iterator& c
     ) {
-      static const std::map<char, char> escapes = {
-          { 't', '\t' },
-          { 'n', '\n' }
-      }; // escapes
-
       auto candidate = *++c;
       auto escaped = stiX::expand_escape(candidate);
 
