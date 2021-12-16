@@ -15,7 +15,7 @@ static bool not_at_end(site_type offset, std::string_view line);
 
 static void apply_change(
   stiX::pattern_matcher const& matcher,
-  std::string const& replacement,
+  std::vector<std::string> const& replacement,
   std::string_view input,
   std::ostream& out
 );
@@ -51,7 +51,7 @@ private:
 
 void apply_change(
   stiX::pattern_matcher const& matcher,
-  std::string const& replacement,
+  std::vector<std::string> const& replacement,
   std::string_view line,
   std::ostream &out
 ) {
@@ -65,7 +65,7 @@ void apply_change(
 
     if (last_match != loc.from) {
       auto up_to_match = line.substr(offset, loc.from - offset);
-      out << up_to_match << replacement;
+      out << up_to_match << replacement.front();
     }
 
     offset = loc.to;

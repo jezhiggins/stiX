@@ -142,14 +142,25 @@ TEST_CASE("Chapter 5 - prepare replacement")
       "fruit"
     };
 
-    for (auto& str : strs)
-      REQUIRE(str == stiX::prepare_replacement(str));
+    for (auto& str : strs) {
+      auto replacement = stiX::prepare_replacement(str);
+      REQUIRE(1 == replacement.size());
+      REQUIRE(str == replacement.front());
+    }
   }
 
   SECTION("with escapes") {
-    REQUIRE("hello" == stiX::prepare_replacement("@h@e@l@l@o"));
-    REQUIRE("hi\tthere" == stiX::prepare_replacement("hi@tthere"));
-    REQUIRE("hello@" == stiX::prepare_replacement("hello@"));
+    auto strs = std::vector<std::pair<std::string, std::string>> {
+      { "@h@e@l@l@o", "hello" },
+      { "hi@tthere", "hi\tthere" },
+      { "@hello@", "hello@" }
+    };
+
+    for (auto [str, expected] : strs) {
+      auto replacement = stiX::prepare_replacement(str);
+      REQUIRE(1 == replacement.size());
+      REQUIRE(expected == replacement.front());
+    }
   }
 }
 

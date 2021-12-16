@@ -10,8 +10,10 @@ static char expand_escape_sequence(
   std::string::const_iterator& c
 );
 
-std::string stiX::prepare_replacement(std::string const& str) {
-  std::string expanded;
+std::vector<std::string> stiX::prepare_replacement(std::string const& str) {
+  auto replacements = std::vector<std::string> { };
+
+  auto expanded = std::string { };
   auto insert = std::back_inserter(expanded);
 
   for (auto c = str.begin(); c != str.end(); ++c) {
@@ -19,7 +21,10 @@ std::string stiX::prepare_replacement(std::string const& str) {
 
     insert = is_escape ? expand_escape_sequence(c) : *c;
   }
-  return expanded;
+
+  replacements.emplace_back(expanded);
+
+  return replacements;
 }
 
 char expand_escape_sequence(
