@@ -9,23 +9,18 @@ namespace {
     const char Caret = '^';
 
     std::string translitArgument(
-        const std::string &arg,
+        std::string const& arg,
         bool ignoreInitialCaret
     );
 
     bool is_valid_dash_range(
-        const std::string& arg,
-        const std::string::const_iterator& c
+        std::string::const_iterator const& c,
+        std::string const& arg
     );
 
     void expand_dash_range(
         std::back_insert_iterator<std::string>& dest,
         std::string::const_iterator& c
-    );
-
-    bool is_valid_escape_sequence(
-        const std::string& arg,
-        const std::string::const_iterator& c
     );
 
     void expand_escape_sequence(
@@ -41,20 +36,20 @@ bool stiX::isNegatedArgument(
 }
 
 std::string stiX::translitSrcArgument(
-    const std::string &arg
+    std::string const& arg
 ) {
   return translitArgument(arg, true);
 }
 
 std::string stiX::translitDestArgument(
-    const std::string &arg
+    std::string const& arg
 ) {
   return translitArgument(arg, false);
 }
 
 namespace {
     std::string translitArgument(
-        const std::string &arg,
+        std::string const& arg,
         bool ignoreInitialCaret
     ) {
       std::string expanded;
@@ -65,11 +60,11 @@ namespace {
         ++c;
 
       while (c != arg.end()) {
-        if (is_valid_escape_sequence(arg, c)) {
+        if (stiX::is_valid_escape_sequence(c, arg.end())) {
           expand_escape_sequence(insert, c);
           continue;
         }
-        if (is_valid_dash_range(arg, c)) {
+        if (is_valid_dash_range(c, arg)) {
           expand_dash_range(insert, c);
           continue;
         }
@@ -80,8 +75,8 @@ namespace {
     } // translitArgument
 
     bool is_valid_dash_range(
-        const std::string &arg,
-        const std::string::const_iterator &c
+        std::string::const_iterator const& c,
+        std::string const& arg
     ) {
       if (*c != stiX::Dash)
         return false;
@@ -106,16 +101,6 @@ namespace {
 
       c++;
     } // expand_dash_range
-
-    bool is_valid_escape_sequence(
-        const std::string &arg,
-        const std::string::const_iterator &c
-    ) {
-      if (*c != stiX::Escape)
-        return false;
-
-      return (c+1 != arg.end());
-    } // is_valid_escape_sequence
 
     void expand_escape_sequence(
         std::back_insert_iterator<std::string>& dest,

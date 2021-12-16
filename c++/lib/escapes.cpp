@@ -13,3 +13,13 @@ char stiX::expand_escape(char candidate) {
          ? escape->second
          : candidate;
 }
+
+char stiX::is_valid_escape_sequence(
+  std::string::const_iterator const& c,
+  std::string::const_iterator const& end
+) {
+  if (*c != Escape)
+    return false;
+
+  return (c+1 != end);
+} // is_valid_escape_sequence
