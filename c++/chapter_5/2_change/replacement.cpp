@@ -17,12 +17,23 @@ std::vector<std::string> stiX::prepare_replacement(std::string const& str) {
   auto insert = std::back_inserter(expanded);
 
   for (auto c = str.begin(); c != str.end(); ++c) {
+    if (*c == '&') {
+      if (!expanded.empty()) {
+        replacements.emplace_back(expanded);
+        expanded.clear();
+      }
+
+      replacements.emplace_back("--WACKAWACKA--");
+      continue;
+    }
+
     auto is_escape = stiX::is_valid_escape_sequence(c, str.end());
 
     insert = is_escape ? expand_escape_sequence(c) : *c;
   }
 
-  replacements.emplace_back(expanded);
+  if (replacements.empty() || !expanded.empty())
+    replacements.emplace_back(expanded);
 
   return replacements;
 }
