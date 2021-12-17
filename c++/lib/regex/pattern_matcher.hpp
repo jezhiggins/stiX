@@ -36,10 +36,11 @@ namespace stiX {
     bool match(std::string_view line, size_type offset = 0) const;
 
     size_t size() const { return m_.size(); }
-    bool is_terminal_only() const;
 
   private:
     explicit pattern_matcher(patterns m);
+
+    bool is_terminal_only() const;
 
     patterns const m_;
 
