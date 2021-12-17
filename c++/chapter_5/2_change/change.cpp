@@ -14,15 +14,10 @@ static bool not_at_end(site_type offset, std::string_view line);
 
 static void apply_change(
   stiX::pattern_matcher const& matcher,
-  std::vector<std::string> const& replacement,
+  stiX::replacement const& replacement,
   std::string_view input,
   std::ostream& out
 );
-
-static void insert_replacement(
-  std::vector<std::string> const& replacements,
-  std::string_view match,
-  std::ostream& out);
 
 void stiX::change(
   std::istream& in,
@@ -55,7 +50,7 @@ private:
 
 void apply_change(
   stiX::pattern_matcher const& matcher,
-  std::vector<std::string> const& replacement,
+  stiX::replacement const& replacement,
   std::string_view line,
   std::ostream &out
 ) {
@@ -70,7 +65,7 @@ void apply_change(
     if (last_match != loc.from || !loc.zero_width) {
       auto up_to_match = line.substr(offset, loc.from - offset);
       out << up_to_match;
-      insert_replacement(replacement, line.substr(loc.from, loc.to - loc.from), out);
+      replacement.apply(line.substr(loc.from, loc.to - loc.from), out);
     }
 
     offset = loc.to;
@@ -86,18 +81,6 @@ void apply_change(
     out << line.substr(offset);
 
   out << '\n';
-}
-
-void insert_replacement(
-  std::vector<std::string> const& replacements,
-  std::string_view match,
-  std::ostream& out) {
-  for (auto const& r : replacements) {
-    if (stiX::is_ditto(r))
-      out << match;
-    else
-      out << r;
-  }
 }
 
 bool at_end(site_type offset, std::string_view line) {

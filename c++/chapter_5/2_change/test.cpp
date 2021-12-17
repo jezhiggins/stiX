@@ -133,10 +133,25 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
   }
 }
 
+namespace stiX {
+  struct replacement_test_fixture {
+    static std::vector<std::string> unwrap(stiX::replacement r) {
+      return r.replacements_;
+    }
+  };
+}
+
+std::vector<std::string> prepare(std::string s) {
+  using rtf = stiX::replacement_test_fixture;
+  return rtf::unwrap(stiX::prepare_replacement(s));
+}
+
 TEST_CASE("Chapter 5 - prepare replacement")
 {
+  auto ditto = std::string { 1, '\0' };
+
   SECTION("replace with nothing") {
-    auto replacement = stiX::prepare_replacement("");
+    auto replacement = prepare("");
     REQUIRE(0 == replacement.size());
   }
 
@@ -147,7 +162,7 @@ TEST_CASE("Chapter 5 - prepare replacement")
     };
 
     for (auto& str : strs) {
-      auto replacement = stiX::prepare_replacement(str);
+      auto replacement = prepare(str);
       REQUIRE(1 == replacement.size());
       REQUIRE(str == replacement.front());
     }
@@ -161,39 +176,39 @@ TEST_CASE("Chapter 5 - prepare replacement")
     };
 
     for (auto [str, expected] : strs) {
-      auto replacement = stiX::prepare_replacement(str);
+      auto replacement = prepare(str);
       REQUIRE(1 == replacement.size());
       REQUIRE(expected == replacement.front());
     }
   }
 
   SECTION("dup at start") {
-    auto replacement = stiX::prepare_replacement("&!?!?!");
+    auto replacement = prepare("&!?!?!");
     REQUIRE(2 == replacement.size());
-    REQUIRE(stiX::is_ditto(replacement.front()));
+    REQUIRE(ditto == replacement.front());
     REQUIRE("!?!?!" == replacement.back());
   }
   SECTION("dup at end") {
-    auto replacement = stiX::prepare_replacement("-->&");
+    auto replacement = prepare("-->&");
     REQUIRE(2 == replacement.size());
     REQUIRE("-->" == replacement.front());
-    REQUIRE(stiX::is_ditto(replacement.back()));
+    REQUIRE(ditto == replacement.back());
   }
   SECTION("dup in middle") {
-    auto replacement = stiX::prepare_replacement("(&)");
+    auto replacement = prepare("(&)");
     REQUIRE(3 == replacement.size());
     REQUIRE("(" == replacement[0]);
-    REQUIRE(stiX::is_ditto(replacement[1]));
+    REQUIRE(ditto == replacement[1]);
     REQUIRE(")" == replacement[2]);
   }
   SECTION("dup at beginning, middle, and end") {
-    auto replacement = stiX::prepare_replacement("& ->@& (&) @&<- &");
+    auto replacement = prepare("& ->@& (&) @&<- &");
     REQUIRE(5 == replacement.size());
-    REQUIRE(stiX::is_ditto(replacement[0]));
+    REQUIRE(ditto == replacement[0]);
     REQUIRE(" ->& (" == replacement[1]);
-    REQUIRE(stiX::is_ditto(replacement[2]));
+    REQUIRE(ditto == replacement[2]);
     REQUIRE(") &<- " == replacement[3]);
-    REQUIRE(stiX::is_ditto(replacement[4]));
+    REQUIRE(ditto == replacement[4]);
   }
 }
 
