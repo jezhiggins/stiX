@@ -34,7 +34,7 @@ std::vector<std::string> stiX::prepare_replacement(std::string const& str) {
     insert = is_escape ? expand_escape_sequence(c) : *c;
   }
 
-  if (replacements.empty() || !expanded.empty())
+  if (!expanded.empty())
     replacements.emplace_back(expanded);
 
   return replacements;

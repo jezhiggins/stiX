@@ -135,9 +135,13 @@ TEST_CASE("Chapter 5 - change - pattern match location") {
 
 TEST_CASE("Chapter 5 - prepare replacement")
 {
+  SECTION("replace with nothing") {
+    auto replacement = stiX::prepare_replacement("");
+    REQUIRE(0 == replacement.size());
+  }
+
   SECTION("simple replacement") {
     auto strs = std::vector {
-      "",
       "hello",
       "fruit"
     };
