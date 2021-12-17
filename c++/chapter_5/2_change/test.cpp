@@ -248,6 +248,18 @@ TEST_CASE("Chapter 5 - change") {
     "-b-c-\n",
     "a*",
     "-");
+
+  testChange(
+    "abc\n",
+    "(a)bc\n",
+    "a",
+    "(&)");
+
+  testChange(
+    "abc\n",
+    "(a)(b)(c)\n",
+    "?",
+    "(&)");
 }
 
 void testChange(

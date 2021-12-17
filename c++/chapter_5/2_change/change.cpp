@@ -20,6 +20,11 @@ static void apply_change(
   std::ostream& out
 );
 
+static void insert_replacement(
+  std::vector<std::string> const& replacements,
+  std::string_view match,
+  std::ostream& out);
+
 void stiX::change(
   std::istream& in,
   std::ostream& out,
@@ -63,15 +68,18 @@ void apply_change(
     if (!loc.match)
       break;
 
-    if (last_match != loc.from) {
+    auto zero_width = is_zero_width_match(loc);
+
+    if (last_match != loc.from || !zero_width) {
       auto up_to_match = line.substr(offset, loc.from - offset);
-      out << up_to_match << replacement.front();
+      out << up_to_match;
+      insert_replacement(replacement, line.substr(loc.from, loc.to - loc.from), out);
     }
 
     offset = loc.to;
     last_match = loc.to;
 
-    if (is_zero_width_match(loc) && not_at_end(offset, line)) {
+    if (zero_width && not_at_end(offset, line)) {
       out << line[loc.from];
       offset = loc.from+1;
     }
@@ -81,6 +89,18 @@ void apply_change(
     out << line.substr(offset);
 
   out << '\n';
+}
+
+void insert_replacement(
+  std::vector<std::string> const& replacements,
+  std::string_view match,
+  std::ostream& out) {
+  for (auto const& r : replacements) {
+    if (stiX::is_ditto(r))
+      out << match;
+    else
+      out << r;
+  }
 }
 
 bool is_zero_width_match(stiX::match_location loc) {
