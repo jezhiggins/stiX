@@ -25,6 +25,7 @@ namespace stiX {
     bool const match;
     size_type const from;
     size_type const to;
+    bool const zero_width = (to == from);
   };
 
   class pattern_matcher {
