@@ -166,30 +166,30 @@ TEST_CASE("Chapter 5 - prepare replacement")
   SECTION("dup at start") {
     auto replacement = stiX::prepare_replacement("&!?!?!");
     REQUIRE(2 == replacement.size());
-    REQUIRE("--WACKAWACKA--" == replacement.front());
+    REQUIRE(stiX::is_ditto(replacement.front()));
     REQUIRE("!?!?!" == replacement.back());
   }
   SECTION("dup at end") {
     auto replacement = stiX::prepare_replacement("-->&");
     REQUIRE(2 == replacement.size());
     REQUIRE("-->" == replacement.front());
-    REQUIRE("--WACKAWACKA--" == replacement.back());
+    REQUIRE(stiX::is_ditto(replacement.back()));
   }
   SECTION("dup in middle") {
     auto replacement = stiX::prepare_replacement("(&)");
     REQUIRE(3 == replacement.size());
     REQUIRE("(" == replacement[0]);
-    REQUIRE("--WACKAWACKA--" == replacement[1]);
+    REQUIRE(stiX::is_ditto(replacement[1]));
     REQUIRE(")" == replacement[2]);
   }
   SECTION("dup at beginning, middle, and end") {
     auto replacement = stiX::prepare_replacement("& ->@& (&) @&<- &");
     REQUIRE(5 == replacement.size());
-    REQUIRE("--WACKAWACKA--" == replacement[0]);
+    REQUIRE(stiX::is_ditto(replacement[0]));
     REQUIRE(" ->& (" == replacement[1]);
-    REQUIRE("--WACKAWACKA--" == replacement[2]);
+    REQUIRE(stiX::is_ditto(replacement[2]));
     REQUIRE(") &<- " == replacement[3]);
-    REQUIRE("--WACKAWACKA--" == replacement[4]);
+    REQUIRE(stiX::is_ditto(replacement[4]));
   }
 }
 

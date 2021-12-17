@@ -10,6 +10,8 @@ static char expand_escape_sequence(
   std::string::const_iterator& c
 );
 
+static auto const ditto_marker = std::string { '\0' };
+
 std::vector<std::string> stiX::prepare_replacement(std::string const& str) {
   auto replacements = std::vector<std::string> { };
 
@@ -23,7 +25,7 @@ std::vector<std::string> stiX::prepare_replacement(std::string const& str) {
         expanded.clear();
       }
 
-      replacements.emplace_back("--WACKAWACKA--");
+      replacements.push_back(ditto_marker);
       continue;
     }
 
@@ -36,6 +38,10 @@ std::vector<std::string> stiX::prepare_replacement(std::string const& str) {
     replacements.emplace_back(expanded);
 
   return replacements;
+}
+
+bool stiX::is_ditto(std::string const& str) {
+  return str == ditto_marker;
 }
 
 char expand_escape_sequence(
