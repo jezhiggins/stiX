@@ -77,10 +77,7 @@ void apply_change(
     }
   }
 
-  if (not_at_end(offset, line))
-    out << line.substr(offset);
-
-  out << '\n';
+  out << line.substr(offset) << '\n';
 }
 
 bool at_end(site_type offset, std::string_view line) {
