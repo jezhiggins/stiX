@@ -80,7 +80,7 @@ stiX::match_fn_with_consume make_matcher_fn(stiX::character_sequence& characters
   return { is_char_matcher(c), true };
 }
 
-stiX::match_fn_with_consume make_character_class_matcher(stiX::character_sequence& characters) {
+static std::string extract_character_class(stiX::character_sequence& characters) {
   auto subpattern = std::string { };
 
   characters.advance(); // step past '['
@@ -90,14 +90,24 @@ stiX::match_fn_with_consume make_character_class_matcher(stiX::character_sequenc
     subpattern += c;
   }
 
-  auto character_class = std::string { };
+  return subpattern;
+}
+
+static bool is_negated_match(stiX::character_sequence& subpat) {
+  if (*subpat != negate_class)
+    return false;
+
+  subpat.advance();
+  return true;
+}
+
+stiX::match_fn_with_consume make_character_class_matcher(stiX::character_sequence& characters) {
+  auto subpattern = extract_character_class(characters);
+
   auto subpat = stiX::character_sequence(subpattern);
-  bool negated = false;
-  if (*subpat == negate_class)
-  {
-    subpat.advance();
-    negated = true;
-  }
+  auto negated = is_negated_match(subpat);
+
+  auto character_class = std::string { };
   for (char c = *subpat; !subpat.is_eol(); subpat.advance(), c = *subpat) {
     if (c == stiX::Dash && subpat.available() && !subpat.is_bol()) {
       char from = character_class.back() + 1;
