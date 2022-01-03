@@ -60,7 +60,7 @@ void apply_change(
     if (!match.match)
       break;
 
-    if (last_match != match.from || !match.zero_width) {
+    if (!match.zero_width || last_match != match.from) {
       auto up_to_match = line.substr(offset, match.from - offset);
       auto match_text = line.substr(match.from, match.length);
 
