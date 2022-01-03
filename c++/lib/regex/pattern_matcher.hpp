@@ -25,6 +25,7 @@ namespace stiX {
     bool const match;
     size_type const from;
     size_type const to;
+    size_type const length = (to - from);
     bool const zero_width = (to == from);
   };
 
