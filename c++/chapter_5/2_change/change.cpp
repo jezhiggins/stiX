@@ -62,8 +62,9 @@ void apply_change(
 
     if (last_match != match.from || !match.zero_width) {
       auto up_to_match = line.substr(offset, match.from - offset);
-      out << up_to_match;
-      replacer.apply(line.substr(match.from, match.length), out);
+      auto match_text = line.substr(match.from, match.length);
+
+      out << up_to_match << replacer.apply(match_text);
     }
 
     offset = match.to;

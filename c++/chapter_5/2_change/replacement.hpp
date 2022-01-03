@@ -13,6 +13,7 @@ namespace stiX {
     {
     }
 
+    std::string apply(std::string_view match) const;
     void apply(std::string_view match, std::ostream& out) const;
 
   private:

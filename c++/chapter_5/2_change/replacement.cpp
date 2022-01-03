@@ -1,6 +1,7 @@
 
 #include "replacement.hpp"
 #include "../../lib/escapes.hpp"
+#include <sstream>
 
 static bool is_valid_escape_sequence(
   std::string::const_iterator const& c,
@@ -14,6 +15,12 @@ static auto const ditto_marker = std::string { 1, '\0' };
 
 bool is_ditto(std::string const& str) {
   return str == ditto_marker;
+}
+
+std::string stiX::replacement::apply(std::string_view match) const {
+  auto buffer = std::ostringstream { };
+  apply(match, buffer);
+  return buffer.str();
 }
 
 void stiX::replacement::apply(std::string_view match, std::ostream &out) const {
