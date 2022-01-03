@@ -15,7 +15,7 @@ static bool not_at_end(std::string_view line, size_type offset);
 static void apply_change(
   stiX::pattern_matcher const& matcher,
   stiX::replacement const& replacer,
-  std::string_view input,
+  std::string_view line,
   std::ostream& out
 );
 
@@ -50,7 +50,7 @@ void apply_change(
   stiX::pattern_matcher const& matcher,
   stiX::replacement const& replacer,
   std::string_view line,
-  std::ostream &out
+  std::ostream& out
 ) {
   size_type offset = 0;
   size_type last_match = -1;
