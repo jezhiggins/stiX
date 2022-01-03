@@ -3,9 +3,9 @@
 #include "../../lib/escapes.hpp"
 #include <sstream>
 
-static bool is_valid_escape_sequence(
-  std::string::const_iterator const& c,
-  std::string const& arg
+static char next_char(
+  std::string::const_iterator& c,
+  std::string::const_iterator const& end
 );
 static char expand_escape_sequence(
   std::string::const_iterator& c
@@ -34,30 +34,38 @@ void stiX::replacement::apply(std::string_view match, std::ostream &out) const {
 
 stiX::replacement stiX::prepare_replacement(std::string const& str) {
   auto replacements = std::vector<std::string> { };
+  auto replacement = std::string { };
 
-  auto expanded = std::string { };
-  auto insert = std::back_inserter(expanded);
+  auto push_replacement = [&replacements, &replacement](){
+    if (!replacement.empty())
+      replacements.emplace_back(replacement);
+    replacement.clear();
+  };
+  auto push_ditto_marker = [&replacements]() {
+    replacements.push_back(ditto_marker);
+  };
 
   for (auto c = str.begin(); c != str.end(); ++c) {
     if (*c == '&') {
-      if (!expanded.empty()) {
-        replacements.emplace_back(expanded);
-        expanded.clear();
-      }
-
-      replacements.push_back(ditto_marker);
+      push_replacement();
+      push_ditto_marker();
       continue;
     }
 
-    auto is_escape = stiX::is_valid_escape_sequence(c, str.end());
-
-    insert = is_escape ? expand_escape_sequence(c) : *c;
+    replacement += next_char(c, str.end());
   }
 
-  if (!expanded.empty())
-    replacements.emplace_back(expanded);
+  push_replacement();
 
   return replacements;
+}
+
+char next_char(
+  std::string::const_iterator& c,
+  std::string::const_iterator const& end
+) {
+  auto is_escape = stiX::is_valid_escape_sequence(c, end);
+  return is_escape ? expand_escape_sequence(c) : *c;
 }
 
 char expand_escape_sequence(
