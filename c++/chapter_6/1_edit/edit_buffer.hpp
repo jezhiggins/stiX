@@ -9,6 +9,8 @@ namespace stiX {
   public:
     void insert(size_t index, std::string_view line);
 
+    std::string_view at(size_t index) const;
+
     size_t size() const { return lines_.size(); }
 
   private:
