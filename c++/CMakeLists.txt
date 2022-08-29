@@ -211,3 +211,11 @@ add_executable(change_test
         chapter_5/2_change/replacement.hpp
         chapter_5/2_change/replacement.cpp)
 target_link_libraries(change_test stix testsupport)
+
+add_executable(edit
+        chapter_6/1_edit/1_edit.cpp)
+target_link_libraries(edit stix)
+
+add_executable(edit_test
+        chapter_6/1_edit/test.cpp)
+target_link_libraries(edit_test stix testsupport)
