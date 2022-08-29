@@ -1,14 +1,20 @@
 #ifndef STICPP_EDITOR_H
 #define STICPP_EDITOR_H
 
-#include <cstddef>
+#include "edit_buffer.hpp"
 
 namespace stiX {
 
   class editor {
   public:
-    size_t dot() const { return 0; }
-    size_t last() const { return 0; }
+    void insert_before(size_t index, std::string_view line);
+
+    size_t dot() const { return dot_; }
+    size_t last() const { return buffer_.size(); }
+
+  private:
+    size_t dot_ = 0;
+    edit_buffer buffer_;
   };
 
 }
