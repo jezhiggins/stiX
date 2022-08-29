@@ -4,9 +4,9 @@
 using namespace stiX;
 
 void edit_buffer::insert(size_t index, std::string_view line) {
-  lines_.insert(lines_.begin() + (index-1), std::string { line });
+  lines_.insert(lines_.begin() + index, std::string { line });
 }
 
 std::string_view edit_buffer::at(size_t index) const {
-  return lines_.at(index - 1);
+  return lines_.at(index);
 }
