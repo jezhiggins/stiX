@@ -213,9 +213,13 @@ add_executable(change_test
 target_link_libraries(change_test stix testsupport)
 
 add_executable(edit
-        chapter_6/1_edit/1_edit.cpp)
+        chapter_6/1_edit/1_edit.cpp
+        chapter_6/1_edit/edit_buffer.cpp
+        chapter_6/1_edit/edit_buffer.hpp)
 target_link_libraries(edit stix)
 
 add_executable(edit_test
-        chapter_6/1_edit/test.cpp)
+        chapter_6/1_edit/test_edit_buffer.cpp
+        chapter_6/1_edit/edit_buffer.cpp
+        chapter_6/1_edit/edit_buffer.hpp)
 target_link_libraries(edit_test stix testsupport)
