@@ -1,21 +1,21 @@
-#ifndef STICPP_EDIT_BUFFER_HPP
-#define STICPP_EDIT_BUFFER_HPP
+#ifndef STICPP_EDIT_BUFFER_H
+#define STICPP_EDIT_BUFFER_H
 
-#include <string>
-#include <vector>
+#include "line_buffer.hpp"
 
 namespace stiX {
+
   class edit_buffer {
   public:
-    void insert(size_t index, std::string_view line);
+    void insert_before(size_t index, std::string_view line);
 
-    std::string_view at(size_t index) const;
-
-    size_t size() const { return lines_.size(); }
+    size_t dot() const { return dot_; }
+    size_t last() const { return buffer_.size(); }
 
   private:
-    std::vector<std::string> lines_;
+    size_t dot_ = 0;
+    line_buffer buffer_;
   };
-}
 
-#endif //STICPP_EDIT_BUFFER_HPP
+}
+#endif //STICPP_EDIT_BUFFER_H

@@ -213,10 +213,10 @@ add_executable(change_test
 target_link_libraries(change_test stix testsupport)
 
 set (edit_sources
+        chapter_6/1_edit/line_buffer.cpp
+        chapter_6/1_edit/line_buffer.hpp
         chapter_6/1_edit/edit_buffer.cpp
-        chapter_6/1_edit/edit_buffer.hpp
-        chapter_6/1_edit/editor.cpp
-        chapter_6/1_edit/editor.hpp)
+        chapter_6/1_edit/edit_buffer.hpp)
 
 add_executable(edit
         chapter_6/1_edit/1_edit.cpp
@@ -224,7 +224,7 @@ add_executable(edit
 target_link_libraries(edit stix)
 
 add_executable(edit_test
+        chapter_6/1_edit/test_line_buffer.cpp
         chapter_6/1_edit/test_edit_buffer.cpp
-        chapter_6/1_edit/test_editor.cpp
         ${edit_sources})
 target_link_libraries(edit_test stix testsupport)
