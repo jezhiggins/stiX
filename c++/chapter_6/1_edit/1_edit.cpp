@@ -83,8 +83,10 @@
 // written with no filename to refer to the remembered filename. A filename
 // given with `e` or `f` replaces any remembered filename.
 
+#include "editor.hpp"
 #include <iostream>
 
 int main(int argc, char const* argv[]) {
-  std::cout << "TBC\n";
+  auto editor = stiX::editor();
+  editor.process(std::cin, std::cout);
 }
