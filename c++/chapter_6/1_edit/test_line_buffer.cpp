@@ -9,7 +9,7 @@ TEST_CASE("Chapter 6 - edit - line_buffer") {
     REQUIRE(b.size() == 0);
   }
 
-  SECTION("insert a line before  1") {
+  SECTION("insert a line before 0") {
     auto b = stiX::line_buffer();
     b.insert(0, "a line");
 
@@ -17,7 +17,7 @@ TEST_CASE("Chapter 6 - edit - line_buffer") {
     REQUIRE(b.at(0) == "a line");
   }
 
-  SECTION("insert a line before 1, and then another") {
+  SECTION("insert a line before 0, then another") {
     auto b = stiX::line_buffer();
     b.insert(0, "line 1");
     b.insert(0, "line 2");

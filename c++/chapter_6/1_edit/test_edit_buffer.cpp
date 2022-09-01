@@ -11,7 +11,7 @@ TEST_CASE("Chapter 6 - edit - edit_buffer") {
     REQUIRE(e.last() == 0);
   }
 
-  SECTION("insert first line") {
+  SECTION("insert at .") {
     auto e = stiX::edit_buffer();
     e.insert_before(0, "a line");
 
