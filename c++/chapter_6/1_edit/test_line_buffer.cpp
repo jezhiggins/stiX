@@ -14,7 +14,7 @@ TEST_CASE("Chapter 6 - edit - line_buffer") {
     b.insert(0, "a line");
 
     REQUIRE(b.size() == 1);
-    REQUIRE(b.at(0) == "a line");
+    REQUIRE(b[0] == "a line");
   }
 
   SECTION("insert a line before 0, then another") {
@@ -23,8 +23,8 @@ TEST_CASE("Chapter 6 - edit - line_buffer") {
     b.insert(0, "line 2");
 
     REQUIRE(b.size() == 2);
-    REQUIRE(b.at(0) == "line 2");
-    REQUIRE(b.at(1) == "line 1");
+    REQUIRE(b[0] == "line 2");
+    REQUIRE(b[1] == "line 1");
   }
 
   SECTION("insert a line before end, then another") {
@@ -33,7 +33,7 @@ TEST_CASE("Chapter 6 - edit - line_buffer") {
     b.insert(b.size(), "line 2");
 
     REQUIRE(b.size() == 2);
-    REQUIRE(b.at(0) == "line 1");
-    REQUIRE(b.at(1) == "line 2");
+    REQUIRE(b[0] == "line 1");
+    REQUIRE(b[1] == "line 2");
   }
 }
