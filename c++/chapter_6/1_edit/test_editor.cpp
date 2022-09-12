@@ -9,15 +9,28 @@ using namespace std::string_literals;
 void editor_test(std::string input, std::string expected);
 
 TEST_CASE("Chapter 6 - edit - editor") {
-  editor_test(
-    "=\n"s,
-    "0\n"s
-  );
+  SECTION("= command") {
+    editor_test(
+      "=\n"s,
+      "0\n"s
+    );
 
-  editor_test(
-    "=\n=\n"s,
-    "0\n0\n"s
-  );
+    editor_test(
+      "=\n=\n"s,
+      "0\n0\n"s
+    );
+  } // =
+
+  SECTION("i command") {
+    editor_test(
+      "i\nHello World!\nWoo!\n.\n=\n"s,
+      "2\n"
+    );
+    editor_test(
+      "i\nHello World!\n.\n=\ni\nWoo!\n.\n=\n"s,
+      "1\n2\n"
+    );
+  } // i
 }
 
 std::string testLabel(std::string input);
