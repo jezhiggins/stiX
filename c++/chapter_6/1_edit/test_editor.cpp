@@ -30,6 +30,10 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "i\nHello World!\n.\n=\ni\nWoo!\n.\n=\n"s,
       "1\n2\n"
     );
+    editor_test(
+      "=\ni\n.\n=\n",
+      "0\n0\n"
+    );
   } // i
 }
 
