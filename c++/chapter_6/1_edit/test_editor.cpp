@@ -33,6 +33,14 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "=\ni\n.\n=\n",
       "0\n0\n"
     );
+    editor_test(
+      "i\nLine 1\nLine 2\n.\n1i\nLine 0\n.\n1,$p\n",
+      "Line 0\nLine 1\nLine 2\n"
+    );
+    editor_test(
+      "i\nLine 1\nLine 2\n.\n2i\nLine 0\n.\n1,$p\n",
+      "Line 1\nLine 0\nLine 2\n"
+    );
   } // i
 
   SECTION("p command") {
