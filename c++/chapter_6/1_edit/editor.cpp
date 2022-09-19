@@ -2,6 +2,7 @@
 #include "editor.hpp"
 #include "../../lib/getline.hpp"
 #include <iostream>
+#include "command_parser.hpp"
 
 using namespace stiX;
 
@@ -14,11 +15,13 @@ void editor::process(std::istream& in, std::ostream& out) {
   while(in.peek() != eof) {
     auto line = stiX::getline(in);
 
-    if (line == "=")
+    auto command = parse_command(line, buffer_.dot(), buffer_.last());
+
+    if (command.code == '=')
       out << buffer_.dot() << "\n";
-    else if (line == "i")
+    else if (command.code == 'i')
       do_insert(in, buffer_);
-    else if (line == "p")
+    else if (command.code == 'p')
       do_print(out, buffer_);
     else
       out << "?\n";
