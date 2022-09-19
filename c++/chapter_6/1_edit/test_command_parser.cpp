@@ -19,4 +19,12 @@ TEST_CASE("Chapter 6 - edit - command parser") {
     REQUIRE(command.to_index == 3);
     REQUIRE(command.code == '\n');
   }
+
+  SECTION("single letter") {
+    auto command = stiX::parse_command("i", 3, 5);
+
+    REQUIRE(command.from_index == 3);
+    REQUIRE(command.to_index == 3);
+    REQUIRE(command.code == 'i');
+  }
 }
