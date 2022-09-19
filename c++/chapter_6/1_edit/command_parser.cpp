@@ -49,6 +49,15 @@ std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size
   auto first_num_len = end_of_number(number_input);
   auto from = parse_number(number_input.substr(0, first_num_len), dot, last);
 
-  return std::make_pair(from, from);
+  number_input = number_input.substr(first_num_len);
+  auto sep_len = end_of_separator(number_input);
+
+  number_input = number_input.substr(sep_len);
+  auto second_num_len = end_of_number(number_input);
+  auto to = second_num_len
+    ? parse_number(number_input.substr(0, second_num_len), dot, last)
+    : from;
+
+  return std::make_pair(from, to);
 }
 
