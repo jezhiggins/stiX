@@ -44,6 +44,18 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "i\nHello World!\nHello Again\n.\np\n",
       "Hello Again\n"
     );
+    editor_test(
+      "i\nHello World!\nHello Again\n.\n1p\n",
+      "Hello World!\n"
+    );
+    editor_test(
+      "i\nHello World!\nHello Again\n.\n1,2p\n",
+      "Hello World!\nHello Again\n"
+    );
+    editor_test(
+      "i\nHello World!\nHello Again\n.\n1,$p\n",
+      "Hello World!\nHello Again\n"
+    );
   }
 }
 
