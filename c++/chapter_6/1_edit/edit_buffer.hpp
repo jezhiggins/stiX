@@ -9,6 +9,8 @@ namespace stiX {
   public:
     void insert_before(size_t index, std::string_view line);
 
+    std::string_view operator[](size_t index) const;
+
     size_t dot() const { return dot_; }
     size_t last() const { return buffer_.size(); }
 

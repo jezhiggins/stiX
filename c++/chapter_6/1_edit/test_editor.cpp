@@ -11,23 +11,23 @@ void editor_test(std::string input, std::string expected);
 TEST_CASE("Chapter 6 - edit - editor") {
   SECTION("= command") {
     editor_test(
-      "=\n"s,
-      "0\n"s
+      "=\n",
+      "0\n"
     );
 
     editor_test(
-      "=\n=\n"s,
-      "0\n0\n"s
+      "=\n=\n",
+      "0\n0\n"
     );
   } // =
 
   SECTION("i command") {
     editor_test(
-      "i\nHello World!\nWoo!\n.\n=\n"s,
+      "i\nHello World!\nWoo!\n.\n=\n",
       "2\n"
     );
     editor_test(
-      "i\nHello World!\n.\n=\ni\nWoo!\n.\n=\n"s,
+      "i\nHello World!\n.\n=\ni\nWoo!\n.\n=\n",
       "1\n2\n"
     );
     editor_test(
@@ -35,6 +35,17 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "0\n0\n"
     );
   } // i
+
+  SECTION("p command") {
+    editor_test(
+      "p\n",
+      "?\n"
+    );
+    editor_test(
+      "i\nHello World!\nHello Again\n.\np\n",
+      "Hello Again\n"
+    );
+  }
 }
 
 std::string testLabel(std::string input);
