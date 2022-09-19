@@ -27,4 +27,26 @@ TEST_CASE("Chapter 6 - edit - command parser") {
     REQUIRE(command.to_index == 3);
     REQUIRE(command.code == 'i');
   }
+
+  SECTION("1p") {
+    auto command = stiX::parse_command("1p", 3, 5);
+
+    REQUIRE(command.from_index == 1);
+    REQUIRE(command.to_index == 1);
+    REQUIRE(command.code == 'p');
+  }
+  SECTION(".p") {
+    auto command = stiX::parse_command(".p", 3, 5);
+
+    REQUIRE(command.from_index == 3);
+    REQUIRE(command.to_index == 3);
+    REQUIRE(command.code == 'p');
+  }
+  SECTION("$p") {
+    auto command = stiX::parse_command("$p", 3, 5);
+
+    REQUIRE(command.from_index == 5);
+    REQUIRE(command.to_index == 5);
+    REQUIRE(command.code == 'p');
+  }
 }
