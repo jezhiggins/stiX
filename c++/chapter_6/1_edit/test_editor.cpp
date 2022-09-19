@@ -1,4 +1,3 @@
-#define ADDITIONAL_TESTS
 #include "../../testlib/testlib.hpp"
 
 #include "editor.hpp"

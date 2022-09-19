@@ -1,3 +1,4 @@
+#define ADDITIONAL_TESTS
 #include "../../testlib/testlib.hpp"
 
 #include "line_buffer.hpp"

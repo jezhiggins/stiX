@@ -218,7 +218,9 @@ set (edit_sources
         chapter_6/1_edit/edit_buffer.cpp
         chapter_6/1_edit/edit_buffer.hpp
         chapter_6/1_edit/editor.cpp
-        chapter_6/1_edit/editor.hpp)
+        chapter_6/1_edit/editor.hpp
+        chapter_6/1_edit/command_parser.cpp
+        chapter_6/1_edit/command_parser.hpp)
 
 add_executable(edit
         chapter_6/1_edit/1_edit.cpp
@@ -229,5 +231,6 @@ add_executable(edit_test
         chapter_6/1_edit/test_line_buffer.cpp
         chapter_6/1_edit/test_edit_buffer.cpp
         chapter_6/1_edit/test_editor.cpp
+        chapter_6/1_edit/test_command_parser.cpp
         ${edit_sources})
 target_link_libraries(edit_test stix testsupport)
