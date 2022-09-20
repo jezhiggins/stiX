@@ -27,7 +27,7 @@ TEST_CASE("Chapter 6 - edit - editor") {
     );
     editor_test(
       "i\nHello World!\n.\n=\ni\nWoo!\n.\n=\n",
-      "1\n2\n"
+      "1\n1\n"
     );
     editor_test(
       "=\ni\n.\n=\n",

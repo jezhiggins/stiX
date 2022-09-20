@@ -38,13 +38,16 @@ void editor::process(std::istream& in, std::ostream& out) {
 }
 
 void do_insert(std::istream& in, size_t before, edit_buffer& buffer) {
+  auto adjust = (!buffer.empty()) ? 1 : 0;
+
   while(in.peek() != eof) {
     auto line = stiX::getline(in);
 
     if (line == ".")
       return;
 
-    buffer.insert_before(before++, line);
+    buffer.insert_before(before-adjust, line);
+    ++before;
   }
 }
 
