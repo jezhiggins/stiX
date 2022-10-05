@@ -4,7 +4,6 @@
 #include "command_parser.hpp"
 
 namespace {
-
   struct parse_test_input {
     std::string input;
     size_t dot;
