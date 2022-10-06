@@ -56,7 +56,24 @@ std::pair<size_t, size_t> parse_index(std::string_view number, size_t dot, size_
 size_t parse_line_number(std::string_view number, size_t dot, size_t last) {
   auto [num, consumed] = parse_index(number, dot, last);
 
-  return num;
+  if (consumed == number.length())
+    return num;
+
+  auto op = number[consumed];
+
+  auto [num2, consumed2] = parse_number(number.substr(++consumed));
+
+  switch(op) {
+    case '+':
+      break;
+    case '-':
+      num2 *= -1;
+      break;
+    default:
+      return -1;
+  }
+
+  return num + num2;
 }
 
 
