@@ -38,23 +38,28 @@ public:
       return stiX::command::error;
 
     auto [f, t] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
+
     from = f;
     to = t;
-    
-    if (is_error(from, to))
-      return stiX::command::error;
+    code = !cmd.empty() ? cmd.front() : '\n';
 
-    auto code = !cmd.empty() ? cmd.front() : '\n';
-    return { from, to, code };
+    return command();
   }
 
 private:
+  stiX::command command() const {
+    if (is_error(from, to))
+      return stiX::command::error;
+    return { from, to, code };
+  }
+
   std::string_view input;
   size_t const dot;
   size_t const last;
 
   size_t from = stiX::command::line_error;
   size_t to = stiX::command::line_error;
+  char code = stiX::command::code_error;
 };
 
 stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t last) {
