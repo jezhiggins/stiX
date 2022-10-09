@@ -38,10 +38,8 @@ public:
 
     auto cmd = input.substr(numbers.to);
 
-    auto [f, t] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
+    parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
 
-    from = f;
-    to = t;
     if (cmd.length() <= 1)
       code = !cmd.empty() ? cmd.front() : '\n';
 
@@ -49,28 +47,26 @@ public:
   }
 
 private:
-  std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size_t dot, size_t last) {
+  void parse_line_numbers(std::string_view number_input, size_t dot, size_t last) {
     auto first_num_len = end_of_number(number_input);
-    auto from = parse_line_number(number_input.substr(0, first_num_len), dot, last);
+    from = to = parse_line_number(number_input.substr(0, first_num_len), dot, last);
 
     if (first_num_len == number_input.length())
-      return { from, from };
+      return;
 
     number_input = number_input.substr(first_num_len);
     auto sep_len = end_of_separator(number_input);
     if (sep_len == 0) // there number be a separator, if missing then that's an error
-      return { stiX::command::line_error, stiX::command::line_error };
+      return;
 
     if (number_input.length() == 0)
-      return { from, from };
+      return;
 
     number_input = number_input.substr(sep_len);
     auto second_num_len = end_of_number(number_input);
-    auto to = second_num_len
+    to = second_num_len
               ? parse_line_number(number_input.substr(0, second_num_len), dot, last)
               : from;
-
-    return { from, to };
   }
 
   stiX::command command() const {
