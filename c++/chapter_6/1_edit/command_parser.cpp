@@ -2,6 +2,16 @@
 #include "../../lib/regex/pattern_matcher.hpp"
 #include <charconv>
 
+
+size_t const stiX::command::line_error = -1;
+size_t const stiX::command::code_error = '?';
+
+stiX::command const stiX::command::error = {
+  stiX::command::line_error,
+  stiX::command::line_error,
+  stiX::command::code_error
+};
+
 auto const line_numbers = stiX::compile_pattern("%[0-9\\.\\$+-,;]*");
 std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size_t dot, size_t last);
 
@@ -31,12 +41,12 @@ std::pair<size_t, size_t> parse_number(std::string_view number) {
   while (l != number.size() && std::isdigit(number[l]))
     ++l;
 
-  size_t num = -1;
+  auto num = stiX::command::line_error;
   auto [_, ec] = std::from_chars(number.data(),
                                  number.data() + l,
                                  num);
 
-  return { ec == std::errc() ? num : -1, l };
+  return { ec == std::errc() ? num : stiX::command::line_error, l };
 }
 
 std::pair<size_t, size_t> parse_index(std::string_view number, size_t dot, size_t last) {
@@ -70,7 +80,7 @@ size_t parse_line_number(std::string_view number, size_t dot, size_t last) {
       num2 *= -1;
       break;
     default:
-      return -1;
+      return stiX::command::line_error;
   }
 
   return num + num2;

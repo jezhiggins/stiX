@@ -14,6 +14,17 @@ namespace stiX {
       to_index(t),
       code(c) {
     }
+
+    bool operator==(command const& rhs) const {
+      return from_index == from_index &&
+        to_index == to_index &&
+        code == rhs.code;
+    }
+
+    static size_t const line_error;
+    static size_t const code_error;
+
+    static command const error;
   };
 
   command parse_command(std::string_view input, size_t dot, size_t last);

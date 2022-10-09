@@ -10,19 +10,13 @@ namespace {
     size_t dollar;
   };
 
-  struct parse_test_expected {
-    size_t from;
-    size_t to;
-    char code;
-  };
-
   struct parse_test_case {
     std::string label;
     parse_test_input input;
-    parse_test_expected expected;
+    stiX::command expected;
   };
 
-  auto test_cases = std::vector<parse_test_case>{
+  auto good_test_cases = std::vector<parse_test_case>{
     {"no input,empty buffer", {"",         0, 0},   {0,  0,  '\n'}},
     {"no input, dot is set",  {"",         3, 3},   {3,  3,  '\n'}},
     {"single letter",         {"i",        3, 5},   {3,  3,  'i'}},
@@ -44,21 +38,23 @@ namespace {
 }
 
 TEST_CASE("Chapter 6 - edit - command parser") {
-  std::for_each(
-    test_cases.begin(),
-    test_cases.end(),
-    [](auto tc) {
-      SECTION(tc.label) {
-        auto command = stiX::parse_command(
-          tc.input.input,
-          tc.input.dot,
-          tc.input.dollar
-        );
+  SECTION("Good line indexes") {
+    std::for_each(
+      good_test_cases.begin(),
+      good_test_cases.end(),
+      [](auto tc) {
+        SECTION(tc.label) {
+          auto command = stiX::parse_command(
+            tc.input.input,
+            tc.input.dot,
+            tc.input.dollar
+          );
 
-        REQUIRE(command.from_index == tc.expected.from);
-        REQUIRE(command.to_index == tc.expected.to);
-        REQUIRE(command.code == tc.expected.code);
+          REQUIRE(command.from_index == tc.expected.from_index);
+          REQUIRE(command.to_index == tc.expected.to_index);
+          REQUIRE(command.code == tc.expected.code);
+        }
       }
-    }
-  );
+    );
+  }
 }
