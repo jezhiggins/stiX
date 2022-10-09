@@ -19,7 +19,6 @@ bool is_error(char c);
 bool is_error(size_t f);
 
 size_t end_of_number(std::string_view number_input);
-size_t end_of_separator(std::string_view number_input);
 size_t parse_line_number(std::string_view number, size_t dot, size_t last);
 
 class command_parser {
@@ -55,14 +54,12 @@ private:
       return;
 
     number_input = number_input.substr(first_num_len);
-    auto sep_len = end_of_separator(number_input);
-    if (sep_len == 0) // there number be a separator, if missing then that's an error
-      return;
+    if (number_input[0] == ',' || number_input[0] == ';')
+      number_input = number_input.substr(1);
 
     if (number_input.length() == 0)
       return;
 
-    number_input = number_input.substr(sep_len);
     auto second_num_len = end_of_number(number_input);
     to = second_num_len
               ? parse_line_number(number_input.substr(0, second_num_len), dot, last)
@@ -102,11 +99,6 @@ bool is_error(size_t f) { return f == stiX::command::line_error; }
 
 size_t end_of_number(std::string_view number_input) {
   auto e = number_input.find_first_of(",;");
-  return e != std::string_view::npos ? e : number_input.size();
-}
-
-size_t end_of_separator(std::string_view number_input) {
-  auto e = number_input.find_first_not_of(",;");
   return e != std::string_view::npos ? e : number_input.size();
 }
 
