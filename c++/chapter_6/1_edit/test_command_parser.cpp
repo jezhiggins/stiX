@@ -1,7 +1,15 @@
 #define ADDITIONAL_TESTS
+
+#include <iostream>
+#include "command_parser.hpp"
+
+std::ostream& operator<<(std::ostream& os, stiX::command const& c) {
+  os << "{ " << c.from_index << ", " << c.to_index << ", " << c.code << " }";
+  return os;
+}
+
 #include "../../testlib/testlib.hpp"
 
-#include "command_parser.hpp"
 
 namespace {
   struct parse_test_input {
@@ -25,6 +33,9 @@ namespace {
     {".p",                    {".p",       3, 5},   {3,  3,  'p'}},
     {"$p",                    {"$p",       3, 5},   {5,  5,  'p'}},
     {"1,$p",                  {"1,$p",     3, 5},   {1,  5,  'p'}},
+    {"1,p",                   {"1,p",      3, 5},   {1,  1,  'p'}},
+    {"1;$p",                  {"1;$p",     3, 5},   {1,  5,  'p'}},
+    {"1;p",                   {"1;p",      3, 5},   {1,  1,  'p'}},
     {".,4p",                  {".,4p",     3, 5},   {3,  4,  'p'}},
     {"1,.p",                  {"1,.p",     3, 5},   {1,  3,  'p'}},
     {".,$",                   {".,$",      3, 5},   {3,  5,  '\n'}},
@@ -37,7 +48,15 @@ namespace {
   };
 
   auto bad_test_cases = std::vector<parse_test_case>{
-    {"no hex please", {"1a,3=", 5, 10}, stiX::command::error}
+    {"no hex please",   {"1a,3=", 5, 10}},
+    {"-1",              {"-1", 5, 10}},
+    {"-2",              {"-2", 5, 10}},
+    {"1,-2",            {"1,-2", 5, 10}},
+    {".,-1",            {".,-1", 5, 10}},
+    {"-1,.",            {"-1,.", 5, 10}},
+    {"5-.",             {"5-.", 5, 10}},
+    {"15-$",            {"15-$", 5, 10}},
+    {"$-.",             {"$-.", 5, 10}},
   };
 }
 

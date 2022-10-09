@@ -14,8 +14,10 @@ bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
     lhs.code == rhs.code;
 }
 
-auto const line_numbers = stiX::compile_pattern("%[0-9\\.\\$+-,;]*");
+auto const line_numbers = stiX::compile_pattern(R"(%[0-9\.\$+-,;]*)");
 std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size_t dot, size_t last);
+bool is_error(size_t f);
+bool is_error(size_t f, size_t t);
 
 stiX::command stiX::parse_command(std::string_view const input, size_t dot, size_t last) {
   auto numbers = line_numbers.find(input);
@@ -25,9 +27,18 @@ stiX::command stiX::parse_command(std::string_view const input, size_t dot, size
     return stiX::command::error;
 
   auto [from, to] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
-  auto code = !cmd.empty() ? cmd.front() : '\n';
+  if (is_error(from, to))
+    return stiX::command::error;
 
+  auto code = !cmd.empty() ? cmd.front() : '\n';
   return { from, to, code };
+}
+
+bool is_error(size_t f) {
+  return f == stiX::command::line_error;
+}
+bool is_error(size_t f, size_t t) {
+  return is_error(f) || is_error(t);
 }
 
 size_t end_of_number(std::string_view number_input) {
@@ -57,11 +68,15 @@ std::pair<size_t, size_t> parse_index(std::string_view number, size_t dot, size_
   if (number.length() == 0)
     return { dot, 0 };
 
-  switch(number[0]) {
+  auto c = number[0];
+  switch(c) {
     case '.':
       return {dot, 1};
     case '$':
       return {last, 1};
+    default:
+      if (!std::isdigit(c))
+        return {stiX::command::line_error, 0};
   }
 
   return parse_number(number);
@@ -70,12 +85,15 @@ std::pair<size_t, size_t> parse_index(std::string_view number, size_t dot, size_
 size_t parse_line_number(std::string_view number, size_t dot, size_t last) {
   auto [num, consumed] = parse_index(number, dot, last);
 
-  if (consumed == number.length())
+  if (consumed == number.length() || is_error(num))
     return num;
 
   auto op = number[consumed];
 
   auto [num2, consumed2] = parse_number(number.substr(++consumed));
+
+  if (is_error(num2))
+    return num2;
 
   switch(op) {
     case '+':
@@ -100,8 +118,11 @@ std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size
 
   number_input = number_input.substr(first_num_len);
   auto sep_len = end_of_separator(number_input);
-  if (sep_len == 0) // there number be a seperator, if missing then that's an error
+  if (sep_len == 0) // there number be a separator, if missing then that's an error
     return { stiX::command::line_error, stiX::command::line_error };
+
+  if (number_input.length() == 0)
+    return { from, from };
 
   number_input = number_input.substr(sep_len);
   auto second_num_len = end_of_number(number_input);
