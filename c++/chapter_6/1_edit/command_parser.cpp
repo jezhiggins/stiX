@@ -38,7 +38,7 @@ public:
 
     auto cmd = input.substr(numbers.to);
 
-    parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
+    parse_line_numbers(input.substr(numbers.from, numbers.to));
 
     if (cmd.length() <= 1)
       code = !cmd.empty() ? cmd.front() : '\n';
@@ -47,7 +47,7 @@ public:
   }
 
 private:
-  void parse_line_numbers(std::string_view number_input, size_t dot, size_t last) {
+  void parse_line_numbers(std::string_view number_input) {
     auto first_num_len = end_of_number(number_input);
     from = to = parse_line_number(number_input.substr(0, first_num_len), dot, last);
 
