@@ -28,6 +28,8 @@ public:
   {
   }
 
+  command_parser(command_parser const&) = delete;
+
   stiX::command parse() {
     auto numbers = line_numbers.find(input);
 
@@ -35,7 +37,10 @@ public:
     if (cmd.length() > 1)
       return stiX::command::error;
 
-    auto [from, to] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
+    auto [f, t] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
+    from = f;
+    to = t;
+    
     if (is_error(from, to))
       return stiX::command::error;
 
@@ -47,6 +52,9 @@ private:
   std::string_view input;
   size_t const dot;
   size_t const last;
+
+  size_t from = stiX::command::line_error;
+  size_t to = stiX::command::line_error;
 };
 
 stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t last) {
