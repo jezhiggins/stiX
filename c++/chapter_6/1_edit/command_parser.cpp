@@ -60,10 +60,7 @@ private:
     if (number_input.length() == 0)
       return;
 
-    auto second_num_len = end_of_number(number_input);
-    to = second_num_len
-              ? parse_line_number(number_input.substr(0, second_num_len), dot, last)
-              : from;
+    to = parse_line_number(number_input, dot, last);
   }
 
   stiX::command command() const {
