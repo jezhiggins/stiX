@@ -5,27 +5,17 @@
 
 namespace stiX {
   struct command {
-    size_t const from_index;
-    size_t const to_index;
-    char const code;
-
-    command(size_t f, size_t t, char c) :
-      from_index(f),
-      to_index(t),
-      code(c) {
-    }
-
-    bool operator==(command const& rhs) const {
-      return from_index == from_index &&
-        to_index == to_index &&
-        code == rhs.code;
-    }
+    size_t const from_index = line_error;
+    size_t const to_index = line_error;
+    char const code = code_error;
 
     static size_t const line_error;
     static size_t const code_error;
 
     static command const error;
   };
+
+  bool operator==(command const& lhs, command const& rhs);
 
   command parse_command(std::string_view input, size_t dot, size_t last);
 }

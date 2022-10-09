@@ -35,6 +35,10 @@ namespace {
     {"$-4=",                  {"$-1=",     3, 6},   {5,  5,  '='}},
     {".+5,$-6p",              {".+5,$-6p", 5, 20},  {10, 14, 'p'}}
   };
+
+  auto bad_test_cases = std::vector<parse_test_case>{
+    {"no hex please", {"1a,3=", 5, 10}, stiX::command::error}
+  };
 }
 
 TEST_CASE("Chapter 6 - edit - command parser") {
@@ -53,6 +57,24 @@ TEST_CASE("Chapter 6 - edit - command parser") {
           REQUIRE(command.from_index == tc.expected.from_index);
           REQUIRE(command.to_index == tc.expected.to_index);
           REQUIRE(command.code == tc.expected.code);
+        }
+      }
+    );
+  }
+
+  SECTION("Bad line indexes") {
+    std::for_each(
+      bad_test_cases.begin(),
+      bad_test_cases.end(),
+      [](auto tc) {
+        SECTION(tc.label) {
+          auto command = stiX::parse_command(
+            tc.input.input,
+            tc.input.dot,
+            tc.input.dollar
+          );
+
+          REQUIRE(command == tc.expected);
         }
       }
     );

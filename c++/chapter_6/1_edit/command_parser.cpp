@@ -6,22 +6,26 @@
 size_t const stiX::command::line_error = -1;
 size_t const stiX::command::code_error = '?';
 
-stiX::command const stiX::command::error = {
-  stiX::command::line_error,
-  stiX::command::line_error,
-  stiX::command::code_error
-};
+stiX::command const stiX::command::error = { };
+
+bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
+  return lhs.from_index == rhs.from_index &&
+    lhs.to_index == rhs.from_index &&
+    lhs.code == rhs.code;
+}
 
 auto const line_numbers = stiX::compile_pattern("%[0-9\\.\\$+-,;]*");
 std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size_t dot, size_t last);
 
-stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t last) {
+stiX::command stiX::parse_command(std::string_view const input, size_t dot, size_t last) {
   auto numbers = line_numbers.find(input);
 
-  auto [from, to] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
-  input = input.substr(numbers.to);
+  auto cmd = input.substr(numbers.to);
+  if (cmd.length() > 1)
+    return stiX::command::error;
 
-  auto code = !input.empty() ? input.front() : '\n';
+  auto [from, to] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
+  auto code = !cmd.empty() ? cmd.front() : '\n';
 
   return { from, to, code };
 }
@@ -91,8 +95,13 @@ std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size
   auto first_num_len = end_of_number(number_input);
   auto from = parse_line_number(number_input.substr(0, first_num_len), dot, last);
 
+  if (first_num_len == number_input.length())
+    return { from, from };
+
   number_input = number_input.substr(first_num_len);
   auto sep_len = end_of_separator(number_input);
+  if (sep_len == 0) // there number be a seperator, if missing then that's an error
+    return { stiX::command::line_error, stiX::command::line_error };
 
   number_input = number_input.substr(sep_len);
   auto second_num_len = end_of_number(number_input);
