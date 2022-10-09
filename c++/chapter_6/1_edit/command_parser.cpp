@@ -19,19 +19,40 @@ std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size
 bool is_error(size_t f);
 bool is_error(size_t f, size_t t);
 
-stiX::command stiX::parse_command(std::string_view const input, size_t dot, size_t last) {
-  auto numbers = line_numbers.find(input);
+class command_parser {
+public:
+  command_parser(std::string_view i, size_t d, size_t l):
+    input(i),
+    dot(d),
+    last(l)
+  {
+  }
 
-  auto cmd = input.substr(numbers.to);
-  if (cmd.length() > 1)
-    return stiX::command::error;
+  stiX::command parse() {
+    auto numbers = line_numbers.find(input);
 
-  auto [from, to] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
-  if (is_error(from, to))
-    return stiX::command::error;
+    auto cmd = input.substr(numbers.to);
+    if (cmd.length() > 1)
+      return stiX::command::error;
 
-  auto code = !cmd.empty() ? cmd.front() : '\n';
-  return { from, to, code };
+    auto [from, to] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
+    if (is_error(from, to))
+      return stiX::command::error;
+
+    auto code = !cmd.empty() ? cmd.front() : '\n';
+    return { from, to, code };
+  }
+
+private:
+  std::string_view input;
+  size_t const dot;
+  size_t const last;
+};
+
+stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t last) {
+  auto parser = command_parser(input, dot, last);
+
+  return parser.parse();
 }
 
 bool is_error(size_t f) {
