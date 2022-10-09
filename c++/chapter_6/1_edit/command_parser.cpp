@@ -16,6 +16,7 @@ bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
 
 auto const line_numbers = stiX::compile_pattern(R"(%[0-9\.\$+-,;]*)");
 std::pair<size_t, size_t> parse_line_numbers(std::string_view number_input, size_t dot, size_t last);
+bool is_error(char c);
 bool is_error(size_t f);
 bool is_error(size_t f, size_t t);
 
@@ -54,7 +55,9 @@ private:
   }
 
   bool is_error() const {
-    return ::is_error(from, to) || (code == stiX::command::code_error);
+    return ::is_error(from) ||
+      ::is_error(to) ||
+      ::is_error(code);
   }
 
   std::string_view input;
@@ -72,12 +75,8 @@ stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t las
   return parser.parse();
 }
 
-bool is_error(size_t f) {
-  return f == stiX::command::line_error;
-}
-bool is_error(size_t f, size_t t) {
-  return is_error(f) || is_error(t);
-}
+bool is_error(char c) { return c == stiX::command::code_error; }
+bool is_error(size_t f) { return f == stiX::command::line_error; }
 
 size_t end_of_number(std::string_view number_input) {
   auto e = number_input.find_first_of(",;");
