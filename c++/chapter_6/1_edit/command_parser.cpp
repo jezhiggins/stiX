@@ -34,23 +34,27 @@ public:
     auto numbers = line_numbers.find(input);
 
     auto cmd = input.substr(numbers.to);
-    if (cmd.length() > 1)
-      return stiX::command::error;
 
     auto [f, t] = parse_line_numbers(input.substr(numbers.from, numbers.to), dot, last);
 
     from = f;
     to = t;
-    code = !cmd.empty() ? cmd.front() : '\n';
+    if (cmd.length() <= 1)
+      code = !cmd.empty() ? cmd.front() : '\n';
 
     return command();
   }
 
 private:
   stiX::command command() const {
-    if (is_error(from, to))
+    if (is_error())
       return stiX::command::error;
+
     return { from, to, code };
+  }
+
+  bool is_error() const {
+    return ::is_error(from, to) || (code == stiX::command::code_error);
   }
 
   std::string_view input;
