@@ -1,5 +1,6 @@
 #include "command_parser.hpp"
 #include "../../lib/regex/pattern_matcher.hpp"
+#include "../../lib/regex/char_seq.hpp"
 #include <charconv>
 
 
@@ -18,8 +19,7 @@ auto const line_numbers = stiX::compile_pattern(R"(%[0-9\.\$+-,;]*)");
 bool is_error(char c);
 bool is_error(size_t f);
 
-size_t end_of_number(std::string_view number_input);
-size_t parse_line_number(std::string_view number, size_t dot, size_t last);
+size_t parse_line_number(stiX::character_sequence& number, size_t dot, size_t last);
 
 class command_parser {
 public:
@@ -47,20 +47,20 @@ public:
 
 private:
   void parse_line_numbers(std::string_view number_input) {
-    auto first_num_len = end_of_number(number_input);
-    from = to = parse_line_number(number_input.substr(0, first_num_len), dot, last);
+    auto number_seq = stiX::character_sequence(number_input);
 
-    if (first_num_len == number_input.length())
+    from = to = parse_line_number(number_seq, dot, last);
+
+    if (number_seq.is_eol())
       return;
 
-    number_input = number_input.substr(first_num_len);
-    if (number_input[0] == ',' || number_input[0] == ';')
-      number_input = number_input.substr(1);
+    if (*number_seq == ',' || *number_seq == ';')
+      number_seq.advance();
 
-    if (number_input.length() == 0)
+    if (number_seq.is_eol())
       return;
 
-    to = parse_line_number(number_input, dot, last);
+    to = parse_line_number(number_seq, dot, last);
   }
 
   stiX::command command() const {
@@ -94,51 +94,49 @@ stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t las
 bool is_error(char c) { return c == stiX::command::code_error; }
 bool is_error(size_t f) { return f == stiX::command::line_error; }
 
-size_t end_of_number(std::string_view number_input) {
-  auto e = number_input.find_first_of(",;");
-  return e != std::string_view::npos ? e : number_input.size();
-}
-
-std::pair<size_t, size_t> parse_number(std::string_view number) {
-  auto l = 0;
-  while (l != number.size() && std::isdigit(number[l]))
-    ++l;
+size_t parse_number(stiX::character_sequence& number) {
+  auto n = std::string { };
+  for (; !number.is_eol() && std::isdigit(*number); number.advance())
+    n += *number;
 
   auto num = stiX::command::line_error;
-  auto [_, ec] = std::from_chars(number.data(),
-                                 number.data() + l,
-                                 num);
+  auto [_, ec] = std::from_chars(n.data(), n.data() + n.length(), num);
 
-  return { ec == std::errc() ? num : stiX::command::line_error, l };
+  return ec == std::errc() ? num : stiX::command::line_error;
 }
 
-std::pair<size_t, size_t> parse_index(std::string_view number, size_t dot, size_t last) {
-  if (number.length() == 0)
-    return { dot, 0 };
+size_t parse_index(stiX::character_sequence& number, size_t dot, size_t last) {
+  if (number.is_eol())
+    return dot;
 
-  auto c = number[0];
-  switch(c) {
+  switch(*number) {
     case '.':
-      return {dot, 1};
+      number.advance();
+      return dot;
     case '$':
-      return {last, 1};
+      number.advance();
+      return last;
     default:
-      if (!std::isdigit(c))
-        return {stiX::command::line_error, 0};
+      if (!std::isdigit(*number))
+        return stiX::command::line_error;
   }
 
   return parse_number(number);
 }
 
-size_t parse_line_number(std::string_view number, size_t dot, size_t last) {
-  auto [num, consumed] = parse_index(number, dot, last);
+size_t parse_line_number(stiX::character_sequence& number, size_t dot, size_t last) {
+  auto num = parse_index(number, dot, last);
 
-  if (consumed == number.length() || is_error(num))
+  if (number.is_eol() || is_error(num))
     return num;
 
-  auto op = number[consumed];
+  if (*number == ',' || *number == ';')
+    return num;
 
-  auto [num2, consumed2] = parse_number(number.substr(++consumed));
+  auto op = *number;
+  number.advance();
+
+  auto num2 = parse_number(number);
 
   if (is_error(num2))
     return num2;
