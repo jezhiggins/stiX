@@ -63,9 +63,6 @@ private:
   size_t parse_line_number() {
     auto num = parse_index();
 
-    if (is_error(num))
-      return num;
-
     if (!is_operator())
       return num;
 
