@@ -1,5 +1,4 @@
 #include "command_parser.hpp"
-#include "../../lib/regex/pattern_matcher.hpp"
 #include "../../lib/regex/char_seq.hpp"
 #include <charconv>
 
@@ -15,8 +14,6 @@ bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
     lhs.code == rhs.code;
 }
 
-auto const line_numbers = stiX::compile_pattern(R"(%[0-9\.\$+-,;]*)");
-
 class command_parser {
 public:
   command_parser(std::string_view i, size_t d, size_t l):
@@ -29,28 +26,26 @@ public:
   command_parser(command_parser const&) = delete;
 
   stiX::command parse() {
-    auto numbers = line_numbers.find(input);
+    auto i = stiX::character_sequence { input };
+    parse_line_numbers(i);
 
-    auto cmd = input.substr(numbers.to);
+    code = !i.is_eol() ? *i : '\n';
 
-    parse_line_numbers(input.substr(numbers.from, numbers.to));
-
-    if (cmd.length() <= 1)
-      code = !cmd.empty() ? cmd.front() : '\n';
+    i.advance();
+    if (!i.is_eol())
+      code = stiX::command::code_error;
 
     return command();
   }
 
 private:
-  void parse_line_numbers(std::string_view number_input) {
-    auto number_seq = stiX::character_sequence(number_input);
-
+  void parse_line_numbers(stiX::character_sequence& number_seq) {
     from = to = parse_line_number(number_seq);
 
     if (is_separator(number_seq))
       number_seq.advance();
 
-    if (number_seq.is_eol())
+    if (!is_index_start(number_seq))
       return;
 
     to = parse_line_number(number_seq);
@@ -80,7 +75,7 @@ private:
   }
 
   size_t parse_index(stiX::character_sequence& number) {
-    if (number.is_eol())
+    if (number.is_eol() || !is_index_start(number))
       return dot;
 
     switch(*number) {
@@ -90,9 +85,9 @@ private:
       case '$':
         number.advance();
         return last;
-      default:
-        if (!std::isdigit(*number))
-          return stiX::command::line_error;
+      case '+':
+      case '-':
+        return dot;
     }
 
     return parse_number(number);
@@ -109,6 +104,13 @@ private:
     return ec == std::errc() ? num : stiX::command::line_error;
   }
 
+  static bool is_index_start(stiX::character_sequence& number) {
+    return *number == '.' ||
+      *number == '$' ||
+      *number == '-' ||
+      *number == '+' ||
+      std::isdigit(*number);
+  }
   static bool is_separator(stiX::character_sequence& number) {
     return *number == ',' || *number == ';';
   }
