@@ -54,10 +54,8 @@ private:
     if (is_separator())
       input.advance();
 
-    if (!is_index_start())
-      return;
-
-    to = parse_line_number();
+    if (is_index_start())
+      to = parse_line_number();
   }
 
   size_t parse_line_number() {
