@@ -28,10 +28,7 @@ public:
   stiX::command parse() {
     parse_line_numbers();
 
-    code = !input.is_eol() ? input_pop() : '\n';
-    
-    if (!input.is_eol())
-      code = stiX::command::code_error;
+    parse_command_code();
 
     return command();
   }
@@ -44,6 +41,13 @@ public:
   }
 
 private:
+  void parse_command_code() {
+    code = !input.is_eol() ? input_pop() : '\n';
+
+    if (!input.is_eol())
+      code = stiX::command::code_error;
+  }
+
   void parse_line_numbers() {
     from = to = parse_line_number();
 
