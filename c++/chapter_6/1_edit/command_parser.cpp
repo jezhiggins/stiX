@@ -28,13 +28,19 @@ public:
   stiX::command parse() {
     parse_line_numbers();
 
-    code = !input.is_eol() ? *input : '\n';
-
-    input.advance();
+    code = !input.is_eol() ? input_pop() : '\n';
+    
     if (!input.is_eol())
       code = stiX::command::code_error;
 
     return command();
+  }
+
+  stiX::command command() const {
+    if (is_error())
+      return stiX::command::error;
+
+    return { from, to, code };
   }
 
 private:
@@ -59,8 +65,7 @@ private:
     if (!is_operator())
       return num;
 
-    auto op = *input;
-    input.advance();
+    auto op = input_pop();
 
     auto num2 = parse_number();
 
@@ -94,8 +99,8 @@ private:
 
   size_t parse_number() {
     auto n = std::string { };
-    for (; !input.is_eol() && std::isdigit(*input); input.advance())
-      n += *input;
+    while (!input.is_eol() && std::isdigit(*input))
+      n += input_pop();
 
     auto num = stiX::command::line_error;
     auto [_, ec] = std::from_chars(n.data(), n.data() + n.length(), num);
@@ -122,11 +127,10 @@ private:
            c == '-';
   }
 
-  stiX::command command() const {
-    if (is_error())
-      return stiX::command::error;
-
-    return { from, to, code };
+  char input_pop() {
+    auto c = *input;
+    input.advance();
+    return c;
   }
 
   bool is_error() const {
