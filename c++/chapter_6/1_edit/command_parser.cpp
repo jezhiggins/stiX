@@ -128,10 +128,10 @@ size_t parse_index(stiX::character_sequence& number, size_t dot, size_t last) {
 size_t parse_line_number(stiX::character_sequence& number, size_t dot, size_t last) {
   auto num = parse_index(number, dot, last);
 
-  if (number.is_eol() || is_error(num))
+  if (is_error(num))
     return num;
 
-  if (*number == ',' || *number == ';')
+  if (*number != '+' && *number != '-')
     return num;
 
   auto op = *number;
@@ -142,15 +142,8 @@ size_t parse_line_number(stiX::character_sequence& number, size_t dot, size_t la
   if (is_error(num2))
     return num2;
 
-  switch(op) {
-    case '+':
-      break;
-    case '-':
+  if (op == '-') 
       num2 *= -1;
-      break;
-    default:
-      return stiX::command::line_error;
-  }
 
   return num + num2;
 }
