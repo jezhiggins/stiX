@@ -51,9 +51,6 @@ private:
 
     from = to = parse_line_number(number_seq, dot, last);
 
-    if (number_seq.is_eol())
-      return;
-
     if (is_separator(number_seq))
       number_seq.advance();
 
