@@ -54,13 +54,17 @@ private:
     if (number_seq.is_eol())
       return;
 
-    if (*number_seq == ',' || *number_seq == ';')
+    if (is_separator(number_seq))
       number_seq.advance();
 
     if (number_seq.is_eol())
       return;
 
     to = parse_line_number(number_seq, dot, last);
+  }
+
+  static bool is_separator(stiX::character_sequence& number) {
+    return (*number == ',' || *number == ';');
   }
 
   stiX::command command() const {
