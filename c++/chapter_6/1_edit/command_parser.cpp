@@ -62,7 +62,7 @@ private:
     if (is_error(num))
       return num;
 
-    if (*number != '+' && *number != '-')
+    if (!is_operator(number))
       return num;
 
     auto op = *number;
@@ -111,6 +111,9 @@ private:
 
   static bool is_separator(stiX::character_sequence& number) {
     return *number == ',' || *number == ';';
+  }
+  static bool is_operator(stiX::character_sequence& number) {
+    return *number == '+' || *number == '-';
   }
 
   stiX::command command() const {
