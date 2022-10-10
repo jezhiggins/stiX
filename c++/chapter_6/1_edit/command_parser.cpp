@@ -26,44 +26,43 @@ public:
   command_parser(command_parser const&) = delete;
 
   stiX::command parse() {
-    auto i = stiX::character_sequence { input };
-    parse_line_numbers(i);
+    parse_line_numbers();
 
-    code = !i.is_eol() ? *i : '\n';
+    code = !input.is_eol() ? *input : '\n';
 
-    i.advance();
-    if (!i.is_eol())
+    input.advance();
+    if (!input.is_eol())
       code = stiX::command::code_error;
 
     return command();
   }
 
 private:
-  void parse_line_numbers(stiX::character_sequence& number_seq) {
-    from = to = parse_line_number(number_seq);
+  void parse_line_numbers() {
+    from = to = parse_line_number();
 
-    if (is_separator(number_seq))
-      number_seq.advance();
+    if (is_separator())
+      input.advance();
 
-    if (!is_index_start(number_seq))
+    if (!is_index_start())
       return;
 
-    to = parse_line_number(number_seq);
+    to = parse_line_number();
   }
 
-  size_t parse_line_number(stiX::character_sequence& number) {
-    auto num = parse_index(number);
+  size_t parse_line_number() {
+    auto num = parse_index();
 
     if (is_error(num))
       return num;
 
-    if (!is_operator(number))
+    if (!is_operator())
       return num;
 
-    auto op = *number;
-    number.advance();
+    auto op = *input;
+    input.advance();
 
-    auto num2 = parse_number(number);
+    auto num2 = parse_number();
 
     if (is_error(num2))
       return num2;
@@ -74,29 +73,29 @@ private:
     return num + num2;
   }
 
-  size_t parse_index(stiX::character_sequence& number) {
-    if (number.is_eol() || !is_index_start(number))
+  size_t parse_index() {
+    if (input.is_eol() || !is_index_start())
       return dot;
 
-    switch(*number) {
+    switch(*input) {
       case '.':
-        number.advance();
+        input.advance();
         return dot;
       case '$':
-        number.advance();
+        input.advance();
         return last;
       case '+':
       case '-':
         return dot;
     }
 
-    return parse_number(number);
+    return parse_number();
   }
 
-  static size_t parse_number(stiX::character_sequence& number) {
+  size_t parse_number() {
     auto n = std::string { };
-    for (; !number.is_eol() && std::isdigit(*number); number.advance())
-      n += *number;
+    for (; !input.is_eol() && std::isdigit(*input); input.advance())
+      n += *input;
 
     auto num = stiX::command::line_error;
     auto [_, ec] = std::from_chars(n.data(), n.data() + n.length(), num);
@@ -104,18 +103,23 @@ private:
     return ec == std::errc() ? num : stiX::command::line_error;
   }
 
-  static bool is_index_start(stiX::character_sequence& number) {
-    return *number == '.' ||
-      *number == '$' ||
-      *number == '-' ||
-      *number == '+' ||
-      std::isdigit(*number);
+  bool is_index_start() {
+    auto c = *input;
+    return c == '.' ||
+      c == '$' ||
+      c == '-' ||
+      c == '+' ||
+      std::isdigit(c);
   }
-  static bool is_separator(stiX::character_sequence& number) {
-    return *number == ',' || *number == ';';
+  bool is_separator() {
+    auto c = *input;
+    return c == ',' ||
+      c == ';';
   }
-  static bool is_operator(stiX::character_sequence& number) {
-    return *number == '+' || *number == '-';
+  bool is_operator() {
+    auto c = *input;
+    return c == '+' ||
+           c == '-';
   }
 
   stiX::command command() const {
@@ -133,7 +137,7 @@ private:
   static bool is_error(size_t f) { return f == stiX::command::line_error; }
   static bool is_error(char c) { return c == stiX::command::code_error; }
 
-  std::string_view input;
+  stiX::character_sequence input;
   size_t const dot;
   size_t const last;
 
