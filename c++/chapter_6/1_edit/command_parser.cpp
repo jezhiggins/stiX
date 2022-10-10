@@ -16,10 +16,6 @@ bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
 }
 
 auto const line_numbers = stiX::compile_pattern(R"(%[0-9\.\$+-,;]*)");
-bool is_error(char c);
-bool is_error(size_t f);
-
-size_t parse_line_number(stiX::character_sequence& number, size_t dot, size_t last);
 
 class command_parser {
 public:
@@ -49,7 +45,7 @@ private:
   void parse_line_numbers(std::string_view number_input) {
     auto number_seq = stiX::character_sequence(number_input);
 
-    from = to = parse_line_number(number_seq, dot, last);
+    from = to = parse_line_number(number_seq);
 
     if (is_separator(number_seq))
       number_seq.advance();
@@ -57,11 +53,64 @@ private:
     if (number_seq.is_eol())
       return;
 
-    to = parse_line_number(number_seq, dot, last);
+    to = parse_line_number(number_seq);
+  }
+
+  size_t parse_line_number(stiX::character_sequence& number) {
+    auto num = parse_index(number);
+
+    if (is_error(num))
+      return num;
+
+    if (*number != '+' && *number != '-')
+      return num;
+
+    auto op = *number;
+    number.advance();
+
+    auto num2 = parse_number(number);
+
+    if (is_error(num2))
+      return num2;
+
+    if (op == '-')
+      num2 *= -1;
+
+    return num + num2;
+  }
+
+  size_t parse_index(stiX::character_sequence& number) {
+    if (number.is_eol())
+      return dot;
+
+    switch(*number) {
+      case '.':
+        number.advance();
+        return dot;
+      case '$':
+        number.advance();
+        return last;
+      default:
+        if (!std::isdigit(*number))
+          return stiX::command::line_error;
+    }
+
+    return parse_number(number);
+  }
+
+  static size_t parse_number(stiX::character_sequence& number) {
+    auto n = std::string { };
+    for (; !number.is_eol() && std::isdigit(*number); number.advance())
+      n += *number;
+
+    auto num = stiX::command::line_error;
+    auto [_, ec] = std::from_chars(n.data(), n.data() + n.length(), num);
+
+    return ec == std::errc() ? num : stiX::command::line_error;
   }
 
   static bool is_separator(stiX::character_sequence& number) {
-    return (*number == ',' || *number == ';');
+    return *number == ',' || *number == ';';
   }
 
   stiX::command command() const {
@@ -72,10 +121,12 @@ private:
   }
 
   bool is_error() const {
-    return ::is_error(from) ||
-      ::is_error(to) ||
-      ::is_error(code);
+    return is_error(from) ||
+      is_error(to) ||
+      is_error(code);
   }
+  static bool is_error(size_t f) { return f == stiX::command::line_error; }
+  static bool is_error(char c) { return c == stiX::command::code_error; }
 
   std::string_view input;
   size_t const dot;
@@ -91,60 +142,3 @@ stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t las
 
   return parser.parse();
 }
-
-bool is_error(char c) { return c == stiX::command::code_error; }
-bool is_error(size_t f) { return f == stiX::command::line_error; }
-
-size_t parse_number(stiX::character_sequence& number) {
-  auto n = std::string { };
-  for (; !number.is_eol() && std::isdigit(*number); number.advance())
-    n += *number;
-
-  auto num = stiX::command::line_error;
-  auto [_, ec] = std::from_chars(n.data(), n.data() + n.length(), num);
-
-  return ec == std::errc() ? num : stiX::command::line_error;
-}
-
-size_t parse_index(stiX::character_sequence& number, size_t dot, size_t last) {
-  if (number.is_eol())
-    return dot;
-
-  switch(*number) {
-    case '.':
-      number.advance();
-      return dot;
-    case '$':
-      number.advance();
-      return last;
-    default:
-      if (!std::isdigit(*number))
-        return stiX::command::line_error;
-  }
-
-  return parse_number(number);
-}
-
-size_t parse_line_number(stiX::character_sequence& number, size_t dot, size_t last) {
-  auto num = parse_index(number, dot, last);
-
-  if (is_error(num))
-    return num;
-
-  if (*number != '+' && *number != '-')
-    return num;
-
-  auto op = *number;
-  number.advance();
-
-  auto num2 = parse_number(number);
-
-  if (is_error(num2))
-    return num2;
-
-  if (op == '-') 
-      num2 *= -1;
-
-  return num + num2;
-}
-
