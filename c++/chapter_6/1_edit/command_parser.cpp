@@ -14,12 +14,13 @@ bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
     lhs.code == rhs.code;
 }
 
-auto const DOT = '.';
-auto const DOLLAR = '$';
-auto const MINUS = '-';
-auto const PLUS = '+';
-
 namespace {
+  auto const DOT = '.';
+  auto const DOLLAR = '$';
+  auto const MINUS = '-';
+  auto const PLUS = '+';
+  auto const COMMA = ',';
+  auto const SEMI_COLON = ';';
 
   class command_parser {
   public:
@@ -121,8 +122,7 @@ namespace {
 
     bool is_separator() {
       auto c = *input;
-      return c == ',' ||
-             c == ';';
+      return c == COMMA || c == SEMI_COLON;
     }
 
     bool is_operator() {
