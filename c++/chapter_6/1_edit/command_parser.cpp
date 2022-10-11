@@ -14,6 +14,11 @@ bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
     lhs.code == rhs.code;
 }
 
+auto const DOT = '.';
+auto const DOLLAR = '$';
+auto const MINUS = '-';
+auto const PLUS = '+';
+
 class command_parser {
 public:
   command_parser(std::string_view i, size_t d, size_t l):
@@ -66,7 +71,7 @@ private:
 
     auto rhs = parse_number();
 
-    if (op == '-')
+    if (op == MINUS)
       rhs *= -1;
 
     return lhs + rhs;
@@ -77,14 +82,14 @@ private:
       return dot;
 
     switch(*input) {
-      case '.':
+      case DOT:
         input.advance();
         return dot;
-      case '$':
+      case DOLLAR:
         input.advance();
         return last;
-      case '+':
-      case '-':
+      case PLUS:
+      case MINUS:
         return dot;
     }
 
@@ -107,10 +112,10 @@ private:
 
   bool is_index_start() {
     auto c = *input;
-    return c == '.' ||
-      c == '$' ||
-      c == '-' ||
-      c == '+' ||
+    return c == DOT ||
+      c == DOLLAR ||
+      c == MINUS ||
+      c == PLUS ||
       std::isdigit(c);
   }
   bool is_separator() {
@@ -120,8 +125,7 @@ private:
   }
   bool is_operator() {
     auto c = *input;
-    return c == '+' ||
-           c == '-';
+    return c == PLUS || c == MINUS;
   }
 
   char input_pop() {
