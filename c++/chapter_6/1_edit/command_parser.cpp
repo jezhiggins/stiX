@@ -115,8 +115,7 @@ namespace {
       auto c = *input;
       return c == DOT ||
              c == DOLLAR ||
-             c == MINUS ||
-             c == PLUS ||
+             is_operator() ||
              std::isdigit(c);
     }
 
