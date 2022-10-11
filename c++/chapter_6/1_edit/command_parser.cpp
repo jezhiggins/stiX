@@ -23,8 +23,6 @@ public:
   {
   }
 
-  command_parser(command_parser const&) = delete;
-
   stiX::command parse() {
     parse_line_numbers();
 
@@ -45,7 +43,7 @@ private:
     code = !input.is_eol() ? input_pop() : '\n';
 
     if (!input.is_eol())
-      code = stiX::command::code_error;
+      failed();
   }
 
   void parse_line_numbers() {
@@ -59,22 +57,19 @@ private:
   }
 
   size_t parse_line_number() {
-    auto num = parse_index();
+    auto lhs = parse_index();
 
     if (!is_operator())
-      return num;
+      return lhs;
 
     auto op = input_pop();
 
-    auto num2 = parse_number();
-
-    if (is_error(num2))
-      return num2;
+    auto rhs = parse_number();
 
     if (op == '-')
-      num2 *= -1;
+      rhs *= -1;
 
-    return num + num2;
+    return lhs + rhs;
   }
 
   size_t parse_index() {
@@ -104,7 +99,10 @@ private:
     auto num = stiX::command::line_error;
     auto [_, ec] = std::from_chars(n.data(), n.data() + n.length(), num);
 
-    return ec == std::errc() ? num : stiX::command::line_error;
+    if (ec != std::errc())
+      failed();
+
+    return num;
   }
 
   bool is_index_start() {
@@ -133,12 +131,15 @@ private:
   }
 
   bool is_error() const {
-    return is_error(from) ||
+    return has_failed ||
+      is_error(from) ||
       is_error(to) ||
       is_error(code);
   }
   static bool is_error(size_t f) { return f == stiX::command::line_error; }
   static bool is_error(char c) { return c == stiX::command::code_error; }
+
+  void failed() { has_failed = true; }
 
   stiX::character_sequence input;
   size_t const dot;
@@ -147,6 +148,7 @@ private:
   size_t from = stiX::command::line_error;
   size_t to = stiX::command::line_error;
   char code = stiX::command::code_error;
+  bool has_failed = false;
 };
 
 stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t last) {
