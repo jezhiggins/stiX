@@ -1,83 +1,166 @@
 #include "../../testlib/testlib.hpp"
+#include "../../lib/getline.hpp"
 
 #include "editor.hpp"
 #include <sstream>
 #include <string>
 using namespace std::string_literals;
 
-void editor_test(std::string input, std::string expected);
+void editor_test(std::string consoleIO);
 
 TEST_CASE("Chapter 6 - edit - editor") {
   SECTION("= command") {
     editor_test(
-      "=\n",
-      "0\n"
+      "=\n"
+      ">0\n"
     );
 
     editor_test(
-      "=\n=\n",
-      "0\n0\n"
+      "=\n"
+      "=\n"
+      ">0\n"
+      ">0\n"
     );
   } // =
 
   SECTION("i command") {
     editor_test(
-      "i\nHello World!\nWoo!\n.\n=\n",
-      "2\n"
+      "i\n"
+      "Hello World!\n"
+      "Woo!\n"
+      ".\n"
+      "=\n"
+      ">2\n"
     );
     editor_test(
-      "i\nHello World!\n.\n=\ni\nWoo!\n.\n=\n",
-      "1\n1\n"
+      "i\n"
+      "Hello World!\n"
+      ".\n"
+      "=\n"
+      "i\n"
+      "Woo!\n"
+      ".\n"
+      "=\n"
+      ">1\n"
+      ">1\n"
     );
     editor_test(
-      "=\ni\n.\n=\n",
-      "0\n0\n"
+      "=\n"
+      "i\n"
+      ".\n"
+      "=\n"
+      ">0\n"
+      ">0\n"
     );
     editor_test(
-      "i\nLine 1\nLine 2\n.\n1i\nLine 0\n.\n1,$p\n",
-      "Line 0\nLine 1\nLine 2\n"
+      "i\n"
+      "Line 1\n"
+      "Line 2"
+      "\n."
+      "\n"
+      "1i\n"
+      "Line 0\n"
+      ".\n"
+      "1,$p\n"
+      ">Line 0\n"
+      ">Line 1\n"
+      ">Line 2\n"
     );
     editor_test(
-      "i\nLine 1\nLine 2\n.\n2i\nLine 0\n.\n1,$p\n",
-      "Line 1\nLine 0\nLine 2\n"
+      "i\n"
+      "Line 1\n"
+      "Line 2\n"
+      ".\n"
+      "2i\n"
+      "Line 0\n"
+      ".\n"
+      "1,$p\n"
+      ">Line 1\n"
+      ">Line 0\n"
+      ">Line 2\n"
     );
   } // i
 
   SECTION("p command") {
     editor_test(
-      "p\n",
-      "?\n"
+      "p\n"
+      ">?\n"
     );
     editor_test(
-      "i\nHello World!\nHello Again\n.\np\n",
-      "Hello Again\n"
-    );
-    editor_test(
-      "i\nHello World!\nHello Again\n.\n1p\n",
+      "i\n"
       "Hello World!\n"
+      "Hello Again\n"
+      ".\n"
+      "p\n"
+      ">Hello Again\n"
     );
     editor_test(
-      "i\nHello World!\nHello Again\n.\n1,2p\n",
-      "Hello World!\nHello Again\n"
+      "i\n"
+      "Hello World!\n"
+      "Hello Again\n"
+      ".\n"
+      "1p\n"
+      ">Hello World!\n"
     );
     editor_test(
-      "i\nHello World!\nHello Again\n.\n1,$p\n",
-      "Hello World!\nHello Again\n"
+      "i\n"
+      "Hello World!\n"
+      "Hello Again\n"
+      ".\n"
+      "1,2p\n"
+      ">Hello World!\n"
+      ">Hello Again\n"
+    );
+    editor_test(
+      "i\n"
+      "Hello World!\n"
+      "Hello Again\n"
+      ".\n"
+      "1,$p\n"
+      ">Hello World!\n"
+      ">Hello Again\n"
+    );
+    editor_test(
+      "i\n"
+      "Hello World!\n"
+      "Hello Again\n"
+      ".\n"
+      "1,$p\n"
+      ">Hello World!\n"
+      ">Hello Again\n"
     );
   }
 }
 
 std::string testLabel(std::string input);
+auto const eof = std::char_traits<char>::eof();
 
-void editor_test(std::string input, std::string expected) {
-  DYNAMIC_SECTION("edit(" << testLabel(input) << ")") {
+void editor_test(std::string consoleIO) {
+  DYNAMIC_SECTION("edit(" << testLabel(consoleIO) << ")") {
+    auto console = std::istringstream(consoleIO);
+    bool prevWasOutput = false;
+
+    auto in = std::stringstream { };
+    auto out = std::stringstream { };
     auto e = stiX::editor();
-    auto is = std::istringstream(input);
-    auto output = std::ostringstream();
 
-    e.process(is, output);
+    while(console.peek() != eof) {
+      auto line = stiX::getline(console);
 
-    REQUIRE(output.str() == expected);
+      if (line[0] == '>') {
+        if (!prevWasOutput)
+          e.process(in, out);
+
+        auto expected = line.substr(1);
+        auto output = stiX::getline(out);
+
+        REQUIRE(output == expected);
+      } else {
+        in << line << '\n';
+      }
+
+      prevWasOutput = line[0] == '>';
+    }
   }
 }
 
