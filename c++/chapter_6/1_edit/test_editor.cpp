@@ -22,7 +22,7 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">0\n"
     );
   } // =
-  
+
   SECTION("i command") {
     editor_test(
       "i\n"
@@ -128,6 +128,41 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">Hello World!\n"
       ">Hello Again\n"
     );
+    editor_test(
+      "i\n"
+      "line one\n"
+      "line two\n"
+      "line three\n"
+      "line four\n"
+      "line five\n"
+      ".\n"
+      "=\n"
+      ">5\n"
+      "1,$-4p\n"
+      ">line one\n"
+      "1,$-2p\n"
+      ">line one\n"
+      ">line two\n"
+      ">line three\n"
+      "1,.-3p\n"
+      ">line one\n"
+      ">line two\n"
+      "1,.-1p\n"
+      ">line one\n"
+      ">line two\n"
+      ">line three\n"
+      ">line four\n"
+      "$-2,$p\n"
+      ">line three\n"
+      ">line four\n"
+      ">line five\n"
+      ".,$p\n"
+      ">line five\n"
+      "$,$p\n"
+      ">line five\n"
+      ".,.p\n"
+      ">line five\n"
+    );
   }
 }
 
@@ -139,12 +174,15 @@ void editor_test(std::string consoleIO) {
     auto console = std::istringstream(consoleIO);
     bool prevWasOutput = false;
 
+    auto log = std::ostringstream { };
+
     auto in = std::stringstream { };
     auto out = std::stringstream { };
     auto e = stiX::editor();
 
     while(console.peek() != eof) {
       auto line = stiX::getline(console);
+      log << line << '\n';
 
       if (line[0] == '>') {
         if (!prevWasOutput) {
@@ -156,6 +194,7 @@ void editor_test(std::string consoleIO) {
         auto expected = line.substr(1);
         auto output = stiX::getline(out);
 
+        INFO(log.str());
         REQUIRE(output == expected);
       } else {
         in << line << '\n';
