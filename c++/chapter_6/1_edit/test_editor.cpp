@@ -22,7 +22,7 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">0\n"
     );
   } // =
-
+  
   SECTION("i command") {
     editor_test(
       "i\n"
@@ -37,27 +37,26 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "Hello World!\n"
       ".\n"
       "=\n"
+      ">1\n"
       "i\n"
       "Woo!\n"
       ".\n"
       "=\n"
       ">1\n"
-      ">1\n"
     );
     editor_test(
       "=\n"
+      ">0\n"
       "i\n"
       ".\n"
       "=\n"
-      ">0\n"
       ">0\n"
     );
     editor_test(
       "i\n"
       "Line 1\n"
-      "Line 2"
-      "\n."
-      "\n"
+      "Line 2\n"
+      ".\n"
       "1i\n"
       "Line 0\n"
       ".\n"
@@ -148,8 +147,11 @@ void editor_test(std::string consoleIO) {
       auto line = stiX::getline(console);
 
       if (line[0] == '>') {
-        if (!prevWasOutput)
+        if (!prevWasOutput) {
+          out = std::stringstream{};
           e.process(in, out);
+          in = std::stringstream{};
+        }
 
         auto expected = line.substr(1);
         auto output = stiX::getline(out);
