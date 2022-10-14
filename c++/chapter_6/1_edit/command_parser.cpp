@@ -57,13 +57,15 @@ namespace {
     }
 
     void parse_line_numbers() {
-      indicies.push(parse_line_number());
+      if (input.is_eol() || !is_index_start())
+        return;
 
-      if (is_separator())
-        input.advance();
-
-      if (is_index_start())
+      while (is_index_start()) {
         indicies.push(parse_line_number());
+
+        if (is_separator())
+          input.advance();
+      }
     }
 
     size_t parse_line_number() {
@@ -83,9 +85,6 @@ namespace {
     }
 
     size_t parse_index() {
-      if (input.is_eol() || !is_index_start())
-        return dot;
-
       switch (*input) {
         case DOT:
           input.advance();
