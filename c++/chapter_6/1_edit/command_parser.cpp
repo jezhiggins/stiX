@@ -57,9 +57,6 @@ namespace {
     }
 
     void parse_line_numbers() {
-      if (input.is_eol() || !is_index_start())
-        return;
-
       while (is_index_start()) {
         indicies.push(parse_line_number());
 
