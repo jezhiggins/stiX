@@ -1,7 +1,7 @@
 #include "command_parser.hpp"
 #include "../../lib/regex/char_seq.hpp"
 #include <charconv>
-
+#include <queue>
 
 size_t const stiX::command::line_error = -1;
 size_t const stiX::command::code_error = '?';
@@ -38,11 +38,14 @@ namespace {
       return command();
     }
 
-    stiX::command command() const {
+    stiX::command command() {
+      while(indicies.size() > 2)
+        indicies.pop();
+
       if (is_error())
         return stiX::command::error;
 
-      return {from, to, code};
+      return {from(), to(), code};
     }
 
   private:
@@ -54,13 +57,13 @@ namespace {
     }
 
     void parse_line_numbers() {
-      from = to = parse_line_number();
+      indicies.push(parse_line_number());
 
       if (is_separator())
         input.advance();
 
       if (is_index_start())
-        to = parse_line_number();
+        indicies.push(parse_line_number());
     }
 
     size_t parse_line_number() {
@@ -138,8 +141,8 @@ namespace {
 
     bool is_error() const {
       return has_failed ||
-             is_error(from) ||
-             is_error(to) ||
+             is_error(from()) ||
+             is_error(to()) ||
              is_error(code);
     }
 
@@ -149,12 +152,23 @@ namespace {
 
     void failed() { has_failed = true; }
 
+    size_t from() const {
+      if (indicies.empty())
+        return dot;
+      return indicies.front();
+    }
+
+    size_t to() const {
+      if (indicies.empty())
+        return dot;
+      return indicies.back();
+    }
+
     stiX::character_sequence input;
     size_t const dot;
     size_t const last;
 
-    size_t from = stiX::command::line_error;
-    size_t to = stiX::command::line_error;
+    std::queue<size_t> indicies;
     char code = stiX::command::code_error;
     bool has_failed = false;
   };
