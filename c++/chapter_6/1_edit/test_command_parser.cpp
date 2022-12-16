@@ -82,9 +82,7 @@ TEST_CASE("Chapter 6 - edit - command parser") {
             tc.input.dollar
           );
 
-          REQUIRE(command.from_index == tc.expected.from_index);
-          REQUIRE(command.to_index == tc.expected.to_index);
-          REQUIRE(command.code == tc.expected.code);
+          REQUIRE(command == tc.expected);
         }
       }
     );

@@ -10,7 +10,7 @@ stiX::command const stiX::command::error = { };
 
 bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
   return lhs.from_index == rhs.from_index &&
-    lhs.to_index == rhs.from_index &&
+    lhs.to_index == rhs.to_index &&
     lhs.code == rhs.code;
 }
 
