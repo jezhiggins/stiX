@@ -2,6 +2,7 @@
 #include "working_filepaths.hpp"
 #include <fstream>
 #include <iterator>
+#include <algorithm>
 #include "../../lib/getline.hpp"
 #include "merge_files.hpp"
 

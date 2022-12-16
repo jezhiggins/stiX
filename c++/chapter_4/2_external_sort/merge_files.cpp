@@ -1,6 +1,7 @@
 #include "merge_files.hpp"
 #include <deque>
 #include <fstream>
+#include <algorithm>
 
 class merge_source {
 public:

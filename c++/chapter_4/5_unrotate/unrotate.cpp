@@ -2,6 +2,7 @@
 #include "../../lib/getline.hpp"
 
 #include <iostream>
+#include <algorithm>
 
 auto const eof = std::char_traits<char>::eof();
 auto const gap = 2;

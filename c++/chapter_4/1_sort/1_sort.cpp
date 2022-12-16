@@ -17,6 +17,7 @@
 #include <string>
 #include <iostream>
 #include <iterator>
+#include <algorithm>
 #include "../../lib/getline.hpp"
 
 std::vector<std::string> read_lines();

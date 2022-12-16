@@ -3,6 +3,7 @@
 #include "../../lib/getline.hpp"
 #include <sstream>
 #include <iterator>
+#include <vector>
 
 using strings = std::vector<std::string>;
 
