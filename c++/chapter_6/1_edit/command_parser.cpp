@@ -4,7 +4,7 @@
 #include <queue>
 
 size_t const stiX::command::line_error = -1;
-size_t const stiX::command::code_error = '?';
+char const stiX::command::code_error = '?';
 
 stiX::command const stiX::command::error = { };
 

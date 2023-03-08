@@ -10,7 +10,7 @@ namespace stiX {
     char const code = code_error;
 
     static size_t const line_error;
-    static size_t const code_error;
+    static char const code_error;
 
     static command const error;
   };
