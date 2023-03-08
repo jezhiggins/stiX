@@ -1,4 +1,5 @@
 #include "command_parser.hpp"
+#include "lines.hpp"
 #include "../../lib/regex/char_seq.hpp"
 #include <charconv>
 #include <queue>
@@ -8,10 +9,8 @@ char const stiX::command::code_error = '?';
 
 stiX::command const stiX::command::error = { };
 
-bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
-  return lhs.from_index == rhs.from_index &&
-    lhs.to_index == rhs.to_index &&
-    lhs.code == rhs.code;
+size_t stiX::command::line_error_fn(stiX::lines const&) {
+  return line_error;
 }
 
 namespace {
@@ -21,6 +20,17 @@ namespace {
   auto const PLUS = '+';
   auto const COMMA = ',';
   auto const SEMI_COLON = ';';
+
+  stiX::index_fn int_index(size_t index) {
+    return [index](stiX::lines const&) { return index; };
+  }
+
+  size_t dot_index_fn(stiX::lines const& buffer) {
+    return buffer.dot();
+  }
+  size_t last_index_fn(stiX::lines const& buffer) {
+    return buffer.last();
+  }
 
   class command_parser {
   public:
@@ -137,27 +147,29 @@ namespace {
 
     bool is_error() const {
       return has_failed ||
-             is_error(from()) ||
-             is_error(to()) ||
+             //is_error(from()) ||
+             //is_error(to()) ||
              is_error(code);
     }
 
-    static bool is_error(size_t f) { return f == stiX::command::line_error; }
+    static bool is_error(size_t f) {
+      return f == stiX::command::line_error;
+    }
 
     static bool is_error(char c) { return c == stiX::command::code_error; }
 
     void failed() { has_failed = true; }
 
-    size_t from() const {
+    stiX::index_fn from() const {
       if (indicies.empty())
-        return dot;
-      return indicies.front();
+        return dot_index_fn;
+      return int_index(indicies.front());
     }
 
-    size_t to() const {
+    stiX::index_fn to() const {
       if (indicies.empty())
-        return dot;
-      return indicies.back();
+        return dot_index_fn;
+      return int_index(indicies.back());
     }
 
     stiX::character_sequence input;

@@ -1,15 +1,8 @@
 #define ADDITIONAL_TESTS
 
-#include <iostream>
 #include "command_parser.hpp"
-
-std::ostream& operator<<(std::ostream& os, stiX::command const& c) {
-  os << "{ " << c.from_index << ", " << c.to_index << ", " << c.code << " }";
-  return os;
-}
-
 #include "../../testlib/testlib.hpp"
-
+#include "lines.hpp"
 
 namespace {
   struct parse_test_input {
@@ -18,10 +11,16 @@ namespace {
     size_t dollar;
   };
 
+  struct command_expectation {
+    size_t from;
+    size_t to;
+    char code;
+  };
+
   struct parse_test_case {
     std::string label;
     parse_test_input input;
-    stiX::command expected;
+    command_expectation expected;
   };
 
   auto good_test_cases = std::vector<parse_test_case>{
@@ -69,6 +68,19 @@ namespace {
   };
 }
 
+class buffer_double : public stiX::lines {
+public:
+  buffer_double(size_t d, size_t l):
+    dot_(d), dollar_(l) { }
+
+  size_t dot() const override { return dot_; }
+  size_t last() const override { return dollar_; }
+
+private:
+  size_t const dot_;
+  size_t const dollar_;
+};
+
 TEST_CASE("Chapter 6 - edit - command parser") {
   SECTION("Good line indexes") {
     std::for_each(
@@ -82,7 +94,11 @@ TEST_CASE("Chapter 6 - edit - command parser") {
             tc.input.dollar
           );
 
-          REQUIRE(command == tc.expected);
+          auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
+
+          REQUIRE(command.from_index(buffer) == tc.expected.from);
+          REQUIRE(command.to_index(buffer) == tc.expected.to);
+          REQUIRE(command.code == tc.expected.code);
         }
       }
     );
@@ -100,7 +116,11 @@ TEST_CASE("Chapter 6 - edit - command parser") {
             tc.input.dollar
           );
 
-          REQUIRE(command == tc.expected);
+          auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
+
+          REQUIRE(command.from_index(buffer) == stiX::command::line_error);
+          REQUIRE(command.to_index(buffer) == stiX::command::line_error);
+          REQUIRE(command.code == stiX::command::code_error);
         }
       }
     );

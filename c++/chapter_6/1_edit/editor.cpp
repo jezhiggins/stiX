@@ -25,10 +25,19 @@ void editor::process(std::istream& in, std::ostream& out) {
         out << buffer_.dot() << "\n";
         break;
       case 'i':
-        do_insert(in, command.to_index, buffer_);
+        do_insert(
+          in,
+          command.to_index(buffer_),
+          buffer_
+        );
         break;
       case 'p':
-        do_print(out, command.from_index, command.to_index, buffer_);
+        do_print(
+          out,
+          command.from_index(buffer_),
+          command.to_index(buffer_),
+          buffer_
+        );
         break;
       default:
         out << "?\n";

@@ -2,10 +2,11 @@
 #define STICPP_EDIT_BUFFER_H
 
 #include "line_buffer.hpp"
+#include "lines.hpp"
 
 namespace stiX {
 
-  class edit_buffer {
+  class edit_buffer : public lines {
   public:
     void insert_before(size_t index, std::string_view line);
 
