@@ -24,6 +24,11 @@ namespace {
   stiX::index_fn int_index(size_t index) {
     return [index](stiX::lines const&) { return index; };
   }
+  stiX::index_fn add_offset(stiX::index_fn ref_fn, size_t index) {
+    return [ref_fn, index](stiX::lines const& buffer) {
+      return ref_fn(buffer) + index;
+    };
+  }
 
   size_t dot_index_fn(stiX::lines const& buffer) {
     return buffer.dot();
@@ -34,10 +39,8 @@ namespace {
 
   class command_parser {
   public:
-    command_parser(std::string_view i, size_t d, size_t l) :
-      input(i),
-      dot(d),
-      last(l) {
+    command_parser(std::string_view i) :
+      input(i) {
     }
 
     stiX::command parse() {
@@ -75,7 +78,7 @@ namespace {
       }
     }
 
-    size_t parse_line_number() {
+    stiX::index_fn parse_line_number() {
       auto lhs = parse_index();
 
       if (!is_operator())
@@ -88,23 +91,23 @@ namespace {
       if (op == MINUS)
         rhs *= -1;
 
-      return lhs + rhs;
+      return add_offset(lhs, rhs);
     }
 
-    size_t parse_index() {
+    stiX::index_fn parse_index() {
       switch (*input) {
         case DOT:
           input.advance();
-          return dot;
+          return dot_index_fn;
         case DOLLAR:
           input.advance();
-          return last;
+          return last_index_fn;
         case PLUS:
         case MINUS:
-          return dot;
+          return dot_index_fn;
       }
 
-      return parse_number();
+      return int_index(parse_number());
     }
 
     size_t parse_number() {
@@ -163,27 +166,25 @@ namespace {
     stiX::index_fn from() const {
       if (indicies.empty())
         return dot_index_fn;
-      return int_index(indicies.front());
+      return indicies.front();
     }
 
     stiX::index_fn to() const {
       if (indicies.empty())
         return dot_index_fn;
-      return int_index(indicies.back());
+      return indicies.back();
     }
 
     stiX::character_sequence input;
-    size_t const dot;
-    size_t const last;
 
-    std::queue<size_t> indicies;
+    std::queue<stiX::index_fn> indicies;
     char code = stiX::command::code_error;
     bool has_failed = false;
   };
 } // namespace
 
 stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t last) {
-  auto parser = command_parser(input, dot, last);
+  auto parser = command_parser(input);
 
   return parser.parse();
 }
