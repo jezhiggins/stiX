@@ -19,6 +19,8 @@ namespace stiX {
     static command const error;
   };
 
+  bool operator==(command const& lhs, command const& rhs);
+
   struct parsed_command {
     command compile(lines const& buffer) const;
 

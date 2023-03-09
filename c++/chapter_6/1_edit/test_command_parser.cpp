@@ -88,9 +88,7 @@ TEST_CASE("Chapter 6 - edit - command parser") {
           auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
           auto command = parsed_command.compile(buffer);
 
-          REQUIRE(command.from_index == tc.expected.from_index);
-          REQUIRE(command.to_index == tc.expected.to_index);
-          REQUIRE(command.code == tc.expected.code);
+          REQUIRE(command == tc.expected);
         }
       }
     );
@@ -108,9 +106,7 @@ TEST_CASE("Chapter 6 - edit - command parser") {
           auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
           auto command = parsed_command.compile(buffer);
 
-          REQUIRE(command.from_index == stiX::command::line_error);
-          REQUIRE(command.to_index == stiX::command::line_error);
-          REQUIRE(command.code == stiX::command::code_error);
+          REQUIRE(command == stiX::command::error);
         }
       }
     );
