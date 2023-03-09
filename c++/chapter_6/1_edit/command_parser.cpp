@@ -91,17 +91,18 @@ namespace {
     stiX::index_fn parse_line_number() {
       auto lhs = parse_index();
 
-      if (!is_operator())
-        return lhs;
+      while (is_operator()) {
+        auto op = input_pop();
 
-      auto op = input_pop();
+        auto rhs = parse_number();
 
-      auto rhs = parse_number();
+        if (op == MINUS)
+          rhs *= -1;
 
-      if (op == MINUS)
-        rhs *= -1;
+        lhs = add_offset(lhs, rhs);
+      }
 
-      return add_offset(lhs, rhs);
+      return lhs;
     }
 
     stiX::index_fn parse_index() {
