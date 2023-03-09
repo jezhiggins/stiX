@@ -55,10 +55,11 @@ namespace {
   };
 
   auto bad_test_cases = std::vector<parse_test_case>{
-    {"no hex please",   {"1a,3=", 5, 10}},
-    {"5-.",             {"5-.",   5, 10}},
-    {"15-$",            {"15-$",  5, 10}},
-    {"$-.",             {"$-.",   5, 10}}
+    {"no hex please",       {"1a,3=", 5, 10}},
+    {"dot on rhs of -",     {"5-.",   5, 10}},
+    {"dollar on rhs of -",  {"15-$",  5, 10}},
+    {"$-.",                 {"$-.",   5, 10}},
+    {"from index too large",{ "99",   5, 10}}
   };
 }
 
