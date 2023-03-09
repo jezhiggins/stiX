@@ -192,8 +192,9 @@ namespace {
     bool has_failed = false;
   };
 
-  size_t index_or_error(size_t index, size_t last) {
-    return (index <= last) ? index : stiX::command::line_error;
+  size_t index_or_error(stiX::index_fn fn, stiX::lines const& buffer) {
+    auto index = fn(buffer);
+    return (index <= buffer.last()) ? index : stiX::command::line_error;
   }
 
   bool is_error(size_t from, size_t to, char code) {
@@ -210,8 +211,8 @@ stiX::parsed_command stiX::parse_command(std::string_view input) {
 }
 
 stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
-  auto from = index_or_error(from_index(buffer), buffer.last());
-  auto to = index_or_error(to_index(buffer), buffer.last());
+  auto from = index_or_error(from_index, buffer);
+  auto to = index_or_error(to_index, buffer);
 
   if (is_error(from, to, code))
     return command::error;
