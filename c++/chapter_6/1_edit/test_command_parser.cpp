@@ -11,16 +11,10 @@ namespace {
     size_t dollar;
   };
 
-  struct command_expectation {
-    size_t from;
-    size_t to;
-    char code;
-  };
-
   struct parse_test_case {
     std::string label;
     parse_test_input input;
-    command_expectation expected;
+    stiX::command expected;
   };
 
   auto good_test_cases = std::vector<parse_test_case>{
@@ -94,8 +88,8 @@ TEST_CASE("Chapter 6 - edit - command parser") {
           auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
           auto command = parsed_command.compile(buffer);
 
-          REQUIRE(command.from_index == tc.expected.from);
-          REQUIRE(command.to_index == tc.expected.to);
+          REQUIRE(command.from_index == tc.expected.from_index);
+          REQUIRE(command.to_index == tc.expected.to_index);
           REQUIRE(command.code == tc.expected.code);
         }
       }
