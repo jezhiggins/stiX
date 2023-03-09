@@ -183,7 +183,7 @@ namespace {
   };
 } // namespace
 
-stiX::command stiX::parse_command(std::string_view input, size_t dot, size_t last) {
+stiX::command stiX::parse_command(std::string_view input) {
   auto parser = command_parser(input);
 
   return parser.parse();

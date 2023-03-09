@@ -21,7 +21,7 @@ namespace stiX {
     static size_t line_error_fn(lines const&);
   };
 
-  command parse_command(std::string_view input, size_t dot, size_t last);
+  command parse_command(std::string_view input);
 }
 
 #endif //STICPP_COMMAND_PARSER_H

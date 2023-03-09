@@ -89,9 +89,7 @@ TEST_CASE("Chapter 6 - edit - command parser") {
       [](auto tc) {
         SECTION(tc.label) {
           auto command = stiX::parse_command(
-            tc.input.input,
-            tc.input.dot,
-            tc.input.dollar
+            tc.input.input
           );
 
           auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
@@ -111,9 +109,7 @@ TEST_CASE("Chapter 6 - edit - command parser") {
       [](auto tc) {
         SECTION(tc.label) {
           auto command = stiX::parse_command(
-            tc.input.input,
-            tc.input.dot,
-            tc.input.dollar
+            tc.input.input
           );
 
           auto buffer = buffer_double(tc.input.dot, tc.input.dollar);

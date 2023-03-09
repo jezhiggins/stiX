@@ -15,10 +15,7 @@ void editor::process(std::istream& in, std::ostream& out) {
   while(in.peek() != eof) {
     auto line = stiX::getline(in);
 
-    auto command = parse_command(
-      line,
-      buffer_.dot(),
-      buffer_.last());
+    auto command = parse_command(line);
 
     switch(command.code) {
       case '=':
