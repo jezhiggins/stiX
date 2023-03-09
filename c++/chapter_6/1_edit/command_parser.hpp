@@ -2,6 +2,7 @@
 #define STICPP_COMMAND_PARSER_H
 
 #include <string_view>
+#include <functional>
 
 namespace stiX {
   class lines;
