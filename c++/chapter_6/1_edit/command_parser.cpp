@@ -211,7 +211,7 @@ stiX::parsed_command stiX::parse_command(std::string_view input) {
 
 stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
   auto from = index_or_error(from_index(buffer), buffer.last());
-  auto to = to_index(buffer);
+  auto to = index_or_error(to_index(buffer), buffer.last());
 
   if (is_error(from, to, code))
     return command::error;

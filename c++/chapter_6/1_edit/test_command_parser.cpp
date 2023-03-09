@@ -59,7 +59,8 @@ namespace {
     {"dot on rhs of -",     {"5-.",   5, 10}},
     {"dollar on rhs of -",  {"15-$",  5, 10}},
     {"$-.",                 {"$-.",   5, 10}},
-    {"from index too large",{ "99",   5, 10}}
+    {"from index too large",{ "99",   5, 10}},
+    {"to index too large",  { "1,99", 5, 10}}
   };
 }
 
