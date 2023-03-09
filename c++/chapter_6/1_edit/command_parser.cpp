@@ -9,10 +9,6 @@ char const stiX::command::code_error = '?';
 
 stiX::command const stiX::command::error = { };
 
-size_t stiX::command::line_error_fn(stiX::lines const&) {
-  return line_error;
-}
-
 namespace {
   auto const DOT = '.';
   auto const DOLLAR = '$';
@@ -37,13 +33,21 @@ namespace {
     return buffer.last();
   }
 
+  size_t line_error_fn(stiX::lines const&) {
+    return stiX::command::line_error;
+  }
+
+  stiX::parsed_command const parse_error = {
+    line_error_fn, line_error_fn, stiX::command::code_error
+  };
+
   class command_parser {
   public:
     command_parser(std::string_view i) :
       input(i) {
     }
 
-    stiX::command parse() {
+    stiX::parsed_command parse() {
       parse_line_numbers();
 
       parse_command_code();
@@ -51,12 +55,12 @@ namespace {
       return command();
     }
 
-    stiX::command command() {
+    stiX::parsed_command command() {
       while(indicies.size() > 2)
         indicies.pop();
 
       if (is_error())
-        return stiX::command::error;
+        return parse_error;
 
       return {from(), to(), code};
     }
@@ -181,10 +185,27 @@ namespace {
     char code = stiX::command::code_error;
     bool has_failed = false;
   };
+
+
+  bool is_error(size_t from, size_t to, char code) {
+    return (from == stiX::command::line_error) ||
+           (to == stiX::command::line_error) ||
+           (code == stiX::command::code_error);
+  }
 } // namespace
 
-stiX::command stiX::parse_command(std::string_view input) {
+stiX::parsed_command stiX::parse_command(std::string_view input) {
   auto parser = command_parser(input);
 
   return parser.parse();
 }
+
+stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
+  auto from = from_index(buffer);
+  auto to = to_index(buffer);
+
+  if (is_error(from, to, code))
+    return command::error;
+  return { from, to, code };
+}
+

@@ -62,9 +62,9 @@ namespace {
 
   auto bad_test_cases = std::vector<parse_test_case>{
     {"no hex please",   {"1a,3=", 5, 10}},
-    {"5-.",             {"5-.", 5, 10}},
-    {"15-$",            {"15-$", 5, 10}},
-    {"$-.",             {"$-.", 5, 10}},
+    {"5-.",             {"5-.",   5, 10}},
+    {"15-$",            {"15-$",  5, 10}},
+    {"$-.",             {"$-.",   5, 10}}
   };
 }
 
@@ -88,14 +88,14 @@ TEST_CASE("Chapter 6 - edit - command parser") {
       good_test_cases.end(),
       [](auto tc) {
         SECTION(tc.label) {
-          auto command = stiX::parse_command(
-            tc.input.input
+          auto parsed_command = stiX::parse_command(
+          tc.input.input
           );
-
           auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
+          auto command = parsed_command.compile(buffer);
 
-          REQUIRE(command.from_index(buffer) == tc.expected.from);
-          REQUIRE(command.to_index(buffer) == tc.expected.to);
+          REQUIRE(command.from_index == tc.expected.from);
+          REQUIRE(command.to_index == tc.expected.to);
           REQUIRE(command.code == tc.expected.code);
         }
       }
@@ -108,14 +108,14 @@ TEST_CASE("Chapter 6 - edit - command parser") {
       bad_test_cases.end(),
       [](auto tc) {
         SECTION(tc.label) {
-          auto command = stiX::parse_command(
+          auto parsed_command = stiX::parse_command(
             tc.input.input
           );
-
           auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
+          auto command = parsed_command.compile(buffer);
 
-          REQUIRE(command.from_index(buffer) == stiX::command::line_error);
-          REQUIRE(command.to_index(buffer) == stiX::command::line_error);
+          REQUIRE(command.from_index == stiX::command::line_error);
+          REQUIRE(command.to_index == stiX::command::line_error);
           REQUIRE(command.code == stiX::command::code_error);
         }
       }

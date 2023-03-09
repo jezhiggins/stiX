@@ -15,7 +15,8 @@ void editor::process(std::istream& in, std::ostream& out) {
   while(in.peek() != eof) {
     auto line = stiX::getline(in);
 
-    auto command = parse_command(line);
+    auto parsed_command = parse_command(line);
+    auto command = parsed_command.compile(buffer_);
 
     switch(command.code) {
       case '=':
@@ -24,15 +25,15 @@ void editor::process(std::istream& in, std::ostream& out) {
       case 'i':
         do_insert(
           in,
-          command.to_index(buffer_),
+          command.to_index,
           buffer_
         );
         break;
       case 'p':
         do_print(
           out,
-          command.from_index(buffer_),
-          command.to_index(buffer_),
+          command.from_index,
+          command.to_index,
           buffer_
         );
         break;
