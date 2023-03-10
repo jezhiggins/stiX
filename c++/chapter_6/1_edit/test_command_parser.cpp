@@ -126,4 +126,12 @@ TEST_CASE("Chapter 6 - edit - command parser") {
   SECTION("Bad line indexes") {
     all_tests(bad_indexes_test_cases, indexes_are_bad);
   }
+
+  SECTION("Parse forward context search") {
+    auto parsed_command = stiX::parse_command("/fruit/");
+    auto buffer = buffer_double(1, 5);
+    auto command = parsed_command.compile(buffer);
+
+    REQUIRE(command != stiX::command::error);
+  }
 }

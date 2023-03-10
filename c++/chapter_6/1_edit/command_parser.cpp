@@ -9,10 +9,14 @@ char const stiX::command::code_error = '?';
 
 stiX::command const stiX::command::error = { };
 
-bool stiX::operator==(stiX::command const& lhs, stiX::command const& rhs) {
+bool stiX::operator==(command const& lhs, command const& rhs) {
   return lhs.from_index == rhs.from_index &&
          lhs.to_index == rhs.to_index &&
          lhs.code == rhs.code;
+}
+
+bool stiX::operator!=(command const& lhs, command const& rhs) {
+  return !(lhs == rhs);
 }
 
 namespace {
@@ -20,6 +24,7 @@ namespace {
   auto const DOLLAR = '$';
   auto const MINUS = '-';
   auto const PLUS = '+';
+  auto const SLASH = '/';
   auto const COMMA = ',';
   auto const SEMI_COLON = ';';
 
@@ -37,6 +42,12 @@ namespace {
   }
   size_t last_index_fn(stiX::lines const& buffer) {
     return buffer.last();
+  }
+
+  stiX::index_fn forward_search(std::string pattern) {
+    return [pattern](stiX::lines const&) {
+      return 1;
+    };
   }
 
   size_t line_error_fn(stiX::lines const&) {
@@ -116,9 +127,21 @@ namespace {
         case PLUS:
         case MINUS:
           return dot_index_fn;
+        case SLASH:
+          return parse_forward_search();
       }
 
       return int_index(parse_number());
+    }
+
+    stiX::index_fn parse_forward_search() {
+      input.advance();
+      auto n = std::string{};
+      while (!input.is_eol() && (*input != SLASH))
+        n += input_pop();
+
+      input.advance();
+      return forward_search(n);
     }
 
     size_t parse_number() {
@@ -139,6 +162,7 @@ namespace {
       auto c = *input;
       return c == DOT ||
              c == DOLLAR ||
+             c == SLASH ||
              is_operator() ||
              std::isdigit(c);
     }
