@@ -161,13 +161,7 @@ namespace {
 
     bool is_error() const {
       return has_failed ||
-             //is_error(from()) ||
-             //is_error(to()) ||
              is_error(code);
-    }
-
-    static bool is_error(size_t f) {
-      return f == stiX::command::line_error;
     }
 
     static bool is_error(char c) { return c == stiX::command::code_error; }
