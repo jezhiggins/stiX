@@ -8,7 +8,7 @@
 // reading text files on command into an internal "buffer" (which may be quite
 // large), displaying and modifying the buffer contents by other commands, then
 // writing all or part of the buffer to text files, also on command. The buffer
-// is organisated as a sequence of lines, numbered from 1; lines are implicitly
+// is organised as a sequence of lines, numbered from 1; lines are implicitly
 // renumbered as text is added or deleted.
 //
 // Context searches and substitutions are specified by writing text patterns,
