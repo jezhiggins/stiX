@@ -17,7 +17,7 @@ namespace {
     stiX::command expected;
   };
 
-  auto good_test_cases = std::vector<parse_test_case>{
+  auto good_indexes_test_cases = std::vector<parse_test_case>{
     {"no input,empty buffer", {"",         0, 0},   {0,  0,  '\n'}},
     {"no input, dot is set",  {"",         3, 3},   {3,  3,  '\n'}},
     {"single letter",         {"i",        3, 5},   {3,  3,  'i'}},
@@ -56,7 +56,7 @@ namespace {
     {"1,2,.",                 {"1,2,.",    5, 10},  {2,  5,  '\n'}}
   };
 
-  auto bad_test_cases = std::vector<parse_test_case>{
+  auto bad_indexes_test_cases = std::vector<parse_test_case>{
     {"no hex please",         {"1a,3=", 5, 10}},
     {"dot on rhs of -",       {"5-.",   5, 10}},
     {"dollar on rhs of -",    {"15-$",  5, 10}},
@@ -85,40 +85,45 @@ private:
   size_t const dollar_;
 };
 
+void index_test(parse_test_case tc, stiX::command expected) {
+  SECTION(tc.label) {
+    auto parsed_command = stiX::parse_command(
+      tc.input.input
+    );
+    auto buffer = buffer_double(tc.input.dot,
+                                tc.input.dollar);
+    auto command = parsed_command.compile(buffer);
+
+    REQUIRE(command == expected);
+  }
+}
+
+void indexes_are_good(parse_test_case tc) {
+  index_test(tc, tc.expected);
+}
+
+void indexes_are_bad(parse_test_case tc) {
+  index_test(tc, stiX::command::error);
+}
+
+template <typename Function>
+void all_tests(
+  std::vector<parse_test_case> const& tests,
+  Function test_fn
+) {
+  std::for_each(
+    tests.begin(),
+    tests.end(),
+    test_fn
+  );
+}
+
 TEST_CASE("Chapter 6 - edit - command parser") {
   SECTION("Good line indexes") {
-    std::for_each(
-      good_test_cases.begin(),
-      good_test_cases.end(),
-      [](auto tc) {
-        SECTION(tc.label) {
-          auto parsed_command = stiX::parse_command(
-          tc.input.input
-          );
-          auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
-          auto command = parsed_command.compile(buffer);
-
-          REQUIRE(command == tc.expected);
-        }
-      }
-    );
+    all_tests(good_indexes_test_cases, indexes_are_good);
   }
 
   SECTION("Bad line indexes") {
-    std::for_each(
-      bad_test_cases.begin(),
-      bad_test_cases.end(),
-      [](auto tc) {
-        SECTION(tc.label) {
-          auto parsed_command = stiX::parse_command(
-            tc.input.input
-          );
-          auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
-          auto command = parsed_command.compile(buffer);
-
-          REQUIRE(command == stiX::command::error);
-        }
-      }
-    );
+    all_tests(bad_indexes_test_cases, indexes_are_bad);
   }
 }
