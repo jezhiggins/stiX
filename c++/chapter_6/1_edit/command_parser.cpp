@@ -219,6 +219,7 @@ namespace {
   bool is_error(size_t from, size_t to, char code) {
     return (from == stiX::command::line_error) ||
            (to == stiX::command::line_error) ||
+           (from > to) ||
            (code == stiX::command::code_error);
   }
 } // namespace
