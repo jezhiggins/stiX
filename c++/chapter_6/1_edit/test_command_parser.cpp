@@ -75,8 +75,9 @@ namespace {
   };
 
   auto forward_search_tests = parse_test_cases {
-    {"from 1, hits 1", {"/line 1/", 1, 5}, {1, 1, '\n'}},
-    {"from 1, hits 2", {"/line 2/", 1, 5}, {2, 2, '\n'}},
+    {"from 1, hits 2",  {"/line 2/", 1, 5}, {2, 2, '\n'}},
+    {"from 1, hits 10", {"/line 1/", 1, 10}, {10, 10, '\n'}},
+    {"from 1, hits 1",  {"/line 1/", 1, 5}, {1, 1, '\n'}},
   };
 
   auto bad_forward_search_tests = parse_test_cases {
