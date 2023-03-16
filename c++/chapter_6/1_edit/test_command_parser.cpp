@@ -80,6 +80,7 @@ namespace {
     {"from 1, hits 1",  {"/line 1/", 1, 5}, {1, 1, '\n'}},
     {"from 5, hits 10", {"/line 1/", 5, 10}, {10, 10, '\n'}},
     {"from 5, hits 3",  {"/line 3/", 5, 10}, {3, 3, '\n'}},
+    {"search with arithmetic",{"/line 9/-2", 5, 10}, {7, 7, '\n'}},
     {"pattern doesn't match", {"/fruit/",    1, 5}, stiX::command::error},
     {"match after const",     {"/line 4/,2", 1, 5}, stiX::command::error}
   };
@@ -90,6 +91,7 @@ namespace {
     {"from 1, hits 1",  {"\\line 1\\", 1, 5}, {1, 1, '\n'}},
     {"from 5, hits 9",  {"\\line 9\\", 5, 10}, {9, 9, '\n'}},
     {"from 5, hits 3",  {"\\line 3\\", 5, 10}, {3, 3, '\n'}},
+    {"search with arithmetic",{"\\line 9\\-2", 5, 10}, {7, 7, '\n'}},
     {"pattern doesn't match", {"\\fruit\\",    1, 5}, stiX::command::error},
     {"match after const",     {"\\line 4\\,2", 1, 5}, stiX::command::error}
   };
