@@ -84,6 +84,18 @@ public:
 private:
   size_t const dot_;
   size_t const dollar_;
+  std::vector<std::string> lines_ = {
+    { "line 1" },
+    { "line 2" },
+    { "line 3" },
+    { "line 4" },
+    { "line 5" },
+    { "line 6" },
+    { "line 7" },
+    { "line 8" },
+    { "line 9" },
+    { "line 10" },
+  };
 };
 
 void index_test(parse_test_case tc, stiX::command expected) {
@@ -129,7 +141,7 @@ TEST_CASE("Chapter 6 - edit - command parser") {
   }
 
   SECTION("Parse forward context search") {
-    auto parsed_command = stiX::parse_command("/fruit/");
+    auto parsed_command = stiX::parse_command("/line 3/");
     auto buffer = buffer_double(1, 5);
     auto command = parsed_command.compile(buffer);
 
