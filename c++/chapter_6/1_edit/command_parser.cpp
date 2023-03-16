@@ -1,8 +1,10 @@
 #include "command_parser.hpp"
 #include "lines.hpp"
-#include "../../lib/regex/char_seq.hpp"
 #include <charconv>
 #include <queue>
+#include "../../lib/regex/pattern_matcher.hpp"
+#include "../../lib/regex/char_seq.hpp"
+
 
 size_t const stiX::command::line_error = -1;
 char const stiX::command::code_error = '?';
@@ -44,8 +46,9 @@ namespace {
     return buffer.last();
   }
 
-  stiX::index_fn forward_search(std::string pattern) {
-    return [pattern](stiX::lines const&) {
+  stiX::index_fn forward_search(std::string_view pattern) {
+    auto matcher = stiX::compile_pattern(pattern);
+    return [matcher](stiX::lines const&) {
       return 1;
     };
   }
