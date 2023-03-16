@@ -68,18 +68,18 @@ namespace {
     };
   }
 
-  size_t next_index(size_t i, stiX::lines const& buffer) {
+  size_t next_line(size_t i, stiX::lines const& buffer) {
     return (i < buffer.last()) ? ++i : 1;
   }
   stiX::index_fn forward_search(std::string_view pattern) {
-    return search(pattern, next_index);
+    return search(pattern, next_line);
   }
 
-  size_t prev_index(size_t i, stiX::lines const& buffer) {
+  size_t prev_line(size_t i, stiX::lines const& buffer) {
     return (i > 1) ? --i : buffer.last();
   }
   stiX::index_fn backward_search(std::string_view pattern) {
-    return search(pattern, prev_index);
+    return search(pattern, prev_line);
   }
 
   size_t line_error_fn(stiX::lines const&) {
@@ -181,18 +181,20 @@ namespace {
       stiX::index_fn(make_search)(std::string_view)
     ) {
       input.advance();
-      auto n = std::string{};
-      while (!input.is_eol() && (*input != delimiter))
-        n += input_pop();
-
+      auto pattern = fetch_pattern(delimiter);
       input.advance();
-      return make_search(n);
+      return make_search(pattern);
+    }
+
+    std::string fetch_pattern(char delimiter) {
+      auto p = std::string{};
+      while (!input.is_eol() && (*input != delimiter))
+        p += input_pop();
+      return p;
     }
 
     size_t parse_number() {
-      auto n = std::string{};
-      while (!input.is_eol() && std::isdigit(*input))
-        n += input_pop();
+      auto n = fetch_digits();
 
       auto num = stiX::command::line_error;
       auto [_, ec] = std::from_chars(n.data(), n.data() + n.length(), num);
@@ -201,6 +203,13 @@ namespace {
         failed();
 
       return num;
+    }
+
+    std::string fetch_digits() {
+      auto n = std::string{};
+      while (!input.is_eol() && std::isdigit(*input))
+        n += input_pop();
+      return n;
     }
 
     bool is_index_start() {
@@ -230,8 +239,7 @@ namespace {
     }
 
     bool is_error() const {
-      return has_failed ||
-             ::is_error(code);
+      return has_failed || ::is_error(code);
     }
 
     void failed() { has_failed = true; }
