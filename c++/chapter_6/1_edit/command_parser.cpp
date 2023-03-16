@@ -47,12 +47,22 @@ namespace {
   }
 
   stiX::index_fn forward_search(std::string_view pattern) {
+
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher](stiX::lines const& buffer) {
-      for (auto i = buffer.dot(); i != buffer.last(); ++i)
-        if (matcher.match(buffer[i]))
-          return i;
-      return stiX::command::line_error;
+      auto forward_search =
+        [matcher](stiX::lines const& buffer, size_t from, size_t to) {
+          for (auto i = from; i <= to; ++i)
+            if (matcher.match(buffer[i]))
+              return i;
+          return stiX::command::line_error;
+        };
+
+      auto s = forward_search(buffer, buffer.dot()+1, buffer.last());
+
+      return (s != stiX::command::line_error)
+        ? s
+        : forward_search(buffer, 1, buffer.dot());
     };
   }
 

@@ -81,7 +81,8 @@ namespace {
   };
 
   auto bad_forward_search_tests = parse_test_cases {
-    {"pattern doesn't match", {"/fruit/", 1, 5, }}
+    {"pattern doesn't match", {"/fruit/",    1, 5}},
+    {"match after const",     {"/line 4/,2", 1, 5}}
   };
 }
 
