@@ -53,32 +53,32 @@ namespace {
   stiX::index_fn forward_search(std::string_view pattern) {
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher](stiX::lines const& buffer) {
-      auto search =
-        [matcher, &buffer](size_t from, size_t to) {
-          for (auto i = from; i <= to; ++i)
-            if (matcher.match(buffer[i]))
-              return i;
-          return stiX::command::line_error;
-        };
+      size_t index = buffer.dot();
+      do {
+        ++index;
+        if (index > buffer.last()) index = 1;
 
-      auto m = search(buffer.dot()+1, buffer.last());
-      return !is_error(m) ? m : search(1, buffer.dot());
+        if (matcher.match(buffer[index]))
+          return index;
+      } while (index != buffer.dot());
+
+      return stiX::command::line_error;
     };
   }
 
   stiX::index_fn backward_search(std::string_view pattern) {
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher](stiX::lines const& buffer) {
-      auto search =
-        [matcher, &buffer](size_t from, size_t to) {
-          for (auto i = from; i >= to; --i)
-            if (matcher.match(buffer[i]))
-              return i;
-          return stiX::command::line_error;
-        };
+      size_t index = buffer.dot();
+      do {
+        --index;
+        if (index < 1) index = buffer.last();
 
-      auto m = search(buffer.dot()-1, 1);
-      return !is_error(m) ? m : search(buffer.last(), buffer.dot());
+        if (matcher.match(buffer[index]))
+          return index;
+      } while (index != buffer.dot());
+
+      return stiX::command::line_error;
     };
   }
 
