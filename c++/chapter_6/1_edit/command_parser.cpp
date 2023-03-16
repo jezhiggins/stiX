@@ -30,6 +30,9 @@ namespace {
   auto const COMMA = ',';
   auto const SEMI_COLON = ';';
 
+  bool is_error(char c) { return c == stiX::command::code_error; }
+  bool is_error(size_t i) { return i == stiX::command::line_error; }
+
   stiX::index_fn int_index(size_t index) {
     return [index](stiX::lines const&) { return index; };
   }
@@ -47,7 +50,6 @@ namespace {
   }
 
   stiX::index_fn forward_search(std::string_view pattern) {
-
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher](stiX::lines const& buffer) {
       auto forward_search =
@@ -58,11 +60,8 @@ namespace {
           return stiX::command::line_error;
         };
 
-      auto s = forward_search(buffer, buffer.dot()+1, buffer.last());
-
-      return (s != stiX::command::line_error)
-        ? s
-        : forward_search(buffer, 1, buffer.dot());
+      auto m = forward_search(buffer, buffer.dot()+1, buffer.last());
+      return !is_error(m) ? m : forward_search(buffer, 1, buffer.dot());
     };
   }
 
@@ -201,10 +200,8 @@ namespace {
 
     bool is_error() const {
       return has_failed ||
-             is_error(code);
+             ::is_error(code);
     }
-
-    static bool is_error(char c) { return c == stiX::command::code_error; }
 
     void failed() { has_failed = true; }
 
@@ -233,10 +230,10 @@ namespace {
   }
 
   bool is_error(size_t from, size_t to, char code) {
-    return (from == stiX::command::line_error) ||
-           (to == stiX::command::line_error) ||
+    return is_error(from) ||
+           is_error(to) ||
            (from > to) ||
-           (code == stiX::command::code_error);
+           is_error(code);
   }
 } // namespace
 
