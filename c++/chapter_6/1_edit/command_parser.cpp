@@ -68,22 +68,18 @@ namespace {
     };
   }
 
+  size_t next_index(size_t i, stiX::lines const& buffer) {
+    return (i < buffer.last()) ? ++i : 1;
+  }
   stiX::index_fn forward_search(std::string_view pattern) {
-    return search(
-      pattern,
-      [](size_t i, stiX::lines const& buffer) {
-        return (i < buffer.last()) ? ++i : 1;
-      }
-    );
+    return search(pattern, next_index);
   }
 
+  size_t prev_index(size_t i, stiX::lines const& buffer) {
+    return (i > 1) ? --i : buffer.last();
+  }
   stiX::index_fn backward_search(std::string_view pattern) {
-    return search(
-      pattern,
-      [](size_t i, stiX::lines const& buffer) {
-        return (i > 1) ? --i : buffer.last();
-      }
-    );
+    return search(pattern, prev_index);
   }
 
   size_t line_error_fn(stiX::lines const&) {
