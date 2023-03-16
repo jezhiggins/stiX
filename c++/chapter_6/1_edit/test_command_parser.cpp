@@ -64,19 +64,23 @@ namespace {
     {"dollar on rhs of -",    {"15-$",  5, 10}},
     {"begin>end",             {"5,4",   5, 10}},
     {"$-.",                   {"$-.",   5, 10}},
-    {"from index too large",  { "99",   5, 10}},
-    {"to index too large",    { "1,99", 5, 10}},
-    {"arithmetic underflow",  { "-20",  5, 10}},
-    {". arithmetic underflow",{ ".-20", 5, 10}},
-    {"$ arithmetic underflow",{ "$-20", 5, 10}},
-    {"arithmetic overflow",   { "+20",  5, 10}},
-    {". arithmetic overflow", { ".+20", 5, 10}},
-    {"$ arithmetic overflow", { "$+20", 5, 10}}
+    {"from index too large",  {"99",   5, 10}},
+    {"to index too large",    {"1,99", 5, 10}},
+    {"arithmetic underflow",  {"-20",  5, 10}},
+    {". arithmetic underflow",{".-20", 5, 10}},
+    {"$ arithmetic underflow",{"$-20", 5, 10}},
+    {"arithmetic overflow",   {"+20",  5, 10}},
+    {". arithmetic overflow", {".+20", 5, 10}},
+    {"$ arithmetic overflow", {"$+20", 5, 10}}
   };
 
-  auto forward_search_test_cases = parse_test_cases {
-    {"from 1, hits 1", { "/line 1/", 1, 5}, {1, 1, '\n'}},
-    {"from 1, hits 2", { "/line 2/", 1, 5}, {2, 2, '\n'}},
+  auto forward_search_tests = parse_test_cases {
+    {"from 1, hits 1", {"/line 1/", 1, 5}, {1, 1, '\n'}},
+    {"from 1, hits 2", {"/line 2/", 1, 5}, {2, 2, '\n'}},
+  };
+
+  auto bad_forward_search_tests = parse_test_cases {
+    {"pattern doesn't match", {"/fruit/", 1, 5, }}
   };
 }
 
@@ -152,6 +156,7 @@ TEST_CASE("Chapter 6 - edit - command parser") {
   }
 
   SECTION("Forward context search") {
-    all_tests(forward_search_test_cases, indexes_are_good);
+    all_tests(forward_search_tests, indexes_are_good);
+    all_tests(bad_forward_search_tests, indexes_are_bad);
   }
 }
