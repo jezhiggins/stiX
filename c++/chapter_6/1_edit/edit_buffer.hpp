@@ -5,15 +5,14 @@
 #include "lines.hpp"
 
 namespace stiX {
-
   class edit_buffer : public lines {
   public:
     void insert_before(size_t index, std::string_view line);
 
-    std::string_view operator[](size_t index) const;
+    std::string_view operator[](size_t index) const override;
 
-    size_t dot() const { return dot_; }
-    size_t last() const { return buffer_.size(); }
+    size_t dot() const override { return dot_; }
+    size_t last() const override { return buffer_.size(); }
 
     bool empty() const { return buffer_.size() == 0; }
 

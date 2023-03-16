@@ -48,8 +48,11 @@ namespace {
 
   stiX::index_fn forward_search(std::string_view pattern) {
     auto matcher = stiX::compile_pattern(pattern);
-    return [matcher](stiX::lines const&) {
-      return 1;
+    return [matcher](stiX::lines const& buffer) {
+      for (auto i = buffer.dot(); i != buffer.last(); ++i)
+        if (matcher.match(buffer[i]))
+          return i;
+      return stiX::command::line_error;
     };
   }
 

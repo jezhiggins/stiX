@@ -75,7 +75,8 @@ namespace {
   };
 
   auto forward_search_test_cases = parse_test_cases {
-    { "from 1, hits 1", { "/lines 1/", 1, 5}, { 1, 1, '\n'}}
+    {"from 1, hits 1", { "/line 1/", 1, 5}, {1, 1, '\n'}},
+    {"from 1, hits 2", { "/line 2/", 1, 5}, {2, 2, '\n'}},
   };
 }
 
@@ -83,6 +84,10 @@ class buffer_double : public stiX::lines {
 public:
   buffer_double(size_t d, size_t l):
     dot_(d), dollar_(l) { }
+
+  std::string_view operator[](size_t index) const override {
+    return lines_[index-1];
+  }
 
   size_t dot() const override { return dot_; }
   size_t last() const override { return dollar_; }
