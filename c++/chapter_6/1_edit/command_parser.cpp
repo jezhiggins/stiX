@@ -27,6 +27,7 @@ namespace {
   auto const MINUS = '-';
   auto const PLUS = '+';
   auto const SLASH = '/';
+  auto const BACKSLASH = '\\';
   auto const COMMA = ',';
   auto const SEMI_COLON = ';';
 
@@ -52,7 +53,7 @@ namespace {
   stiX::index_fn forward_search(std::string_view pattern) {
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher](stiX::lines const& buffer) {
-      auto forward_search =
+      auto search =
         [matcher](stiX::lines const& buffer, size_t from, size_t to) {
           for (auto i = from; i <= to; ++i)
             if (matcher.match(buffer[i]))
@@ -60,8 +61,24 @@ namespace {
           return stiX::command::line_error;
         };
 
-      auto m = forward_search(buffer, buffer.dot()+1, buffer.last());
-      return !is_error(m) ? m : forward_search(buffer, 1, buffer.dot());
+      auto m = search(buffer, buffer.dot()+1, buffer.last());
+      return !is_error(m) ? m : search(buffer, 1, buffer.dot());
+    };
+  }
+
+  stiX::index_fn backward_search(std::string_view pattern) {
+    auto matcher = stiX::compile_pattern(pattern);
+    return [matcher](stiX::lines const& buffer) {
+      auto search =
+        [matcher](stiX::lines const& buffer, size_t from, size_t to) {
+          for (auto i = from; i >= to; --i)
+            if (matcher.match(buffer[i]))
+              return i;
+          return stiX::command::line_error;
+        };
+
+      auto m = search(buffer, buffer.dot()-1, 1);
+      return !is_error(m) ? m : search(buffer, buffer.last(), buffer.dot());
     };
   }
 
@@ -144,6 +161,8 @@ namespace {
           return dot_index_fn;
         case SLASH:
           return parse_forward_search();
+        case BACKSLASH:
+          return parse_backward_search();
       }
 
       return int_index(parse_number());
@@ -157,6 +176,16 @@ namespace {
 
       input.advance();
       return forward_search(n);
+    }
+
+    stiX::index_fn parse_backward_search() {
+      input.advance();
+      auto n = std::string{};
+      while (!input.is_eol() && (*input != BACKSLASH))
+        n += input_pop();
+
+      input.advance();
+      return backward_search(n);
     }
 
     size_t parse_number() {
@@ -178,6 +207,7 @@ namespace {
       return c == DOT ||
              c == DOLLAR ||
              c == SLASH ||
+             c == BACKSLASH ||
              is_operator() ||
              std::isdigit(c);
     }

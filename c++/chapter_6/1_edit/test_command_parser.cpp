@@ -78,11 +78,20 @@ namespace {
     {"from 1, hits 2",  {"/line 2/", 1, 5}, {2, 2, '\n'}},
     {"from 1, hits 10", {"/line 1/", 1, 10}, {10, 10, '\n'}},
     {"from 1, hits 1",  {"/line 1/", 1, 5}, {1, 1, '\n'}},
+    {"from 5, hits 10", {"/line 1/", 5, 10}, {10, 10, '\n'}},
+    {"from 5, hits 3",  {"/line 3/", 5, 10}, {3, 3, '\n'}},
+    {"pattern doesn't match", {"/fruit/",    1, 5}, stiX::command::error},
+    {"match after const",     {"/line 4/,2", 1, 5}, stiX::command::error}
   };
 
-  auto bad_forward_search_tests = parse_test_cases {
-    {"pattern doesn't match", {"/fruit/",    1, 5}},
-    {"match after const",     {"/line 4/,2", 1, 5}}
+  auto backward_search_tests = parse_test_cases {
+    {"from 1, hits 2",  {"\\line 2\\", 1, 5}, {2, 2, '\n'}},
+    {"from 1, hits 10", {"\\line 1\\", 1, 10}, {10, 10, '\n'}},
+    {"from 1, hits 1",  {"\\line 1\\", 1, 5}, {1, 1, '\n'}},
+    {"from 5, hits 9",  {"\\line 9\\", 5, 10}, {9, 9, '\n'}},
+    {"from 5, hits 3",  {"\\line 3\\", 5, 10}, {3, 3, '\n'}},
+    {"pattern doesn't match", {"\\fruit\\",    1, 5}, stiX::command::error},
+    {"match after const",     {"\\line 4\\,2", 1, 5}, stiX::command::error}
   };
 }
 
@@ -159,6 +168,8 @@ TEST_CASE("Chapter 6 - edit - command parser") {
 
   SECTION("Forward context search") {
     all_tests(forward_search_tests, indexes_are_good);
-    all_tests(bad_forward_search_tests, indexes_are_bad);
+  }
+  SECTION("Backward context search") {
+    all_tests(backward_search_tests, indexes_are_good);
   }
 }
