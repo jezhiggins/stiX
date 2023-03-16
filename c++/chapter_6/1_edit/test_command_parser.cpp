@@ -17,7 +17,9 @@ namespace {
     stiX::command expected;
   };
 
-  auto good_indexes_test_cases = std::vector<parse_test_case>{
+  using parse_test_cases = std::vector<parse_test_case>;
+
+  auto good_indexes_test_cases = parse_test_cases {
     {"no input,empty buffer", {"",         0, 0},   {0,  0,  '\n'}},
     {"no input, dot is set",  {"",         3, 3},   {3,  3,  '\n'}},
     {"single letter",         {"i",        3, 5},   {3,  3,  'i'}},
@@ -56,7 +58,7 @@ namespace {
     {"1,2,.",                 {"1,2,.",    5, 10},  {2,  5,  '\n'}}
   };
 
-  auto bad_indexes_test_cases = std::vector<parse_test_case>{
+  auto bad_indexes_test_cases = parse_test_cases {
     {"no hex please",         {"1a,3=", 5, 10}},
     {"dot on rhs of -",       {"5-.",   5, 10}},
     {"dollar on rhs of -",    {"15-$",  5, 10}},
@@ -70,6 +72,10 @@ namespace {
     {"arithmetic overflow",   { "+20",  5, 10}},
     {". arithmetic overflow", { ".+20", 5, 10}},
     {"$ arithmetic overflow", { "$+20", 5, 10}}
+  };
+
+  auto forward_search_test_cases = parse_test_cases {
+    { "from 1, hits 1", { "/lines 1/", 1, 5}, { 1, 1, '\n'}}
   };
 }
 
@@ -140,11 +146,7 @@ TEST_CASE("Chapter 6 - edit - command parser") {
     all_tests(bad_indexes_test_cases, indexes_are_bad);
   }
 
-  SECTION("Parse forward context search") {
-    auto parsed_command = stiX::parse_command("/line 3/");
-    auto buffer = buffer_double(1, 5);
-    auto command = parsed_command.compile(buffer);
-
-    REQUIRE(command != stiX::command::error);
+  SECTION("Forward context search") {
+    all_tests(forward_search_test_cases, indexes_are_good);
   }
 }
