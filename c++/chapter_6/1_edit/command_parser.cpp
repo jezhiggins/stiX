@@ -78,19 +78,12 @@ namespace {
   }
 
   stiX::index_fn backward_search(std::string_view pattern) {
-    auto matcher = stiX::compile_pattern(pattern);
-    return [matcher](stiX::lines const& buffer) {
-      size_t index = buffer.dot();
-      do {
-        --index;
-        if (index < 1) index = buffer.last();
-
-        if (matcher.match(buffer[index]))
-          return index;
-      } while (index != buffer.dot());
-
-      return stiX::command::line_error;
-    };
+    return search(
+      pattern,
+      [](size_t i, stiX::lines const& buffer) {
+        return (i > 1) ? --i : buffer.last();
+      }
+    );
   }
 
   size_t line_error_fn(stiX::lines const&) {
