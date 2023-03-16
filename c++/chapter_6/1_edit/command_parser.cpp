@@ -54,15 +54,15 @@ namespace {
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher](stiX::lines const& buffer) {
       auto search =
-        [matcher](stiX::lines const& buffer, size_t from, size_t to) {
+        [matcher, &buffer](size_t from, size_t to) {
           for (auto i = from; i <= to; ++i)
             if (matcher.match(buffer[i]))
               return i;
           return stiX::command::line_error;
         };
 
-      auto m = search(buffer, buffer.dot()+1, buffer.last());
-      return !is_error(m) ? m : search(buffer, 1, buffer.dot());
+      auto m = search(buffer.dot()+1, buffer.last());
+      return !is_error(m) ? m : search(1, buffer.dot());
     };
   }
 
@@ -70,15 +70,15 @@ namespace {
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher](stiX::lines const& buffer) {
       auto search =
-        [matcher](stiX::lines const& buffer, size_t from, size_t to) {
+        [matcher, &buffer](size_t from, size_t to) {
           for (auto i = from; i >= to; --i)
             if (matcher.match(buffer[i]))
               return i;
           return stiX::command::line_error;
         };
 
-      auto m = search(buffer, buffer.dot()-1, 1);
-      return !is_error(m) ? m : search(buffer, buffer.last(), buffer.dot());
+      auto m = search(buffer.dot()-1, 1);
+      return !is_error(m) ? m : search(buffer.last(), buffer.dot());
     };
   }
 
@@ -169,23 +169,24 @@ namespace {
     }
 
     stiX::index_fn parse_forward_search() {
-      input.advance();
-      auto n = std::string{};
-      while (!input.is_eol() && (*input != SLASH))
-        n += input_pop();
-
-      input.advance();
-      return forward_search(n);
+      return parse_search(SLASH, forward_search);
     }
 
     stiX::index_fn parse_backward_search() {
+      return parse_search(BACKSLASH, backward_search);
+    }
+
+    stiX::index_fn parse_search(
+      char delimiter,
+      stiX::index_fn(make_search)(std::string_view)
+    ) {
       input.advance();
       auto n = std::string{};
-      while (!input.is_eol() && (*input != BACKSLASH))
+      while (!input.is_eol() && (*input != delimiter))
         n += input_pop();
 
       input.advance();
-      return backward_search(n);
+      return make_search(n);
     }
 
     size_t parse_number() {
