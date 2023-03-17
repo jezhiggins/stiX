@@ -100,10 +100,15 @@ namespace {
 class buffer_double : public stiX::lines {
 public:
   buffer_double(size_t d, size_t l):
-    dot_(d), dollar_(l) { }
+    dot_(d), dollar_(l) {
+    lines_.emplace_back("underflow");
+    for (auto i = 1; i <= dollar_; ++i)
+      lines_.emplace_back("line " + std::to_string(i));
+    lines_.emplace_back("overflow");
+  }
 
   std::string_view operator[](size_t index) const override {
-    return lines_[index-1];
+    return lines_[index];
   }
 
   size_t dot() const override { return dot_; }
@@ -112,18 +117,7 @@ public:
 private:
   size_t const dot_;
   size_t const dollar_;
-  std::vector<std::string> lines_ = {
-    { "line 1" },
-    { "line 2" },
-    { "line 3" },
-    { "line 4" },
-    { "line 5" },
-    { "line 6" },
-    { "line 7" },
-    { "line 8" },
-    { "line 9" },
-    { "line 10" },
-  };
+  std::vector<std::string> lines_;
 };
 
 void index_test(parse_test_case tc, stiX::command expected) {
