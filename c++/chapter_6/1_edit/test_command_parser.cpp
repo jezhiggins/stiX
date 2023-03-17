@@ -107,7 +107,7 @@ public:
     lines_.emplace_back("overflow");
   }
 
-  std::string_view operator[](size_t index) const override {
+  std::string_view line_at(size_t index) const override {
     return lines_[index];
   }
 

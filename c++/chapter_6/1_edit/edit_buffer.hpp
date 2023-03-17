@@ -9,7 +9,7 @@ namespace stiX {
   public:
     void insert_before(size_t index, std::string_view line);
 
-    std::string_view operator[](size_t index) const override;
+    std::string_view line_at(size_t index) const override;
 
     size_t dot() const override { return dot_; }
     size_t last() const override { return buffer_.size(); }

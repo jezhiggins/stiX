@@ -67,5 +67,5 @@ void do_print(std::ostream& out, size_t from, size_t to, edit_buffer& buffer) {
   }
 
   for (auto index = from; index <= to; ++index)
-    out << buffer[index-1] << '\n';
+    out << buffer.line_at(index) << '\n';
 }

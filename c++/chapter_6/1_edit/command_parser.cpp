@@ -60,7 +60,7 @@ namespace {
       do {
         index = next_index(index, buffer);
 
-        if (matcher.match(buffer[index]))
+        if (matcher.match(buffer.line_at(index)))
           return index;
       } while (index != buffer.dot());
 
