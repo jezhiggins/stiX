@@ -186,6 +186,14 @@ TEST_CASE("Chapter 6 - edit - editor") {
     );
     editor_test(
       "i\n"
+      "Hello World!\n"
+      "Hello Again\n"
+      ".\n"
+      "/Again/p\n"
+      ">Hello Again\n"
+    );
+    editor_test(
+      "i\n"
       "line one\n"
       "line two\n"
       "line three\n"
