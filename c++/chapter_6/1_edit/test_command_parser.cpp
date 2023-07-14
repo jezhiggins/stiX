@@ -56,7 +56,9 @@ namespace {
     {"1,2,3,4",               {"1,2,3,4",  5, 10},  {3,  4,  '\n'}},
     {"1,2,3,4,",              {"1,2,3,4,", 5, 10},  {3,  4,  '\n'}},
     {"1,2,.",                 {"1,2,.",    5, 10},  {2,  5,  '\n'}},
-    {"edit file",             {"e f.txt",  0, 0},   {0,  0,  'e', "f.txt"}}
+    {"edit file",             {"e f.txt",  0, 0},   {0,  0,  'e', "f.txt"}},
+    {"quit empty buffer",     {"q",        0, 0},   {0,  0,  'q'}},
+    {"quit",                  {"q",        5, 10},  {5,  5,  'q'}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
@@ -78,7 +80,8 @@ namespace {
     {"e space, but no filename", {"e ", 0, 0}},
     {"e trailing spaces",     {"e f.txt ", 0, 0}},
     {"e extra space before name", {"e  f.txt", 0, 0}},
-    {"e no space before name", {"ef.txt", 0, 0}}
+    {"e no space before name", {"ef.txt", 0, 0}},
+    {"q with line numbers",   {"1,2q", 5, 10}},
   };
 
   auto forward_search_tests = parse_test_cases {
