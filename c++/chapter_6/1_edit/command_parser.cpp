@@ -5,6 +5,7 @@
 #include "../../lib/regex/pattern_matcher.hpp"
 #include "../../lib/regex/char_seq.hpp"
 
+using namespace std::string_literals;
 
 size_t const stiX::command::line_error = -1;
 char const stiX::command::code_error = '?';
@@ -14,7 +15,8 @@ stiX::command const stiX::command::error = { };
 bool stiX::operator==(command const& lhs, command const& rhs) {
   return lhs.from_index == rhs.from_index &&
          lhs.to_index == rhs.to_index &&
-         lhs.code == rhs.code;
+         lhs.code == rhs.code &&
+         lhs.filename == rhs.filename;
 }
 
 bool stiX::operator!=(command const& lhs, command const& rhs) {
@@ -111,17 +113,10 @@ namespace {
       if (is_error())
         return parse_error;
 
-      return {from(), to(), code};
+      return {from(), to(), code, filename};
     }
 
   private:
-    void parse_command_code() {
-      code = !input.is_eol() ? input_pop() : '\n';
-
-      if (!input.is_eol())
-        failed();
-    }
-
     void parse_line_numbers() {
       while (is_index_start()) {
         indicies.push(parse_line_number());
@@ -232,6 +227,34 @@ namespace {
       return c == PLUS || c == MINUS;
     }
 
+    void parse_command_code() {
+      code = !input.is_eol() ? input_pop() : '\n';
+
+      if (wants_filename(code))
+        filename = parse_filename();
+
+      if (!input.is_eol())
+        failed();
+    }
+
+    bool wants_filename(char c) {
+      auto file_codes = "efrw"s;
+      return file_codes.find(c) != std::string::npos;
+    }
+
+    std::string parse_filename()
+    {
+      if (!std::isspace(*input))
+        return {};
+
+      input_pop();
+
+      auto f = std::string{};
+      while (!input.is_eol() && !std::isblank(*input))
+        f += input_pop();
+      return f;
+    }
+
     char input_pop() {
       auto c = *input;
       input.advance();
@@ -260,6 +283,7 @@ namespace {
 
     std::queue<stiX::index_fn> indicies;
     char code = stiX::command::code_error;
+    std::string filename;
     bool has_failed = false;
   };
 
@@ -288,6 +312,6 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
 
   if (is_error(from, to, code))
     return command::error;
-  return { from, to, code };
+  return { from, to, code, filename };
 }
 

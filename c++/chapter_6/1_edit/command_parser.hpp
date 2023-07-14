@@ -3,6 +3,7 @@
 
 #include <string_view>
 #include <functional>
+#include <string>
 
 namespace stiX {
   class lines;
@@ -12,6 +13,7 @@ namespace stiX {
     size_t const from_index = line_error;
     size_t const to_index = line_error;
     char const code = code_error;
+    std::string filename;
 
     static size_t const line_error;
     static char const code_error;
@@ -28,6 +30,7 @@ namespace stiX {
     index_fn const from_index;
     index_fn const to_index;
     char const code;
+    std::string filename;
   };
 
   parsed_command parse_command(std::string_view input);
