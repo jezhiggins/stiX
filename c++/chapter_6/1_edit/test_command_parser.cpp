@@ -72,7 +72,13 @@ namespace {
     {"$ arithmetic underflow",{"$-20", 5, 10}},
     {"arithmetic overflow",   {"+20",  5, 10}},
     {". arithmetic overflow", {".+20", 5, 10}},
-    {"$ arithmetic overflow", {"$+20", 5, 10}}
+    {"$ arithmetic overflow", {"$+20", 5, 10}},
+    {"e with line numbers",   {"1,2e file", 5, 10}},
+    {"e no filename",         {"e", 0, 0}},
+    {"e space, but no filename", {"e ", 0, 0}},
+    {"e trailing spaces",     {"e f.txt ", 0, 0}},
+    {"e extra space before name", {"e  f.txt", 0, 0}},
+    {"e no space before name", {"ef.txt", 0, 0}}
   };
 
   auto forward_search_tests = parse_test_cases {

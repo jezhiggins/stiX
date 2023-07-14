@@ -103,6 +103,8 @@ namespace {
 
       parse_command_code();
 
+      has_line_numbers_when_forbidden();
+
       return command();
     }
 
@@ -244,15 +246,20 @@ namespace {
 
     std::string parse_filename()
     {
-      if (!std::isspace(*input))
-        return {};
-
-      input_pop();
+      if (!std::isspace(input_pop()) || input.is_eol())
+        failed();
 
       auto f = std::string{};
       while (!input.is_eol() && !std::isblank(*input))
         f += input_pop();
       return f;
+    }
+
+    bool has_line_numbers_when_forbidden() {
+      auto forbidden_codes = "efq"s;
+      auto forbidden = forbidden_codes.find(code) != std::string::npos;
+      if (forbidden && !indicies.empty())
+        failed();
     }
 
     char input_pop() {
