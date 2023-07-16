@@ -8,6 +8,7 @@ using namespace stiX;
 
 auto const eof = std::char_traits<char>::eof();
 
+void do_append(std::istream& in, size_t before, edit_buffer& buffer);
 void do_insert(std::istream& in, size_t before, edit_buffer& buffer);
 void do_print(std::ostream& out, size_t from, size_t to, edit_buffer& buffer);
 
@@ -21,6 +22,13 @@ void editor::process(std::istream& in, std::ostream& out) {
     switch(command.code) {
       case '=':
         out << buffer_.dot() << "\n";
+        break;
+      case 'a':
+        do_append(
+          in,
+          command.to_index,
+          buffer_
+        );
         break;
       case 'i':
         do_insert(
@@ -44,6 +52,11 @@ void editor::process(std::istream& in, std::ostream& out) {
   }
 }
 
+void do_append(std::istream& in, size_t after, edit_buffer& buffer) {
+  auto adjust = (!buffer.empty()) ? 1 : 0;
+
+  do_insert(in, after+adjust, buffer);
+}
 void do_insert(std::istream& in, size_t before, edit_buffer& buffer) {
   auto adjust = (!buffer.empty()) ? 1 : 0;
 

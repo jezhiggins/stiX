@@ -255,7 +255,7 @@ namespace {
       return f;
     }
 
-    bool has_line_numbers_when_forbidden() {
+    void has_line_numbers_when_forbidden() {
       auto forbidden_codes = "efq"s;
       auto forbidden = forbidden_codes.find(code) != std::string::npos;
       if (forbidden && !indicies.empty())

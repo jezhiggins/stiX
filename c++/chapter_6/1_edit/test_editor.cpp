@@ -23,6 +23,56 @@ TEST_CASE("Chapter 6 - edit - editor") {
     );
   } // =
 
+  SECTION("a command") {
+    editor_test(
+      "a\n"
+      "Hello World!\n"
+      "Woo!\n"
+      ".\n"
+      "=\n"
+      ">2\n"
+      "1,$p\n"
+      ">Hello World!\n"
+      ">Woo!\n"
+    );
+    editor_test(
+      "a\n"
+      "Hello World!\n"
+      ".\n"
+      "=\n"
+      ">1\n"
+      "a\n"
+      "Woo!\n"
+      ".\n"
+      "=\n"
+      ">2\n"
+      "1,$p\n"
+      ">Hello World!\n"
+      ">Woo!\n"
+    );
+    editor_test(
+      "=\n"
+      ">0\n"
+      "a\n"
+      ".\n"
+      "=\n"
+      ">0\n"
+    );
+    editor_test(
+      "i\n"
+      "Line 1\n"
+      "Line 2\n"
+      ".\n"
+      "2a\n"
+      "Line 3\n"
+      ".\n"
+      "1,$p\n"
+      ">Line 1\n"
+      ">Line 2\n"
+      ">Line 3\n"
+    );
+  }
+
   SECTION("i command") {
     editor_test(
       "i\n"
@@ -31,6 +81,9 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ".\n"
       "=\n"
       ">2\n"
+      "1,$p\n"
+      ">Hello World!\n"
+      ">Woo!\n"
     );
     editor_test(
       "i\n"
@@ -43,6 +96,9 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ".\n"
       "=\n"
       ">1\n"
+      "1,$p\n"
+      ">Woo!\n"
+      ">Hello World!\n"
     );
     editor_test(
       "=\n"
@@ -71,11 +127,11 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "Line 2\n"
       ".\n"
       "2i\n"
-      "Line 0\n"
+      "Line 1.5\n"
       ".\n"
       "1,$p\n"
       ">Line 1\n"
-      ">Line 0\n"
+      ">Line 1.5\n"
       ">Line 2\n"
     );
   } // i
