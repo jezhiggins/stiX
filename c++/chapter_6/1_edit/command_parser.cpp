@@ -36,10 +36,10 @@ namespace {
   bool is_error(char c) { return c == stiX::command::code_error; }
   bool is_error(size_t i) { return i == stiX::command::line_error; }
 
-  stiX::index_fn int_index(size_t index) {
+  stiX::line_expression int_index(size_t index) {
     return [index](stiX::lines const&) { return index; };
   }
-  stiX::index_fn add_offset(stiX::index_fn ref_fn, size_t index) {
+  stiX::line_expression add_offset(stiX::line_expression ref_fn, size_t index) {
     return [ref_fn, index](stiX::lines const& buffer) {
       return ref_fn(buffer) + index;
     };
@@ -52,7 +52,7 @@ namespace {
     return buffer.last();
   }
 
-  stiX::index_fn search(
+  stiX::line_expression search(
     std::string_view pattern,
     size_t(next_index)(size_t, stiX::lines const&)
   ) {
@@ -73,14 +73,14 @@ namespace {
   size_t next_line(size_t i, stiX::lines const& buffer) {
     return (i < buffer.last()) ? ++i : 1;
   }
-  stiX::index_fn forward_search(std::string_view pattern) {
+  stiX::line_expression forward_search(std::string_view pattern) {
     return search(pattern, next_line);
   }
 
   size_t prev_line(size_t i, stiX::lines const& buffer) {
     return (i > 1) ? --i : buffer.last();
   }
-  stiX::index_fn backward_search(std::string_view pattern) {
+  stiX::line_expression backward_search(std::string_view pattern) {
     return search(pattern, prev_line);
   }
 
@@ -128,7 +128,7 @@ namespace {
       }
     }
 
-    stiX::index_fn parse_line_number() {
+    stiX::line_expression parse_line_number() {
       auto lhs = parse_index();
 
       while (is_operator()) {
@@ -145,7 +145,7 @@ namespace {
       return lhs;
     }
 
-    stiX::index_fn parse_index() {
+    stiX::line_expression parse_index() {
       switch (*input) {
         case DOT:
           input.advance();
@@ -165,17 +165,17 @@ namespace {
       return int_index(parse_number());
     }
 
-    stiX::index_fn parse_forward_search() {
+    stiX::line_expression parse_forward_search() {
       return parse_search(SLASH, forward_search);
     }
 
-    stiX::index_fn parse_backward_search() {
+    stiX::line_expression parse_backward_search() {
       return parse_search(BACKSLASH, backward_search);
     }
 
-    stiX::index_fn parse_search(
+    stiX::line_expression parse_search(
       char delimiter,
-      stiX::index_fn(make_search)(std::string_view)
+      stiX::line_expression(make_search)(std::string_view)
     ) {
       input.advance();
       auto pattern = fetch_pattern(delimiter);
@@ -274,13 +274,13 @@ namespace {
 
     void failed() { has_failed = true; }
 
-    stiX::index_fn from() const {
+    stiX::line_expression from() const {
       if (indicies.empty())
         return dot_index_fn;
       return indicies.front();
     }
 
-    stiX::index_fn to() const {
+    stiX::line_expression to() const {
       if (indicies.empty())
         return dot_index_fn;
       return indicies.back();
@@ -288,13 +288,13 @@ namespace {
 
     stiX::character_sequence input;
 
-    std::queue<stiX::index_fn> indicies;
+    std::queue<stiX::line_expression> indicies;
     char code = stiX::command::code_error;
     std::string filename;
     bool has_failed = false;
   };
 
-  size_t index_or_error(stiX::index_fn fn, stiX::lines const& buffer) {
+  size_t index_or_error(stiX::line_expression fn, stiX::lines const& buffer) {
     auto index = fn(buffer);
     return (index <= buffer.last()) ? index : stiX::command::line_error;
   }

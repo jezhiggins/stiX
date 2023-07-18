@@ -7,7 +7,7 @@
 
 namespace stiX {
   class lines;
-  using index_fn = std::function<size_t(lines const&)>;
+  using line_expression = std::function<size_t(lines const&)>;
 
   struct command {
     size_t const from_index = line_error;
@@ -27,8 +27,8 @@ namespace stiX {
   struct parsed_command {
     command compile(lines const& buffer) const;
 
-    index_fn const from_index;
-    index_fn const to_index;
+    line_expression const from_index;
+    line_expression const to_index;
     char const code;
     std::string filename;
   };
