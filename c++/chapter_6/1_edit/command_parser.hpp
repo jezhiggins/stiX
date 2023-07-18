@@ -9,6 +9,15 @@ namespace stiX {
   class lines;
   using line_expression = std::function<size_t(lines const&)>;
 
+  enum class expression_separator : bool {
+    unchanged = false,
+    update = true
+  };
+  struct line_expression_step {
+    line_expression expr;
+    expression_separator separator;
+  };
+
   struct command {
     size_t const from_index = line_error;
     size_t const to_index = line_error;
@@ -27,8 +36,8 @@ namespace stiX {
   struct parsed_command {
     command compile(lines const& buffer) const;
 
-    line_expression const from_index;
-    line_expression const to_index;
+    line_expression_step const from_index;
+    line_expression_step const to_index;
     char const code;
     std::string filename;
   };

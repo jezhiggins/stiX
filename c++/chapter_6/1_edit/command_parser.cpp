@@ -89,7 +89,9 @@ namespace {
   }
 
   stiX::parsed_command const parse_error = {
-    line_error_fn, line_error_fn, stiX::command::code_error
+    { line_error_fn, stiX::expression_separator::unchanged },
+    { line_error_fn, stiX::expression_separator::unchanged },
+    stiX::command::code_error
   };
 
   class command_parser {
@@ -121,7 +123,10 @@ namespace {
   private:
     void parse_line_numbers() {
       while (is_index_start()) {
-        indicies.push(parse_line_number());
+        indicies.emplace(
+          parse_line_number(),
+          is_semi_colon()
+        );
 
         if (is_separator())
           input.advance();
@@ -224,6 +229,10 @@ namespace {
       return c == COMMA || c == SEMI_COLON;
     }
 
+    stiX::expression_separator is_semi_colon() {
+      return static_cast<stiX::expression_separator>(*input == SEMI_COLON);
+    }
+
     bool is_operator() {
       auto c = *input;
       return c == PLUS || c == MINUS;
@@ -274,21 +283,21 @@ namespace {
 
     void failed() { has_failed = true; }
 
-    stiX::line_expression from() const {
+    stiX::line_expression_step from() const {
       if (indicies.empty())
-        return dot_index_fn;
+        return { dot_index_fn, stiX::expression_separator::unchanged };
       return indicies.front();
     }
 
-    stiX::line_expression to() const {
+    stiX::line_expression_step to() const {
       if (indicies.empty())
-        return dot_index_fn;
+        return { dot_index_fn, stiX::expression_separator::unchanged };
       return indicies.back();
     }
 
     stiX::character_sequence input;
 
-    std::queue<stiX::line_expression> indicies;
+    std::queue<stiX::line_expression_step> indicies;
     char code = stiX::command::code_error;
     std::string filename;
     bool has_failed = false;
@@ -314,8 +323,8 @@ stiX::parsed_command stiX::parse_command(std::string_view input) {
 }
 
 stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
-  auto from = index_or_error(from_index, buffer);
-  auto to = index_or_error(to_index, buffer);
+  auto from = index_or_error(from_index.expr, buffer);
+  auto to = index_or_error(to_index.expr, buffer);
 
   if (is_error(from, to, code))
     return command::error;
