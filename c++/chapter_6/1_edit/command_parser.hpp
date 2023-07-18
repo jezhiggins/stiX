@@ -4,6 +4,7 @@
 #include <string_view>
 #include <functional>
 #include <string>
+#include <vector>
 
 namespace stiX {
   class lines;
@@ -36,8 +37,7 @@ namespace stiX {
   struct parsed_command {
     command compile(lines const& buffer) const;
 
-    line_expression_step const from_index;
-    line_expression_step const to_index;
+    std::vector<line_expression_step> const line_expressions;
     char const code;
     std::string filename;
   };

@@ -1,7 +1,6 @@
 #include "command_parser.hpp"
 #include "lines.hpp"
 #include <charconv>
-#include <queue>
 #include "../../lib/regex/pattern_matcher.hpp"
 #include "../../lib/regex/char_seq.hpp"
 
@@ -89,8 +88,7 @@ namespace {
   }
 
   stiX::parsed_command const parse_error = {
-    { line_error_fn, stiX::expression_separator::unchanged },
-    { line_error_fn, stiX::expression_separator::unchanged },
+    { { line_error_fn }, { line_error_fn } },
     stiX::command::code_error
   };
 
@@ -111,19 +109,22 @@ namespace {
     }
 
     stiX::parsed_command command() {
-      while(indicies.size() > 2)
-        indicies.pop();
-
       if (is_error())
         return parse_error;
 
-      return {from(), to(), code, filename};
+      if (indicies.empty())
+        indicies.emplace_back(dot_index_fn, stiX::expression_separator::unchanged);
+
+      if (indicies.size() < 2)
+        indicies.emplace_back(indicies.front());
+
+      return { indicies, code, filename };
     }
 
   private:
     void parse_line_numbers() {
       while (is_index_start()) {
-        indicies.emplace(
+        indicies.emplace_back(
           parse_line_number(),
           is_semi_colon()
         );
@@ -283,21 +284,9 @@ namespace {
 
     void failed() { has_failed = true; }
 
-    stiX::line_expression_step from() const {
-      if (indicies.empty())
-        return { dot_index_fn, stiX::expression_separator::unchanged };
-      return indicies.front();
-    }
-
-    stiX::line_expression_step to() const {
-      if (indicies.empty())
-        return { dot_index_fn, stiX::expression_separator::unchanged };
-      return indicies.back();
-    }
-
     stiX::character_sequence input;
 
-    std::queue<stiX::line_expression_step> indicies;
+    std::vector<stiX::line_expression_step> indicies;
     char code = stiX::command::code_error;
     std::string filename;
     bool has_failed = false;
@@ -323,8 +312,20 @@ stiX::parsed_command stiX::parse_command(std::string_view input) {
 }
 
 stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
-  auto from = index_or_error(from_index.expr, buffer);
-  auto to = index_or_error(to_index.expr, buffer);
+  auto dot = buffer.dot();
+  auto line_numbers = std::vector<size_t> { };
+
+  for (auto expression : line_expressions) {
+    auto index = index_or_error(expression.expr, buffer);
+    dot = (expression.separator == expression_separator::update) ? index : dot;
+    line_numbers.push_back(index);
+  }
+
+  if (line_numbers.size() > 2)
+    line_numbers.erase(line_numbers.begin(), line_numbers.end()-2);
+
+  auto from = line_numbers.front();
+  auto to = line_numbers.back();
 
   if (is_error(from, to, code))
     return command::error;
