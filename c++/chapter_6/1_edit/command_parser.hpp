@@ -8,7 +8,7 @@
 
 namespace stiX {
   class lines;
-  using line_expression = std::function<size_t(lines const&)>;
+  using line_expression = std::function<size_t(lines const&, size_t)>;
 
   enum class expression_separator : bool {
     unchanged = false,

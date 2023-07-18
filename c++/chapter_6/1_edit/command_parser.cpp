@@ -36,18 +36,18 @@ namespace {
   bool is_error(size_t i) { return i == stiX::command::line_error; }
 
   stiX::line_expression int_index(size_t index) {
-    return [index](stiX::lines const&) { return index; };
+    return [index](stiX::lines const&, size_t) { return index; };
   }
   stiX::line_expression add_offset(stiX::line_expression ref_fn, size_t index) {
-    return [ref_fn, index](stiX::lines const& buffer) {
-      return ref_fn(buffer) + index;
+    return [ref_fn, index](stiX::lines const& buffer, size_t dot) {
+      return ref_fn(buffer, dot) + index;
     };
   }
 
-  size_t dot_index_fn(stiX::lines const& buffer) {
+  size_t dot_index_fn(stiX::lines const& buffer, size_t dot) {
     return buffer.dot();
   }
-  size_t last_index_fn(stiX::lines const& buffer) {
+  size_t last_index_fn(stiX::lines const& buffer, size_t dot) {
     return buffer.last();
   }
 
@@ -56,7 +56,7 @@ namespace {
     size_t(next_index)(size_t, stiX::lines const&)
   ) {
     auto matcher = stiX::compile_pattern(pattern);
-    return [matcher, next_index](stiX::lines const& buffer) {
+    return [matcher, next_index](stiX::lines const& buffer, size_t dot) {
       size_t index = buffer.dot();
       do {
         index = next_index(index, buffer);
@@ -83,7 +83,7 @@ namespace {
     return search(pattern, prev_line);
   }
 
-  size_t line_error_fn(stiX::lines const&) {
+  size_t line_error_fn(stiX::lines const&, size_t) {
     return stiX::command::line_error;
   }
 
@@ -292,8 +292,8 @@ namespace {
     bool has_failed = false;
   };
 
-  size_t index_or_error(stiX::line_expression fn, stiX::lines const& buffer) {
-    auto index = fn(buffer);
+  size_t index_or_error(stiX::line_expression fn, stiX::lines const& buffer, size_t dot) {
+    auto index = fn(buffer, dot);
     return (index <= buffer.last()) ? index : stiX::command::line_error;
   }
 
@@ -316,7 +316,7 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
   auto line_numbers = std::vector<size_t> { };
 
   for (auto expression : line_expressions) {
-    auto index = index_or_error(expression.expr, buffer);
+    auto index = index_or_error(expression.expr, buffer, dot);
     dot = (expression.separator == expression_separator::update) ? index : dot;
     line_numbers.push_back(index);
   }
