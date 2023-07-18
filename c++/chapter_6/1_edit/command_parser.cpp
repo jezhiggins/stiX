@@ -45,7 +45,7 @@ namespace {
   }
 
   size_t dot_index_fn(stiX::lines const& buffer, size_t dot) {
-    return buffer.dot();
+    return dot;
   }
   size_t last_index_fn(stiX::lines const& buffer, size_t dot) {
     return buffer.last();
@@ -57,13 +57,13 @@ namespace {
   ) {
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher, next_index](stiX::lines const& buffer, size_t dot) {
-      size_t index = buffer.dot();
+      size_t index = dot;
       do {
         index = next_index(index, buffer);
 
         if (matcher.match(buffer.line_at(index)))
           return index;
-      } while (index != buffer.dot());
+      } while (index != dot);
 
       return stiX::command::line_error;
     };
@@ -124,10 +124,10 @@ namespace {
   private:
     void parse_line_numbers() {
       while (is_index_start()) {
-        indicies.emplace_back(
-          parse_line_number(),
-          is_semi_colon()
-        );
+        auto expression = parse_line_number();
+        auto separator = is_semi_colon();
+
+        indicies.emplace_back(expression, separator);
 
         if (is_separator())
           input.advance();

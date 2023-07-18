@@ -4,6 +4,8 @@
 #include "../../testlib/testlib.hpp"
 #include "lines.hpp"
 
+using namespace std::string_literals;
+
 namespace {
   struct parse_test_input {
     std::string input;
@@ -55,6 +57,8 @@ namespace {
     {"1,2,3,",                {"1,2,3,",   5, 10},  {2,  3,  '\n'}},
     {"1,2,3,4",               {"1,2,3,4",  5, 10},  {3,  4,  '\n'}},
     {"1,2,3,4,",              {"1,2,3,4,", 5, 10},  {3,  4,  '\n'}},
+    {".+1,.+1,.+1,.+1,",      {".+1,.+1,.+1,.+1,", 5, 10},  {6,  6,  '\n'}},
+    {".+1;.+1;.+1;.+1;",      {".+1;.+1;.+1;.+1;", 5, 10},  {8,  9,  '\n'}},
     {"1,2,.",                 {"1,2,.",    5, 10},  {2,  5,  '\n'}},
     {"edit file",             {"e f.txt",  0, 0},   {0,  0,  'e', "f.txt"}},
     {"quit empty buffer",     {"q",        0, 0},   {0,  0,  'q'}},
@@ -105,6 +109,22 @@ namespace {
     {"pattern doesn't match", {"\\fruit\\",    1, 5}, stiX::command::error},
     {"match after const",     {"\\line 4\\,2", 1, 5}, stiX::command::error}
   };
+}
+
+namespace stiX {
+  std::ostream &operator<<(std::ostream &out, command const &cmd) {
+    out << "{ "
+        << cmd.from_index
+        << ", "
+        << cmd.to_index
+        << ", '"
+        << (cmd.code != '\n' ? std::to_string(cmd.code) : "\\n"s)
+        << "'";
+    if (!cmd.filename.empty())
+      out << ", " << cmd.filename;
+    out << " }";
+    return out;
+  }
 }
 
 class buffer_double : public stiX::lines {
