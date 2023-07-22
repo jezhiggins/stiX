@@ -221,7 +221,9 @@ set (edit_sources
         chapter_6/1_edit/editor.cpp
         chapter_6/1_edit/editor.hpp
         chapter_6/1_edit/command_parser.cpp
-        chapter_6/1_edit/command_parser.hpp)
+        chapter_6/1_edit/command_parser.hpp
+        chapter_6/1_edit/command_actions.cpp
+        chapter_6/1_edit/command_actions.hpp)
 
 add_executable(edit
         chapter_6/1_edit/1_edit.cpp
