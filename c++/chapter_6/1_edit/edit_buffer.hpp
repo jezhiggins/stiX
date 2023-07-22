@@ -11,6 +11,7 @@ namespace stiX {
 
     std::string_view line_at(size_t index) const override;
 
+    void set_dot(size_t new_dot) { dot_ = new_dot; }
     size_t dot() const override { return dot_; }
     size_t last() const override { return buffer_.size(); }
 

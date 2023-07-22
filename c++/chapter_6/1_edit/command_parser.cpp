@@ -14,6 +14,7 @@ stiX::command const stiX::command::error = { };
 bool stiX::operator==(command const& lhs, command const& rhs) {
   return lhs.from_index == rhs.from_index &&
          lhs.to_index == rhs.to_index &&
+         lhs.dot == rhs.dot &&
          lhs.code == rhs.code &&
          lhs.filename == rhs.filename;
 }
@@ -329,6 +330,6 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
 
   if (is_error(from, to, code))
     return command::error;
-  return { from, to, code, filename };
+  return { from, to, dot, code, filename };
 }
 
