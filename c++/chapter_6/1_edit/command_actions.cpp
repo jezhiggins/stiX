@@ -43,7 +43,7 @@ void stiX::do_print(std::ostream& out, size_t from, size_t to, edit_buffer& buff
     out << buffer.line_at(index) << '\n';
 }
 
-void stiX::do_error(std::ostream& out) {
+void stiX::error_action(std::istream&, std::ostream& out, lines&) {
   out << "?\n";
 }
 

@@ -1,7 +1,15 @@
 #include "command.hpp"
+#include "lines.hpp"
 
 size_t const stiX::command::line_error = -1;
 char const stiX::command::code_error = '?';
+
+void stiX::command::operator()(
+  std::istream& in,
+  std::ostream& out,
+  lines& buffer) const {
+  action(in, out, buffer);
+}
 
 stiX::command const stiX::command::error = { };
 

@@ -44,7 +44,7 @@ void editor::process(std::istream& in, std::ostream& out) {
         );
         break;
       default:
-        do_error(out);
+        command(in, out, buffer_);
         break;
     }
   }
