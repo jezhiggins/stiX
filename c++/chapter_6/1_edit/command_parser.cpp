@@ -289,8 +289,16 @@ namespace {
   }
 } // namespace
 
-stiX::command::action_fn command_for_code(char code) {
-  return stiX::current_line_action;
+stiX::command::action_fn command_for_code(char code, int to_index) {
+  switch (code) {
+    case 'a':
+      return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
+        stiX::append_action(in, to_index, buffer);
+      };
+    case '=':
+      return stiX::current_line_action;
+  }
+  return stiX::error_action;
 }
 
 stiX::parsed_command stiX::parse_command(std::string_view input) {
@@ -317,6 +325,6 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
 
   if (is_error(from, to, code))
     return command::error;
-  return { from, to, dot, code, filename, command_for_code(code) };
+  return { from, to, dot, code, filename, command_for_code(code, to) };
 }
 

@@ -7,7 +7,7 @@ char const stiX::command::code_error = '?';
 void stiX::command::operator()(
   std::istream& in,
   std::ostream& out,
-  lines& buffer) const {
+  edit_buffer& buffer) const {
   action(in, out, buffer);
 }
 

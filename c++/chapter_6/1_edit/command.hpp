@@ -6,9 +6,9 @@
 #include "command_actions.hpp"
 
 namespace stiX {
-  class lines;
+  class edit_buffer;
   struct command {
-    using action_fn = std::function<void(std::istream&, std::ostream&, lines&)>;
+    using action_fn = std::function<void(std::istream&, std::ostream&, edit_buffer&)>;
 
     size_t const from_index = line_error;
     size_t const to_index = line_error;
@@ -20,7 +20,7 @@ namespace stiX {
     void operator()(
       std::istream& in,
       std::ostream& out,
-      lines& buffer) const;
+      edit_buffer& buffer) const;
 
     static size_t const line_error;
     static char const code_error;

@@ -18,13 +18,6 @@ void editor::process(std::istream& in, std::ostream& out) {
 
     buffer_.set_dot(command.dot);
     switch(command.code) {
-      case 'a':
-        do_append(
-          in,
-          command.to_index,
-          buffer_
-        );
-        break;
       case 'i':
         do_insert(
           in,

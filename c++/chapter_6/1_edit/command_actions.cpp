@@ -7,11 +7,11 @@ using namespace stiX;
 
 auto const eof = std::char_traits<char>::eof();
 
-void stiX::current_line_action(std::istream&, std::ostream &out, stiX::lines &buffer) {
+void stiX::current_line_action(std::istream&, std::ostream &out, edit_buffer &buffer) {
   out << buffer.dot() << "\n";
 }
 
-void stiX::do_append(std::istream& in, size_t after, edit_buffer& buffer) {
+void stiX::append_action(std::istream& in, size_t after, edit_buffer& buffer) {
   auto adjust = (!buffer.empty()) ? 1 : 0;
 
   do_insert(in, after+adjust, buffer);
@@ -43,7 +43,7 @@ void stiX::do_print(std::ostream& out, size_t from, size_t to, edit_buffer& buff
     out << buffer.line_at(index) << '\n';
 }
 
-void stiX::error_action(std::istream&, std::ostream& out, lines&) {
+void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&) {
   out << "?\n";
 }
 
