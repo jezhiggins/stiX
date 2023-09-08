@@ -18,14 +18,6 @@ void editor::process(std::istream& in, std::ostream& out) {
 
     buffer_.set_dot(command.dot);
     switch(command.code) {
-      case 'p':
-        do_print(
-          out,
-          command.from_index,
-          command.to_index,
-          buffer_
-        );
-        break;
       default:
         command(in, out, buffer_);
         break;

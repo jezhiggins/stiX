@@ -289,7 +289,7 @@ namespace {
   }
 } // namespace
 
-stiX::command::action_fn command_for_code(char code, int to_index) {
+stiX::command::action_fn command_for_code(char code, int from_index, int to_index) {
   switch (code) {
     case 'a':
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
@@ -298,6 +298,10 @@ stiX::command::action_fn command_for_code(char code, int to_index) {
     case 'i':
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
         stiX::insert_action(in, to_index, buffer);
+      };
+    case 'p':
+      return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer) {
+        stiX::print_action(out, from_index, to_index, buffer);
       };
     case '=':
       return stiX::current_line_action;
@@ -329,6 +333,6 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
 
   if (is_error(from, to, code))
     return command::error;
-  return { from, to, dot, code, filename, command_for_code(code, to) };
+  return { from, to, dot, code, filename, command_for_code(code, from, to) };
 }
 
