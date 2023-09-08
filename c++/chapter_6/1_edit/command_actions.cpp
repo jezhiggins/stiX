@@ -14,10 +14,10 @@ void stiX::current_line_action(std::istream&, std::ostream &out, edit_buffer &bu
 void stiX::append_action(std::istream& in, size_t after, edit_buffer& buffer) {
   auto adjust = (!buffer.empty()) ? 1 : 0;
 
-  do_insert(in, after+adjust, buffer);
+  insert_action(in, after+adjust, buffer);
 }
 
-void stiX::do_insert(std::istream& in, size_t before, edit_buffer& buffer) {
+void stiX::insert_action(std::istream& in, size_t before, edit_buffer& buffer) {
   auto adjust = (!buffer.empty()) ? 1 : 0;
 
   while(in.peek() != eof) {
