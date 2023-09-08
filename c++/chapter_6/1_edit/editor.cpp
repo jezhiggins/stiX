@@ -17,10 +17,7 @@ void editor::process(std::istream& in, std::ostream& out) {
     auto command = parsed_command.compile(buffer_);
 
     buffer_.set_dot(command.dot);
-    switch(command.code) {
-      default:
-        command(in, out, buffer_);
-        break;
-    }
+
+    command(in, out, buffer_);
   }
 }
