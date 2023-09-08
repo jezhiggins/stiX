@@ -289,6 +289,10 @@ namespace {
   }
 } // namespace
 
+stiX::command::action_fn command_for_code(char code) {
+  return stiX::current_line_action;
+}
+
 stiX::parsed_command stiX::parse_command(std::string_view input) {
   auto parser = command_parser(input);
 
@@ -313,6 +317,6 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
 
   if (is_error(from, to, code))
     return command::error;
-  return { from, to, dot, code, filename };
+  return { from, to, dot, code, filename, command_for_code(code) };
 }
 

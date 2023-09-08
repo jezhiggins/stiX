@@ -7,7 +7,7 @@ using namespace stiX;
 
 auto const eof = std::char_traits<char>::eof();
 
-void stiX::do_current_line(std::ostream &out, stiX::edit_buffer& buffer) {
+void stiX::current_line_action(std::istream&, std::ostream &out, stiX::lines &buffer) {
   out << buffer.dot() << "\n";
 }
 
