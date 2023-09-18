@@ -3,7 +3,6 @@
 #include "../../lib/getline.hpp"
 #include <iostream>
 #include "command_parser.hpp"
-#include "command_actions.hpp"
 
 using namespace stiX;
 

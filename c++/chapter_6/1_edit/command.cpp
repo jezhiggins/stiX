@@ -1,5 +1,4 @@
 #include "command.hpp"
-#include "lines.hpp"
 
 size_t const stiX::command::line_error = -1;
 char const stiX::command::code_error = '?';
