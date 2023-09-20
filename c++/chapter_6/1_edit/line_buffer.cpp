@@ -8,7 +8,7 @@ void line_buffer::insert(size_t index, std::string_view line) {
 }
 
 void line_buffer::remove(size_t index) {
-  lines_.erase(lines_.begin());
+  lines_.erase(lines_.begin() + index);
 }
 
 std::string_view line_buffer::operator[](size_t index) const {
