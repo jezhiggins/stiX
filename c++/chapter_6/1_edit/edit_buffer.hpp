@@ -8,6 +8,7 @@ namespace stiX {
   class edit_buffer : public lines {
   public:
     void insert_before(size_t index, std::string_view line);
+    void remove_at(size_t index);
 
     std::string_view line_at(size_t index) const override;
 
