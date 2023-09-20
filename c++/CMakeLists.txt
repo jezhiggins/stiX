@@ -236,5 +236,6 @@ add_executable(edit_test
         chapter_6/1_edit/test_edit_buffer.cpp
         chapter_6/1_edit/test_editor.cpp
         chapter_6/1_edit/test_command_parser.cpp
-        ${edit_sources})
+        ${edit_sources}
+        chapter_6/1_edit/test_command_actions.cpp)
 target_link_libraries(edit_test stix testsupport)
