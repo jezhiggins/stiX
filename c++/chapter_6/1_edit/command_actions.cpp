@@ -33,7 +33,10 @@ void stiX::insert_action(std::istream& in, size_t before, edit_buffer& buffer) {
 
 void stiX::delete_action(size_t from, size_t to, edit_buffer& buffer)
 {
-  buffer.remove_at(from);
+  do {
+    buffer.remove_at(from);
+    --to;
+  } while(from <= to);
 }
 
 void stiX::print_action(std::ostream& out, size_t from, size_t to, edit_buffer& buffer) {
