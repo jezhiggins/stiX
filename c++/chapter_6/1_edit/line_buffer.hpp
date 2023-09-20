@@ -8,6 +8,7 @@ namespace stiX {
   class line_buffer {
   public:
     void insert(size_t index, std::string_view line);
+    void remove(size_t index);
 
     std::string_view operator[](size_t index) const;
 

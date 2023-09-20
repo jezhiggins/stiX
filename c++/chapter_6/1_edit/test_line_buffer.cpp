@@ -61,4 +61,17 @@ TEST_CASE("Chapter 6 - edit - line_buffer") {
     REQUIRE(b[1] == "line 3");
     REQUIRE(b[2] == "line 1");
   }
+
+  SECTION("three line buffer, delete first line") {
+    auto b = stiX::line_buffer();
+    b.insert(b.size(), "line 1");
+    b.insert(b.size(), "line 2");
+    b.insert(b.size(), "line 3");
+
+    b.remove(0);
+
+    REQUIRE(b.size() == 2);
+    REQUIRE(b[0] == "line 2");
+    REQUIRE(b[1] == "line 3");
+  }
 }
