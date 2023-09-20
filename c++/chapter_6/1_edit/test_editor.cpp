@@ -220,6 +220,44 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">line five\n"
     );
   }
+  SECTION("d command") {
+    editor_test(
+      "i\n"
+      "line one\n"
+      "line two\n"
+      "line three\n"
+      "line four\n"
+      "line five\n"
+      ".\n"
+      "=\n"
+      ">5\n"
+      "3d\n"
+      "=\n"
+      ">3\n"
+      "1,$p\n"
+      ">line one\n"
+      ">line two\n"
+      ">line four\n"
+      ">line five\n"
+    );
+    editor_test(
+      "i\n"
+      "line one\n"
+      "line two\n"
+      "line three\n"
+      "line four\n"
+      "line five\n"
+      ".\n"
+      "=\n"
+      ">5\n"
+      "2,4d\n"
+      "=\n"
+      ">2\n"
+      "1,$p\n"
+      ">line one\n"
+      ">line five\n"
+    );
+  }
 }
 
 std::string testLabel(std::string input);

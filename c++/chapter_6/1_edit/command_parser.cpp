@@ -299,6 +299,10 @@ stiX::command::action_fn command_for_code(char code, int from_index, int to_inde
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
         stiX::insert_action(in, to_index, buffer);
       };
+    case 'd':
+      return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer) {
+        stiX::delete_action(from_index, to_index, buffer);
+      };
     case 'p':
       return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer) {
         stiX::print_action(out, from_index, to_index, buffer);
