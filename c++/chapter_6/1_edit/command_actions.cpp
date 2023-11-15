@@ -7,18 +7,18 @@ using namespace stiX;
 
 auto const eof = std::char_traits<char>::eof();
 
-void stiX::current_line_action(std::istream&, std::ostream &out, edit_buffer &buffer) {
+void stiX::current_line_action(std::istream&, std::ostream& out, edit_buffer& buffer) {
   out << buffer.dot() << "\n";
 }
 
 void stiX::append_action(std::istream& in, size_t after, edit_buffer& buffer) {
-  auto adjust = (!buffer.empty()) ? 1 : 0;
+  auto adjust = !buffer.empty() ? 1 : 0;
 
   insert_action(in, after+adjust, buffer);
 }
 
 void stiX::insert_action(std::istream& in, size_t before, edit_buffer& buffer) {
-  auto adjust = (!buffer.empty()) ? 1 : 0;
+  auto adjust = !buffer.empty() ? 1 : 0;
 
   while(in.peek() != eof) {
     auto line = stiX::getline(in);
@@ -31,8 +31,12 @@ void stiX::insert_action(std::istream& in, size_t before, edit_buffer& buffer) {
   }
 }
 
-void stiX::delete_action(size_t from, size_t to, edit_buffer& buffer)
-{
+void stiX::change_action(std::istream& in, size_t from, size_t to, edit_buffer& buffer) {
+  delete_action(from, to, buffer);
+  insert_action(in, !buffer.empty() ? from : 0, buffer);
+}
+
+void stiX::delete_action(size_t from, size_t to, edit_buffer& buffer) {
   do {
     buffer.remove_at(from);
     --to;
