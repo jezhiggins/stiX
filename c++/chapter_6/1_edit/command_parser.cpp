@@ -295,7 +295,10 @@ stiX::command::action_fn command_for_code(char code, int from_index, int to_inde
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
         append_action(in, to_index, buffer);
       };
-    //case 'c':
+    case 'c':
+      return [from_index, to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
+        change_action(in, from_index, to_index, buffer);
+      };
     case 'd':
       return [from_index, to_index](std::istream&, std::ostream&, stiX::edit_buffer& buffer) {
         delete_action(from_index, to_index, buffer);

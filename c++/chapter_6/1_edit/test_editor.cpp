@@ -136,6 +136,55 @@ TEST_CASE("Chapter 6 - edit - editor") {
     );
   } // i
 
+  SECTION("c command") {
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      ".\n"
+      "1c\n"
+      "changed 1\n"
+      ".\n"
+      "1,$p\n"
+      ">changed 1\n"
+      ">line 2\n"
+      ">line 3\n"
+    );
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      ".\n"
+      "3c\n"
+      "changed 3\n"
+      "changed 4\n"
+      ".\n"
+      "1,$p\n"
+      ">line 1\n"
+      ">line 2\n"
+      ">changed 3\n"
+      ">changed 4\n"
+    );
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      ".\n"
+      "1,$c\n"
+      "changed 1\n"
+      "changed 2\n"
+      "changed 3\n"
+      ".\n"
+      "1,$p\n"
+      ">changed 1\n"
+      ">changed 2\n"
+      ">changed 3\n"
+    );
+  } // c
+
   SECTION("p command") {
     editor_test(
       "p\n"
