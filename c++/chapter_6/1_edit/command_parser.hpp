@@ -24,6 +24,7 @@ namespace stiX {
     std::vector<line_expression_step> const line_expressions;
     char const code;
     std::string const filename;
+    line_expression const destination_expression;
   };
 
   parsed_command parse_command(std::string_view input);

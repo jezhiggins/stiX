@@ -28,10 +28,10 @@ namespace {
     };
   }
 
-  size_t dot_index_fn(stiX::lines const& /*buffer*/, size_t dot) {
+  size_t dot_index_fn(stiX::lines const&, size_t dot) {
     return dot;
   }
-  size_t last_index_fn(stiX::lines const& buffer, size_t dot) {
+  size_t last_index_fn(stiX::lines const& buffer, size_t) {
     return buffer.last();
   }
 
@@ -102,7 +102,7 @@ namespace {
       if (indicies.size() < 2)
         indicies.emplace_back(indicies.front());
 
-      return { indicies, code, filename };
+      return { indicies, code, filename, destination_expression };
     }
 
   private:
@@ -229,6 +229,9 @@ namespace {
       if (wants_filename(code))
         filename = parse_filename();
 
+      if (wants_destination(code))
+        destination_expression = parse_destination();
+
       if (!input.is_eol())
         failed();
     }
@@ -238,8 +241,12 @@ namespace {
       return file_codes.find(c) != std::string::npos;
     }
 
-    std::string parse_filename()
-    {
+    bool wants_destination(char c) {
+      auto file_codes = "m"s;
+      return file_codes.find(c) != std::string::npos;
+    }
+
+    std::string parse_filename() {
       if (!std::isspace(input_pop()) || input.is_eol())
         failed();
 
@@ -247,6 +254,13 @@ namespace {
       while (!input.is_eol() && !std::isblank(*input))
         f += input_pop();
       return f;
+    }
+
+    stiX::line_expression parse_destination() {
+      if (!std::isspace(input_pop()) || input.is_eol())
+        failed();
+
+      return parse_line_number();
     }
 
     void has_line_numbers_when_forbidden() {
@@ -273,6 +287,7 @@ namespace {
     std::vector<stiX::line_expression_step> indicies;
     char code = stiX::command::code_error;
     std::string filename;
+    stiX::line_expression destination_expression;
     bool has_failed = false;
   };
 
@@ -334,7 +349,7 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
   auto dot = buffer.dot();
   auto line_numbers = std::vector<size_t> { };
 
-  for (auto expression : line_expressions) {
+  for (auto const& expression : line_expressions) {
     auto index = index_or_error(expression.expr, buffer, dot);
     dot = (expression.separator == expression_separator::update) ? index : dot;
     line_numbers.push_back(index);
@@ -348,6 +363,14 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
 
   if (is_error(from, to, code))
     return command::error;
-  return { from, to, dot, code, filename, command_for_code(code, from, to) };
+
+  auto destination = stiX::command::line_error;
+  if (destination_expression != nullptr) {
+    destination = index_or_error(destination_expression, buffer, dot);
+    if (is_error(destination))
+      return command::error;
+  }
+
+  return { from, to, dot, code, filename, destination, command_for_code(code, from, to) };
 }
 

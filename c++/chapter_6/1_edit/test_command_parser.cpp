@@ -60,6 +60,10 @@ namespace {
     {".+1,.+1,.+1,.+1,",      {".+1,.+1,.+1,.+1,", 5, 10},  {6,  6, 5, '\n'}},
     {".+1;.+1;.+1;.+1;",      {".+1;.+1;.+1;.+1;", 5, 10},  {8,  9, 9, '\n'}},
     {"1,2,.",                 {"1,2,.",    5, 10},  {2,  5,  5, '\n'}},
+    {"1,3m 6",                {"1,3m 6",   5, 10},  {1,  3,  5, 'm', "", 6}},
+    {"1,3m .",                {"1,3m .",   5, 10},  {1,  3,  5, 'm', "", 5}},
+    {"1,3m .+3",              {"1,3m .+3", 5, 10},  {1,  3,  5, 'm', "", 8}},
+    {"1,3;m .+4",             {"1,3;m .+4",5, 10},  {1,  3,  3, 'm', "", 7}},
     {"edit file",             {"e f.txt",  0, 0},   {0,  0,  0, 'e', "f.txt"}},
     {"quit empty buffer",     {"q",        0, 0},   {0,  0,  0, 'q'}},
     {"quit",                  {"q",        5, 10},  {5,  5,  5, 'q'}}
@@ -84,8 +88,11 @@ namespace {
     {"e space, but no filename", {"e ", 0, 0}},
     {"e trailing spaces",     {"e f.txt ", 0, 0}},
     {"e extra space before name", {"e  f.txt", 0, 0}},
-    {"e no space before name", {"ef.txt", 0, 0}},
-    {"q with line numbers",   {"1,2q", 5, 10}},
+    {"e no space before name",  {"ef.txt",  0, 0}},
+    {"q with line numbers",     {"1,2q",    5, 10}},
+    {"m no destination",        {"1,2m",    5, 10}},
+    {"m destination overflow",  {"1,2m 55", 5, 10}},
+    {"m destination underflow", {"1,2m .-10", 5, 10}}
   };
 
   auto forward_search_tests = parse_test_cases {
@@ -127,6 +134,8 @@ namespace stiX {
     out << "'";
     if (!cmd.filename.empty())
       out << ", " << cmd.filename;
+    if (cmd.destination != std::string::npos)
+      out << ", " << cmd.destination;
     out << " }";
     return out;
   }
