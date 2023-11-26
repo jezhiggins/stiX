@@ -200,6 +200,57 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       REQUIRE(e.line_at(4) == "and");
       REQUIRE(e.line_at(5) == "PJ");
     }
+  }
 
+  SECTION("move action") {
+    SECTION("move 1 to $") {
+      auto e = three_line_buffer();
+
+      move_action(1, 1, 3, e);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "line 2");
+      REQUIRE(e.line_at(2) == "line 3");
+      REQUIRE(e.line_at(3) == "line 1");
+    }
+
+    SECTION("move 1-2 to $") {
+      auto e = three_line_buffer();
+
+      move_action(1, 2, 3, e);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "line 3");
+      REQUIRE(e.line_at(2) == "line 1");
+      REQUIRE(e.line_at(3) == "line 2");
+    }
+
+    SECTION("move 2-3 to 4 of 5") {
+      auto e = three_line_buffer();
+      e.insert_before(3, "line 4");
+      e.insert_before(4, "line 5");
+
+      move_action(2, 3, 4, e);
+
+      REQUIRE(e.line_at(1) == "line 1");
+      REQUIRE(e.line_at(2) == "line 4");
+      REQUIRE(e.line_at(3) == "line 2");
+      REQUIRE(e.line_at(4) == "line 3");
+      REQUIRE(e.line_at(5) == "line 5");
+    }
+
+    SECTION("move 2-3 to 5 of 5") {
+      auto e = three_line_buffer();
+      e.insert_before(3, "line 4");
+      e.insert_before(4, "line 5");
+
+      move_action(2, 3, 5, e);
+
+      REQUIRE(e.line_at(1) == "line 1");
+      REQUIRE(e.line_at(2) == "line 4");
+      REQUIRE(e.line_at(3) == "line 5");
+      REQUIRE(e.line_at(4) == "line 2");
+      REQUIRE(e.line_at(5) == "line 3");
+    }
   }
 }

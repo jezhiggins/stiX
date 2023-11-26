@@ -36,6 +36,35 @@ void stiX::change_action(std::istream& in, size_t from, size_t to, edit_buffer& 
   insert_action(in, !buffer.empty() ? from : 0, buffer);
 }
 
+void reverse(size_t from, size_t to, edit_buffer& buffer) {
+  auto m = ((to - from) / 2) + 1;
+  for (auto i = 0; i != m; ++i) {
+    auto l = std::string { buffer.line_at(from + i) };
+    auto r = std::string { buffer.line_at(to - i) };
+
+    buffer.set_at(from + i, r);
+    buffer.set_at(to - i, l);
+  }
+}
+
+void stiX::move_action(size_t from, size_t to, size_t after, edit_buffer& buffer) {
+  auto offset = (to - from);
+
+  auto b = from;
+  auto e = after;
+
+  reverse(b, e, buffer);
+
+  b = after - offset;
+  e = after;
+  reverse(b, e, buffer);
+
+  b = from;
+  e = after - (offset + 1);
+
+  reverse(b, e, buffer);
+}
+
 void stiX::delete_action(size_t from, size_t to, edit_buffer& buffer) {
   do {
     buffer.remove_at(from);

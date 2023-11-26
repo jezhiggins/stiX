@@ -12,7 +12,7 @@ namespace stiX {
     virtual size_t last() const = 0;
 
   protected:
-    ~lines() { }
+    ~lines() = default;
   };
 
 }
