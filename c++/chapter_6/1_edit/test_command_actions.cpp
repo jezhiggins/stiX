@@ -265,26 +265,77 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       move_action(4, 5, 2, e);
 
       REQUIRE(e.line_at(1) == "line 1");
+      REQUIRE(e.line_at(2) == "line 2");
+      REQUIRE(e.line_at(3) == "line 4");
+      REQUIRE(e.line_at(4) == "line 5");
+      REQUIRE(e.line_at(5) == "line 3");
+    }
+
+    SECTION("move 5 after 1") {
+      auto e = five_line_buffer();
+
+      move_action(5, 5, 1, e);
+
+      REQUIRE(e.line_at(1) == "line 1");
+      REQUIRE(e.line_at(2) == "line 5");
+      REQUIRE(e.line_at(3) == "line 2");
+      REQUIRE(e.line_at(4) == "line 3");
+      REQUIRE(e.line_at(5) == "line 4");
+    }
+
+    SECTION("move 4,5 after 1") {
+      auto e = five_line_buffer();
+
+      move_action(4, 5, 1, e);
+
+      REQUIRE(e.line_at(1) == "line 1");
       REQUIRE(e.line_at(2) == "line 4");
       REQUIRE(e.line_at(3) == "line 5");
       REQUIRE(e.line_at(4) == "line 2");
       REQUIRE(e.line_at(5) == "line 3");
     }
 
+    SECTION("move 4,5 after 0") {
+      auto e = five_line_buffer();
+
+      move_action(4, 5, 0, e);
+
+      REQUIRE(e.line_at(1) == "line 4");
+      REQUIRE(e.line_at(2) == "line 5");
+      REQUIRE(e.line_at(3) == "line 1");
+      REQUIRE(e.line_at(4) == "line 2");
+      REQUIRE(e.line_at(5) == "line 3");
+    }
+
+    SECTION("move 5 after 0") {
+      auto e = five_line_buffer();
+
+      move_action(5, 5, 0, e);
+
+      REQUIRE(e.line_at(1) == "line 5");
+      REQUIRE(e.line_at(2) == "line 1");
+      REQUIRE(e.line_at(3) == "line 2");
+      REQUIRE(e.line_at(4) == "line 3");
+      REQUIRE(e.line_at(5) == "line 4");
+    }
+
+    SECTION("move 3,4 after 0") {
+      auto e = five_line_buffer();
+
+      move_action(3, 4, 0, e);
+
+      REQUIRE(e.line_at(1) == "line 3");
+      REQUIRE(e.line_at(2) == "line 4");
+      REQUIRE(e.line_at(3) == "line 1");
+      REQUIRE(e.line_at(4) == "line 2");
+      REQUIRE(e.line_at(5) == "line 5");
+    }
+
     SECTION("move, then move back") {
       auto e = five_line_buffer();
 
       move_action(4, 5, 2, e);
-      move_action(2, 3, 5, e);
-
-      REQUIRE(e.line_at(1) == "line 1");
-      REQUIRE(e.line_at(2) == "line 2");
-      REQUIRE(e.line_at(3) == "line 3");
-      REQUIRE(e.line_at(4) == "line 4");
-      REQUIRE(e.line_at(5) == "line 5");
-
-      move_action(4, 5, 2, e);
-      move_action(4, 5, 2, e);
+      move_action(3, 4, 5, e);
 
       REQUIRE(e.line_at(1) == "line 1");
       REQUIRE(e.line_at(2) == "line 2");

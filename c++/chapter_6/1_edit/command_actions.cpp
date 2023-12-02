@@ -53,9 +53,9 @@ std::vector<std::pair<size_t, size_t>> move_pairs(size_t from, size_t to, size_t
     };
 
   return std::vector<std::pair<size_t, size_t>> {
-      {after, to},
-      {after, after+offset},
-      {from, to}
+      {after+1, to},
+      {after+1, after+offset+1},
+      {after+offset+2, to}
   };
 }
 
