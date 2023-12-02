@@ -73,6 +73,94 @@ TEST_CASE("Chapter 6 - edit - editor") {
     );
   }
 
+  SECTION("c command") {
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      ".\n"
+      "1c\n"
+      "changed 1\n"
+      ".\n"
+      "1,$p\n"
+      ">changed 1\n"
+      ">line 2\n"
+      ">line 3\n"
+    );
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      ".\n"
+      "3c\n"
+      "changed 3\n"
+      "changed 4\n"
+      ".\n"
+      "1,$p\n"
+      ">line 1\n"
+      ">line 2\n"
+      ">changed 3\n"
+      ">changed 4\n"
+    );
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      ".\n"
+      "1,$c\n"
+      "changed 1\n"
+      "changed 2\n"
+      "changed 3\n"
+      ".\n"
+      "1,$p\n"
+      ">changed 1\n"
+      ">changed 2\n"
+      ">changed 3\n"
+    );
+  } // c
+
+  SECTION("d command") {
+    editor_test(
+      "i\n"
+      "line one\n"
+      "line two\n"
+      "line three\n"
+      "line four\n"
+      "line five\n"
+      ".\n"
+      "=\n"
+      ">5\n"
+      "3d\n"
+      "=\n"
+      ">3\n"
+      "1,$p\n"
+      ">line one\n"
+      ">line two\n"
+      ">line four\n"
+      ">line five\n"
+    );
+    editor_test(
+      "i\n"
+      "line one\n"
+      "line two\n"
+      "line three\n"
+      "line four\n"
+      "line five\n"
+      ".\n"
+      "=\n"
+      ">5\n"
+      "2,4d\n"
+      "=\n"
+      ">2\n"
+      "1,$p\n"
+      ">line one\n"
+      ">line five\n"
+    );
+  }
+
   SECTION("i command") {
     editor_test(
       "i\n"
@@ -136,18 +224,20 @@ TEST_CASE("Chapter 6 - edit - editor") {
     );
   } // i
 
-  SECTION("c command") {
+  SECTION("m command") {
     editor_test(
       "i\n"
       "line 1\n"
       "line 2\n"
       "line 3\n"
+      "line 4\n"
+      "line 5\n"
       ".\n"
-      "1c\n"
-      "changed 1\n"
-      ".\n"
+      "2,3m5\n"
       "1,$p\n"
-      ">changed 1\n"
+      ">line 1\n"
+      ">line 4\n"
+      ">line 5\n"
       ">line 2\n"
       ">line 3\n"
     );
@@ -156,34 +246,18 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "line 1\n"
       "line 2\n"
       "line 3\n"
+      "line 4\n"
+      "line 5\n"
       ".\n"
-      "3c\n"
-      "changed 3\n"
-      "changed 4\n"
-      ".\n"
+      "1,4m5\n"
       "1,$p\n"
+      ">line 5\n"
       ">line 1\n"
       ">line 2\n"
-      ">changed 3\n"
-      ">changed 4\n"
+      ">line 3\n"
+      ">line 4\n"
     );
-    editor_test(
-      "i\n"
-      "line 1\n"
-      "line 2\n"
-      "line 3\n"
-      ".\n"
-      "1,$c\n"
-      "changed 1\n"
-      "changed 2\n"
-      "changed 3\n"
-      ".\n"
-      "1,$p\n"
-      ">changed 1\n"
-      ">changed 2\n"
-      ">changed 3\n"
-    );
-  } // c
+  }
 
   SECTION("p command") {
     editor_test(
@@ -274,44 +348,6 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "$,$p\n"
       ">line five\n"
       ".,.p\n"
-      ">line five\n"
-    );
-  }
-  SECTION("d command") {
-    editor_test(
-      "i\n"
-      "line one\n"
-      "line two\n"
-      "line three\n"
-      "line four\n"
-      "line five\n"
-      ".\n"
-      "=\n"
-      ">5\n"
-      "3d\n"
-      "=\n"
-      ">3\n"
-      "1,$p\n"
-      ">line one\n"
-      ">line two\n"
-      ">line four\n"
-      ">line five\n"
-    );
-    editor_test(
-      "i\n"
-      "line one\n"
-      "line two\n"
-      "line three\n"
-      "line four\n"
-      "line five\n"
-      ".\n"
-      "=\n"
-      ">5\n"
-      "2,4d\n"
-      "=\n"
-      ">2\n"
-      "1,$p\n"
-      ">line one\n"
       ">line five\n"
     );
   }

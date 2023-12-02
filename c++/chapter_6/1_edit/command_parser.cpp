@@ -256,8 +256,13 @@ namespace {
       return f;
     }
 
+    void strip_spaces() {
+      while(std::isspace(*input))
+        input_pop();
+    }
     stiX::line_expression parse_destination() {
-      if (!std::isspace(input_pop()) || input.is_eol())
+      strip_spaces();
+      if (input.is_eol())
         failed();
 
       return parse_line_number();
@@ -304,7 +309,7 @@ namespace {
   }
 } // namespace
 
-stiX::command::action_fn command_for_code(char code, int from_index, int to_index) {
+stiX::command::action_fn command_for_code(char code, size_t from_index, size_t to_index, size_t destination) {
   switch (code) {
     case 'a':
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
@@ -324,7 +329,10 @@ stiX::command::action_fn command_for_code(char code, int from_index, int to_inde
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
         insert_action(in, to_index, buffer);
       };
-    //case 'm':
+    case 'm':
+      return [from_index, to_index, destination](std::istream&, std::ostream&, stiX::edit_buffer& buffer) {
+        move_action(from_index, to_index, destination, buffer);
+      };
     case 'p':
       return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer) {
         print_action(out, from_index, to_index, buffer);
@@ -371,6 +379,14 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
       return command::error;
   }
 
-  return { from, to, dot, code, filename, destination, command_for_code(code, from, to) };
+  return {
+    from,
+    to,
+    dot,
+    code,
+    filename,
+    destination,
+    command_for_code(code, from, to, destination)
+  };
 }
 

@@ -10,6 +10,7 @@ namespace stiX {
     void insert_before(size_t index, std::string_view line);
     void set_at(size_t index, std::string_view line);
     void remove_at(size_t index);
+    void swap(size_t lindex, size_t rindex);
 
     std::string_view line_at(size_t index) const override;
 

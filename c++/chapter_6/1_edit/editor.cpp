@@ -1,4 +1,3 @@
-
 #include "editor.hpp"
 #include "../../lib/getline.hpp"
 #include <iostream>
