@@ -47,22 +47,27 @@ void reverse(size_t from, size_t to, edit_buffer& buffer) {
   }
 }
 
+std::vector<std::pair<size_t, size_t>> move_pairs(size_t from, size_t to, size_t after) {
+  auto offset = to - from;
+
+  if (from < after)
+    return std::vector<std::pair<size_t, size_t>> {
+          {from, after},
+          {after-offset, after},
+          {from, after-(offset+1)}
+    };
+
+  return std::vector<std::pair<size_t, size_t>> {
+      {after, to},
+      {after, after+offset},
+      {from, to}
+  };
+}
+
 void stiX::move_action(size_t from, size_t to, size_t after, edit_buffer& buffer) {
-  auto offset = (to - from);
-
-  auto b = from;
-  auto e = after;
-
-  reverse(b, e, buffer);
-
-  b = after - offset;
-  e = after;
-  reverse(b, e, buffer);
-
-  b = from;
-  e = after - (offset + 1);
-
-  reverse(b, e, buffer);
+  auto moves = move_pairs(from, to, after);
+  for (auto [b, e] : moves)
+    reverse(b, e, buffer);
 }
 
 void stiX::delete_action(size_t from, size_t to, edit_buffer& buffer) {
