@@ -344,4 +344,36 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       REQUIRE(e.line_at(5) == "line 5");
     }
   }
+
+  SECTION("filename action") {
+    SECTION("f filename") {
+      std::string filename = "donkey";
+      std::ostringstream os;
+
+      stiX::filename_action("fruit", filename, os);
+
+      REQUIRE(filename == "fruit");
+      REQUIRE(os.str() == "fruit\n");
+    }
+
+    SECTION("f, not filename set") {
+      std::string filename;
+      std::ostringstream os;
+
+      stiX::filename_action("", filename, os);
+
+      REQUIRE(filename.empty());
+      REQUIRE(os.str() == "?\n");
+    }
+
+    SECTION("f, filename already set") {
+      std::string filename = "donkey";
+      std::ostringstream os;
+
+      stiX::filename_action("", filename, os);
+
+      REQUIRE(filename == "donkey");
+      REQUIRE(os.str() == "donkey\n");
+    }
+  }
 }

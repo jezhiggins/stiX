@@ -14,6 +14,7 @@ namespace stiX {
   void move_action(size_t from, size_t to, size_t after, edit_buffer& buffer);
   void delete_action(size_t from, size_t to, edit_buffer& buffer);
   void print_action(std::ostream& out, size_t from, size_t to, edit_buffer& buffer);
+  void filename_action(std::string filename, std::string& property, std::ostream& out);
 
   void error_action(std::istream&, std::ostream&, edit_buffer&);
 }
