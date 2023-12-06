@@ -341,7 +341,10 @@ stiX::command::action_fn command_for_code(char code, size_t from_index, size_t t
       return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer) {
         print_action(out, from_index, to_index, buffer);
       };
-    //case 'q':
+    case 'q':
+      return [](std::istream&, std::ostream&, stiX::edit_buffer&) {
+        std::exit(0);
+      };
     //case 'r':
     //case 's':
     //case 'w':
