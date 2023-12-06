@@ -68,7 +68,10 @@ namespace {
     {"1,3m.",                 {"1,3m.",    5, 10},  {1,  3,  5, 'm', "", 5}},
     {"1,3m.+3",               {"1,3m.+3",  5, 10},  {1,  3,  5, 'm', "", 8}},
     {"1,3;m.+4",              {"1,3;m.+4", 5, 10},  {1,  3,  3, 'm', "", 7}},
-    {"edit file",             {"e f.txt",  0, 0},   {0,  0,  0, 'e', "f.txt"}},
+    {"e file",                {"e f.txt",  0, 0},   {0,  0,  0, 'e', "f.txt"}},
+    {"e space, no filename",  {"e ",       0, 0},   {0,  0,  0, 'e', ""}},
+    {"e spaces before name",  {"e  f.txt", 0, 0},   {0,  0,  0, 'e', "f.txt"}},
+    {"e no filename",         {"e",        0, 0},   {0,  0,  0, 'e', ""}},
     {"quit empty buffer",     {"q",        0, 0},   {0,  0,  0, 'q'}},
     {"quit",                  {"q",        5, 10},  {5,  5,  5, 'q'}}
   };
@@ -88,10 +91,7 @@ namespace {
     {". arithmetic overflow", {".+20", 5, 10}},
     {"$ arithmetic overflow", {"$+20", 5, 10}},
     {"e with line numbers",   {"1,2e file", 5, 10}},
-    {"e no filename",         {"e", 0, 0}},
-    {"e space, but no filename", {"e ", 0, 0}},
     {"e trailing spaces",     {"e f.txt ", 0, 0}},
-    {"e extra space before name", {"e  f.txt", 0, 0}},
     {"e no space before name",  {"ef.txt",  0, 0}},
     {"q with line numbers",     {"1,2q",    5, 10}},
     {"m no destination",        {"1,2m",    5, 10}},

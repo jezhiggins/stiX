@@ -247,8 +247,13 @@ namespace {
     }
 
     std::string parse_filename() {
-      if (!std::isspace(input_pop()) || input.is_eol())
+      if (input.is_eol())
+        return "";
+
+      if (!std::isspace(input_pop()))
         failed();
+
+      strip_spaces();
 
       auto f = std::string{};
       while (!input.is_eol() && !std::isblank(*input))
@@ -313,7 +318,12 @@ namespace {
   }
 } // namespace
 
-stiX::command::action_fn command_for_code(char code, size_t from_index, size_t to_index, size_t destination) {
+stiX::command::action_fn command_for_code(
+    char code,
+    size_t from_index,
+    size_t to_index,
+    size_t destination,
+    std::string new_filename) {
   switch (code) {
     case 'a':
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
@@ -393,7 +403,7 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
     code,
     filename,
     destination,
-    command_for_code(code, from, to, destination)
+    command_for_code(code, from, to, destination, filename)
   };
 }
 
