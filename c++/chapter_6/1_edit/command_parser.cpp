@@ -338,7 +338,10 @@ stiX::command::action_fn command_for_code(
         delete_action(from_index, to_index, buffer);
       };
     //case 'e':
-    //case 'f':
+    case 'f':
+      return [new_filename](std::istream& in, std::ostream& out, stiX::edit_buffer&, std::string& filename) {
+        stiX::filename_action(new_filename, filename,  out);
+      };
     case 'i':
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         insert_action(in, to_index, buffer);
