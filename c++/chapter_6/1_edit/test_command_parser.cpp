@@ -96,7 +96,8 @@ namespace {
     {"q with line numbers",     {"1,2q",    5, 10}},
     {"m no destination",        {"1,2m",    5, 10}},
     {"m destination overflow",  {"1,2m 55", 5, 10}},
-    {"m destination underflow", {"1,2m .-10", 5, 10}}
+    {"m destination underflow", {"1,2m .-10", 5, 10}},
+    {"m destination overlap  ", {"1,5m3", 5, 10}}
   };
 
   auto forward_search_tests = parse_test_cases {

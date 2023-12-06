@@ -307,6 +307,10 @@ namespace {
            (from > to) ||
            is_error(code);
   }
+
+  bool are_overlapping(size_t from, size_t to, size_t destination) {
+    return (from <= destination && destination <= to);
+  }
 } // namespace
 
 stiX::command::action_fn command_for_code(char code, size_t from_index, size_t to_index, size_t destination) {
@@ -372,10 +376,10 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
   if (is_error(from, to, code))
     return command::error;
 
-  auto destination = stiX::command::line_error;
+  auto destination = command::line_error;
   if (destination_expression != nullptr) {
     destination = index_or_error(destination_expression, buffer, dot);
-    if (is_error(destination))
+    if (is_error(destination) || are_overlapping(from, to,destination))
       return command::error;
   }
 
