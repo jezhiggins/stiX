@@ -316,33 +316,33 @@ namespace {
 stiX::command::action_fn command_for_code(char code, size_t from_index, size_t to_index, size_t destination) {
   switch (code) {
     case 'a':
-      return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
+      return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         append_action(in, to_index, buffer);
       };
     case 'c':
-      return [from_index, to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
+      return [from_index, to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         change_action(in, from_index, to_index, buffer);
       };
     case 'd':
-      return [from_index, to_index](std::istream&, std::ostream&, stiX::edit_buffer& buffer) {
+      return [from_index, to_index](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         delete_action(from_index, to_index, buffer);
       };
     //case 'e':
     //case 'f':
     case 'i':
-      return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer) {
+      return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         insert_action(in, to_index, buffer);
       };
     case 'm':
-      return [from_index, to_index, destination](std::istream&, std::ostream&, stiX::edit_buffer& buffer) {
+      return [from_index, to_index, destination](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         move_action(from_index, to_index, destination, buffer);
       };
     case 'p':
-      return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer) {
+      return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer, std::string&) {
         print_action(out, from_index, to_index, buffer);
       };
     case 'q':
-      return [](std::istream&, std::ostream&, stiX::edit_buffer&) {
+      return [](std::istream&, std::ostream&, stiX::edit_buffer&, std::string&) {
         std::exit(0);
       };
     //case 'r':

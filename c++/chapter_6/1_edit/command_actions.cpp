@@ -7,7 +7,7 @@ using namespace stiX;
 
 auto const eof = std::char_traits<char>::eof();
 
-void stiX::current_line_action(std::istream&, std::ostream& out, edit_buffer& buffer) {
+void stiX::current_line_action(std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
   out << buffer.dot() << "\n";
 }
 
@@ -93,6 +93,6 @@ void stiX::filename_action(std::string filename, std::string& property, std::ost
   out << (!property.empty() ? property : "?") << "\n";
 }
 
-void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&) {
+void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&, std::string&) {
   out << "?\n";
 }

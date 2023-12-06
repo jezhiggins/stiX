@@ -8,7 +8,13 @@
 namespace stiX {
   class edit_buffer;
   struct command {
-    using action_fn = std::function<void(std::istream&, std::ostream&, edit_buffer&)>;
+    using action_fn =
+      std::function<void(
+        std::istream&,
+        std::ostream&,
+        edit_buffer&,
+        std::string&
+      )>;
 
     size_t const from_index = line_error;
     size_t const to_index = line_error;
@@ -21,7 +27,8 @@ namespace stiX {
     void operator()(
       std::istream& in,
       std::ostream& out,
-      edit_buffer& buffer) const;
+      edit_buffer& buffer,
+      std::string& filename) const;
 
     static size_t const line_error;
     static char const code_error;

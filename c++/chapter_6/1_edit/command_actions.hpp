@@ -7,7 +7,7 @@ namespace stiX {
   class edit_buffer;
   class lines;
 
-  void current_line_action(std::istream&, std::ostream& out, edit_buffer& buffer);
+  void current_line_action(std::istream&, std::ostream& out, edit_buffer& buffer, std::string&);
   void append_action(std::istream& in, size_t after, edit_buffer& buffer);
   void insert_action(std::istream& in, size_t before, edit_buffer& buffer);
   void change_action(std::istream& in, size_t from, size_t to, edit_buffer& buffer);
@@ -16,7 +16,7 @@ namespace stiX {
   void print_action(std::ostream& out, size_t from, size_t to, edit_buffer& buffer);
   void filename_action(std::string filename, std::string& property, std::ostream& out);
 
-  void error_action(std::istream&, std::ostream&, edit_buffer&);
+  void error_action(std::istream&, std::ostream&, edit_buffer&, std::string&);
 }
 
 #endif

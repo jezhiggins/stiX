@@ -16,6 +16,6 @@ void editor::process(std::istream& in, std::ostream& out) {
 
     buffer_.set_dot(command.dot);
 
-    command(in, out, buffer_);
+    command(in, out, buffer_, filename_);
   }
 }

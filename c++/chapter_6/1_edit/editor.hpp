@@ -11,6 +11,7 @@ namespace stiX {
 
   private:
     edit_buffer buffer_;
+    std::string filename_;
   };
 }
 
