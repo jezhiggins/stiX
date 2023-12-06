@@ -53,6 +53,6 @@ and [two](https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html)
 
 ## License
 
-Copyright 2019-2022 [JezUK Ltd](http://www.jezuk.co.uk/)
+Copyright 2019-2023 [JezUK Ltd](http://www.jezuk.co.uk/)
 
 Licensed under the terms of the MIT License.
