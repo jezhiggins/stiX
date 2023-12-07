@@ -360,7 +360,10 @@ stiX::command::action_fn command_for_code(
       };
     //case 'r':
     //case 's':
-    //case 'w':
+    case 'w':
+      return [from_index, to_index, new_filename](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
+        stiX::write_to_file_action(from_index, to_index,new_filename, filename, buffer);
+      };
     case '=':
       return stiX::current_line_action;
   }

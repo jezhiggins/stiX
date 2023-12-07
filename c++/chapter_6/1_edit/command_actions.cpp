@@ -2,6 +2,7 @@
 #include "../../lib/getline.hpp"
 #include "edit_buffer.hpp"
 #include <iostream>
+#include <fstream>
 
 using namespace stiX;
 
@@ -92,6 +93,16 @@ void stiX::filename_action(std::string filename, std::string& property, std::ost
 
   out << (!property.empty() ? property : "?") << "\n";
 }
+
+void stiX::write_to_file_action(size_t from, size_t to, std::string filename, std::string& property, edit_buffer& buffer) {
+  if (!filename.empty())
+    property = filename;
+
+  auto destination = std::ofstream(property);
+  for (auto i = from; i != to; ++i)
+    destination << buffer.line_at(i) << "\n";
+}
+
 
 void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&, std::string&) {
   out << "?\n";
