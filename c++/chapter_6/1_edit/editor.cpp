@@ -14,8 +14,6 @@ void editor::process(std::istream& in, std::ostream& out) {
     auto parsed_command = parse_command(line);
     auto command = parsed_command.compile(buffer_);
 
-    buffer_.set_dot(command.dot);
-
     command(in, out, buffer_, filename_);
   }
 }

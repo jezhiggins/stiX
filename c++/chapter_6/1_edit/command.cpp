@@ -1,4 +1,5 @@
 #include "command.hpp"
+#include "edit_buffer.hpp"
 
 size_t const stiX::command::line_error = -1;
 char const stiX::command::code_error = '?';
@@ -8,6 +9,9 @@ void stiX::command::operator()(
   std::ostream& out,
   edit_buffer& buffer,
   std::string& filename) const {
+  if (dot != line_error)
+    buffer.set_dot(dot);
+
   action(in, out, buffer, filename);
 }
 
