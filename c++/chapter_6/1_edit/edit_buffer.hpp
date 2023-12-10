@@ -7,7 +7,7 @@
 namespace stiX {
   class edit_buffer : public lines {
   public:
-    void insert_before(size_t index, std::string_view line);
+    void insert(size_t index, std::string_view line);
     void set_at(size_t index, std::string_view line);
     void remove_at(size_t index);
     void swap(size_t lindex, size_t rindex);

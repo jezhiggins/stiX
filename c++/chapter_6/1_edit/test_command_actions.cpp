@@ -9,19 +9,19 @@ using namespace std::literals;
 TEST_CASE("Chapter 6 - edit - command actions") {
   auto three_line_buffer = []() -> stiX::edit_buffer {
     auto eb = stiX::edit_buffer();
-    eb.insert_before(eb.dot(), "line 1");
-    eb.insert_before(eb.dot(), "line 2");
-    eb.insert_before(eb.dot(), "line 3");
+    eb.insert(eb.dot(), "line 1");
+    eb.insert(eb.dot(), "line 2");
+    eb.insert(eb.dot(), "line 3");
     return eb;
   };
 
   auto five_line_buffer = []() -> stiX::edit_buffer {
     auto eb = stiX::edit_buffer();
-    eb.insert_before(eb.dot(), "line 1");
-    eb.insert_before(eb.dot(), "line 2");
-    eb.insert_before(eb.dot(), "line 3");
-    eb.insert_before(eb.dot(), "line 4");
-    eb.insert_before(eb.dot(), "line 5");
+    eb.insert(eb.dot(), "line 1");
+    eb.insert(eb.dot(), "line 2");
+    eb.insert(eb.dot(), "line 3");
+    eb.insert(eb.dot(), "line 4");
+    eb.insert(eb.dot(), "line 5");
     return eb;
   };
 

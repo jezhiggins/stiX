@@ -12,24 +12,32 @@ void stiX::current_line_action(std::istream&, std::ostream& out, edit_buffer& bu
   out << buffer.dot() << "\n";
 }
 
-void stiX::append_action(std::istream& in, size_t after, edit_buffer& buffer) {
-  auto adjust = !buffer.empty() ? 1 : 0;
+namespace {
+  void read_lines(
+      std::istream& source,
+      size_t index,
+      bool stop_on_stop,
+      edit_buffer& buffer) {
+    while(source.peek() != eof) {
+      auto line = stiX::getline(source);
 
-  insert_action(in, after+adjust, buffer);
+      if (stop_on_stop && (line == "."))
+        return;
+
+      buffer.insert(index, line);
+      ++index;
+    }
+
+  }
+}
+
+void stiX::append_action(std::istream& in, size_t after, edit_buffer& buffer) {
+  read_lines(in, after, true, buffer);
 }
 
 void stiX::insert_action(std::istream& in, size_t before, edit_buffer& buffer) {
   auto adjust = !buffer.empty() ? 1 : 0;
-
-  while(in.peek() != eof) {
-    auto line = stiX::getline(in);
-
-    if (line == ".")
-      return;
-
-    buffer.insert_before(before-adjust, line);
-    ++before;
-  }
+  read_lines(in, before-adjust, true, buffer);
 }
 
 void stiX::change_action(std::istream& in, size_t from, size_t to, edit_buffer& buffer) {
@@ -108,12 +116,7 @@ void stiX::read_from_file_action(size_t before, std::string filename, std::strin
     property = filename;
 
   auto source = std::ifstream(property);
-  while(source.peek() != eof) {
-    auto line = stiX::getline(source);
-
-    buffer.insert_before(before, line);
-    ++before;
-  }
+  read_lines(source, before, false, buffer);
 }
 
 void stiX::edit_file_action(std::string filename, std::string& property, edit_buffer& buffer) {

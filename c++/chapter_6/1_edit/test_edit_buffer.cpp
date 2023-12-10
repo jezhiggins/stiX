@@ -5,9 +5,9 @@
 
 auto three_line_buffer() -> stiX::edit_buffer {
   auto eb = stiX::edit_buffer();
-  eb.insert_before(eb.dot(), "line 1");
-  eb.insert_before(eb.dot(), "line 2");
-  eb.insert_before(eb.dot(), "line 3");
+  eb.insert(eb.dot(), "line 1");
+  eb.insert(eb.dot(), "line 2");
+  eb.insert(eb.dot(), "line 3");
   return eb;
 }
 
@@ -22,7 +22,7 @@ TEST_CASE("Chapter 6 - edit - edit_buffer") {
   SECTION("insert") {
     SECTION("insert at .") {
       auto e = stiX::edit_buffer();
-      e.insert_before(0, "a line");
+      e.insert(0, "a line");
 
       REQUIRE(e.dot() == 1);
       REQUIRE(e.last() == 1);
@@ -30,8 +30,8 @@ TEST_CASE("Chapter 6 - edit - edit_buffer") {
 
     SECTION("insert two lines at .") {
       auto e = stiX::edit_buffer();
-      e.insert_before(e.dot(), "line 1");
-      e.insert_before(e.dot(), "line 2");
+      e.insert(e.dot(), "line 1");
+      e.insert(e.dot(), "line 2");
 
       REQUIRE(e.dot() == 2);
       REQUIRE(e.last() == 2);
@@ -40,9 +40,9 @@ TEST_CASE("Chapter 6 - edit - edit_buffer") {
   SECTION("delete") {
     auto three_line_buffer = []() -> stiX::edit_buffer {
       auto eb = stiX::edit_buffer();
-      eb.insert_before(eb.dot(), "line 1");
-      eb.insert_before(eb.dot(), "line 2");
-      eb.insert_before(eb.dot(), "line 3");
+      eb.insert(eb.dot(), "line 1");
+      eb.insert(eb.dot(), "line 2");
+      eb.insert(eb.dot(), "line 3");
       return eb;
     };
 

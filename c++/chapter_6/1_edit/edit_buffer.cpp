@@ -2,7 +2,7 @@
 
 using namespace stiX;
 
-void edit_buffer::insert_before(size_t index, std::string_view line) {
+void edit_buffer::insert(size_t index, std::string_view line) {
   buffer_.insert(index, line);
   dot_ = index+1;
 }
@@ -24,7 +24,7 @@ void edit_buffer::swap(size_t lindex, size_t rindex) {
     set_at(rindex, lhs);
   } else {
     remove_at(rindex);
-    insert_before(0, rhs);
+    insert(0, rhs);
   }
 }
 
