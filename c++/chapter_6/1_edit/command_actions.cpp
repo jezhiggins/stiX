@@ -99,7 +99,7 @@ void stiX::write_to_file_action(size_t from, size_t to, std::string filename, st
     property = filename;
 
   auto destination = std::ofstream(property);
-  for (auto i = from; i != to; ++i)
+  for (auto i = from; i <= to; ++i)
     destination << buffer.line_at(i) << "\n";
 }
 
