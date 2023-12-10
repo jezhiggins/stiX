@@ -9,7 +9,7 @@ using namespace stiX;
 auto const eof = std::char_traits<char>::eof();
 
 void stiX::current_line_action(std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
-  out << buffer.dot() << "\n";
+  out << buffer.dot() << '\n';
 }
 
 namespace {
@@ -21,7 +21,7 @@ namespace {
     while(source.peek() != eof) {
       auto line = stiX::getline(source);
 
-      if (stop_on_stop && (line == "."))
+      if (stop_on_stop && line == ".")
         return;
 
       buffer.insert(index, line);
@@ -33,23 +33,7 @@ namespace {
     for (auto index = from; index <= to; ++index)
       out << buffer.line_at(index) << '\n';
   }
-}
 
-void stiX::append_action(std::istream& in, size_t after, edit_buffer& buffer) {
-  read_lines(in, after, true, buffer);
-}
-
-void stiX::insert_action(std::istream& in, size_t before, edit_buffer& buffer) {
-  auto adjust = !buffer.empty() ? 1 : 0;
-  read_lines(in, before-adjust, true, buffer);
-}
-
-void stiX::change_action(std::istream& in, size_t from, size_t to, edit_buffer& buffer) {
-  delete_action(from, to, buffer);
-  insert_action(in, !buffer.empty() ? from : 0, buffer);
-}
-
-namespace {
   void reverse(size_t from, size_t to, edit_buffer& buffer) {
     auto m = ((to - from) / 2) + 1;
     for (auto i = 0; i != m; ++i)
@@ -72,6 +56,20 @@ namespace {
         {after+offset+2, to}
     };
   }
+}
+
+void stiX::append_action(std::istream& in, size_t after, edit_buffer& buffer) {
+  read_lines(in, after, true, buffer);
+}
+
+void stiX::insert_action(std::istream& in, size_t before, edit_buffer& buffer) {
+  auto adjust = !buffer.empty() ? 1 : 0;
+  read_lines(in, before-adjust, true, buffer);
+}
+
+void stiX::change_action(std::istream& in, size_t from, size_t to, edit_buffer& buffer) {
+  delete_action(from, to, buffer);
+  insert_action(in, !buffer.empty() ? from : 0, buffer);
 }
 
 void stiX::move_action(size_t from, size_t to, size_t after, edit_buffer& buffer) {
