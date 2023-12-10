@@ -27,7 +27,11 @@ namespace {
       buffer.insert(index, line);
       ++index;
     }
+  }
 
+  void write_lines(std::ostream& out, size_t from, size_t to, edit_buffer& buffer) {
+    for (auto index = from; index <= to; ++index)
+      out << buffer.line_at(index) << '\n';
   }
 }
 
@@ -84,15 +88,12 @@ void stiX::delete_action(size_t from, size_t to, edit_buffer& buffer) {
 }
 
 void stiX::print_action(std::ostream& out, size_t from, size_t to, edit_buffer& buffer) {
-  auto index = buffer.dot();
-
-  if (index == 0) {
+  if (buffer.dot() == 0) {
     out << "?\n";
     return;
   }
 
-  for (auto index = from; index <= to; ++index)
-    out << buffer.line_at(index) << '\n';
+  write_lines(out, from, to, buffer);
 }
 
 void stiX::filename_action(std::string filename, std::string& property, std::ostream& out) {
@@ -107,8 +108,7 @@ void stiX::write_to_file_action(size_t from, size_t to, std::string filename, st
     property = filename;
 
   auto destination = std::ofstream(property);
-  for (auto i = from; i <= to; ++i)
-    destination << buffer.line_at(i) << "\n";
+  write_lines(destination, from, to, buffer);
 }
 
 void stiX::read_from_file_action(size_t before, std::string filename, std::string& property, edit_buffer& buffer) {
