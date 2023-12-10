@@ -103,6 +103,18 @@ void stiX::write_to_file_action(size_t from, size_t to, std::string filename, st
     destination << buffer.line_at(i) << "\n";
 }
 
+void stiX::read_from_file_action(size_t before, std::string filename, std::string& property, edit_buffer& buffer) {
+  if (!filename.empty())
+    property = filename;
+
+  auto source = std::ifstream(property);
+  while(source.peek() != eof) {
+    auto line = stiX::getline(source);
+
+    buffer.insert_before(before, line);
+    ++before;
+  }
+}
 
 void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&, std::string&) {
   out << "?\n";

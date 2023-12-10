@@ -358,11 +358,14 @@ stiX::command::action_fn command_for_code(
       return [](std::istream&, std::ostream&, stiX::edit_buffer&, std::string&) {
         std::exit(0);
       };
-    //case 'r':
+    case 'r':
+      return [to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
+          read_from_file_action(to_index, new_filename, filename, buffer);
+      };
     //case 's':
     case 'w':
-      return [from_index, to_index, new_filename](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
-        stiX::write_to_file_action(from_index, to_index,new_filename, filename, buffer);
+      return [from_index, to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
+        write_to_file_action(from_index, to_index,new_filename, filename, buffer);
       };
     case '=':
       return stiX::current_line_action;
