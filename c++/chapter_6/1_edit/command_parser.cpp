@@ -150,9 +150,9 @@ namespace {
           return parse_forward_search();
         case BACKSLASH:
           return parse_backward_search();
+        default:
+          return int_index(parse_number());
       }
-
-      return int_index(parse_number());
     }
 
     stiX::line_expression parse_forward_search() {
@@ -236,12 +236,12 @@ namespace {
         failed();
     }
 
-    bool wants_filename(char c) {
+    static bool wants_filename(char c) {
       auto file_codes = "efrw"s;
       return file_codes.find(c) != std::string::npos;
     }
 
-    bool wants_destination(char c) {
+    static bool wants_destination(char c) {
       auto file_codes = "m"s;
       return file_codes.find(c) != std::string::npos;
     }
@@ -303,7 +303,7 @@ namespace {
 
   size_t index_or_error(stiX::line_expression fn, stiX::lines const& buffer, size_t dot) {
     auto index = fn(buffer, dot);
-    return (index <= buffer.last()) ? index : stiX::command::line_error;
+    return index <= buffer.last() ? index : stiX::command::line_error;
   }
 
   bool is_error(size_t from, size_t to, char code) {
@@ -314,7 +314,7 @@ namespace {
   }
 
   bool are_overlapping(size_t from, size_t to, size_t destination) {
-    return (from <= destination && destination <= to);
+    return from <= destination && destination <= to;
   }
 } // namespace
 
@@ -323,57 +323,58 @@ stiX::command::action_fn command_for_code(
     size_t from_index,
     size_t to_index,
     size_t destination,
-    std::string new_filename) {
+    std::string const& new_filename) {
   switch (code) {
     case 'a':
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         append_action(in, to_index, buffer);
-      };
+    };
     case 'c':
       return [from_index, to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         change_action(in, from_index, to_index, buffer);
-      };
+    };
     case 'd':
       return [from_index, to_index](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         delete_action(from_index, to_index, buffer);
-      };
+    };
     case 'e':
       return [new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
         edit_file_action(new_filename, filename, buffer);
-      };
+    };
     case 'f':
       return [new_filename](std::istream& in, std::ostream& out, stiX::edit_buffer&, std::string& filename) {
         stiX::filename_action(new_filename, filename,  out);
-      };
+    };
     case 'i':
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         insert_action(in, to_index, buffer);
-      };
+    };
     case 'm':
       return [from_index, to_index, destination](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         move_action(from_index, to_index, destination, buffer);
-      };
+    };
     case 'p':
       return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer, std::string&) {
         print_action(out, from_index, to_index, buffer);
-      };
+    };
     case 'q':
       return [](std::istream&, std::ostream&, stiX::edit_buffer&, std::string&) {
         std::exit(0);
-      };
+    };
     case 'r':
       return [to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
-          read_from_file_action(to_index, new_filename, filename, buffer);
-      };
+        read_from_file_action(to_index, new_filename, filename, buffer);
+    };
     //case 's':
     case 'w':
       return [from_index, to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
         write_to_file_action(from_index, to_index,new_filename, filename, buffer);
-      };
+    };
     case '=':
       return stiX::current_line_action;
+    default:
+      return stiX::error_action;
   }
-  return stiX::error_action;
 }
 
 stiX::parsed_command stiX::parse_command(std::string_view input) {
