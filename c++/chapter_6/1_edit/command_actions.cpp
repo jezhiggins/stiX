@@ -116,6 +116,16 @@ void stiX::read_from_file_action(size_t before, std::string filename, std::strin
   }
 }
 
+void stiX::edit_file_action(std::string filename, std::string& property, edit_buffer& buffer) {
+  if (!filename.empty())
+    property = filename;
+
+  while(!buffer.empty())
+    buffer.remove_at(1);
+
+  read_from_file_action(0, filename, property, buffer);
+}
+
 void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&, std::string&) {
   out << "?\n";
 }
