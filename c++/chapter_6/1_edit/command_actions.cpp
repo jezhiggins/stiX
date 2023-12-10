@@ -123,9 +123,8 @@ void stiX::edit_file_action(std::string filename, std::string& property, edit_bu
   if (!filename.empty())
     property = filename;
 
-  while(!buffer.empty())
-    buffer.remove_at(1);
-
+  if (!buffer.empty())
+    delete_action(1, buffer.last(), buffer);
   read_from_file_action(0, filename, property, buffer);
 }
 
