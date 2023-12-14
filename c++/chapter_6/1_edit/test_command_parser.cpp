@@ -22,8 +22,7 @@ namespace {
   using parse_test_cases = std::vector<parse_test_case>;
 
   auto good_indexes_test_cases = parse_test_cases {
-    {"no input,empty buffer", {"",         0, 0},   {0,  0,  0, '\n'}},
-    {"no input, dot is set",  {"",         3, 3},   {3,  3,  3, '\n'}},
+    {"no input, dot is set",  {"",         1, 3},   {1,  2,  2, '\n'}},
     {"single letter",         {"i",        3, 5},   {3,  3,  3, 'i'}},
     {"lone digit",            {"1",        3, 5},   {1,  1,  3, '\n'}},
     {".",                     {".",        3, 5},   {3,  3,  3, '\n'}},
@@ -77,10 +76,15 @@ namespace {
     {"w f.c",                 {"w f.c",    5, 10},  {1,  10, 5, 'w', "f.c"}},
     {"w",                     {"w",        5, 10},  {1,  10, 5, 'w', ""}},
     {"quit empty buffer",     {"q",        0, 0},   {0,  0,  0, 'q'}},
-    {"quit",                  {"q",        5, 10},  {5,  5,  5, 'q'}}
+    {"quit",                  {"q",        5, 10},  {5,  5,  5, 'q'}},
+    {"1,2,3,4\\n",            {"1,2,3,4\n",5, 10},  {3,  4,  5, '\n'}},
+    {"7\\n",                  {"7\n",      5, 10},  {7,  7,  5, '\n'}},
+    {"\\n",                   {"\n",       5, 10},  {5,  6,  6, '\n'}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
+    {"no input,empty buffer", {"",      0, 0}},
+    {"no input, dot is $",    {"",      3, 3}},
     {"no hex please",         {"1a,3=", 5, 10}},
     {"dot on rhs of -",       {"5-.",   5, 10}},
     {"dollar on rhs of -",    {"15-$",  5, 10}},

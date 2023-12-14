@@ -110,6 +110,10 @@ namespace {
         indicies.emplace_back(int_index(1), stiX::expression_separator::unchanged);
         indicies.emplace_back(last_index_fn, stiX::expression_separator::unchanged);
       }
+      else if (code == '\n') {
+        indicies.emplace_back(dot_index_fn, stiX::expression_separator::unchanged);
+        indicies.emplace_back(add_offset(dot_index_fn, 1), stiX::expression_separator::update);
+      }
       else
         indicies.emplace_back(dot_index_fn, stiX::expression_separator::unchanged);
     }
