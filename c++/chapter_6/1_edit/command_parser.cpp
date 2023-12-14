@@ -97,13 +97,23 @@ namespace {
         return parse_error;
 
       if (indicies.empty())
-        indicies.emplace_back(dot_index_fn, stiX::expression_separator::unchanged);
+        add_default_indicies();
 
       if (indicies.size() < 2)
         indicies.emplace_back(indicies.front());
 
       return { indicies, code, filename, destination_expression };
     }
+
+    void add_default_indicies() {
+      if (code == 'w') {
+        indicies.emplace_back(int_index(1), stiX::expression_separator::unchanged);
+        indicies.emplace_back(last_index_fn, stiX::expression_separator::unchanged);
+      }
+      else
+        indicies.emplace_back(dot_index_fn, stiX::expression_separator::unchanged);
+    }
+
 
   private:
     void parse_line_numbers() {
