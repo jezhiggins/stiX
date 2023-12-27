@@ -7,28 +7,28 @@
 using namespace std::string_literals;
 
 namespace {
-  auto const DOT = '.';
-  auto const DOLLAR = '$';
-  auto const MINUS = '-';
-  auto const PLUS = '+';
-  auto const SLASH = '/';
-  auto const BACKSLASH = '\\';
-  auto const COMMA = ',';
-  auto const SEMI_COLON = ';';
+  constexpr auto DOT = '.';
+  constexpr auto DOLLAR = '$';
+  constexpr auto MINUS = '-';
+  constexpr auto PLUS = '+';
+  constexpr auto SLASH = '/';
+  constexpr auto BACKSLASH = '\\';
+  constexpr auto COMMA = ',';
+  constexpr auto SEMI_COLON = ';';
 
-  bool is_error(char c) { return c == stiX::command::code_error; }
-  bool is_error(size_t i) { return i == stiX::command::line_error; }
+  bool is_error(char const c) { return c == stiX::command::code_error; }
+  bool is_error(size_t const i) { return i == stiX::command::line_error; }
 
-  stiX::line_expression int_index(size_t index) {
+  stiX::line_expression int_index(size_t const index) {
     return [index](stiX::lines const&, size_t) { return index; };
   }
-  stiX::line_expression add_offset(stiX::line_expression ref_fn, size_t index) {
-    return [ref_fn, index](stiX::lines const& buffer, size_t dot) {
+  stiX::line_expression add_offset(stiX::line_expression const& ref_fn, size_t const index) {
+    return [ref_fn, index](stiX::lines const& buffer, size_t const dot) {
       return ref_fn(buffer, dot) + index;
     };
   }
 
-  size_t dot_index_fn(stiX::lines const&, size_t dot) {
+  size_t dot_index_fn(stiX::lines const&, size_t const dot) {
     return dot;
   }
   size_t last_index_fn(stiX::lines const& buffer, size_t) {
@@ -36,11 +36,11 @@ namespace {
   }
 
   stiX::line_expression search(
-    std::string_view pattern,
+    std::string_view const pattern,
     size_t(next_index)(size_t, stiX::lines const&)
   ) {
     auto matcher = stiX::compile_pattern(pattern);
-    return [matcher, next_index](stiX::lines const& buffer, size_t dot) {
+    return [matcher, next_index](stiX::lines const& buffer, size_t const dot) {
       size_t index = dot;
       do {
         index = next_index(index, buffer);
@@ -56,14 +56,14 @@ namespace {
   size_t next_line(size_t i, stiX::lines const& buffer) {
     return (i < buffer.last()) ? ++i : 1;
   }
-  stiX::line_expression forward_search(std::string_view pattern) {
+  stiX::line_expression forward_search(std::string_view const pattern) {
     return search(pattern, next_line);
   }
 
   size_t prev_line(size_t i, stiX::lines const& buffer) {
     return (i > 1) ? --i : buffer.last();
   }
-  stiX::line_expression backward_search(std::string_view pattern) {
+  stiX::line_expression backward_search(std::string_view const pattern) {
     return search(pattern, prev_line);
   }
 
@@ -78,7 +78,7 @@ namespace {
 
   class command_parser {
   public:
-    explicit command_parser(std::string_view i) :
+    explicit command_parser(std::string_view const i) :
       input(i) {
     }
 
@@ -136,7 +136,7 @@ namespace {
       auto lhs = parse_index();
 
       while (is_operator()) {
-        auto op = input_pop();
+        auto const op = input_pop();
 
         auto rhs = parse_number();
 
@@ -195,7 +195,7 @@ namespace {
     }
 
     size_t parse_number() {
-      auto n = fetch_digits();
+      auto const n = fetch_digits();
 
       auto num = stiX::command::line_error;
       auto [_, ec] = std::from_chars(n.data(), n.data() + n.length(), num);
@@ -213,8 +213,8 @@ namespace {
       return n;
     }
 
-    bool is_index_start() {
-      auto c = *input;
+    bool is_index_start() const {
+      auto const c = *input;
       return c == DOT ||
              c == DOLLAR ||
              c == SLASH ||
@@ -223,16 +223,16 @@ namespace {
              std::isdigit(c);
     }
 
-    bool is_separator() {
-      auto c = *input;
+    bool is_separator() const {
+      auto const c = *input;
       return c == COMMA || c == SEMI_COLON;
     }
 
-    stiX::expression_separator is_semi_colon() {
+    stiX::expression_separator is_semi_colon() const {
       return static_cast<stiX::expression_separator>(*input == SEMI_COLON);
     }
 
-    bool is_operator() {
+    bool is_operator() const {
       auto c = *input;
       return c == PLUS || c == MINUS;
     }
@@ -250,13 +250,13 @@ namespace {
         failed();
     }
 
-    static bool wants_filename(char c) {
-      auto file_codes = "efrw"s;
+    static bool wants_filename(char const c) {
+      auto const file_codes = "efrw"s;
       return file_codes.find(c) != std::string::npos;
     }
 
-    static bool wants_destination(char c) {
-      auto file_codes = "m"s;
+    static bool wants_destination(char const c) {
+      auto const file_codes = "m"s;
       return file_codes.find(c) != std::string::npos;
     }
 
@@ -288,14 +288,14 @@ namespace {
     }
 
     void has_line_numbers_when_forbidden() {
-      auto forbidden_codes = "efq"s;
-      auto forbidden = forbidden_codes.find(code) != std::string::npos;
+      auto const forbidden_codes = "efq"s;
+      auto const forbidden = forbidden_codes.find(code) != std::string::npos;
       if (forbidden && !indicies.empty())
         failed();
     }
 
     char input_pop() {
-      auto c = *input;
+      auto const c = *input;
       input.advance();
       return c;
     }
@@ -315,28 +315,28 @@ namespace {
     bool has_failed = false;
   };
 
-  size_t index_or_error(stiX::line_expression fn, stiX::lines const& buffer, size_t dot) {
-    auto index = fn(buffer, dot);
+  size_t index_or_error(stiX::line_expression const& fn, stiX::lines const& buffer, size_t const dot) {
+    auto const index = fn(buffer, dot);
     return index <= buffer.last() ? index : stiX::command::line_error;
   }
 
-  bool is_error(size_t from, size_t to, char code) {
+  bool is_error(size_t const from, size_t const to, char const code) {
     return is_error(from) ||
            is_error(to) ||
            (from > to) ||
            is_error(code);
   }
 
-  bool are_overlapping(size_t from, size_t to, size_t destination) {
+  bool are_overlapping(size_t const from, size_t const to, size_t const destination) {
     return from <= destination && destination <= to;
   }
 } // namespace
 
 stiX::command::action_fn command_for_code(
-    char code,
-    size_t from_index,
-    size_t to_index,
-    size_t destination,
+    char const code,
+    size_t const from_index,
+    size_t const to_index,
+    size_t const destination,
     std::string const& new_filename) {
   switch (code) {
     case 'a':
@@ -391,7 +391,7 @@ stiX::command::action_fn command_for_code(
   }
 }
 
-stiX::parsed_command stiX::parse_command(std::string_view input) {
+stiX::parsed_command stiX::parse_command(std::string_view const input) {
   auto parser = command_parser(input);
 
   return parser.parse();
@@ -401,17 +401,17 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
   auto dot = buffer.dot();
   auto line_numbers = std::vector<size_t> { };
 
-  for (auto const& expression : line_expressions) {
-    auto index = index_or_error(expression.expr, buffer, dot);
-    dot = (expression.separator == expression_separator::update) ? index : dot;
+  for (auto const& [expr, separator] : line_expressions) {
+    auto index = index_or_error(expr, buffer, dot);
+    dot = (separator == expression_separator::update) ? index : dot;
     line_numbers.push_back(index);
   }
 
   if (line_numbers.size() > 2)
     line_numbers.erase(line_numbers.begin(), line_numbers.end()-2);
 
-  auto from = line_numbers.front();
-  auto to = line_numbers.back();
+  auto const from = line_numbers.front();
+  auto const to = line_numbers.back();
 
   if (is_error(from, to, code))
     return command::error;
