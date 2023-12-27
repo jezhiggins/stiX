@@ -397,28 +397,37 @@ stiX::parsed_command stiX::parse_command(std::string_view const input) {
   return parser.parse();
 }
 
-stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
-  auto dot = buffer.dot();
-  auto line_numbers = std::vector<size_t> { };
+namespace {
+  std::tuple<size_t, size_t, size_t> eval_line_expressions(
+    std::vector<stiX::line_expression_step> const& line_expressions,
+    stiX::lines const& buffer)
+  {
+    auto dot = buffer.dot();
+    auto line_numbers = std::vector<size_t> { };
 
-  for (auto const& [expr, separator] : line_expressions) {
-    auto index = index_or_error(expr, buffer, dot);
-    dot = (separator == expression_separator::update) ? index : dot;
-    line_numbers.push_back(index);
+    for (auto const& [expr, separator] : line_expressions) {
+      auto index = index_or_error(expr, buffer, dot);
+      dot = (separator == stiX::expression_separator::update) ? index : dot;
+      line_numbers.push_back(index);
+    }
+
+    if (line_numbers.size() > 2)
+      line_numbers.erase(line_numbers.begin(), line_numbers.end()-2);
+
+    return { line_numbers.front(), line_numbers.back(), dot };
   }
+}
 
-  if (line_numbers.size() > 2)
-    line_numbers.erase(line_numbers.begin(), line_numbers.end()-2);
-
-  auto const from = line_numbers.front();
-  auto const to = line_numbers.back();
+stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
+  auto const [from, to, updated_dot] =
+    eval_line_expressions(line_expressions, buffer);
 
   if (is_error(from, to, code))
     return command::error;
 
   auto destination = command::line_error;
   if (destination_expression != nullptr) {
-    destination = index_or_error(destination_expression, buffer, dot);
+    destination = index_or_error(destination_expression, buffer, updated_dot);
     if (is_error(destination) || are_overlapping(from, to,destination))
       return command::error;
   }
@@ -426,7 +435,7 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
   return {
     from,
     to,
-    dot,
+    updated_dot,
     code,
     filename,
     destination,
