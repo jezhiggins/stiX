@@ -71,10 +71,12 @@ namespace {
     return stiX::command::line_error;
   }
 
-  stiX::parsed_command const parse_error = {
-    { { line_error_fn }, { line_error_fn } },
-    stiX::command::code_error
-  };
+  stiX::parsed_command parse_error() {
+    return {
+      { { line_error_fn }, { line_error_fn } },
+      stiX::command::code_error
+    };
+  }
 
   class command_parser {
   public:
@@ -89,18 +91,14 @@ namespace {
 
       has_line_numbers_when_forbidden();
 
+      line_number_defaults();
+
       return command();
     }
 
     stiX::parsed_command command() {
       if (is_error())
-        return parse_error;
-
-      if (indicies.empty())
-        add_default_indicies();
-
-      if (indicies.size() < 2)
-        indicies.emplace_back(indicies.front());
+        return parse_error();
 
       return { indicies, code, filename, destination_expression };
     }
@@ -292,6 +290,14 @@ namespace {
       auto const forbidden = forbidden_codes.find(code) != std::string::npos;
       if (forbidden && !indicies.empty())
         failed();
+    }
+
+    void line_number_defaults() {
+      if (indicies.empty())
+        add_default_indicies();
+
+      if (indicies.size() < 2)
+        indicies.emplace_back(indicies.front());
     }
 
     char input_pop() {
