@@ -88,5 +88,9 @@
 
 int main(int argc, char const* argv[]) {
   auto editor = stiX::editor();
+
+  if (argc > 1)
+    editor.load(argv[1], std::cout);
+
   editor.process(std::cin, std::cout);
 }

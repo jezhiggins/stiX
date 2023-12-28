@@ -7,6 +7,7 @@
 namespace stiX {
   class editor {
   public:
+    void load(std::string_view filename, std::ostream& out);
     void process(std::istream& in, std::ostream& out);
 
   private:

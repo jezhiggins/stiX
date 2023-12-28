@@ -96,7 +96,7 @@ namespace {
       return command();
     }
 
-    stiX::parsed_command command() {
+    stiX::parsed_command command() const {
       if (is_error())
         return parse_error();
 
