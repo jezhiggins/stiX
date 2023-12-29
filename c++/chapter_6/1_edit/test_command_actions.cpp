@@ -399,4 +399,13 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       REQUIRE(e.dot() == 4);
     }
   }
+  SECTION("= action") {
+    SECTION("=") {
+      std::ostringstream os;
+
+      stiX::line_index_action(os, 2);
+
+      REQUIRE(os.str() == "2\n");
+    }
+  }
 }

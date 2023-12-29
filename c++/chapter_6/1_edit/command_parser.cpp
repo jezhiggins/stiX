@@ -395,7 +395,9 @@ stiX::command::action_fn command_for_code(
         write_to_file_action(from_index, to_index,new_filename, filename, buffer);
     };
     case '=':
-      return stiX::current_line_action;
+      return [to_index](std::istream&, std::ostream& out, stiX::edit_buffer&, std::string&) {
+        stiX::line_index_action(out, to_index);
+    };
     default:
       return stiX::error_action;
   }

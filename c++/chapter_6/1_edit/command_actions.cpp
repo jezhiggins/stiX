@@ -7,10 +7,6 @@ using namespace stiX;
 
 auto const eof = std::char_traits<char>::eof();
 
-void stiX::current_line_action(std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
-  out << buffer.dot() << '\n';
-}
-
 namespace {
   void read_lines(
       std::istream& source,
@@ -55,6 +51,10 @@ namespace {
         {after+offset+2, to}
     };
   }
+}
+
+void stiX::line_index_action(std::ostream& out, size_t to) {
+  out << to << '\n';
 }
 
 void stiX::append_action(std::istream& in, size_t after, edit_buffer& buffer) {
