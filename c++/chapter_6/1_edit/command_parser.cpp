@@ -377,6 +377,10 @@ stiX::command::action_fn command_for_code(
       return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer, std::string&) {
         print_action(out, from_index, to_index, buffer);
     };
+    case '\n':
+      return [to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer, std::string&) {
+        print_action(out, to_index, to_index, buffer);
+    };
     case 'q':
       return [](std::istream&, std::ostream&, stiX::edit_buffer&, std::string&) {
         std::exit(0);

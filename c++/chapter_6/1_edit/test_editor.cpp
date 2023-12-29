@@ -350,6 +350,29 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ".,.p\n"
       ">line five\n"
     );
+    editor_test(
+      "i\n"
+      "line one\n"
+      "line two\n"
+      "line three\n"
+      "line four\n"
+      "line five\n"
+      ".\n"
+      "=\n"
+      ">5\n"
+      "1p\n"
+      ">line one\n"
+      "\n"
+      ">line two\n"
+      "\n"
+      ">line three\n"
+      "\n"
+      ">line four\n"
+      "\n"
+      ">line five\n"
+      "\n"
+      ">?\n"
+    );
   }
 }
 
