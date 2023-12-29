@@ -1,7 +1,6 @@
 #include "command_actions.hpp"
 #include "../../lib/getline.hpp"
 #include "edit_buffer.hpp"
-#include <iostream>
 #include <fstream>
 
 using namespace stiX;
@@ -86,11 +85,12 @@ void stiX::delete_action(size_t from, size_t to, edit_buffer& buffer) {
 }
 
 void stiX::print_action(std::ostream& out, size_t from, size_t to, edit_buffer& buffer) {
-  if (buffer.dot() == 0) {
+  if (buffer.empty()) {
     out << "?\n";
     return;
   }
 
+  buffer.set_dot(to);
   write_lines(out, from, to, buffer);
 }
 

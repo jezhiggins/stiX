@@ -3,6 +3,7 @@
 #include "command_actions.hpp"
 #include "../../testlib/testlib.hpp"
 #include "edit_buffer.hpp"
+#include "../../chapter_3/4_print/print.hpp"
 
 using namespace std::literals;
 
@@ -374,6 +375,28 @@ TEST_CASE("Chapter 6 - edit - command actions") {
 
       REQUIRE(filename == "donkey");
       REQUIRE(os.str() == "donkey\n");
+    }
+  }
+
+  SECTION("print action") {
+    SECTION("p, print one line, set dot") {
+      auto e = five_line_buffer();
+      std::ostringstream os;
+
+      stiX::print_action(os, 2, 2, e);
+
+      REQUIRE(os.str() == "line 2\n");
+      REQUIRE(e.dot() == 2);
+    }
+
+    SECTION("p, print multiple line, set dot to last printed") {
+      auto e = five_line_buffer();
+      std::ostringstream os;
+
+      stiX::print_action(os, 2, 4, e);
+
+      REQUIRE(os.str() == "line 2\nline 3\nline 4\n");
+      REQUIRE(e.dot() == 4);
     }
   }
 }
