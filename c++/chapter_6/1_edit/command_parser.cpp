@@ -244,14 +244,20 @@ namespace {
     void parse_command_code() {
       code = !input.is_eol() ? input_pop() : '\n';
 
-      if (wants_filename(code))
-        extras = parse_filename();
-
-      if (wants_destination(code))
-        extras = parse_destination();
+      extras = parse_extras();
 
       if (!input.is_eol())
         failed();
+    }
+
+    stiX::command_extras parse_extras() {
+      if (wants_filename(code))
+        return parse_filename();
+
+      if (wants_destination(code))
+        return parse_destination();
+
+      return no_extras();
     }
 
     static bool wants_filename(char const c) {
