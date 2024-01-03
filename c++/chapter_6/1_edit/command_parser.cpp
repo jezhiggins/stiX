@@ -80,12 +80,12 @@ namespace {
 
   struct command_extras {
     std::string filename;
+    stiX::line_expression destination_expression;
 
-    static command_extras no_extras() {
-      return { };
-    }
-    static command_extras with_filename(std::string const& f) {
-      return { f };
+    static command_extras no_extras() { return { }; }
+    static command_extras with_filename(std::string f) { return { .filename = f }; }
+    static command_extras with_destination(stiX::line_expression d) {
+      return { .destination_expression = d };
     }
   };
 
@@ -111,7 +111,7 @@ namespace {
       if (is_error())
         return parse_error();
 
-      return { indicies, code, extras.filename, destination_expression };
+      return { indicies, code, extras.filename, extras.destination_expression };
     }
 
     void add_default_indicies() {
@@ -253,7 +253,7 @@ namespace {
         extras = parse_filename();
 
       if (wants_destination(code))
-        destination_expression = parse_destination();
+        extras = parse_destination();
 
       if (!input.is_eol())
         failed();
@@ -289,12 +289,14 @@ namespace {
       while(std::isspace(*input))
         input_pop();
     }
-    stiX::line_expression parse_destination() {
+    command_extras parse_destination() {
       strip_spaces();
       if (input.is_eol())
         failed();
 
-      return parse_line_number();
+      return command_extras:: with_destination(
+        parse_line_number()
+      );
     }
 
     void has_line_numbers_when_forbidden() {
@@ -329,7 +331,6 @@ namespace {
     std::vector<stiX::line_expression_step> indicies;
     char code = stiX::command::code_error;
     command_extras extras;
-    stiX::line_expression destination_expression;
     bool has_failed = false;
   };
 
