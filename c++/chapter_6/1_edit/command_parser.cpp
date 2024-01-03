@@ -78,6 +78,17 @@ namespace {
     };
   }
 
+  struct command_extras {
+    std::string filename;
+
+    static command_extras no_extras() {
+      return { };
+    }
+    static command_extras with_filename(std::string const& f) {
+      return { f };
+    }
+  };
+
   class command_parser {
   public:
     explicit command_parser(std::string_view const i) :
@@ -100,7 +111,7 @@ namespace {
       if (is_error())
         return parse_error();
 
-      return { indicies, code, filename, destination_expression };
+      return { indicies, code, extras.filename, destination_expression };
     }
 
     void add_default_indicies() {
@@ -239,7 +250,7 @@ namespace {
       code = !input.is_eol() ? input_pop() : '\n';
 
       if (wants_filename(code))
-        filename = parse_filename();
+        extras = parse_filename();
 
       if (wants_destination(code))
         destination_expression = parse_destination();
@@ -258,9 +269,9 @@ namespace {
       return file_codes.find(c) != std::string::npos;
     }
 
-    std::string parse_filename() {
+    command_extras parse_filename() {
       if (input.is_eol())
-        return "";
+        return command_extras::no_extras();
 
       if (!std::isspace(input_pop()))
         failed();
@@ -270,7 +281,8 @@ namespace {
       auto f = std::string{};
       while (!input.is_eol() && !std::isblank(*input))
         f += input_pop();
-      return f;
+
+      return command_extras::with_filename(f);
     }
 
     void strip_spaces() {
@@ -316,7 +328,7 @@ namespace {
 
     std::vector<stiX::line_expression_step> indicies;
     char code = stiX::command::code_error;
-    std::string filename;
+    command_extras extras;
     stiX::line_expression destination_expression;
     bool has_failed = false;
   };
