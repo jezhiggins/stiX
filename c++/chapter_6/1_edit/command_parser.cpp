@@ -78,16 +78,11 @@ namespace {
     };
   }
 
-  struct command_extras {
-    std::string filename;
-    stiX::line_expression destination_expression;
-
-    static command_extras no_extras() { return { }; }
-    static command_extras with_filename(std::string f) { return { .filename = f }; }
-    static command_extras with_destination(stiX::line_expression d) {
-      return { .destination_expression = d };
-    }
-  };
+  stiX::command_extras no_extras() { return { }; }
+  stiX::command_extras with_filename(std::string f) { return { .filename = f }; }
+  stiX::command_extras with_destination(stiX::line_expression d) {
+    return { .destination_expression = d };
+  }
 
   class command_parser {
   public:
@@ -111,7 +106,7 @@ namespace {
       if (is_error())
         return parse_error();
 
-      return { indicies, code, extras.filename, extras.destination_expression };
+      return { indicies, code, extras };
     }
 
     void add_default_indicies() {
@@ -269,9 +264,9 @@ namespace {
       return file_codes.find(c) != std::string::npos;
     }
 
-    command_extras parse_filename() {
+    stiX::command_extras parse_filename() {
       if (input.is_eol())
-        return command_extras::no_extras();
+        return no_extras();
 
       if (!std::isspace(input_pop()))
         failed();
@@ -282,19 +277,19 @@ namespace {
       while (!input.is_eol() && !std::isblank(*input))
         f += input_pop();
 
-      return command_extras::with_filename(f);
+      return with_filename(f);
     }
 
     void strip_spaces() {
       while(std::isspace(*input))
         input_pop();
     }
-    command_extras parse_destination() {
+    stiX::command_extras parse_destination() {
       strip_spaces();
       if (input.is_eol())
         failed();
 
-      return command_extras:: with_destination(
+      return with_destination(
         parse_line_number()
       );
     }
@@ -330,7 +325,7 @@ namespace {
 
     std::vector<stiX::line_expression_step> indicies;
     char code = stiX::command::code_error;
-    command_extras extras;
+    stiX::command_extras extras;
     bool has_failed = false;
   };
 
@@ -451,8 +446,8 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
     return command::error;
 
   auto destination = command::line_error;
-  if (destination_expression != nullptr) {
-    destination = index_or_error(destination_expression, buffer, updated_dot);
+  if (extras.destination_expression != nullptr) {
+    destination = index_or_error(extras.destination_expression, buffer, updated_dot);
     if (is_error(destination) || are_overlapping(from, to,destination))
       return command::error;
   }
@@ -462,9 +457,9 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
     to,
     updated_dot,
     code,
-    filename,
+    extras.filename,
     destination,
-    command_for_code(code, from, to, destination, filename)
+    command_for_code(code, from, to, destination, extras.filename)
   };
 }
 

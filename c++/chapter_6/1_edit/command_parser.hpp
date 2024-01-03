@@ -17,14 +17,17 @@ namespace stiX {
     line_expression expr;
     expression_separator separator;
   };
+  struct command_extras {
+    std::string filename;
+    line_expression destination_expression;
+  };
 
   struct parsed_command {
     command compile(lines const& buffer) const;
 
     std::vector<line_expression_step> const line_expressions;
     char const code;
-    std::string const filename;
-    line_expression const destination_expression;
+    command_extras const extras;
   };
 
   parsed_command parse_command(std::string_view input);
