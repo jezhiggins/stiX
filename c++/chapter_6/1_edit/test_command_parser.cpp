@@ -13,10 +13,25 @@ namespace {
     size_t dollar;
   };
 
+  struct parse_test_extras {
+    std::string filename;
+    size_t destination;
+    std::string search_pattern;
+    std::string replacement;
+  };
+
+  struct parse_test_expectation {
+    size_t from;
+    size_t to;
+    size_t dot;
+    char code;
+    parse_test_extras extras;
+  };
+
   struct parse_test_case {
     std::string label;
     parse_test_input input;
-    stiX::command expected;
+    parse_test_expectation expected;
   };
 
   using parse_test_cases = std::vector<parse_test_case>;
@@ -59,28 +74,28 @@ namespace {
     {".+1,.+1,.+1,.+1,",      {".+1,.+1,.+1,.+1,", 5, 10},  {6,  6, 5, '\n'}},
     {".+1;.+1;.+1;.+1;",      {".+1;.+1;.+1;.+1;", 5, 10},  {8,  9, 9, '\n'}},
     {"1,2,.",                 {"1,2,.",    5, 10},  {2,  5,  5, '\n'}},
-    {"1,3m 6",                {"1,3m 6",   5, 10},  {1,  3,  5, 'm', "", 6}},
-    {"1,3m .",                {"1,3m .",   5, 10},  {1,  3,  5, 'm', "", 5}},
-    {"1,3m .+3",              {"1,3m .+3", 5, 10},  {1,  3,  5, 'm', "", 8}},
-    {"1,3;m .+4",             {"1,3;m .+4",5, 10},  {1,  3,  3, 'm', "", 7}},
-    {"1,3m6",                 {"1,3m6",    5, 10},  {1,  3,  5, 'm', "", 6}},
-    {"1,3m.",                 {"1,3m.",    5, 10},  {1,  3,  5, 'm', "", 5}},
-    {"1,3m.+3",               {"1,3m.+3",  5, 10},  {1,  3,  5, 'm', "", 8}},
-    {"1,3;m.+4",              {"1,3;m.+4", 5, 10},  {1,  3,  3, 'm', "", 7}},
-    {"e file",                {"e f.txt",  0, 0},   {0,  0,  0, 'e', "f.txt"}},
-    {"e space, no filename",  {"e ",       0, 0},   {0,  0,  0, 'e', ""}},
-    {"e spaces before name",  {"e  f.txt", 0, 0},   {0,  0,  0, 'e', "f.txt"}},
-    {"e no filename",         {"e",        0, 0},   {0,  0,  0, 'e', ""}},
-    {"1,3w f.c",              {"1,3w f.c", 5, 10},  {1,  3,  5, 'w', "f.c"}},
-    {"1,3w",                  {"1,3w",     5, 10},  {1,  3,  5, 'w', ""}},
-    {"w f.c",                 {"w f.c",    5, 10},  {1,  10, 5, 'w', "f.c"}},
-    {"w",                     {"w",        5, 10},  {1,  10, 5, 'w', ""}},
+    {"1,3m 6",                {"1,3m 6",   5, 10},  {1,  3,  5, 'm', { .destination = 6}}},
+    {"1,3m .",                {"1,3m .",   5, 10},  {1,  3,  5, 'm', { .destination = 5}}},
+    {"1,3m .+3",              {"1,3m .+3", 5, 10},  {1,  3,  5, 'm', { .destination = 8}}},
+    {"1,3;m .+4",             {"1,3;m .+4",5, 10},  {1,  3,  3, 'm', { .destination = 7}}},
+    {"1,3m6",                 {"1,3m6",    5, 10},  {1,  3,  5, 'm', { .destination = 6}}},
+    {"1,3m.",                 {"1,3m.",    5, 10},  {1,  3,  5, 'm', { .destination = 5}}},
+    {"1,3m.+3",               {"1,3m.+3",  5, 10},  {1,  3,  5, 'm', { .destination = 8}}},
+    {"1,3;m.+4",              {"1,3;m.+4", 5, 10},  {1,  3,  3, 'm', { .destination = 7}}},
+    {"e file",                {"e f.txt",  0, 0},   {0,  0,  0, 'e', { .filename = "f.txt"}}},
+    {"e space, no filename",  {"e ",       0, 0},   {0,  0,  0, 'e'}},
+    {"e spaces before name",  {"e  f.txt", 0, 0},   {0,  0,  0, 'e', { .filename = "f.txt"}}},
+    {"e no filename",         {"e",        0, 0},   {0,  0,  0, 'e'}},
+    {"1,3w f.c",              {"1,3w f.c", 5, 10},  {1,  3,  5, 'w', { .filename = "f.c" }}},
+    {"1,3w",                  {"1,3w",     5, 10},  {1,  3,  5, 'w'}},
+    {"w f.c",                 {"w f.c",    5, 10},  {1,  10, 5, 'w', { .filename = "f.c" }}},
+    {"w",                     {"w",        5, 10},  {1,  10, 5, 'w'}},
     {"quit empty buffer",     {"q",        0, 0},   {0,  0,  0, 'q'}},
     {"quit",                  {"q",        5, 10},  {5,  5,  5, 'q'}},
     {"1,2,3,4\\n",            {"1,2,3,4\n",5, 10},  {3,  4,  5, '\n'}},
     {"7\\n",                  {"7\n",      5, 10},  {7,  7,  5, '\n'}},
     {"\\n",                   {"\n",       5, 10},  {5,  6,  6, '\n'}},
-    { "1,$s/fruit/veg/",      {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's'}}
+    { "1,$s/fruit/veg/",      {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
@@ -114,7 +129,7 @@ namespace {
     {"s/w/",                    {"s/w/",      5, 10}},
     {"s/w/W",                   {"s/w/W",     5, 10}},
     {"s/w/W/?",                 {"s/w/W/?",   5, 10}}
-};
+  };
 
   auto forward_search_tests = parse_test_cases {
     {"from 1, hits 2",  {"/line 2/", 1, 5},  {2, 2, 1, '\n'}},
@@ -122,9 +137,11 @@ namespace {
     {"from 1, hits 1",  {"/line 1/", 1, 5},  {1, 1, 1, '\n'}},
     {"from 5, hits 10", {"/line 1/", 5, 10}, {10, 10, 5, '\n'}},
     {"from 5, hits 3",  {"/line 3/", 5, 10}, {3, 3, 5, '\n'}},
-    {"search with arithmetic",{"/line 9/-2", 5, 10}, {7, 7, 5, '\n'}},
-    {"pattern doesn't match", {"/fruit/",    1, 5}, stiX::command::error},
-    {"match after const",     {"/line 4/,2", 1, 5}, stiX::command::error}
+    {"search with arithmetic",{"/line 9/-2", 5, 10}, {7, 7, 5, '\n'}}
+  };
+  auto bad_forward_search_tests = parse_test_cases {
+    {"pattern doesn't match", {"/fruit/",    1, 5}},
+    {"match after const",     {"/line 4/,2", 1, 5}}
   };
 
   auto backward_search_tests = parse_test_cases {
@@ -134,8 +151,10 @@ namespace {
     {"from 5, hits 9",  {"\\line 9\\", 5, 10}, {9, 9, 5, '\n'}},
     {"from 5, hits 3",  {"\\line 3\\", 5, 10}, {3, 3, 5, '\n'}},
     {"search with arithmetic",{"\\line 9\\-2", 5, 10}, {7, 7, 5, '\n'}},
-    {"pattern doesn't match", {"\\fruit\\",    1, 5}, stiX::command::error},
-    {"match after const",     {"\\line 4\\,2", 1, 5}, stiX::command::error}
+  };
+  auto bad_backward_search_tests = parse_test_cases {
+    {"pattern doesn't match", {"\\fruit\\",    1, 5}},
+    {"match after const",     {"\\line 4\\,2", 1, 5}}
   };
 }
 
@@ -185,7 +204,21 @@ private:
   std::vector<std::string> lines_;
 };
 
-void index_test(parse_test_case tc, stiX::command expected) {
+void verify_from_to_dot_expectations(stiX::command command, parse_test_expectation expected) {
+  REQUIRE(command.from_index == expected.from);
+  REQUIRE(command.to_index == expected.to);
+  REQUIRE(command.dot == expected.dot);
+  REQUIRE(command.code == expected.code);
+}
+
+void verify_extras(stiX::parsed_command parsed_command, parse_test_expectation expected) {
+  REQUIRE(parsed_command.extras.filename == expected.extras.filename);
+  REQUIRE(parsed_command.extras.search_pattern == expected.extras.search_pattern);
+  REQUIRE(parsed_command.extras.replacement == expected.extras.replacement);
+}
+
+////////////////////////////////////////////////
+void indexes_are_good(parse_test_case const& tc) {
   SECTION(tc.label) {
     auto parsed_command = stiX::parse_command(
       tc.input.input
@@ -194,16 +227,31 @@ void index_test(parse_test_case tc, stiX::command expected) {
                                 tc.input.dollar);
     auto command = parsed_command.compile(buffer);
 
-    REQUIRE(command == expected);
+    verify_from_to_dot_expectations(command, tc.expected);
+
+    if (parsed_command.extras.destination_expression != nullptr) {
+      auto destination = parsed_command.extras.destination_expression(buffer, command.dot);
+      INFO("destination");
+      REQUIRE(destination == tc.expected.extras.destination);
+    }
+    verify_extras(parsed_command, tc.expected);
   }
 }
 
-void indexes_are_good(parse_test_case tc) {
-  index_test(tc, tc.expected);
-}
+void indexes_are_bad(parse_test_case const& tc) {
+  SECTION(tc.label) {
+    auto parsed_command = stiX::parse_command(
+      tc.input.input
+    );
+    auto buffer = buffer_double(tc.input.dot,
+                                tc.input.dollar);
+    auto command = parsed_command.compile(buffer);
 
-void indexes_are_bad(parse_test_case tc) {
-  index_test(tc, stiX::command::error);
+    REQUIRE(command.from_index == stiX::command::line_error);
+    REQUIRE(command.to_index == stiX::command::line_error);
+    REQUIRE(command.dot == stiX::command::line_error);
+    REQUIRE(command.code == stiX::command::code_error);
+  }
 }
 
 template <typename Function>
@@ -229,8 +277,10 @@ TEST_CASE("Chapter 6 - edit - command parser") {
 
   SECTION("Forward context search") {
     all_tests(forward_search_tests, indexes_are_good);
+    all_tests(bad_forward_search_tests, indexes_are_bad);
   }
   SECTION("Backward context search") {
     all_tests(backward_search_tests, indexes_are_good);
+    all_tests(bad_backward_search_tests, indexes_are_bad);
   }
 }
