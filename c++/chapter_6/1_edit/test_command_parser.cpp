@@ -79,7 +79,8 @@ namespace {
     {"quit",                  {"q",        5, 10},  {5,  5,  5, 'q'}},
     {"1,2,3,4\\n",            {"1,2,3,4\n",5, 10},  {3,  4,  5, '\n'}},
     {"7\\n",                  {"7\n",      5, 10},  {7,  7,  5, '\n'}},
-    {"\\n",                   {"\n",       5, 10},  {5,  6,  6, '\n'}}
+    {"\\n",                   {"\n",       5, 10},  {5,  6,  6, '\n'}},
+    { "1,$s/fruit/veg/",      {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's'}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
@@ -105,8 +106,15 @@ namespace {
     {"m no destination",        {"1,2m",    5, 10}},
     {"m destination overflow",  {"1,2m 55", 5, 10}},
     {"m destination underflow", {"1,2m .-10", 5, 10}},
-    {"m destination overlap  ", {"1,5m3", 5, 10}}
-  };
+    {"m destination overlap  ", {"1,5m3",     5, 10}},
+    {"1,$s",                    {"1,$s",      5, 10}},
+    {"1,$s/w/",                 {"1,$s/w/",   5, 10}},
+    {"1,$s/w/W/?",              {"1,$s/w/W/?",5, 10}},
+    {"s",                       {"s",         5, 10}},
+    {"s/w/",                    {"s/w/",      5, 10}},
+    {"s/w/W",                   {"s/w/W",     5, 10}},
+    {"s/w/W/?",                 {"s/w/W/?",   5, 10}}
+};
 
   auto forward_search_tests = parse_test_cases {
     {"from 1, hits 2",  {"/line 2/", 1, 5},  {2, 2, 1, '\n'}},

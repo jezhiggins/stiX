@@ -20,6 +20,8 @@ namespace stiX {
   struct command_extras {
     std::string filename;
     line_expression destination_expression;
+    std::string search_pattern;
+    std::string replacement;
   };
 
   struct parsed_command {

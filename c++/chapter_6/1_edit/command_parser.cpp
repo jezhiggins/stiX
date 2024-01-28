@@ -4,7 +4,7 @@
 #include "../../lib/regex/pattern_matcher.hpp"
 #include "../../lib/regex/char_seq.hpp"
 
-using namespace std::string_literals;
+using namespace std::string_view_literals;
 
 namespace {
   constexpr auto DOT = '.';
@@ -82,6 +82,9 @@ namespace {
   stiX::command_extras with_filename(std::string f) { return { .filename = f }; }
   stiX::command_extras with_destination(stiX::line_expression d) {
     return { .destination_expression = d };
+  }
+  stiX::command_extras with_search_replace(std::string p, std::string r) {
+    return { .search_pattern = p, .replacement = r };
   }
 
   class command_parser {
@@ -192,9 +195,16 @@ namespace {
     }
 
     std::string fetch_pattern(char const delimiter) {
+      if (input.is_eol())
+        failed();
+
       auto p = std::string{};
       while (!input.is_eol() && (*input != delimiter))
         p += input_pop();
+
+      if (input.is_eol())
+        failed();
+
       return p;
     }
 
@@ -257,17 +267,26 @@ namespace {
       if (wants_destination(code))
         return parse_destination();
 
+      if (wants_search_replace(code))
+        return parse_search_replace();
+
       return no_extras();
     }
 
     static bool wants_filename(char const c) {
-      auto const file_codes = "efrw"s;
-      return file_codes.find(c) != std::string::npos;
+      return code_match(c, "efrw"sv);
     }
 
     static bool wants_destination(char const c) {
-      auto const file_codes = "m"s;
-      return file_codes.find(c) != std::string::npos;
+      return code_match(c, "m"sv);
+    }
+
+    static bool wants_search_replace(char const c) {
+      return code_match(c, "s"sv);
+    }
+
+    static bool code_match(char const c, std::string_view const codes) {
+      return codes.find(c) != std::string::npos;
     }
 
     stiX::command_extras parse_filename() {
@@ -300,9 +319,26 @@ namespace {
       );
     }
 
+    stiX::command_extras parse_search_replace() {
+      if (input.is_eol())
+        failed();
+
+      auto const delimiter = *input;
+      if (input.is_eol())
+        failed();
+      input.advance();
+
+      auto const pattern = fetch_pattern(delimiter);
+      input.advance();
+
+      auto const replacement = fetch_pattern(delimiter);
+      input.advance();
+
+      return with_search_replace(pattern, replacement);
+    }
+
     void has_line_numbers_when_forbidden() {
-      auto const forbidden_codes = "efq"s;
-      auto const forbidden = forbidden_codes.find(code) != std::string::npos;
+      auto const forbidden = code_match(code, "efq"sv);
       if (forbidden && !indicies.empty())
         failed();
     }
