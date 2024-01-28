@@ -158,29 +158,6 @@ namespace {
   };
 }
 
-namespace stiX {
-  std::ostream &operator<<(std::ostream &out, command const &cmd) {
-    out << "{ "
-        << cmd.from_index
-        << "-"
-        << cmd.to_index
-        << ", "
-        << cmd.dot
-        << ", '";
-    if (cmd.code != '\n')
-      out << cmd.code;
-    else
-      out << "\\n"s;
-    out << "'";
-    if (!cmd.filename.empty())
-      out << ", " << cmd.filename;
-    if (cmd.destination != std::string::npos)
-      out << ", " << cmd.destination;
-    out << " }";
-    return out;
-  }
-}
-
 class buffer_double : public stiX::lines {
 public:
   buffer_double(size_t d, size_t l):

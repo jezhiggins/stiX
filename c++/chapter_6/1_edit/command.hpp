@@ -20,8 +20,6 @@ namespace stiX {
     size_t const to_index = line_error;
     size_t const dot = line_error;
     char const code = code_error;
-    std::string filename;
-    size_t const destination = line_error;
     action_fn const action = error_action;
 
     void operator()(

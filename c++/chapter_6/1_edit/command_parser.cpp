@@ -499,8 +499,6 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
     to,
     updated_dot,
     code,
-    extras.filename,
-    destination,
     command_for_code(code, from, to, destination, extras.filename)
   };
 }
