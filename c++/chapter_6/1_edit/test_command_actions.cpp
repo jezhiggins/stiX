@@ -399,6 +399,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       REQUIRE(e.dot() == 4);
     }
   }
+
   SECTION("= action") {
     SECTION("=") {
       std::ostringstream os;
@@ -406,6 +407,29 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       stiX::line_index_action(os, 2);
 
       REQUIRE(os.str() == "2\n");
+    }
+  }
+
+  SECTION("substitute action") {
+    SECTION("s, all lines, change on every line") {
+      auto e = three_line_buffer();
+
+      substitute_action(1, 3, "line", "Line", e);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "Line 1");
+      REQUIRE(e.line_at(2) == "Line 2");
+      REQUIRE(e.line_at(3) == "Line 3");
+    }
+    SECTION("s, all lines, change on second line") {
+      auto e = three_line_buffer();
+
+      substitute_action(1, 3, "line 2", "Line two", e);
+
+      REQUIRE(e.dot() == 2);
+      REQUIRE(e.line_at(1) == "line 1");
+      REQUIRE(e.line_at(2) == "Line two");
+      REQUIRE(e.line_at(3) == "line 3");
     }
   }
 }

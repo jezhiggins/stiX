@@ -2,6 +2,7 @@
 #include "../../lib/getline.hpp"
 #include "edit_buffer.hpp"
 #include <fstream>
+#include <sstream>
 
 using namespace stiX;
 
@@ -123,6 +124,28 @@ void stiX::edit_file_action(std::string_view filename, std::string& property, ed
     delete_action(1, buffer.last(), buffer);
   read_from_file_action(0, filename, property, buffer);
 }
+
+void stiX::substitute_action(
+  size_t from,
+  size_t to,
+  std::string_view pattern,
+  std::string_view replace,
+  edit_buffer& buffer) {
+  for(auto i = from; i <= to; ++i) {
+    auto l = buffer.line_at(i);
+    auto p = l.find(pattern);
+    if (p == std::string_view::npos)
+      continue;
+
+    auto r = std::ostringstream();
+    r << l.substr(0, p)
+      << replace
+      << l.substr(p + pattern.length());
+    buffer.set_dot(i);
+    buffer.set_at(i, r.str());
+  }
+}
+
 
 void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&, std::string&) {
   out << "?\n";

@@ -208,7 +208,6 @@ void indexes_are_good(parse_test_case const& tc) {
 
     if (parsed_command.extras.destination_expression != nullptr) {
       auto destination = parsed_command.extras.destination_expression(buffer, command.dot);
-      INFO("destination");
       REQUIRE(destination == tc.expected.extras.destination);
     }
     verify_extras(parsed_command, tc.expected);
