@@ -393,7 +393,9 @@ stiX::command::action_fn command_for_code(
     size_t const from_index,
     size_t const to_index,
     size_t const destination,
-    std::string const& new_filename) {
+    std::string const& new_filename,
+    std::string const& pattern,
+    std::string const& replacement) {
   switch (code) {
     case 'a':
       return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
@@ -439,7 +441,10 @@ stiX::command::action_fn command_for_code(
       return [to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
         read_from_file_action(to_index, new_filename, filename, buffer);
     };
-    //case 's':
+    case 's':
+      return [from_index, to_index, pattern, replacement](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
+        stiX::substitute_action(from_index, to_index, pattern, replacement, buffer);
+    };
     case 'w':
       return [from_index, to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
         write_to_file_action(from_index, to_index,new_filename, filename, buffer);
@@ -499,7 +504,14 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
     to,
     updated_dot,
     code,
-    command_for_code(code, from, to, destination, extras.filename)
+    command_for_code(
+      code,
+      from,
+      to,
+      destination,
+      extras.filename,
+      extras.search_pattern,
+      extras.replacement)
   };
 }
 

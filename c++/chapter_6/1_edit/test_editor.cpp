@@ -374,6 +374,25 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">?\n"
     );
   }
+
+  SECTION("s command") {
+    editor_test(
+    "i\n"
+    "line one\n"
+    "line two\n"
+    "line three\n"
+    "line four\n"
+    "line five\n"
+    ".\n"
+    "1,$s/line/Line/\n"
+    "1,$p\n"
+    ">Line one\n"
+    ">Line two\n"
+    ">Line three\n"
+    ">Line four\n"
+    ">Line five\n"
+    );
+  }
 }
 
 std::string testLabel(std::string input);
