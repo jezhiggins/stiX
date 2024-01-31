@@ -188,3 +188,9 @@ action_fn stiX::make_insert_action(size_t const, size_t const to_index, size_t c
     insert_action(in, to_index, buffer);
   };
 }
+action_fn stiX::make_move_action(size_t const from_index, size_t const to_index, size_t const destination,
+  std::string const&, std::string const&, std::string const&) {
+  return [from_index, to_index, destination](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
+    move_action(from_index, to_index, destination, buffer);
+  };
+}

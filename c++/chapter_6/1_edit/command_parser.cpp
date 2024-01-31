@@ -410,9 +410,7 @@ stiX::action_fn command_for_code(
     case 'i':
       return stiX::make_insert_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'm':
-      return [from_index, to_index, destination](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
-        move_action(from_index, to_index, destination, buffer);
-    };
+      return stiX::make_move_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'p':
       return [from_index, to_index](std::istream&, std::ostream& out, stiX::edit_buffer& buffer, std::string&) {
         print_action(out, from_index, to_index, buffer);
