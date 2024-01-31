@@ -408,9 +408,7 @@ stiX::action_fn command_for_code(
     case 'f':
       return stiX::make_filename_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'i':
-      return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
-        insert_action(in, to_index, buffer);
-    };
+      return stiX::make_insert_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'm':
       return [from_index, to_index, destination](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         move_action(from_index, to_index, destination, buffer);

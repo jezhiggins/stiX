@@ -62,6 +62,12 @@ namespace stiX {
     std::string const& new_filename,
     std::string const& pattern,
     std::string const& replacement);
+  action_fn make_insert_action(size_t const from_index,
+    size_t const to_index,
+    size_t const destination,
+    std::string const& new_filename,
+    std::string const& pattern,
+    std::string const& replacement);
 }
 
 #endif

@@ -182,3 +182,9 @@ action_fn stiX::make_filename_action(size_t const, size_t const, size_t const,
     filename_action(new_filename, filename,  out);
   };
 }
+action_fn stiX::make_insert_action(size_t const, size_t const to_index, size_t const,
+  std::string const&, std::string const&, std::string const&) {
+  return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
+    insert_action(in, to_index, buffer);
+  };
+}
