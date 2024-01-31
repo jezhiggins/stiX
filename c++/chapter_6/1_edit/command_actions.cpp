@@ -184,13 +184,25 @@ action_fn stiX::make_filename_action(size_t const, size_t const, size_t const,
 }
 action_fn stiX::make_insert_action(size_t const, size_t const to_index, size_t const,
   std::string const&, std::string const&, std::string const&) {
-  return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
+  return [to_index](std::istream& in, std::ostream&, edit_buffer& buffer, std::string&) {
     insert_action(in, to_index, buffer);
   };
 }
 action_fn stiX::make_move_action(size_t const from_index, size_t const to_index, size_t const destination,
   std::string const&, std::string const&, std::string const&) {
-  return [from_index, to_index, destination](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
+  return [from_index, to_index, destination](std::istream&, std::ostream&, edit_buffer& buffer, std::string&) {
     move_action(from_index, to_index, destination, buffer);
+  };
+}
+action_fn stiX::make_print_action(size_t const from_index, size_t const to_index, size_t const,
+  std::string const&, std::string const&, std::string const&) {
+  return [from_index, to_index](std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
+    print_action(out, from_index, to_index, buffer);
+  };
+}
+action_fn stiX::make_print_next_line_action(size_t const, size_t const to_index, size_t const,
+  std::string const&, std::string const&, std::string const&) {
+  return [to_index](std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
+    print_action(out, to_index, to_index, buffer);
   };
 }
