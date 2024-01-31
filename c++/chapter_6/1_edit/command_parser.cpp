@@ -1,6 +1,8 @@
 #include "command_parser.hpp"
 #include "lines.hpp"
 #include <charconv>
+#include <map>
+
 #include "../../lib/regex/pattern_matcher.hpp"
 #include "../../lib/regex/char_seq.hpp"
 
@@ -386,6 +388,27 @@ namespace {
   bool are_overlapping(size_t const from, size_t const to, size_t const destination) {
     return from <= destination && destination <= to;
   }
+
+  using make_action_fn =
+   std::function<stiX::action_fn(
+       size_t, size_t, size_t,
+       std::string const&, std::string const&, std::string const&)>;
+  auto const command_map = std::map<char, make_action_fn> {
+    { 'a', stiX::make_append_action },
+    { 'c', stiX::make_change_action },
+    { 'd', stiX::make_delete_action },
+    { 'e', stiX::make_edit_action },
+    { 'f', stiX::make_filename_action },
+    { 'i', stiX::make_insert_action },
+    { 'm', stiX::make_move_action },
+    { 'p', stiX::make_print_action },
+    { '\n', stiX::make_print_next_line_action },
+    { 'q', stiX::make_quit_action },
+    { 'r', stiX::make_read_file_action },
+    { 's', stiX::make_substitute_action },
+    { 'w', stiX::make_write_file_action },
+    { '=', stiX::make_line_index_action }
+  };
 } // namespace
 
 stiX::action_fn command_for_code(
@@ -396,38 +419,12 @@ stiX::action_fn command_for_code(
     std::string const& new_filename,
     std::string const& pattern,
     std::string const& replacement) {
-  switch (code) {
-    case 'a':
-      return stiX::make_append_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'c':
-      return stiX::make_change_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'd':
-      return stiX::make_delete_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'e':
-      return stiX::make_edit_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'f':
-      return stiX::make_filename_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'i':
-      return stiX::make_insert_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'm':
-      return stiX::make_move_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'p':
-      return stiX::make_print_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case '\n':
-      return stiX::make_print_next_line_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'q':
-      return stiX::make_quit_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'r':
-      return stiX::make_read_file_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 's':
-      return stiX::make_substitute_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case 'w':
-      return stiX::make_write_file_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    case '=':
-      return stiX::make_line_index_action(from_index, to_index, destination, new_filename, pattern, replacement);
-    default:
-      return stiX::error_action;
-  }
+
+    auto const fn = command_map.find(code);
+
+    return fn != command_map.cend()
+      ? fn->second(from_index, to_index, destination, new_filename, pattern, replacement)
+      : stiX::error_action;
 }
 
 stiX::parsed_command stiX::parse_command(std::string_view const input) {
