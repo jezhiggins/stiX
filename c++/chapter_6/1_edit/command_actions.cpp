@@ -223,3 +223,9 @@ action_fn stiX::make_substitute_action(size_t const from_index, size_t const to_
     substitute_action(from_index, to_index, pattern, replacement, buffer);
   };
 }
+action_fn stiX::make_write_file_action(size_t const from_index, size_t const to_index, size_t const,
+  std::string const& new_filename, std::string const&, std::string const&) {
+  return [from_index, to_index, new_filename](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
+    write_to_file_action(from_index, to_index,new_filename, filename, buffer);
+  };
+}
