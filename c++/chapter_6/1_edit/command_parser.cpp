@@ -424,9 +424,7 @@ stiX::action_fn command_for_code(
     case 'w':
       return stiX::make_write_file_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case '=':
-      return [to_index](std::istream&, std::ostream& out, stiX::edit_buffer&, std::string&) {
-        stiX::line_index_action(out, to_index);
-    };
+      return stiX::make_line_index_action(from_index, to_index, destination, new_filename, pattern, replacement);
     default:
       return stiX::error_action;
   }

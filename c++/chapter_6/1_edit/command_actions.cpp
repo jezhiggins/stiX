@@ -229,3 +229,9 @@ action_fn stiX::make_write_file_action(size_t const from_index, size_t const to_
     write_to_file_action(from_index, to_index,new_filename, filename, buffer);
   };
 }
+action_fn stiX::make_line_index_action(size_t const, size_t const to_index, size_t const,
+  std::string const&, std::string const&, std::string const&) {
+  return [to_index](std::istream&, std::ostream& out, edit_buffer&, std::string&) {
+    line_index_action(out, to_index);
+  };
+}
