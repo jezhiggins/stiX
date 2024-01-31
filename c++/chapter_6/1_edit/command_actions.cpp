@@ -172,7 +172,13 @@ action_fn stiX::make_delete_action(size_t const from_index, size_t const to_inde
 }
 action_fn stiX::make_edit_action(size_t const, size_t const, size_t const,
   std::string const& new_filename, std::string const&, std::string const&) {
-  return [new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
+  return [new_filename](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
     edit_file_action(new_filename, filename, buffer);
+  };
+}
+action_fn stiX::make_filename_action(size_t const, size_t const, size_t const,
+  std::string const& new_filename, std::string const&, std::string const&) {
+  return [new_filename](std::istream& in, std::ostream& out, edit_buffer&, std::string& filename) {
+    filename_action(new_filename, filename,  out);
   };
 }
