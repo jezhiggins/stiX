@@ -2,20 +2,12 @@
 #define STICPP_COMMAND_HPP
 
 #include <string>
-#include <functional>
 #include "command_actions.hpp"
 
 namespace stiX {
   class edit_buffer;
-  struct command {
-    using action_fn =
-      std::function<void(
-        std::istream&,
-        std::ostream&,
-        edit_buffer&,
-        std::string&
-      )>;
 
+  struct command {
     size_t const from_index = line_error;
     size_t const to_index = line_error;
     size_t const dot = line_error;

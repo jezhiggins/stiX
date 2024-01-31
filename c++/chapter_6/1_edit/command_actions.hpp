@@ -3,10 +3,19 @@
 
 #include <iosfwd>
 #include <string>
+#include <functional>
 
 namespace stiX {
   class edit_buffer;
   class lines;
+
+  using action_fn =
+    std::function<void(
+      std::istream&,
+      std::ostream&,
+      edit_buffer&,
+      std::string&
+    )>;
 
   void line_index_action(std::ostream& out, size_t to);
   void append_action(std::istream& in, size_t after, edit_buffer& buffer);
@@ -22,6 +31,19 @@ namespace stiX {
   void substitute_action(size_t from, size_t to, std::string_view pattern, std::string_view replace, edit_buffer& buffer);
 
   void error_action(std::istream&, std::ostream&, edit_buffer&, std::string&);
+
+  action_fn make_append_action(size_t const from_index,
+    size_t const to_index,
+    size_t const destination,
+    std::string const& new_filename,
+    std::string const& pattern,
+    std::string const& replacement);
+  action_fn make_change_action(size_t const from_index,
+    size_t const to_index,
+    size_t const destination,
+    std::string const& new_filename,
+    std::string const& pattern,
+    std::string const& replacement);
 }
 
 #endif

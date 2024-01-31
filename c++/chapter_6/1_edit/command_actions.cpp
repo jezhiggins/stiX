@@ -150,3 +150,17 @@ void stiX::substitute_action(
 void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&, std::string&) {
   out << "?\n";
 }
+
+////////////////////
+action_fn stiX::make_append_action(size_t const, size_t const to_index, size_t const,
+  std::string const&, std::string const&, std::string const&) {
+  return [to_index](std::istream& in, std::ostream&, edit_buffer& buffer, std::string&) {
+    append_action(in, to_index, buffer);
+  };
+}
+action_fn stiX::make_change_action(size_t const from_index, size_t const to_index, size_t const,
+  std::string const&, std::string const&, std::string const&) {
+  return [from_index, to_index](std::istream& in, std::ostream&, edit_buffer& buffer, std::string&) {
+    change_action(in, from_index, to_index, buffer);
+  };
+}

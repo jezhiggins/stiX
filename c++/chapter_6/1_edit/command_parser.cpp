@@ -388,7 +388,7 @@ namespace {
   }
 } // namespace
 
-stiX::command::action_fn command_for_code(
+stiX::action_fn command_for_code(
     char const code,
     size_t const from_index,
     size_t const to_index,
@@ -398,13 +398,9 @@ stiX::command::action_fn command_for_code(
     std::string const& replacement) {
   switch (code) {
     case 'a':
-      return [to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
-        append_action(in, to_index, buffer);
-    };
+      return stiX::make_append_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'c':
-      return [from_index, to_index](std::istream& in, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
-        change_action(in, from_index, to_index, buffer);
-    };
+      return stiX::make_change_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'd':
       return [from_index, to_index](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
         delete_action(from_index, to_index, buffer);
