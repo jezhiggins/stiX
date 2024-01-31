@@ -164,3 +164,9 @@ action_fn stiX::make_change_action(size_t const from_index, size_t const to_inde
     change_action(in, from_index, to_index, buffer);
   };
 }
+action_fn stiX::make_delete_action(size_t const from_index, size_t const to_index, size_t const,
+  std::string const&, std::string const&, std::string const&) {
+  return [from_index, to_index](std::istream&, std::ostream&, edit_buffer& buffer, std::string&) {
+    delete_action(from_index, to_index, buffer);
+  };
+}

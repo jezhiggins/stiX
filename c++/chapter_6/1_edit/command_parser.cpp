@@ -402,9 +402,7 @@ stiX::action_fn command_for_code(
     case 'c':
       return stiX::make_change_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'd':
-      return [from_index, to_index](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string&) {
-        delete_action(from_index, to_index, buffer);
-    };
+      return stiX::make_delete_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'e':
       return [new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
         edit_file_action(new_filename, filename, buffer);
