@@ -416,13 +416,9 @@ stiX::action_fn command_for_code(
     case '\n':
       return stiX::make_print_next_line_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'q':
-      return [](std::istream&, std::ostream&, stiX::edit_buffer&, std::string&) {
-        std::exit(0);
-    };
+      return stiX::make_quit_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'r':
-      return [to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
-        read_from_file_action(to_index, new_filename, filename, buffer);
-    };
+      return stiX::make_read_file_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 's':
       return [from_index, to_index, pattern, replacement](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
         stiX::substitute_action(from_index, to_index, pattern, replacement, buffer);

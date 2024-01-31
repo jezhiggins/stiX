@@ -146,7 +146,6 @@ void stiX::substitute_action(
   }
 }
 
-
 void stiX::error_action(std::istream&, std::ostream& out, edit_buffer&, std::string&) {
   out << "?\n";
 }
@@ -204,5 +203,17 @@ action_fn stiX::make_print_next_line_action(size_t const, size_t const to_index,
   std::string const&, std::string const&, std::string const&) {
   return [to_index](std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
     print_action(out, to_index, to_index, buffer);
+  };
+}
+action_fn stiX::make_quit_action(size_t const, size_t const, size_t const,
+  std::string const&, std::string const&, std::string const&) {
+  return [](std::istream&, std::ostream&, edit_buffer&, std::string&) {
+    std::exit(0);
+  };
+}
+action_fn stiX::make_read_file_action(size_t const, size_t const to_index, size_t const,
+  std::string const& new_filename, std::string const&, std::string const&) {
+  return [to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
+    read_from_file_action(to_index, new_filename, filename, buffer);
   };
 }
