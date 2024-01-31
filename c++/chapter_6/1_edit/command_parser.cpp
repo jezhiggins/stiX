@@ -420,9 +420,7 @@ stiX::action_fn command_for_code(
     case 'r':
       return stiX::make_read_file_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 's':
-      return [from_index, to_index, pattern, replacement](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
-        stiX::substitute_action(from_index, to_index, pattern, replacement, buffer);
-    };
+      return stiX::make_substitute_action(from_index, to_index, destination, new_filename, pattern, replacement);
     case 'w':
       return [from_index, to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
         write_to_file_action(from_index, to_index,new_filename, filename, buffer);

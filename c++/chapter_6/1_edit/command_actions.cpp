@@ -213,7 +213,13 @@ action_fn stiX::make_quit_action(size_t const, size_t const, size_t const,
 }
 action_fn stiX::make_read_file_action(size_t const, size_t const to_index, size_t const,
   std::string const& new_filename, std::string const&, std::string const&) {
-  return [to_index, new_filename](std::istream&, std::ostream&, stiX::edit_buffer& buffer, std::string& filename) {
+  return [to_index, new_filename](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
     read_from_file_action(to_index, new_filename, filename, buffer);
+  };
+}
+action_fn stiX::make_substitute_action(size_t const from_index, size_t const to_index, size_t const,
+  std::string const&, std::string const& pattern, std::string const& replacement) {
+  return [from_index, to_index, pattern, replacement](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
+    substitute_action(from_index, to_index, pattern, replacement, buffer);
   };
 }
