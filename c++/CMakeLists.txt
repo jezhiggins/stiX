@@ -24,7 +24,11 @@ add_library(stix STATIC
         lib/regex/pattern_matcher.hpp
         lib/regex/pattern_matcher.cpp
         lib/regex/char_seq.cpp
-        lib/regex/char_seq.hpp)
+        lib/regex/char_seq.hpp
+        lib/regex/replacement.cpp
+	lib/regex/replacement.hpp
+	lib/regex/change.cpp
+	lib/regex/change.hpp)
 
 add_library(testsupport STATIC
         testlib/testlib.hpp
@@ -197,19 +201,11 @@ add_executable(find_cheating
 target_link_libraries(find_cheating stix)
 
 add_executable(change
-        chapter_5/2_change/2_change.cpp
-        chapter_5/2_change/change.cpp
-        chapter_5/2_change/change.hpp
-        chapter_5/2_change/replacement.hpp
-        chapter_5/2_change/replacement.cpp)
+        chapter_5/2_change/2_change.cpp)
 target_link_libraries(change stix)
 
 add_executable(change_test
-        chapter_5/2_change/test.cpp
-        chapter_5/2_change/change.cpp
-        chapter_5/2_change/change.hpp
-        chapter_5/2_change/replacement.hpp
-        chapter_5/2_change/replacement.cpp)
+        chapter_5/2_change/test.cpp)
 target_link_libraries(change_test stix testsupport)
 
 set (edit_sources

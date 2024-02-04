@@ -1,8 +1,8 @@
 #include "../../testlib/testlib.hpp"
 
-#include "change.hpp"
+#include "../../lib/regex/change.hpp"
 #include "../../lib/regex/pattern_matcher.hpp"
-#include "replacement.hpp"
+#include "../../lib/regex/replacement.hpp"
 
 TEST_CASE("Chapter 5 - change - pattern match location") {
   SECTION("no match") {

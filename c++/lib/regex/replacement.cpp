@@ -1,6 +1,6 @@
 
 #include "replacement.hpp"
-#include "../../lib/escapes.hpp"
+#include "../escapes.hpp"
 #include <sstream>
 
 static char next_char(

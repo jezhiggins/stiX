@@ -1,6 +1,6 @@
 #include "change.hpp"
-#include "../../lib/getline.hpp"
-#include "../../lib/regex/pattern_matcher.hpp"
+#include "../getline.hpp"
+#include "pattern_matcher.hpp"
 #include "replacement.hpp"
 
 #include <iostream>

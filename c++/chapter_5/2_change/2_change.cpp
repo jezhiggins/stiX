@@ -19,7 +19,7 @@
 //
 
 #include "../../lib/arguments.hpp"
-#include "change.hpp"
+#include "../../lib/regex/change.hpp"
 #include <iostream>
 
 int main(int argc, char const* argv[]) {
