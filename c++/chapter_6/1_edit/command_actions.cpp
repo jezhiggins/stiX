@@ -1,5 +1,8 @@
 #include "command_actions.hpp"
 #include "../../lib/getline.hpp"
+#include "../../lib/regex/pattern_matcher.hpp"
+#include "../../lib/regex/replacement.hpp"
+#include "../../lib/regex/change.hpp"
 #include "edit_buffer.hpp"
 #include <fstream>
 #include <sstream>
@@ -131,18 +134,18 @@ void stiX::substitute_action(
   std::string_view pattern,
   std::string_view replace,
   edit_buffer& buffer) {
+
+  auto matcher = compile_pattern(pattern);
+  auto replacer = prepare_replacement(replace);
+
   for(auto i = from; i <= to; ++i) {
     auto l = buffer.line_at(i);
-    auto p = l.find(pattern);
-    if (p == std::string_view::npos)
-      continue;
+    auto o = std::ostringstream { };
 
-    auto r = std::ostringstream();
-    r << l.substr(0, p)
-      << replace
-      << l.substr(p + pattern.length());
+    apply_change(matcher, replacer, l, o);
+
     buffer.set_dot(i);
-    buffer.set_at(i, r.str());
+    buffer.set_at(i, o.str());
   }
 }
 

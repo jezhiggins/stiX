@@ -426,10 +426,20 @@ TEST_CASE("Chapter 6 - edit - command actions") {
 
       substitute_action(1, 3, "line 2", "Line two", e);
 
-      REQUIRE(e.dot() == 2);
+      REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 1");
       REQUIRE(e.line_at(2) == "Line two");
       REQUIRE(e.line_at(3) == "line 3");
+    }
+    SECTION("s, regex match, capture replacement") {
+      auto e = three_line_buffer();
+
+      substitute_action(1, 3, "[13]", "(&)", e);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "line (1)");
+      REQUIRE(e.line_at(2) == "line 2");
+      REQUIRE(e.line_at(3) == "line (3)");
     }
   }
 }
