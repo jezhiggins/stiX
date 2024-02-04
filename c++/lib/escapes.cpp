@@ -15,8 +15,8 @@ char stiX::expand_escape(char candidate) {
 }
 
 char stiX::is_valid_escape_sequence(
-  std::string::const_iterator const& c,
-  std::string::const_iterator const& end
+  std::string_view::const_iterator const& c,
+  std::string_view::const_iterator const& end
 ) {
   if (*c != Escape)
     return false;

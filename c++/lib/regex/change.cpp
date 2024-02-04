@@ -9,15 +9,14 @@ auto const eof = std::char_traits<char>::eof();
 
 using size_type = stiX::pattern_matcher::size_type;
 
-static bool at_end(std::string_view line, size_type offset);
-static bool not_at_end(std::string_view line, size_type offset);
-
-static void apply_change(
-  stiX::pattern_matcher const& matcher,
-  stiX::replacement const& replacer,
-  std::string_view line,
-  std::ostream& out
-);
+namespace {
+  bool at_end(std::string_view line, size_type offset) {
+    return offset == line.size();
+  }
+  bool not_at_end(std::string_view line, size_type offset) {
+    return !at_end(line, offset);
+  }
+}
 
 void stiX::change(
   std::istream& in,
@@ -32,6 +31,8 @@ void stiX::change(
     auto input = stiX::getline(in);
 
     apply_change(matcher, replacer, input, out);
+
+    out << '\n';
   }
 }
 
@@ -46,9 +47,9 @@ private:
   int state_;
 };
 
-void apply_change(
-  stiX::pattern_matcher const& matcher,
-  stiX::replacement const& replacer,
+void stiX::apply_change(
+  pattern_matcher const& matcher,
+  replacement const& replacer,
   std::string_view line,
   std::ostream& out
 ) {
@@ -76,12 +77,5 @@ void apply_change(
     }
   }
 
-  out << line.substr(offset) << '\n';
-}
-
-bool at_end(std::string_view line, size_type offset) {
-  return offset == line.size();
-}
-bool not_at_end(std::string_view line, size_type offset) {
-  return !at_end(line, offset);
+  out << line.substr(offset);
 }

@@ -9,8 +9,8 @@ namespace stiX {
   char expand_escape(char candidate);
 
   char is_valid_escape_sequence(
-    std::string::const_iterator const& c,
-    std::string::const_iterator const& end
+    std::string_view::const_iterator const& c,
+    std::string_view::const_iterator const& end
   );
 }
 

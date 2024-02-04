@@ -23,7 +23,7 @@ namespace stiX {
     friend struct replacement_test_fixture;
   };
 
-  replacement prepare_replacement(std::string const& str);
+  replacement prepare_replacement(std::string_view str);
 }
 
 #endif //STICPP_REPLACEMENT_HPP

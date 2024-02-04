@@ -9,47 +9,47 @@ namespace {
     const char Caret = '^';
 
     std::string translitArgument(
-        std::string const& arg,
+        std::string_view arg,
         bool ignoreInitialCaret
     );
 
     bool is_valid_dash_range(
-        std::string::const_iterator const& c,
-        std::string const& arg
+        std::string_view::const_iterator const& c,
+        std::string_view arg
     );
 
     void expand_dash_range(
         std::back_insert_iterator<std::string>& dest,
-        std::string::const_iterator& c
+        std::string_view::const_iterator& c
     );
 
     void expand_escape_sequence(
         std::back_insert_iterator<std::string>& dest,
-        std::string::const_iterator& c
+        std::string_view::const_iterator& c
     );
 }
 
 bool stiX::isNegatedArgument(
-    const std::string& arg
+    std::string_view arg
 ) {
   return arg.size() && arg[0] == Caret;
 }
 
 std::string stiX::translitSrcArgument(
-    std::string const& arg
+    std::string_view arg
 ) {
   return translitArgument(arg, true);
 }
 
 std::string stiX::translitDestArgument(
-    std::string const& arg
+    std::string_view arg
 ) {
   return translitArgument(arg, false);
 }
 
 namespace {
     std::string translitArgument(
-        std::string const& arg,
+        std::string_view arg,
         bool ignoreInitialCaret
     ) {
       std::string expanded;
@@ -75,8 +75,8 @@ namespace {
     } // translitArgument
 
     bool is_valid_dash_range(
-        std::string::const_iterator const& c,
-        std::string const& arg
+        std::string_view::const_iterator const& c,
+        std::string_view arg
     ) {
       if (*c != stiX::Dash)
         return false;
@@ -93,7 +93,7 @@ namespace {
 
     void expand_dash_range(
         std::back_insert_iterator<std::string>& dest,
-        std::string::const_iterator &c) {
+        std::string_view::const_iterator &c) {
       char from = *(c - 1) + 1;
       char to = *++c;
 
@@ -104,7 +104,7 @@ namespace {
 
     void expand_escape_sequence(
         std::back_insert_iterator<std::string>& dest,
-        std::string::const_iterator& c
+        std::string_view::const_iterator& c
     ) {
       auto candidate = *++c;
       auto escaped = stiX::expand_escape(candidate);

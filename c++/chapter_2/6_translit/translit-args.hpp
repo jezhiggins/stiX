@@ -5,15 +5,15 @@
 
 namespace stiX {
     bool isNegatedArgument(
-        const std::string& arg
+        std::string_view arg
     );
 
     std::string translitSrcArgument(
-        const std::string& arg
+        std::string_view arg
     );
 
     std::string translitDestArgument(
-        const std::string& arg
+        std::string_view arg
     );
 }
 

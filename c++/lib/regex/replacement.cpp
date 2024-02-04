@@ -3,15 +3,24 @@
 #include "../escapes.hpp"
 #include <sstream>
 
-static char next_char(
-  std::string::const_iterator& c,
-  std::string::const_iterator const& end
-);
-static char expand_escape_sequence(
-  std::string::const_iterator& c
-);
+namespace {
+  char expand_escape_sequence(
+    std::string_view::const_iterator& c
+  ) {
+    auto candidate = *++c;
+    return stiX::expand_escape(candidate);
+  } // expand_escape_sequence
 
-static auto const ditto_marker = std::string { 1, '\0' };
+  char next_char(
+    std::string_view::const_iterator& c,
+    std::string_view::const_iterator const& end
+  ) {
+    auto is_escape = stiX::is_valid_escape_sequence(c, end);
+    return is_escape ? expand_escape_sequence(c) : *c;
+  }
+
+  auto const ditto_marker = std::string { 1, '\0' };
+}
 
 bool is_ditto(std::string const& str) {
   return str == ditto_marker;
@@ -32,7 +41,7 @@ void stiX::replacement::apply(std::string_view match, std::ostream &out) const {
   }
 }
 
-stiX::replacement stiX::prepare_replacement(std::string const& str) {
+stiX::replacement stiX::prepare_replacement(std::string_view str) {
   auto replacements = std::vector<std::string> { };
   auto replacement = std::string { };
 
@@ -59,18 +68,3 @@ stiX::replacement stiX::prepare_replacement(std::string const& str) {
 
   return replacements;
 }
-
-char next_char(
-  std::string::const_iterator& c,
-  std::string::const_iterator const& end
-) {
-  auto is_escape = stiX::is_valid_escape_sequence(c, end);
-  return is_escape ? expand_escape_sequence(c) : *c;
-}
-
-char expand_escape_sequence(
-  std::string::const_iterator& c
-) {
-  auto candidate = *++c;
-  return stiX::expand_escape(candidate);
-} // expand_escape_sequence
