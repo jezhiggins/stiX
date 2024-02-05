@@ -28,18 +28,30 @@ namespace {
     int state_;
   };
 
-  std::pair<size_t, size_t> apply_change_at_offset(
+  struct match_offsets {
+    size_t offset;
+    size_t last_match;
+
+    match_offsets() : offset(0), last_match(-1) { }
+    match_offsets(size_t o, size_t l) : offset(o), last_match(l) { }
+  };
+
+  bool at_end(std::string_view line, match_offsets offsets) {
+    return at_end(line, offsets.offset) || at_end(line, offsets.last_match);
+  }
+
+  match_offsets apply_change_at_offset(
     stiX::pattern_matcher const& matcher,
     stiX::replacement const& replacer,
-    size_type offset,
-    size_type last_match,
+    match_offsets mo,
     std::string_view line,
     std::ostream& out
   ) {
+    auto [ offset, last_match ] = mo;
     auto match = matcher.find(line, offset);
 
     if (!match.match)
-      return std::make_pair(offset, last_match);
+      return { offset, line.size() };
 
     if (!match.zero_width || last_match != match.from) {
       auto up_to_match = line.substr(offset, match.from - offset);
@@ -56,7 +68,7 @@ namespace {
       offset = match.from + 1;
     }
 
-    return std::make_pair(offset, last_match);
+    return { offset, last_match };
   }
 }
 
@@ -84,31 +96,12 @@ void stiX::apply_change(
   std::string_view line,
   std::ostream& out
 ) {
-  size_type offset = 0;
-  size_type last_match = -1;
+  auto offsets = match_offsets { };
 
-  for (auto state = replacement_state(); !state.completed(); state.next(at_end(line, offset))) {
-    auto match = matcher.find(line, offset);
-    if (!match.match)
-      break;
+  for (auto state = replacement_state(); !state.completed(); state.next(at_end(line, offsets)))
+    offsets = apply_change_at_offset(matcher, replacer, offsets, line, out);
 
-    if (!match.zero_width || last_match != match.from) {
-      auto up_to_match = line.substr(offset, match.from - offset);
-      auto match_text = line.substr(match.from, match.length);
-
-      out << up_to_match << replacer.apply(match_text);
-    }
-
-    offset = match.to;
-    last_match = match.to;
-
-    if (match.zero_width && not_at_end(line, offset)) {
-      out << line[match.from];
-      offset = match.from + 1;
-    }
-  }
-
-  out << line.substr(offset);
+  out << line.substr(offsets.offset);
 }
 
 void stiX::apply_change_once(
@@ -117,6 +110,6 @@ void stiX::apply_change_once(
   std::string_view line,
   std::ostream& out
 ) {
-  auto [offset, last_match] = apply_change_at_offset(matcher, replacer, 0, -1, line, out);
+  auto [offset, last_match] = apply_change_at_offset(matcher, replacer, match_offsets{} , line, out);
   out << line.substr(offset);
 }
