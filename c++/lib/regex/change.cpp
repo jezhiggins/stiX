@@ -79,3 +79,33 @@ void stiX::apply_change(
 
   out << line.substr(offset);
 }
+
+void stiX::apply_change_once(
+  pattern_matcher const& matcher,
+  replacement const& replacer,
+  std::string_view line,
+  std::ostream& out
+) {
+  size_type offset = 0;
+  size_type last_match = -1;
+
+  auto match = matcher.find(line, offset);
+  if (match.match) {
+    if (!match.zero_width || last_match != match.from) {
+      auto up_to_match = line.substr(offset, match.from - offset);
+      auto match_text = line.substr(match.from, match.length);
+
+      out << up_to_match << replacer.apply(match_text);
+    }
+
+    offset = match.to;
+    last_match = match.to;
+
+    if (match.zero_width && not_at_end(line, offset)) {
+      out << line[match.from];
+      offset = match.from + 1;
+    }
+  }
+  
+  out << line.substr(offset);
+}

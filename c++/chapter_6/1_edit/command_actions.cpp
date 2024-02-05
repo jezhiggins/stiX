@@ -142,7 +142,7 @@ void stiX::substitute_action(
     auto l = buffer.line_at(i);
     auto o = std::ostringstream { };
 
-    apply_change(matcher, replacer, l, o);
+    apply_change_once(matcher, replacer, l, o);
 
     buffer.set_dot(i);
     buffer.set_at(i, o.str());

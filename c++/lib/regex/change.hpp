@@ -20,6 +20,13 @@ namespace stiX {
     std::string_view line,
     std::ostream& out
   );
+
+  void apply_change_once(
+    pattern_matcher const& matcher,
+    replacement const& replacer,
+    std::string_view line,
+    std::ostream& out
+  );
 }
 
 #endif //STICPP_CHANGE_HPP

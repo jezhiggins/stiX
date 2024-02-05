@@ -441,5 +441,14 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       REQUIRE(e.line_at(2) == "line 2");
       REQUIRE(e.line_at(3) == "line (3)");
     }
+    SECTION("s, ensure single replacement") {
+      auto eb = stiX::edit_buffer();
+      eb.insert(eb.dot(), "aeiou aeiou");
+
+      substitute_action(1, 1, "aeiou", "AEIOU", eb);
+
+      REQUIRE(eb.dot() == 1);
+      REQUIRE(eb.line_at(1) == "AEIOU aeiou");
+    }
   }
 }
