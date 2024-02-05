@@ -16,6 +16,48 @@ namespace {
   bool not_at_end(std::string_view line, size_type offset) {
     return !at_end(line, offset);
   }
+
+  class replacement_state {
+  public:
+    replacement_state() : state_(0) { }
+
+    void next(bool at_end) { state_ = (state_ == 1) ? 2 : at_end; };
+    bool completed() const { return state_ == 2; }
+
+  private:
+    int state_;
+  };
+
+  std::pair<size_t, size_t> apply_change_at_offset(
+    stiX::pattern_matcher const& matcher,
+    stiX::replacement const& replacer,
+    size_type offset,
+    size_type last_match,
+    std::string_view line,
+    std::ostream& out
+  ) {
+    auto match = matcher.find(line, offset);
+
+    if (!match.match)
+      return std::make_pair(offset, last_match);
+
+    if (!match.zero_width || last_match != match.from) {
+      auto up_to_match = line.substr(offset, match.from - offset);
+      auto match_text = line.substr(match.from, match.length);
+
+      out << up_to_match << replacer.apply(match_text);
+    }
+
+    offset = match.to;
+    last_match = match.to;
+
+    if (match.zero_width && not_at_end(line, offset)) {
+      out << line[match.from];
+      offset = match.from + 1;
+    }
+
+    return std::make_pair(offset, last_match);
+  }
 }
 
 void stiX::change(
@@ -35,17 +77,6 @@ void stiX::change(
     out << '\n';
   }
 }
-
-class replacement_state {
-public:
-  replacement_state() : state_(0) { }
-
-  void next(bool at_end) { state_ = (state_ == 1) ? 2 : at_end; };
-  bool completed() const { return state_ == 2; }
-
-private:
-  int state_;
-};
 
 void stiX::apply_change(
   pattern_matcher const& matcher,
@@ -86,26 +117,6 @@ void stiX::apply_change_once(
   std::string_view line,
   std::ostream& out
 ) {
-  size_type offset = 0;
-  size_type last_match = -1;
-
-  auto match = matcher.find(line, offset);
-  if (match.match) {
-    if (!match.zero_width || last_match != match.from) {
-      auto up_to_match = line.substr(offset, match.from - offset);
-      auto match_text = line.substr(match.from, match.length);
-
-      out << up_to_match << replacer.apply(match_text);
-    }
-
-    offset = match.to;
-    last_match = match.to;
-
-    if (match.zero_width && not_at_end(line, offset)) {
-      out << line[match.from];
-      offset = match.from + 1;
-    }
-  }
-  
+  auto [offset, last_match] = apply_change_at_offset(matcher, replacer, 0, -1, line, out);
   out << line.substr(offset);
 }
