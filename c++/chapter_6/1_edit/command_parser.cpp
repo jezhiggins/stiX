@@ -85,8 +85,8 @@ namespace {
   stiX::command_extras with_destination(stiX::line_expression d) {
     return { .destination_expression = d };
   }
-  stiX::command_extras with_search_replace(std::string p, std::string r) {
-    return { .search_pattern = p, .replacement = r };
+  stiX::command_extras with_search_replace(std::string p, std::string r, bool a) {
+    return { .search_pattern = p, .replacement = r, .replace_all = a };
   }
 
   class command_parser {
@@ -336,7 +336,10 @@ namespace {
       auto const replacement = fetch_pattern(delimiter);
       input.advance();
 
-      return with_search_replace(pattern, replacement);
+      auto replace_all = *input == 'g';
+      if (replace_all) input.advance();
+
+      return with_search_replace(pattern, replacement, replace_all);
     }
 
     void has_line_numbers_when_forbidden() {

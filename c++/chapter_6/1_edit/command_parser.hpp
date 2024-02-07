@@ -22,6 +22,7 @@ namespace stiX {
     line_expression destination_expression;
     std::string search_pattern;
     std::string replacement;
+    bool replace_all;
   };
 
   struct parsed_command {

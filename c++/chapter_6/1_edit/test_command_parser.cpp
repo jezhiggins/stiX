@@ -18,6 +18,7 @@ namespace {
     size_t destination;
     std::string search_pattern;
     std::string replacement;
+    bool all;
   };
 
   struct parse_test_expectation {
@@ -95,7 +96,8 @@ namespace {
     {"1,2,3,4\\n",            {"1,2,3,4\n",5, 10},  {3,  4,  5, '\n'}},
     {"7\\n",                  {"7\n",      5, 10},  {7,  7,  5, '\n'}},
     {"\\n",                   {"\n",       5, 10},  {5,  6,  6, '\n'}},
-    { "1,$s/fruit/veg/",      {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}}
+    { "1,$s/fruit/veg/",      {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}},
+    { "1,$s/fruit/veg/g",     {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
@@ -128,7 +130,8 @@ namespace {
     {"s",                       {"s",         5, 10}},
     {"s/w/",                    {"s/w/",      5, 10}},
     {"s/w/W",                   {"s/w/W",     5, 10}},
-    {"s/w/W/?",                 {"s/w/W/?",   5, 10}}
+    {"s/w/W/?",                 {"s/w/W/?",   5, 10}},
+    {"s/w/W/grg",               {"s/w/W/grg", 5, 10}}
   };
 
   auto forward_search_tests = parse_test_cases {
