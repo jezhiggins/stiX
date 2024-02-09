@@ -221,8 +221,9 @@ action_fn stiX::make_read_file_action(size_t const, size_t const to_index, size_
 action_fn stiX::make_substitute_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
   auto pattern = extras.search_pattern;
   auto replacement = extras.replacement;
-  return [from_index, to_index, pattern, replacement](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
-    substitute_action(from_index, to_index, pattern, replacement, false, buffer);
+  auto replace_all = extras.replace_all;
+  return [from_index, to_index, pattern, replacement,replace_all](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
+    substitute_action(from_index, to_index, pattern, replacement, replace_all, buffer);
   };
 }
 action_fn stiX::make_write_file_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
