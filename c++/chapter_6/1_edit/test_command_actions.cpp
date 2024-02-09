@@ -414,7 +414,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
     SECTION("s, all lines, change on every line") {
       auto e = three_line_buffer();
 
-      substitute_action(1, 3, "line", "Line", e);
+      substitute_action(1, 3, "line", "Line", false, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Line 1");
@@ -424,7 +424,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
     SECTION("s, all lines, change on second line") {
       auto e = three_line_buffer();
 
-      substitute_action(1, 3, "line 2", "Line two", e);
+      substitute_action(1, 3, "line 2", "Line two", false, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 1");
@@ -434,7 +434,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
     SECTION("s, regex match, capture replacement") {
       auto e = three_line_buffer();
 
-      substitute_action(1, 3, "[13]", "(&)", e);
+      substitute_action(1, 3, "[13]", "(&)", false, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line (1)");
@@ -445,10 +445,19 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto eb = stiX::edit_buffer();
       eb.insert(eb.dot(), "aeiou aeiou");
 
-      substitute_action(1, 1, "aeiou", "AEIOU", eb);
+      substitute_action(1, 1, "aeiou", "AEIOU", false, eb);
 
       REQUIRE(eb.dot() == 1);
       REQUIRE(eb.line_at(1) == "AEIOU aeiou");
+    }
+    SECTION("s, g replaces all") {
+      auto eb = stiX::edit_buffer();
+      eb.insert(eb.dot(), "aeiou aeiou");
+
+      substitute_action(1, 1, "aeiou", "AEIOU", true, eb);
+
+      REQUIRE(eb.dot() == 1);
+      REQUIRE(eb.line_at(1) == "AEIOU AEIOU");
     }
   }
 }

@@ -394,8 +394,7 @@ namespace {
 
   using make_action_fn =
    std::function<stiX::action_fn(
-       size_t, size_t, size_t,
-       std::string const&, std::string const&, std::string const&)>;
+       size_t, size_t, size_t, stiX::command_extras const&)>;
   auto const command_map = std::map<char, make_action_fn> {
     { 'a', stiX::make_append_action },
     { 'c', stiX::make_change_action },
@@ -419,14 +418,12 @@ stiX::action_fn command_for_code(
     size_t const from_index,
     size_t const to_index,
     size_t const destination,
-    std::string const& new_filename,
-    std::string const& pattern,
-    std::string const& replacement) {
+    stiX::command_extras const& extras) {
 
     auto const fn = command_map.find(code);
 
     return fn != command_map.cend()
-      ? fn->second(from_index, to_index, destination, new_filename, pattern, replacement)
+      ? fn->second(from_index, to_index, destination, extras)
       : stiX::error_action;
 }
 
@@ -481,9 +478,7 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
       from,
       to,
       destination,
-      extras.filename,
-      extras.search_pattern,
-      extras.replacement)
+      extras)
   };
 }
 
