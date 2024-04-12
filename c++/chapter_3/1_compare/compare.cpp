@@ -5,10 +5,25 @@
 
 namespace {
     const std::string end_of_file = "end of file on ";
+
+    void at_end(
+        std::string left_file_name,
+        std::istream& left,
+        std::string right_file_name,
+        std::istream& right,
+        std::ostream& out
+    ) {
+        if (left.eof() && right.eof())
+            return;
+
+        out << end_of_file
+            << (left.eof() ? left_file_name : right_file_name)
+            << '\n';
+    }
 }
 
 namespace stiX {
-    void compare(
+  void compare(
         std::string left_file_name,
         std::istream& left,
         std::string right_file_name,
@@ -20,12 +35,8 @@ namespace stiX {
             auto left_line = getline(left);
             auto right_line = getline(right);
 
-            if (left.eof() && !right.eof()) {
-                out << end_of_file << left_file_name << '\n';
-                return;
-            }
-            if (!left.eof() && right.eof()) {
-                out << end_of_file << right_file_name << '\n';
+            if (left.eof() || right.eof()) {
+                at_end(left_file_name, left, right_file_name, right, out);
                 return;
             }
 
