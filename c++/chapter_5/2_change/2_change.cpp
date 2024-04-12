@@ -24,7 +24,7 @@
 
 int main(int argc, char const* argv[]) {
   auto arguments = stiX::make_arguments(argc, argv);
-  if (arguments.size() < 1 || arguments.size() > 2) {
+  if (arguments.empty() || arguments.size() > 2) {
     std::cout << argv[0] << " pattern [replacement]\n";
     return 0;
   }
