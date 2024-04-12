@@ -133,7 +133,6 @@ bool is_good_path(fs::path const& path) {
     return false;
   }
 
-
   return true;
 } // is_good_path
 
