@@ -138,7 +138,9 @@ namespace {
     {"s/w/",                    {"s/w/",      5, 10}},
     {"s/w/W",                   {"s/w/W",     5, 10}},
     {"s/w/W/?",                 {"s/w/W/?",   5, 10}},
-    {"s/w/W/grg",               {"s/w/W/grg", 5, 10}}
+    {"s/w/W/grg",               {"s/w/W/grg", 5, 10}},
+    {"d with garbage",          {"1,4dq",     5, 10}},
+    {"d with p then garbage",   {"1,4dpp",     5, 10}}
   };
 
   auto forward_search_tests = parse_test_cases {
