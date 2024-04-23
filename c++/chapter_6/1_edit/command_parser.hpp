@@ -18,6 +18,7 @@ namespace stiX {
     expression_separator separator;
   };
   struct command_extras {
+    bool and_print;
     std::string filename;
     line_expression destination_expression;
     std::string search_pattern;

@@ -19,6 +19,7 @@ namespace {
     std::string search_pattern;
     std::string replacement;
     bool all;
+    bool and_print;
   };
 
   struct parse_test_expectation {
@@ -99,6 +100,9 @@ namespace {
     {"d",                     {"d",        5, 10},  {5,  5,  5, 'd'}},
     {"3d",                    {"3d",       5, 10},  {3,  3,  5, 'd'}},
     {"1,4d",                  {"1,4d",     5, 10},  {1,  4,  5, 'd'}},
+    {"dp",                    {"dp",       5, 10},  {5,  5,  5, 'd', { .and_print = true }}},
+    {"3dp",                   {"3dp",      5, 10},  {3,  3,  5, 'd', { .and_print = true }}},
+    {"1,4dp",                 {"1,4dp",    5, 10},  {1,  4,  5, 'd', { .and_print = true }}},
     { "1,$s/fruit/veg/",      {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}},
     { "1,$s/fruit/veg/g",     {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}}
   };
@@ -198,6 +202,7 @@ void verify_extras(stiX::parsed_command parsed_command, parse_test_expectation e
   REQUIRE(parsed_command.extras.filename == expected.extras.filename);
   REQUIRE(parsed_command.extras.search_pattern == expected.extras.search_pattern);
   REQUIRE(parsed_command.extras.replacement == expected.extras.replacement);
+  REQUIRE(parsed_command.extras.and_print == expected.extras.and_print);
 }
 
 ////////////////////////////////////////////////
