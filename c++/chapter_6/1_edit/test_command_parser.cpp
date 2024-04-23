@@ -96,6 +96,9 @@ namespace {
     {"1,2,3,4\\n",            {"1,2,3,4\n",5, 10},  {3,  4,  5, '\n'}},
     {"7\\n",                  {"7\n",      5, 10},  {7,  7,  5, '\n'}},
     {"\\n",                   {"\n",       5, 10},  {5,  6,  6, '\n'}},
+    {"d",                     {"d",        5, 10},  {5,  5,  5, 'd'}},
+    {"3d",                    {"3d",       5, 10},  {3,  3,  5, 'd'}},
+    {"1,4d",                  {"1,4d",     5, 10},  {1,  4,  5, 'd'}},
     { "1,$s/fruit/veg/",      {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}},
     { "1,$s/fruit/veg/g",     {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}}
   };
