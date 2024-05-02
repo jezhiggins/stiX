@@ -118,7 +118,9 @@ namespace {
     {"3=p",                   {"3=p",      5, 10},  {3,  3,  5, '=', { .and_print = true }}},
     {"1,4=p",                 {"1,4=p",    5, 10},  {1,  4,  5, '=', { .and_print = true }}},
     {"1,$s/fruit/veg/",       {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}},
-    {"1,$s/fruit/veg/g",      {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}}
+    {"1,$s/fruit/veg/g",      {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}},
+    {"1,$s/fruit/veg/p",       {"1,$s/fruit/veg/p", 5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .and_print = true }}},
+    {"1,$s/fruit/veg/gp",      {"1,$s/fruit/veg/gp",5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true, .and_print = true }}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {

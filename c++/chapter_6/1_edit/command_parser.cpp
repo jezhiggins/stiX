@@ -263,12 +263,12 @@ namespace {
     }
 
     stiX::command_extras parse_extras() {
-      auto extras = parse_command_parameters();
+      auto parameters = parse_command_parameters();
 
       if (and_then_print(code))
-        extras.and_print = parse_trailing_print();
+        parameters.and_print = parse_trailing_print();
 
-      return extras;
+      return parameters;
     }
 
     stiX::command_extras parse_command_parameters() {
@@ -285,7 +285,7 @@ namespace {
     }
 
     static bool and_then_print(char const c) {
-      return code_match(c, "d=m"sv);
+      return code_match(c, "d=ms"sv);
     }
 
     static bool wants_filename(char const c) {
