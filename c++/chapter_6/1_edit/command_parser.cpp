@@ -280,7 +280,7 @@ namespace {
     }
 
     static bool can_then_print(char const c) {
-      return code_match(c, "d"sv);
+      return code_match(c, "d="sv);
     }
 
     static bool wants_filename(char const c) {

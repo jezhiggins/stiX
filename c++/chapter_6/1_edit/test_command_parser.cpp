@@ -103,8 +103,14 @@ namespace {
     {"dp",                    {"dp",       5, 10},  {5,  5,  5, 'd', { .and_print = true }}},
     {"3dp",                   {"3dp",      5, 10},  {3,  3,  5, 'd', { .and_print = true }}},
     {"1,4dp",                 {"1,4dp",    5, 10},  {1,  4,  5, 'd', { .and_print = true }}},
-    { "1,$s/fruit/veg/",      {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}},
-    { "1,$s/fruit/veg/g",     {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}}
+    {"=",                     {"=",        5, 10},  {5,  5,  5, '='}},
+    {"3=",                    {"3=",       5, 10},  {3,  3,  5, '='}},
+    {"1,4=",                  {"1,4=",     5, 10},  {1,  4,  5, '='}},
+    {"=p",                    {"=p",       5, 10},  {5,  5,  5, '=', { .and_print = true }}},
+    {"3=p",                   {"3=p",      5, 10},  {3,  3,  5, '=', { .and_print = true }}},
+    {"1,4=p",                 {"1,4=p",    5, 10},  {1,  4,  5, '=', { .and_print = true }}},
+    {"1,$s/fruit/veg/",       {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}},
+    {"1,$s/fruit/veg/g",      {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
@@ -140,7 +146,9 @@ namespace {
     {"s/w/W/?",                 {"s/w/W/?",   5, 10}},
     {"s/w/W/grg",               {"s/w/W/grg", 5, 10}},
     {"d with garbage",          {"1,4dq",     5, 10}},
-    {"d with p then garbage",   {"1,4dpp",     5, 10}}
+    {"d with p then garbage",   {"1,4dpp",    5, 10}},
+    {"= with garbage",          {"1,4=q",     5, 10}},
+    {"= with p then garbage",   {"1,4=pp",    5, 10}}
   };
 
   auto forward_search_tests = parse_test_cases {
