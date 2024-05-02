@@ -81,7 +81,6 @@ namespace {
   }
 
   stiX::command_extras no_extras() { return { }; }
-  stiX::command_extras with_print() { return { .and_print = true }; }
   stiX::command_extras with_filename(std::string f) { return { .filename = f }; }
   stiX::command_extras with_destination(stiX::line_expression d) {
     return { .destination_expression = d };
@@ -264,9 +263,15 @@ namespace {
     }
 
     stiX::command_extras parse_extras() {
-      if (can_then_print(code))
-        return parse_trailing_print();
+      auto extras = parse_command_parameters();
 
+      if (and_then_print(code))
+        extras.and_print = parse_trailing_print();
+
+      return extras;
+    }
+
+    stiX::command_extras parse_command_parameters() {
       if (wants_filename(code))
         return parse_filename();
 
@@ -279,8 +284,8 @@ namespace {
       return no_extras();
     }
 
-    static bool can_then_print(char const c) {
-      return code_match(c, "d="sv);
+    static bool and_then_print(char const c) {
+      return code_match(c, "d=m"sv);
     }
 
     static bool wants_filename(char const c) {
@@ -299,14 +304,14 @@ namespace {
       return codes.find(c) != std::string::npos;
     }
 
-    stiX::command_extras parse_trailing_print() {
+    bool parse_trailing_print() {
       if (input.is_eol())
-        return no_extras();
+        return false;
 
       if ('p' != input_pop())
         failed();
 
-      return with_print();
+      return true;
     }
 
     stiX::command_extras parse_filename() {
