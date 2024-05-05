@@ -22,6 +22,8 @@ namespace stiX {
 
   private:
     std::vector<command> commands_;
+
+    friend std::vector<command> const& command_list(commands const&);
   };
 }
 

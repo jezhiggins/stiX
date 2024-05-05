@@ -6,6 +6,12 @@
 
 using namespace std::string_literals;
 
+namespace stiX {
+  std::vector<stiX::command> const& command_list(stiX::commands const& commands) {
+    return commands.commands_;
+  }
+}
+
 namespace {
   struct parse_test_input {
     std::string input;
@@ -233,7 +239,9 @@ void indexes_are_good(parse_test_case const& tc) {
     );
     auto buffer = buffer_double(tc.input.dot,
                                 tc.input.dollar);
-    auto command = parsed_command.compile(buffer);
+    auto commands = parsed_command.compile(buffer);
+    auto& list = command_list(commands);
+    auto& command = list[0];
 
     verify_from_to_dot_expectations(command, tc.expected);
 
@@ -252,7 +260,9 @@ void indexes_are_bad(parse_test_case const& tc) {
     );
     auto buffer = buffer_double(tc.input.dot,
                                 tc.input.dollar);
-    auto command = parsed_command.compile(buffer);
+    auto commands = parsed_command.compile(buffer);
+    auto& list = command_list(commands);
+    auto& command = list[0];
 
     REQUIRE(command.from_index == stiX::command::line_error);
     REQUIRE(command.to_index == stiX::command::line_error);

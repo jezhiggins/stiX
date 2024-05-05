@@ -3,7 +3,7 @@
 
 #include <functional>
 #include <vector>
-#include "command.hpp"
+#include "commands.hpp"
 
 namespace stiX {
   class lines;
@@ -27,7 +27,7 @@ namespace stiX {
   };
 
   struct parsed_command {
-    command compile(lines const& buffer) const;
+    commands compile(lines const& buffer) const;
 
     std::vector<line_expression_step> const line_expressions;
     char const code;

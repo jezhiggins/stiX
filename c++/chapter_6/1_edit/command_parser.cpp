@@ -477,7 +477,7 @@ namespace {
   }
 }
 
-stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
+stiX::commands stiX::parsed_command::compile(stiX::lines const& buffer) const {
   auto const [from, to, updated_dot] =
     eval_line_expressions(line_expressions, buffer);
 
@@ -491,7 +491,7 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
       return command::error;
   }
 
-  return {
+  return {{
     from,
     to,
     updated_dot,
@@ -502,6 +502,6 @@ stiX::command stiX::parsed_command::compile(stiX::lines const& buffer) const {
       to,
       destination,
       extras)
-  };
+  }};
 }
 
