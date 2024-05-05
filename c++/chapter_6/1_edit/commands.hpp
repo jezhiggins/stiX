@@ -2,15 +2,12 @@
 #define STICPP_COMMANDS_HPP
 
 #include "command.hpp"
+#include <initializer_list>
 
 namespace stiX {
   class commands {
   public:
-    commands(command c) :
-      commands_() {
-      commands_.emplace_back(c);
-    }
-    commands(std::vector<command>&& cs) :
+    commands(std::initializer_list<command> cs) :
       commands_(cs) {
     }
 

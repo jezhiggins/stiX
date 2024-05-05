@@ -482,16 +482,16 @@ stiX::commands stiX::parsed_command::compile(stiX::lines const& buffer) const {
     eval_line_expressions(line_expressions, buffer);
 
   if (is_error(from, to, code))
-    return command::error;
+    return { command::error };
 
   auto destination = command::line_error;
   if (extras.destination_expression != nullptr) {
     destination = index_or_error(extras.destination_expression, buffer, updated_dot);
     if (is_error(destination) || are_overlapping(from, to,destination))
-      return command::error;
+      return { command::error };
   }
 
-  return {{
+  auto command = stiX::command {
     from,
     to,
     updated_dot,
@@ -502,6 +502,11 @@ stiX::commands stiX::parsed_command::compile(stiX::lines const& buffer) const {
       to,
       destination,
       extras)
-  }};
+  };
+  auto and_then = extras.and_print
+    ? command::and_print
+    : command::noop;
+
+  return { command, and_then } ;
 }
 

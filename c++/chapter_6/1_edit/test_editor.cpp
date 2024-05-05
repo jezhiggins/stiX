@@ -159,6 +159,19 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">line one\n"
       ">line five\n"
     );
+    editor_test(
+      "i\n"
+      "line one\n"
+      "line two\n"
+      "line three\n"
+      "line four\n"
+      "line five\n"
+      "line six\n"
+      "line seven\n"
+      ".\n"
+      "4,5dp\n"
+      ">line six\n"
+    );
   }
 
   SECTION("i command") {

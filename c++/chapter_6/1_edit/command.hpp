@@ -24,6 +24,8 @@ namespace stiX {
     static char const code_error;
 
     static command const error;
+    static command const noop;
+    static command const and_print;
   };
 
   bool operator==(command const& lhs, command const& rhs);

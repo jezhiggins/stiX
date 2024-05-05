@@ -1,6 +1,7 @@
 #include "command.hpp"
 
 #include <limits>
+#include <ostream>
 
 #include "edit_buffer.hpp"
 
@@ -19,4 +20,12 @@ void stiX::command::operator()(
 }
 
 stiX::command const stiX::command::error = { };
+stiX::command const stiX::command::noop = {
+  .action = [](std::istream&, std::ostream&, edit_buffer&, std::string&) { }
+};
+stiX::command const stiX::command::and_print = {
+  .action = [](std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
+    out << buffer.line_at(buffer.dot()) << '\n';
+  }
+};
 
