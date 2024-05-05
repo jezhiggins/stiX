@@ -218,10 +218,7 @@ private:
 };
 
 void verify_from_to_dot_expectations(stiX::command command, parse_test_expectation expected) {
-  REQUIRE(command.from_index == expected.from);
-  REQUIRE(command.to_index == expected.to);
   REQUIRE(command.dot == expected.dot);
-  REQUIRE(command.code == expected.code);
 }
 
 void verify_extras(stiX::parsed_command parsed_command, parse_test_expectation expected) {
@@ -264,10 +261,7 @@ void indexes_are_bad(parse_test_case const& tc) {
     auto& list = command_list(commands);
     auto& command = list[0];
 
-    REQUIRE(command.from_index == stiX::command::line_error);
-    REQUIRE(command.to_index == stiX::command::line_error);
     REQUIRE(command.dot == stiX::command::line_error);
-    REQUIRE(command.code == stiX::command::code_error);
   }
 }
 

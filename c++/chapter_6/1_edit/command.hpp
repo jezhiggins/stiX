@@ -8,10 +8,7 @@ namespace stiX {
   class edit_buffer;
 
   struct command {
-    size_t const from_index = line_error;
-    size_t const to_index = line_error;
     size_t const dot = line_error;
-    char const code = code_error;
     action_fn const action = error_action;
 
     void operator()(
