@@ -194,10 +194,10 @@ namespace {
   };
 }
 
-class buffer_double : public stiX::lines {
+class buffer_double : public stiX::lines_modifier {
 public:
   buffer_double(size_t d, size_t l):
-    dot_(d), dollar_(l) {
+    updated_dot(d), dot_(d), dollar_(l) {
     lines_.emplace_back("underflow");
     for (auto i = 1; i <= dollar_; ++i)
       lines_.emplace_back("line " + std::to_string(i));
@@ -208,17 +208,39 @@ public:
     return lines_[index];
   }
 
+  size_t updated_dot;
+  void set_dot(size_t nd) override { updated_dot = nd; }
+
   size_t dot() const override { return dot_; }
   size_t last() const override { return dollar_; }
+
+  void insert(size_t index, std::string_view line) override { oops(); }
+  void set_at(size_t index, std::string_view line) override { oops(); }
+  void remove_at(size_t index) override { oops(); }
+  void swap(size_t lindex, size_t rindex) override { oops(); }
+  bool empty() const override { oops(); return false; }
 
 private:
   size_t const dot_;
   size_t const dollar_;
   std::vector<std::string> lines_;
+
+  void oops() const { throw std::invalid_argument("oops"); }
 };
 
-void verify_from_to_dot_expectations(stiX::command command, parse_test_expectation expected) {
-  REQUIRE(command.dot == expected.dot);
+void verify_from_to_dot_expectations(
+  stiX::commands commands,
+  buffer_double& buffer,
+  parse_test_expectation expected
+) {
+  auto& list = command_list(commands);
+  auto& command = list[0];
+
+  auto dummy = std::stringstream { };
+  auto f = std::string { };
+  command(dummy, dummy, buffer, f);
+
+  REQUIRE(buffer.updated_dot == expected.dot);
 }
 
 void verify_extras(stiX::parsed_command parsed_command, parse_test_expectation expected) {
@@ -237,13 +259,11 @@ void indexes_are_good(parse_test_case const& tc) {
     auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
 
     auto commands = parsed_command.compile(buffer);
-    auto& list = command_list(commands);
-    auto& command = list[1];
 
-    verify_from_to_dot_expectations(command, tc.expected);
+    verify_from_to_dot_expectations(commands, buffer, tc.expected);
 
     if (parsed_command.extras.destination_expression != nullptr) {
-      auto destination = parsed_command.extras.destination_expression(buffer, command.dot);
+      auto destination = parsed_command.extras.destination_expression(buffer, buffer.updated_dot);
       REQUIRE(destination == tc.expected.extras.destination);
     }
     verify_extras(parsed_command, tc.expected);
