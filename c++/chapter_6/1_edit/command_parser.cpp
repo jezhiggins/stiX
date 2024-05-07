@@ -491,6 +491,10 @@ stiX::commands stiX::parsed_command::compile(stiX::lines const& buffer) const {
       return { command::error };
   }
 
+  auto set_dot = updated_dot != buffer.dot()
+    ? command::update_dot(updated_dot)
+    : command::noop;
+
   auto command = stiX::command {
     updated_dot,
     command_for_code(
@@ -504,6 +508,6 @@ stiX::commands stiX::parsed_command::compile(stiX::lines const& buffer) const {
     ? command::and_print
     : command::noop;
 
-  return { command, and_then } ;
+  return { set_dot, command, and_then } ;
 }
 

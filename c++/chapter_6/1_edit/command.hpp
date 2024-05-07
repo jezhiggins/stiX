@@ -23,6 +23,7 @@ namespace stiX {
     static command const error;
     static command const noop;
     static command const and_print;
+    static command const update_dot(size_t dot);
   };
 
   bool operator==(command const& lhs, command const& rhs);

@@ -13,9 +13,6 @@ void stiX::command::operator()(
   std::ostream& out,
   edit_buffer& buffer,
   std::string& filename) const {
-  if (dot != line_error)
-    buffer.set_dot(dot);
-
   action(in, out, buffer, filename);
 }
 
@@ -28,4 +25,10 @@ stiX::command const stiX::command::and_print = {
     out << buffer.line_at(buffer.dot()) << '\n';
   }
 };
+stiX::command const stiX::command::update_dot(size_t const dot) {
+  auto update_dot_action = [dot](std::istream&, std::ostream&, edit_buffer& buffer, std::string&) {
+    buffer.set_dot(dot);
+  };
+  return { .action = update_dot_action };
+}
 

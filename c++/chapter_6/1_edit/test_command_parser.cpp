@@ -234,11 +234,11 @@ void indexes_are_good(parse_test_case const& tc) {
     auto parsed_command = stiX::parse_command(
       tc.input.input
     );
-    auto buffer = buffer_double(tc.input.dot,
-                                tc.input.dollar);
+    auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
+
     auto commands = parsed_command.compile(buffer);
     auto& list = command_list(commands);
-    auto& command = list[0];
+    auto& command = list[1];
 
     verify_from_to_dot_expectations(command, tc.expected);
 
