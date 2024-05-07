@@ -7,7 +7,7 @@ std::string const HEADER_TAG = "-h- ";
 
 stiX::archive_file stiX::parse_header(std::string const& header) {
   if (header.find(HEADER_TAG) != 0)
-    throw std::logic_error("Not a header line");
+    throw std::logic_error("Not a header line: " + header);
 
   auto lastspace = header.find_last_of(' ');
   auto namelength = lastspace-4;
