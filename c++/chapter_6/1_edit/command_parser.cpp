@@ -496,7 +496,6 @@ stiX::commands stiX::parsed_command::compile(stiX::lines const& buffer) const {
     : command::noop;
 
   auto command = stiX::command {
-    updated_dot,
     command_for_code(
       code,
       from,

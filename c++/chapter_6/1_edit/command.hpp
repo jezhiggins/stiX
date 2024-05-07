@@ -8,7 +8,6 @@ namespace stiX {
   class lines_modifier;
 
   struct command {
-    size_t const dot = line_error;
     action_fn const action = error_action;
 
     void operator()(
@@ -25,9 +24,6 @@ namespace stiX {
     static command const and_print;
     static command const update_dot(size_t dot);
   };
-
-  bool operator==(command const& lhs, command const& rhs);
-  bool operator!=(command const& lhs, command const& rhs);
 }
 
 #endif //STICPP_COMMAND_HPP

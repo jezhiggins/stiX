@@ -281,7 +281,12 @@ void indexes_are_bad(parse_test_case const& tc) {
     auto& list = command_list(commands);
     auto& command = list[0];
 
-    REQUIRE(command.dot == stiX::command::line_error);
+    auto io = std::stringstream { };
+    auto f = std::string { };
+
+    command(io, io, buffer, f);
+
+    REQUIRE(io.str() == "?\n");
   }
 }
 
