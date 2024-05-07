@@ -15,5 +15,16 @@ namespace stiX {
     ~lines() = default;
   };
 
+  class lines_modifier : public lines {
+  public:
+    virtual void insert(size_t index, std::string_view line) = 0;
+    virtual void set_at(size_t index, std::string_view line) = 0;
+    virtual void remove_at(size_t index) = 0;
+    virtual void swap(size_t lindex, size_t rindex) = 0;
+
+    virtual void set_dot(size_t new_dot) = 0;
+
+    virtual bool empty() const = 0;
+  };
 }
 #endif //STICPP_LINES_H

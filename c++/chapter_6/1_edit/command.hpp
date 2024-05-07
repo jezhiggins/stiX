@@ -5,7 +5,7 @@
 #include "command_actions.hpp"
 
 namespace stiX {
-  class edit_buffer;
+  class lines_modifier;
 
   struct command {
     size_t const dot = line_error;
@@ -14,7 +14,7 @@ namespace stiX {
     void operator()(
       std::istream& in,
       std::ostream& out,
-      edit_buffer& buffer,
+      lines_modifier& buffer,
       std::string& filename) const;
 
     static size_t const line_error;
