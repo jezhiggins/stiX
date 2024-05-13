@@ -130,6 +130,7 @@ namespace {
     {"1,$s/fruit/veg/p",      {"1,$s/fruit/veg/p", 5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .and_print = true }}},
     {"1,$s/fruit/veg/gp",     {"1,$s/fruit/veg/gp",5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true, .and_print = true }}},
     {"g/line/p",              {"g/line/p", 5, 10},   {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
+    {"g#line#p",              {"g#line#p", 5, 10},   {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
     {"g/line/p with space",   {"g/line/p  ", 5, 10}, {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}}
   };
 

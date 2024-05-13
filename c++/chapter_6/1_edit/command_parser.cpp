@@ -196,6 +196,15 @@ namespace {
       return make_search(pattern);
     }
 
+    char fetch_delimiter() {
+      auto const delimiter = *input;
+      if (input.is_eol())
+        failed();
+      input.advance();
+
+      return delimiter;
+    }
+
     std::string fetch_pattern(char const delimiter) {
       if (input.is_eol())
         failed();
@@ -355,10 +364,7 @@ namespace {
       if (input.is_eol())
         failed();
 
-      auto const delimiter = *input;
-      if (input.is_eol())
-        failed();
-      input.advance();
+      auto const delimiter = fetch_delimiter();
 
       auto const pattern = fetch_pattern(delimiter);
 
@@ -374,10 +380,7 @@ namespace {
       if (input.is_eol())
         failed();
 
-      auto const delimiter = *input;
-      if (input.is_eol())
-        failed();
-      input.advance();
+      auto const delimiter = fetch_delimiter();
 
       auto const pattern = fetch_pattern(delimiter);
 
