@@ -416,7 +416,7 @@ namespace {
   }
 
   using make_action_fn =
-   std::function<stiX::action_fn(
+   std::function<stiX::action(
        size_t, size_t, size_t, stiX::command_extras const&)>;
   auto const command_map = std::map<char, make_action_fn> {
     { 'a', stiX::make_append_action },
@@ -436,7 +436,7 @@ namespace {
   };
 } // namespace
 
-stiX::action_fn command_for_code(
+stiX::action command_for_code(
     char const code,
     size_t const from_index,
     size_t const to_index,
@@ -447,7 +447,7 @@ stiX::action_fn command_for_code(
 
     return fn != command_map.cend()
       ? fn->second(from_index, to_index, destination, extras)
-      : stiX::error_action;
+      : stiX::command::error;
 }
 
 stiX::parsed_command stiX::parse_command(std::string_view const input) {
@@ -495,14 +495,13 @@ stiX::commands stiX::parsed_command::compile(stiX::lines const& buffer) const {
     ? command::update_dot(updated_dot)
     : command::noop;
 
-  auto command = stiX::command {
-    command_for_code(
+  auto command = command_for_code(
       code,
       from,
       to,
       destination,
-      extras)
-  };
+      extras);
+
   auto and_then = extras.and_print
     ? command::and_print
     : command::noop;

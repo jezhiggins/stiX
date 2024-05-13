@@ -7,7 +7,7 @@
 using namespace std::string_literals;
 
 namespace stiX {
-  std::vector<stiX::command> const& command_list(stiX::commands const& commands) {
+  std::vector<stiX::action> const& command_list(stiX::commands const& commands) {
     return commands.commands_;
   }
 }
@@ -93,7 +93,7 @@ namespace {
     {"1,3m 6p",               {"1,3m 6p",  5, 10},  {1,  3,  5, 'm', { .destination = 6, .and_print = true}}},
     {"1,3m .p",               {"1,3m .p",  5, 10},  {1,  3,  5, 'm', { .destination = 5, .and_print = true}}},
     {"1,3m .+3p",             {"1,3m .+3p",5, 10},  {1,  3,  5, 'm', { .destination = 8, .and_print = true}}},
-    {"1,3;m .+4p",            {"1,3;m .+4p",5, 10},  {1,  3,  3, 'm', { .destination = 7, .and_print = true}}},
+    {"1,3;m .+4p",            {"1,3;m .+4p",5, 10}, {1,  3,  3, 'm', { .destination = 7, .and_print = true}}},
     {"1,3m6p",                {"1,3m6p",   5, 10},  {1,  3,  5, 'm', { .destination = 6, .and_print = true}}},
     {"1,3m.p",                {"1,3m.p",   5, 10},  {1,  3,  5, 'm', { .destination = 5, .and_print = true}}},
     {"1,3m.+3p",              {"1,3m.+3p", 5, 10},  {1,  3,  5, 'm', { .destination = 8, .and_print = true}}},
@@ -125,8 +125,8 @@ namespace {
     {"1,4=p",                 {"1,4=p",    5, 10},  {1,  4,  5, '=', { .and_print = true }}},
     {"1,$s/fruit/veg/",       {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}},
     {"1,$s/fruit/veg/g",      {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}},
-    {"1,$s/fruit/veg/p",       {"1,$s/fruit/veg/p", 5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .and_print = true }}},
-    {"1,$s/fruit/veg/gp",      {"1,$s/fruit/veg/gp",5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true, .and_print = true }}}
+    {"1,$s/fruit/veg/p",      {"1,$s/fruit/veg/p", 5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .and_print = true }}},
+    {"1,$s/fruit/veg/gp",     {"1,$s/fruit/veg/gp",5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true, .and_print = true }}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {

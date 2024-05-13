@@ -7,7 +7,7 @@
 namespace stiX {
   class commands {
   public:
-    commands(std::initializer_list<command> cs) :
+    commands(std::initializer_list<action> cs) :
       commands_(cs) {
     }
 
@@ -18,9 +18,9 @@ namespace stiX {
       std::string& filename) const;
 
   private:
-    std::vector<command> commands_;
+    std::vector<action> commands_;
 
-    friend std::vector<command> const& command_list(commands const&);
+    friend std::vector<action> const& command_list(commands const&);
   };
 }
 
