@@ -383,6 +383,8 @@ namespace {
       input.advance();
 
       auto action = fetch_remainder();
+      if (action.empty())
+        failed();
 
       return with_search_replace(pattern, action, false);
     }

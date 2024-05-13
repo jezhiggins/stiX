@@ -167,7 +167,10 @@ namespace {
     {"d with garbage",          {"1,4dq",     5, 10}},
     {"d with p then garbage",   {"1,4dpp",    5, 10}},
     {"= with garbage",          {"1,4=q",     5, 10}},
-    {"= with p then garbage",   {"1,4=pp",    5, 10}}
+    {"= with p then garbage",   {"1,4=pp",    5, 10}},
+    {"g no pattern",            {"g",         5, 10}},
+    {"g unterminated pattern",  {"g/fruit",   5, 10}},
+    {"g no action",             {"g/line/",   5, 10}}
   };
 
   auto forward_search_tests = parse_test_cases {
