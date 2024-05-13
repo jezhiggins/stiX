@@ -102,6 +102,8 @@ namespace {
     {"e space, no filename",  {"e ",       0, 0},   {0,  0,  0, 'e'}},
     {"e spaces before name",  {"e  f.txt", 0, 0},   {0,  0,  0, 'e', { .filename = "f.txt"}}},
     {"e no filename",         {"e",        0, 0},   {0,  0,  0, 'e'}},
+    {"e trailing spaces",     {"e f.txt ", 0, 0},   {0,  0,  0, 'e', { .filename = "f.txt"}}},
+    {"e f f.txt",             {"e f f.txt ", 0, 0}, {0,  0,  0, 'e', { .filename = "f f.txt"}}},
     {"1,3w f.c",              {"1,3w f.c", 5, 10},  {1,  3,  5, 'w', { .filename = "f.c" }}},
     {"1,3w",                  {"1,3w",     5, 10},  {1,  3,  5, 'w'}},
     {"w f.c",                 {"w f.c",    5, 10},  {1,  10, 5, 'w', { .filename = "f.c" }}},
@@ -127,7 +129,8 @@ namespace {
     {"1,$s/fruit/veg/g",      {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}},
     {"1,$s/fruit/veg/p",      {"1,$s/fruit/veg/p", 5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .and_print = true }}},
     {"1,$s/fruit/veg/gp",     {"1,$s/fruit/veg/gp",5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true, .and_print = true }}},
-    {"g/line/p",              {"g/line/p", 5, 10},   {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}}
+    {"g/line/p",              {"g/line/p", 5, 10},   {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
+    {"g/line/p with space",   {"g/line/p  ", 5, 10}, {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
@@ -147,7 +150,6 @@ namespace {
     {". arithmetic overflow", {".+20", 5, 10}},
     {"$ arithmetic overflow", {"$+20", 5, 10}},
     {"e with line numbers",   {"1,2e file", 5, 10}},
-    {"e trailing spaces",     {"e f.txt ", 0, 0}},
     {"e no space before name",  {"ef.txt",  0, 0}},
     {"q with line numbers",     {"1,2q",    5, 10}},
     {"m no destination",        {"1,2m",    5, 10}},

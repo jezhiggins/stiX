@@ -330,9 +330,7 @@ namespace {
 
       strip_spaces();
 
-      auto f = std::string{};
-      while (!input.is_eol() && !std::isblank(*input))
-        f += input_pop();
+      auto f = fetch_remainder();
 
       return with_filename(f);
     }
@@ -384,12 +382,22 @@ namespace {
       auto const pattern = fetch_pattern(delimiter);
       input.advance();
 
-      auto action = std::string{};
-      while (!input.is_eol())
-        action += input_pop();
+      auto action = fetch_remainder();
 
       return with_search_replace(pattern, action, false);
     }
+
+    std::string fetch_remainder() {
+      auto s = std::string{};
+      while (!input.is_eol())
+        s += input_pop();
+
+      while (std::isblank(s.back()))
+        s.pop_back();
+
+      return s;
+    }
+
 
     void has_line_numbers_when_forbidden() {
       auto const forbidden = code_match(code, "efq"sv);
