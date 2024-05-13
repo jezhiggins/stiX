@@ -154,6 +154,31 @@ void stiX::substitute_action(
   }
 }
 
+void stiX::global_action(
+  size_t from,
+  size_t to,
+  std::string_view pattern,
+  stiX::parsed_command const& action,
+  std::istream& in,
+  std::ostream& out,
+  lines_modifier& buffer,
+  std::string& filename)
+{
+  auto matcher = compile_pattern(pattern);
+
+  for(auto i = from; i <= to; ++i) {
+    auto l = buffer.line_at(i);
+
+    if (!matcher.match(l))
+      continue;
+
+    buffer.set_dot(i);
+    auto command = action.compile(buffer);
+    command(in, out, buffer, filename);
+  }
+}
+
+
 ////////////////////
 action stiX::make_append_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
   return [to_index](std::istream& in, std::ostream&, lines_modifier& buffer, std::string&) {

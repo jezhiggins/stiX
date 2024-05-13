@@ -1,6 +1,7 @@
 #define ADDITIONAL_TESTS
 
 #include "command_actions.hpp"
+#include "command_parser.hpp"
 #include "../../testlib/testlib.hpp"
 #include "edit_buffer.hpp"
 #include "../../chapter_3/4_print/print.hpp"
@@ -458,6 +459,24 @@ TEST_CASE("Chapter 6 - edit - command actions") {
 
       REQUIRE(eb.dot() == 1);
       REQUIRE(eb.line_at(1) == "AEIOU AEIOU");
+    }
+  }
+
+  SECTION("global action") {
+    SECTION("g matches all lines") {
+      auto e = three_line_buffer();
+
+      auto dummy = std::stringstream { };
+      auto f = std::string { };
+
+      auto action = stiX::parse_command("s/line/Entry/");
+      global_action(1, 3, "%", action, dummy, dummy, e, f);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "Entry 1");
+      REQUIRE(e.line_at(2) == "Entry 2");
+      REQUIRE(e.line_at(3) == "Entry 3");
+
     }
   }
 }
