@@ -126,7 +126,8 @@ namespace {
     {"1,$s/fruit/veg/",       {"1,$s/fruit/veg/", 5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg" }}},
     {"1,$s/fruit/veg/g",      {"1,$s/fruit/veg/g",5, 10},   {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true }}},
     {"1,$s/fruit/veg/p",      {"1,$s/fruit/veg/p", 5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .and_print = true }}},
-    {"1,$s/fruit/veg/gp",     {"1,$s/fruit/veg/gp",5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true, .and_print = true }}}
+    {"1,$s/fruit/veg/gp",     {"1,$s/fruit/veg/gp",5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true, .and_print = true }}},
+    {"g/line/p",              {"g/line/p", 5, 10},   {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
@@ -256,8 +257,10 @@ void indexes_are_good(parse_test_case const& tc) {
     auto parsed_command = stiX::parse_command(
       tc.input.input
     );
-    auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
 
+    REQUIRE(parsed_command.code == tc.expected.code);
+
+    auto buffer = buffer_double(tc.input.dot, tc.input.dollar);
     auto commands = parsed_command.compile(buffer);
 
     verify_from_to_dot_expectations(commands, buffer, tc.expected);

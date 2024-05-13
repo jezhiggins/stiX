@@ -281,6 +281,9 @@ namespace {
       if (wants_search_replace(code))
         return parse_search_replace();
 
+      if (wants_search_action(code))
+        return parse_search_action();
+
       return no_extras();
     }
 
@@ -298,6 +301,10 @@ namespace {
 
     static bool wants_search_replace(char const c) {
       return code_match(c, "s"sv);
+    }
+
+    static bool wants_search_action(char const c) {
+      return code_match(c, "g"sv);
     }
 
     static bool code_match(char const c, std::string_view const codes) {
@@ -363,6 +370,25 @@ namespace {
       if (replace_all) input.advance();
 
       return with_search_replace(pattern, replacement, replace_all);
+    }
+
+    stiX::command_extras parse_search_action() {
+      if (input.is_eol())
+        failed();
+
+      auto const delimiter = *input;
+      if (input.is_eol())
+        failed();
+      input.advance();
+
+      auto const pattern = fetch_pattern(delimiter);
+      input.advance();
+
+      auto action = std::string{};
+      while (!input.is_eol())
+        action += input_pop();
+
+      return with_search_replace(pattern, action, false);
     }
 
     void has_line_numbers_when_forbidden() {
