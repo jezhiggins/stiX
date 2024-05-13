@@ -192,7 +192,7 @@ namespace {
     ) {
       input.advance();
       auto const pattern = fetch_pattern(delimiter);
-      input.advance();
+
       return make_search(pattern);
     }
 
@@ -206,6 +206,8 @@ namespace {
 
       if (input.is_eol())
         failed();
+
+      input.advance();
 
       return p;
     }
@@ -359,10 +361,8 @@ namespace {
       input.advance();
 
       auto const pattern = fetch_pattern(delimiter);
-      input.advance();
 
       auto const replacement = fetch_pattern(delimiter);
-      input.advance();
 
       auto replace_all = *input == 'g';
       if (replace_all) input.advance();
@@ -380,7 +380,6 @@ namespace {
       input.advance();
 
       auto const pattern = fetch_pattern(delimiter);
-      input.advance();
 
       auto action = fetch_remainder();
       if (action.empty())
