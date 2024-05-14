@@ -42,16 +42,19 @@ namespace {
   }
 
   std::vector<std::pair<size_t, size_t>> move_pairs(size_t from, size_t to, size_t after) {
+    if (from == after + 1)
+      return { };
+
     auto const offset = to - from;
 
     if (from < after)
-      return std::vector<std::pair<size_t, size_t>> {
+      return {
             {from, after},
             {after-offset, after},
             {from, after-(offset+1)}
       };
 
-    return std::vector<std::pair<size_t, size_t>> {
+    return {
         {after+1, to},
         {after+1, after+offset+1},
         {after+offset+2, to}
