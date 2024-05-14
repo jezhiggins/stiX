@@ -8,7 +8,7 @@
 namespace stiX {
   class lines_modifier;
 
-  namespace  command {
+  namespace command {
     constexpr size_t const line_error = std::numeric_limits<size_t>::max();
     constexpr char const code_error = '?';
 

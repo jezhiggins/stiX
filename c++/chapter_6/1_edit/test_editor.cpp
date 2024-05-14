@@ -454,6 +454,42 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">ln fv\n"
     );
   }
+
+  SECTION("g command") {
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      "line 4\n"
+      "line 5\n"
+      ".\n"
+      "1,$g/%/m0\n"
+      "1,$p\n"
+      ">line 5\n"
+      ">line 4\n"
+      ">line 3\n"
+      ">line 2\n"
+      ">line 1\n"
+    );
+
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      "line 4\n"
+      "line 5\n"
+      ".\n"
+      "g/%/m0\n"
+      "1,$p\n"
+      ">line 5\n"
+      ">line 4\n"
+      ">line 3\n"
+      ">line 2\n"
+      ">line 1\n"
+    );
+  }
 }
 
 std::string testLabel(std::string input);

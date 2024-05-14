@@ -210,6 +210,15 @@ action stiX::make_filename_action(size_t const, size_t const, size_t const, comm
     filename_action(new_filename, filename,  out);
   };
 }
+action stiX::make_global_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
+  auto pattern = extras.search_pattern;
+  auto action = stiX::parse_command(extras.replacement);
+  if (action.code == stiX::command::code_error)
+    return stiX::command::error;
+  return [from_index, to_index, pattern, action](std::istream& in, std::ostream& out, lines_modifier& buffer, std::string& filename) {
+    global_action(from_index, to_index, pattern, action, in, out, buffer, filename);
+  };
+}
 action stiX::make_insert_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
   return [to_index](std::istream& in, std::ostream&, lines_modifier& buffer, std::string&) {
     insert_action(in, to_index, buffer);

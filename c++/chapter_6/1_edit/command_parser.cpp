@@ -115,7 +115,7 @@ namespace {
     }
 
     void add_default_indicies() {
-      if (code == 'w') {
+      if (code_match(code, "gw"sv)) {
         indicies.emplace_back(int_index(1), stiX::expression_separator::unchanged);
         indicies.emplace_back(last_index_fn, stiX::expression_separator::unchanged);
       }
@@ -462,6 +462,7 @@ namespace {
     { 'd', stiX::make_delete_action },
     { 'e', stiX::make_edit_action },
     { 'f', stiX::make_filename_action },
+    { 'g', stiX::make_global_action },
     { 'i', stiX::make_insert_action },
     { 'm', stiX::make_move_action },
     { 'p', stiX::make_print_action },
