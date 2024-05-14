@@ -333,6 +333,30 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       REQUIRE(e.line_at(5) == "line 5");
     }
 
+    SECTION("move 3,4 after 0") {
+      auto e = five_line_buffer();
+
+      move_action(3, 4, 0, e);
+
+      REQUIRE(e.line_at(1) == "line 3");
+      REQUIRE(e.line_at(2) == "line 4");
+      REQUIRE(e.line_at(3) == "line 1");
+      REQUIRE(e.line_at(4) == "line 2");
+      REQUIRE(e.line_at(5) == "line 5");
+    }
+
+    SECTION("move 1 after 0") {
+      auto e = five_line_buffer();
+
+      move_action(1, 1, 0, e);
+
+      REQUIRE(e.line_at(1) == "line 1");
+      REQUIRE(e.line_at(2) == "line 2");
+      REQUIRE(e.line_at(3) == "line 3");
+      REQUIRE(e.line_at(4) == "line 4");
+      REQUIRE(e.line_at(5) == "line 5");
+    }
+
     SECTION("move, then move back") {
       auto e = five_line_buffer();
 
@@ -463,7 +487,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
   }
 
   SECTION("global action") {
-    SECTION("g matches all lines") {
+    SECTION("g matches all lines, replace action") {
       auto e = three_line_buffer();
 
       auto dummy = std::stringstream { };
@@ -476,7 +500,48 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       REQUIRE(e.line_at(1) == "Entry 1");
       REQUIRE(e.line_at(2) == "Entry 2");
       REQUIRE(e.line_at(3) == "Entry 3");
+    }
+    SECTION("g matches alternate lines, replace action") {
+      auto e = three_line_buffer();
 
+      auto dummy = std::stringstream { };
+      auto f = std::string { };
+
+      auto action = stiX::parse_command("s/line/Entry/");
+      global_action(1, 3, "[13]", action, dummy, dummy, e, f);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "Entry 1");
+      REQUIRE(e.line_at(2) == "line 2");
+      REQUIRE(e.line_at(3) == "Entry 3");
+    }
+    SECTION("g matches all lines, replace action on next line") {
+      auto e = three_line_buffer();
+
+      auto dummy = std::stringstream { };
+      auto f = std::string { };
+
+      auto action = stiX::parse_command(".+1s/line/Entry/");
+      global_action(1, 3, "%", action, dummy, dummy, e, f);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "line 1");
+      REQUIRE(e.line_at(2) == "Entry 2");
+      REQUIRE(e.line_at(3) == "Entry 3");
+    }
+    SECTION("g/%/m0 - reverse lines") {
+      auto e = three_line_buffer();
+
+      auto dummy = std::stringstream { };
+      auto f = std::string { };
+
+      auto action = stiX::parse_command("m0");
+      global_action(1, 3, "%", action, dummy, dummy, e, f);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "line 3");
+      REQUIRE(e.line_at(2) == "line 2");
+      REQUIRE(e.line_at(3) == "line 1");
     }
   }
 }
