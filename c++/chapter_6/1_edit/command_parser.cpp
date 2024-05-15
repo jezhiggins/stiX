@@ -1,5 +1,5 @@
 #include "command_parser.hpp"
-#include "lines.hpp"
+#include "edit_buffer.hpp"
 #include <charconv>
 #include <map>
 
@@ -22,27 +22,27 @@ namespace {
   bool is_error(size_t const i) { return i == stiX::command::line_error; }
 
   stiX::line_expression int_index(size_t const index) {
-    return [index](stiX::lines const&, size_t) { return index; };
+    return [index](stiX::edit_buffer const&, size_t) { return index; };
   }
   stiX::line_expression add_offset(stiX::line_expression const& ref_fn, size_t const index) {
-    return [ref_fn, index](stiX::lines const& buffer, size_t const dot) {
+    return [ref_fn, index](stiX::edit_buffer const& buffer, size_t const dot) {
       return ref_fn(buffer, dot) + index;
     };
   }
 
-  size_t dot_index_fn(stiX::lines const&, size_t const dot) {
+  size_t dot_index_fn(stiX::edit_buffer const&, size_t const dot) {
     return dot;
   }
-  size_t last_index_fn(stiX::lines const& buffer, size_t) {
+  size_t last_index_fn(stiX::edit_buffer const& buffer, size_t) {
     return buffer.last();
   }
 
   stiX::line_expression search(
     std::string_view const pattern,
-    size_t(next_index)(size_t, stiX::lines const&)
+    size_t(next_index)(size_t, stiX::edit_buffer const&)
   ) {
     auto matcher = stiX::compile_pattern(pattern);
-    return [matcher, next_index](stiX::lines const& buffer, size_t const dot) {
+    return [matcher, next_index](stiX::edit_buffer const& buffer, size_t const dot) {
       size_t index = dot;
       do {
         index = next_index(index, buffer);
@@ -55,21 +55,21 @@ namespace {
     };
   }
 
-  size_t next_line(size_t i, stiX::lines const& buffer) {
+  size_t next_line(size_t i, stiX::edit_buffer const& buffer) {
     return (i < buffer.last()) ? ++i : 1;
   }
   stiX::line_expression forward_search(std::string_view const pattern) {
     return search(pattern, next_line);
   }
 
-  size_t prev_line(size_t i, stiX::lines const& buffer) {
+  size_t prev_line(size_t i, stiX::edit_buffer const& buffer) {
     return (i > 1) ? --i : buffer.last();
   }
   stiX::line_expression backward_search(std::string_view const pattern) {
     return search(pattern, prev_line);
   }
 
-  size_t line_error_fn(stiX::lines const&, size_t) {
+  size_t line_error_fn(stiX::edit_buffer const&, size_t) {
     return stiX::command::line_error;
   }
 
@@ -437,7 +437,7 @@ namespace {
     bool has_failed = false;
   };
 
-  size_t index_or_error(stiX::line_expression const& fn, stiX::lines const& buffer, size_t const dot) {
+  size_t index_or_error(stiX::line_expression const& fn, stiX::edit_buffer const& buffer, size_t const dot) {
     auto const index = fn(buffer, dot);
     return index <= buffer.last() ? index : stiX::command::line_error;
   }
@@ -498,7 +498,7 @@ stiX::parsed_command stiX::parse_command(std::string_view const input) {
 namespace {
   std::tuple<size_t, size_t, size_t> eval_line_expressions(
     std::vector<stiX::line_expression_step> const& line_expressions,
-    stiX::lines const& buffer)
+    stiX::edit_buffer const& buffer)
   {
     auto dot = buffer.dot();
     auto line_numbers = std::vector<size_t> { };
@@ -516,7 +516,7 @@ namespace {
   }
 }
 
-stiX::commands stiX::parsed_command::compile(stiX::lines const& buffer) const {
+stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) const {
   auto const [from, to, updated_dot] =
     eval_line_expressions(line_expressions, buffer);
 

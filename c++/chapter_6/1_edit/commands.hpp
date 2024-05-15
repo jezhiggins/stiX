@@ -14,7 +14,7 @@ namespace stiX {
     void operator()(
       std::istream& in,
       std::ostream& out,
-      lines_modifier& buffer,
+      edit_buffer& buffer,
       std::string& filename) const;
 
   private:

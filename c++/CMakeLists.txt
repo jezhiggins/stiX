@@ -211,7 +211,6 @@ target_link_libraries(change_test stix testsupport)
 set (edit_sources
         chapter_6/1_edit/line_buffer.cpp
         chapter_6/1_edit/line_buffer.hpp
-        chapter_6/1_edit/lines.hpp
         chapter_6/1_edit/edit_buffer.cpp
         chapter_6/1_edit/edit_buffer.hpp
         chapter_6/1_edit/editor.cpp

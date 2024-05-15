@@ -6,8 +6,8 @@
 #include "commands.hpp"
 
 namespace stiX {
-  class lines;
-  using line_expression = std::function<size_t(lines const&, size_t)>;
+  class edit_buffer;
+  using line_expression = std::function<size_t(edit_buffer const&, size_t)>;
 
   enum class expression_separator : bool {
     unchanged = false,
@@ -27,7 +27,7 @@ namespace stiX {
   };
 
   struct parsed_command {
-    commands compile(lines const& buffer) const;
+    commands compile(edit_buffer const& buffer) const;
 
     std::vector<line_expression_step> const line_expressions;
     char const code;
