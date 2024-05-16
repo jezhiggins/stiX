@@ -16,6 +16,19 @@ void line_buffer::remove(size_t index) {
   lines_.erase(lines_.begin() + index);
 }
 
+void line_buffer::swap(size_t lindex, size_t rindex) {
+  auto rhs = lines_[rindex];
+
+  if (lindex != -1) {
+    auto lhs = lines_[lindex];
+    lines_[lindex] = rhs;
+    lines_[rindex] = lhs;
+  } else {
+    lines_.erase(lines_.begin() + rindex);
+    lines_.insert(lines_.begin(), rhs);
+  }
+}
+
 std::string_view line_buffer::operator[](size_t index) const {
   return lines_[index];
 }

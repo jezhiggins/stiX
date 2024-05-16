@@ -17,15 +17,7 @@ void edit_buffer::remove_at(size_t index) {
 }
 
 void edit_buffer::swap(size_t lindex, size_t rindex) {
-  auto rhs = std::string { line_at(rindex) };
-  if (lindex != 0) {
-    auto lhs = std::string { line_at(lindex) };
-    set_at(lindex, rhs);
-    set_at(rindex, lhs);
-  } else {
-    remove_at(rindex);
-    insert(0, rhs);
-  }
+  buffer_.swap(lindex-1, rindex-1);
 }
 
 std::string_view edit_buffer::line_at(size_t index) const {
