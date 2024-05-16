@@ -559,6 +559,22 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">line 7\n"
     );
 
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      "line 4\n"
+      "line 5\n"
+      "line 6\n"
+      "line 7\n"
+      ".\n"
+      "g/[246]/.+5p\n"
+      ">line 7\n"
+      ">?\n"
+      "1p\n"
+      ">line 1\n"
+    );
   }
 }
 

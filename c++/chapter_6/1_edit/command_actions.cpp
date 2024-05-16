@@ -192,6 +192,8 @@ void stiX::global_action(
     auto command = action.compile(buffer);
     command(in, out, buffer, filename);
 
+    if (command.is_error())
+      return;
   }
 }
 

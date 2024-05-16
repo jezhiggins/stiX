@@ -11,11 +11,5 @@ void stiX::commands::operator()(
 }
 
 bool stiX::commands::is_error() const {
-  action const e = commands_[0];
-  return (e.target<void(
-    std::istream&,
-    std::ostream&,
-    edit_buffer&,
-    std::string&
-  )>() == command::error);
+  return commands_.size() == 1;
 }
