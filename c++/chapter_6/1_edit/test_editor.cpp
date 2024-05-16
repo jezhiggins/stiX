@@ -531,6 +531,34 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">line 4\n"
       ">line 6\n"
     );
+
+    editor_test(
+      "g/^/c\n"
+      ">?\n"
+    );
+
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      "line 4\n"
+      "line 5\n"
+      "line 6\n"
+      "line 7\n"
+      ".\n"
+      "g/[246]/.,.+2m0\n"
+      ">?\n"
+      "1,$p\n"
+      ">line 4\n"
+      ">line 1\n"
+      ">line 5\n"
+      ">line 2\n"
+      ">line 3\n"
+      ">line 6\n"
+      ">line 7\n"
+    );
+
   }
 }
 

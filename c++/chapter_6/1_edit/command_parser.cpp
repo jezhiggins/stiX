@@ -8,6 +8,7 @@
 
 using namespace std::string_view_literals;
 
+
 namespace {
   constexpr auto DOT = '.';
   constexpr auto DOLLAR = '$';
@@ -17,6 +18,8 @@ namespace {
   constexpr auto BACKSLASH = '\\';
   constexpr auto COMMA = ',';
   constexpr auto SEMI_COLON = ';';
+
+  using stiX::code_match;
 
   bool is_error(char const c) { return c == stiX::command::code_error; }
   bool is_error(size_t const i) { return i == stiX::command::line_error; }
@@ -115,7 +118,7 @@ namespace {
     }
 
     void add_default_indicies() {
-      if (code_match(code, "gw"sv)) {
+      if (code_match(code, "gw")) {
         indicies.emplace_back(int_index(1), stiX::expression_separator::unchanged);
         indicies.emplace_back(last_index_fn, stiX::expression_separator::unchanged);
       }
@@ -299,27 +302,23 @@ namespace {
     }
 
     static bool and_then_print(char const c) {
-      return code_match(c, "d=ms"sv);
+      return code_match(c, "d=ms");
     }
 
     static bool wants_filename(char const c) {
-      return code_match(c, "efrw"sv);
+      return code_match(c, "efrw");
     }
 
     static bool wants_destination(char const c) {
-      return code_match(c, "m"sv);
+      return code_match(c, "m");
     }
 
     static bool wants_search_replace(char const c) {
-      return code_match(c, "s"sv);
+      return code_match(c, "s");
     }
 
     static bool wants_search_action(char const c) {
-      return code_match(c, "g"sv);
-    }
-
-    static bool code_match(char const c, std::string_view const codes) {
-      return codes.find(c) != std::string::npos;
+      return code_match(c, "g");
     }
 
     bool parse_trailing_print() {
@@ -548,3 +547,6 @@ stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) co
   return { set_dot, command, and_then } ;
 }
 
+bool stiX::code_match(char const c, std::string_view const codes) {
+  return codes.find(c) != std::string::npos;
+}

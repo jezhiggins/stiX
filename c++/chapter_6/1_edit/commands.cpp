@@ -10,3 +10,12 @@ void stiX::commands::operator()(
     c(in, out, buffer, filename);
 }
 
+bool stiX::commands::is_error() const {
+  action const e = commands_[0];
+  return (e.target<void(
+    std::istream&,
+    std::ostream&,
+    edit_buffer&,
+    std::string&
+  )>() == command::error);
+}

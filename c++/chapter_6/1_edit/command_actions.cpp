@@ -169,12 +169,16 @@ void stiX::global_action(
 {
   auto matcher = compile_pattern(pattern);
 
-  for(auto i = from; i <= to; ++i) {
+  for (auto i = 1; i != from; ++i)
+    buffer.clear_mark(i);
+  for (auto i = from; i <= to; ++i) {
     auto l = buffer.line_at(i);
 
     if (matcher.match(l))
       buffer.set_mark(i);
   }
+  for (auto i = to + 1; i <= buffer.last(); ++i)
+    buffer.clear_mark(i);
 
   auto next_mark = [&buffer](size_t index) {
     while ((!buffer.mark(index)) && (index <= buffer.last()))
@@ -182,11 +186,12 @@ void stiX::global_action(
     return (index <= buffer.last()) ? index : -1;
   };
 
-  for (auto i = next_mark(1); i != -1; i = next_mark(i)) {
+  for (auto i = next_mark(1); i != -1; i = next_mark(1)) {
     buffer.clear_mark(i);
     buffer.set_dot(i);
     auto command = action.compile(buffer);
     command(in, out, buffer, filename);
+
   }
 }
 
@@ -222,8 +227,10 @@ action stiX::make_filename_action(size_t const, size_t const, size_t const, comm
 action stiX::make_global_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
   auto pattern = extras.search_pattern;
   auto action = stiX::parse_command(extras.replacement);
-  if (action.code == stiX::command::code_error)
+
+  if (code_match(action.code, "aciq?"))
     return stiX::command::error;
+
   return [from_index, to_index, pattern, action](std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename) {
     global_action(from_index, to_index, pattern, action, in, out, buffer, filename);
   };

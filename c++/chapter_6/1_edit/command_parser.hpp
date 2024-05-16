@@ -35,6 +35,7 @@ namespace stiX {
   };
 
   parsed_command parse_command(std::string_view input);
+  bool code_match(char c, std::string_view codes);
 }
 
 #endif //STICPP_COMMAND_PARSER_H

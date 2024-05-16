@@ -17,6 +17,8 @@ namespace stiX {
       edit_buffer& buffer,
       std::string& filename) const;
 
+    bool is_error() const;
+
   private:
     std::vector<action> commands_;
 
