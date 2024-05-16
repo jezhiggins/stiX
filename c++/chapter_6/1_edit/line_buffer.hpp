@@ -18,7 +18,6 @@ namespace stiX {
     void set_mark(size_t index);
     void clear_mark(size_t index);
 
-
     size_t size() const { return lines_.size(); }
 
   private:

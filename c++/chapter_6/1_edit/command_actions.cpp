@@ -157,6 +157,14 @@ void stiX::substitute_action(
   }
 }
 
+namespace {
+  size_t next_mark(size_t index, stiX::edit_buffer const& buffer) {
+    while ((!buffer.mark(index)) && (index <= buffer.last()))
+      ++index;
+    return (index <= buffer.last()) ? index : -1;
+  };
+}
+
 void stiX::global_action(
   size_t from,
   size_t to,
@@ -169,26 +177,20 @@ void stiX::global_action(
 {
   auto matcher = compile_pattern(pattern);
 
-  for (auto i = 1; i != from; ++i)
+  for (auto i = 1; i <= buffer.last(); ++i)
     buffer.clear_mark(i);
+
   for (auto i = from; i <= to; ++i) {
     auto l = buffer.line_at(i);
 
     if (matcher.match(l))
       buffer.set_mark(i);
   }
-  for (auto i = to + 1; i <= buffer.last(); ++i)
-    buffer.clear_mark(i);
 
-  auto next_mark = [&buffer](size_t index) {
-    while ((!buffer.mark(index)) && (index <= buffer.last()))
-      ++index;
-    return (index <= buffer.last()) ? index : -1;
-  };
-
-  for (auto i = next_mark(1); i != -1; i = next_mark(1)) {
+  for (auto i = next_mark(from, buffer); i != -1; i = next_mark(i, buffer)) {
     buffer.clear_mark(i);
     buffer.set_dot(i);
+
     auto command = action.compile(buffer);
     command(in, out, buffer, filename);
 
@@ -273,7 +275,7 @@ action stiX::make_substitute_action(size_t const from_index, size_t const to_ind
   auto pattern = extras.search_pattern;
   auto replacement = extras.replacement;
   auto replace_all = extras.replace_all;
-  return [from_index, to_index, pattern, replacement,replace_all](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
+  return [from_index, to_index, pattern, replacement, replace_all](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
     substitute_action(from_index, to_index, pattern, replacement, replace_all, buffer);
   };
 }
