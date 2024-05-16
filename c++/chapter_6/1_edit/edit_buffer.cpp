@@ -24,3 +24,16 @@ std::string_view edit_buffer::line_at(size_t index) const {
   // editor is 1-based, underlying buffer is 0-based
   return buffer_[index-1];
 }
+
+bool edit_buffer::mark(size_t index) const {
+  return buffer_.mark(index-1);
+}
+
+void edit_buffer::set_mark(size_t index) {
+  buffer_.set_mark(index-1);
+}
+
+void edit_buffer::clear_mark(size_t index) {
+  buffer_.clear_mark(index-1);
+}
+

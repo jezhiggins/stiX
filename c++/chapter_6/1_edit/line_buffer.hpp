@@ -13,11 +13,20 @@ namespace stiX {
     void swap(size_t lindex, size_t rindex);
 
     std::string_view operator[](size_t index) const;
+    bool mark(size_t index) const;
+
+    void set_mark(size_t index);
+    void clear_mark(size_t index);
+
 
     size_t size() const { return lines_.size(); }
 
   private:
-    std::vector<std::string> lines_;
+    struct line {
+      std::string text;
+      bool mark;
+    };
+    std::vector<line> lines_;
   };
 }
 

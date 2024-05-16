@@ -12,6 +12,10 @@ namespace stiX {
     void swap(size_t lindex, size_t rindex);
 
     std::string_view line_at(size_t index) const;
+    bool mark(size_t index) const;
+
+    void set_mark(size_t index);
+    void clear_mark(size_t index);
 
     void set_dot(size_t new_dot) { dot_ = new_dot; }
     size_t dot() const { return dot_; }

@@ -172,9 +172,18 @@ void stiX::global_action(
   for(auto i = from; i <= to; ++i) {
     auto l = buffer.line_at(i);
 
-    if (!matcher.match(l))
-      continue;
+    if (matcher.match(l))
+      buffer.set_mark(i);
+  }
 
+  auto next_mark = [&buffer](size_t index) {
+    while ((!buffer.mark(index)) && (index <= buffer.last()))
+      ++index;
+    return (index <= buffer.last()) ? index : -1;
+  };
+
+  for (auto i = next_mark(1); i != -1; i = next_mark(i)) {
+    buffer.clear_mark(i);
     buffer.set_dot(i);
     auto command = action.compile(buffer);
     command(in, out, buffer, filename);
