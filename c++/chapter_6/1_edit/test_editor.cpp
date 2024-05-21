@@ -14,12 +14,17 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "=\n"
       ">0\n"
     );
-
     editor_test(
       "=\n"
       "=\n"
       ">0\n"
       ">0\n"
+    );
+    editor_test(
+      "0=\n"
+      "0\n"
+      "99=\n"
+      "?\n"
     );
   } // =
 
