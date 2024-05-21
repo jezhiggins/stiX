@@ -76,6 +76,51 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">Line 2\n"
       ">Line 3\n"
     );
+    editor_test(
+      "0a\n"
+      "line 1\n"
+      "line 2\n"
+      ".\n"
+      "1,$p\n"
+      ">line 1\n"
+      ">line 2\n"
+    );
+    editor_test(
+      "0a\n"
+      "line 1\n"
+      "line 2\n"
+      ".\n"
+      "1,$p\n"
+      ">line 1\n"
+      ">line 2\n"
+      "0a\n"
+      "line a\n"
+      "line b\n"
+      ".\n"
+      "1,$p\n"
+      ">line a\n"
+      ">line b\n"
+      ">line 1\n"
+      ">line 2\n"
+    );
+    editor_test(
+      "0a\n"
+      "line 1\n"
+      "line 2\n"
+      ".\n"
+      "1,$p\n"
+      ">line 1\n"
+      ">line 2\n"
+      "1a\n"
+      "line a\n"
+      "line b\n"
+      ".\n"
+      "1,$p\n"
+      ">line 1\n"
+      ">line a\n"
+      ">line b\n"
+      ">line 2\n"
+    );
   }
 
   SECTION("c command") {
