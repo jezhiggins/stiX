@@ -231,6 +231,18 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "4,5dp\n"
       ">line six\n"
     );
+    editor_test(
+      "0d\n"
+      "?\n"
+    );
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      ".\n"
+      "0d\n"
+      ">?\n"
+    );
   }
 
   SECTION("i command") {

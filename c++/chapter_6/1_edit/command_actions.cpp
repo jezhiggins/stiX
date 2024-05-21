@@ -214,6 +214,8 @@ action stiX::make_change_action(size_t const from_index, size_t const to_index, 
   };
 }
 action stiX::make_delete_action(size_t const from_index, size_t const to_index, size_t const, command_extras const&) {
+  if (from_index == 0)
+    return stiX::command::error;
   return [from_index, to_index](std::istream&, std::ostream&, edit_buffer& buffer, std::string&) {
     delete_action(from_index, to_index, buffer);
   };
