@@ -278,6 +278,14 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">?\n"
     );
     editor_test(
+      "1p\n"
+      ">?\n"
+    );
+    editor_test(
+      "0p\n"
+      ">?\n"
+    );
+    editor_test(
       "i\n"
       "Hello World!\n"
       "Hello Again\n"
@@ -292,6 +300,30 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ".\n"
       "1p\n"
       ">Hello World!\n"
+      "2p\n"
+      ">Hello Again\n"
+    );
+    editor_test(
+      "i\n"
+      "Hello World!\n"
+      "Hello Again\n"
+      ".\n"
+      "1p\n"
+      ">Hello World!\n"
+      "\n"
+      ">Hello Again\n"
+      "\n"
+      ">?\n"
+      "=\n"
+      ">2\n"
+    );
+    editor_test(
+      "i\n"
+      "Hello World!\n"
+      "Hello Again\n"
+      ".\n"
+      "0p\n"
+      ">?\n"
     );
     editor_test(
       "i\n"

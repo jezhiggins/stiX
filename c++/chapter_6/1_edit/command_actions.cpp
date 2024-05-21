@@ -92,7 +92,7 @@ void stiX::delete_action(size_t const from, size_t const to, edit_buffer& buffer
 }
 
 void stiX::print_action(std::ostream& out, size_t const from, size_t const to, edit_buffer& buffer) {
-  if (buffer.empty()) {
+  if (buffer.empty() || from == 0) {
     out << "?\n";
     return;
   }

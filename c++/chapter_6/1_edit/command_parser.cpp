@@ -442,9 +442,12 @@ namespace {
   }
 
   bool is_error(size_t const from, size_t const to, char const code) {
+    auto min = code_match(code, "ai"sv) ? 0 : 1;
+
     return is_error(from) ||
            is_error(to) ||
            (from > to) ||
+           (from < min) ||
            is_error(code);
   }
 
