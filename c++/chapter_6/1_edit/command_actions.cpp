@@ -233,6 +233,9 @@ action stiX::make_filename_action(size_t const, size_t const, size_t const, comm
   };
 }
 action stiX::make_global_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
+  if (from_index == 0)
+    return stiX::command::error;
+
   auto pattern = extras.search_pattern;
   auto action = stiX::parse_command(extras.replacement);
 
