@@ -71,7 +71,7 @@ void stiX::append_action(std::istream& in, size_t const after, edit_buffer& buff
 }
 
 void stiX::insert_action(std::istream& in, size_t const before, edit_buffer& buffer) {
-  auto const adjust = !buffer.empty() ? 1 : 0;
+  auto const adjust = (!buffer.empty() && before != 0) ? 1 : 0;
   read_lines(in, before-adjust, true, buffer);
 }
 

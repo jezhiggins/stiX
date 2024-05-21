@@ -501,6 +501,46 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">Line 1.5\n"
       ">Line 2\n"
     );
+    editor_test(
+      "1i\n"
+      ">?\n"
+    );
+    editor_test(
+      "0i\n"
+      "line 1\n"
+      "line 2\n"
+      ".\n"
+      "1,$p\n"
+      ">line 1\n"
+      ">line 2\n"
+      "1i\n"
+      "line A\n"
+      "line B\n"
+      ".\n"
+      "1,$p\n"
+      ">line A\n"
+      ">line B\n"
+      ">line 1\n"
+      ">line 2\n"
+    );
+    editor_test(
+      "0i\n"
+      "line 1\n"
+      "line 2\n"
+      ".\n"
+      "1,$p\n"
+      ">line 1\n"
+      ">line 2\n"
+      "0i\n"
+      "line A\n"
+      "line B\n"
+      ".\n"
+      "1,$p\n"
+      ">line A\n"
+      ">line B\n"
+      ">line 1\n"
+      ">line 2\n"
+    );
   }
 
   SECTION("m command") {
