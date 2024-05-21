@@ -92,7 +92,7 @@ void stiX::delete_action(size_t const from, size_t const to, edit_buffer& buffer
 }
 
 void stiX::print_action(std::ostream& out, size_t const from, size_t const to, edit_buffer& buffer) {
-  if (buffer.empty() || from == 0) {
+  if (buffer.empty()) {
     out << "?\n";
     return;
   }
@@ -207,6 +207,8 @@ action stiX::make_append_action(size_t const, size_t const to_index, size_t cons
   };
 }
 action stiX::make_change_action(size_t const from_index, size_t const to_index, size_t const, command_extras const&) {
+  if (from_index == 0)
+    return stiX::command::error;
   return [from_index, to_index](std::istream& in, std::ostream&, edit_buffer& buffer, std::string&) {
     change_action(in, from_index, to_index, buffer);
   };
@@ -251,6 +253,8 @@ action stiX::make_move_action(size_t const from_index, size_t const to_index, si
   };
 }
 action stiX::make_print_action(size_t const from_index, size_t const to_index, size_t const, command_extras const&) {
+  if (from_index == 0)
+    return stiX::command::error;
   return [from_index, to_index](std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
     print_action(out, from_index, to_index, buffer);
   };

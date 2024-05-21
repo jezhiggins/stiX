@@ -170,6 +170,15 @@ TEST_CASE("Chapter 6 - edit - editor") {
       ">changed 2\n"
       ">changed 3\n"
     );
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      ".\n"
+      "0,$c\n"
+      ">?\n"
+    );
   } // c
 
   SECTION("d command") {
