@@ -92,11 +92,6 @@ void stiX::delete_action(size_t const from, size_t const to, edit_buffer& buffer
 }
 
 void stiX::print_action(std::ostream& out, size_t const from, size_t const to, edit_buffer& buffer) {
-  if (buffer.empty()) {
-    out << "?\n";
-    return;
-  }
-
   buffer.set_dot(to);
   write_lines(out, from, to, buffer);
 }
