@@ -300,6 +300,8 @@ action stiX::make_substitute_action(size_t const from_index, size_t const to_ind
   };
 }
 action stiX::make_write_file_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
+  if (from_index == 0)
+    return stiX::command::error;
   auto new_filename = extras.filename;
   return [from_index, to_index, new_filename](std::istream&, std::ostream& out, edit_buffer& buffer, std::string& filename) {
     write_to_file_action(out, from_index, to_index,new_filename, filename, buffer);
