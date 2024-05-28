@@ -66,6 +66,10 @@ void stiX::line_index_action(std::ostream& out, size_t const to) {
   out << to << '\n';
 }
 
+void stiX::error_action(std::ostream& out) {
+  out << "?\n";
+}
+
 void stiX::append_action(std::istream& in, size_t const after, edit_buffer& buffer) {
   read_lines(in, after, true, buffer);
 }

@@ -19,6 +19,7 @@ namespace stiX {
   class command_extras;
 
   void line_index_action(std::ostream& out, size_t to);
+  void error_action(std::ostream& out);
   void append_action(std::istream& in, size_t after, edit_buffer& buffer);
   void insert_action(std::istream& in, size_t before, edit_buffer& buffer);
   void change_action(std::istream& in, size_t from, size_t to, edit_buffer& buffer);

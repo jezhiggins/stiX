@@ -5,7 +5,7 @@
 #include "edit_buffer.hpp"
 
 void stiX::command::error(std::istream&, std::ostream& out, edit_buffer&, std::string&) {
-  out << "?\n";
+  error_action(out);
 }
 void stiX::command::noop(std::istream&, std::ostream&, edit_buffer&, std::string&) {
 }
