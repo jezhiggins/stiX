@@ -27,9 +27,9 @@ namespace stiX {
   void delete_action(size_t from, size_t to, edit_buffer& buffer);
   void print_action(std::ostream& out, size_t from, size_t to, edit_buffer& buffer);
   void filename_action(std::string_view filename, std::string& property, std::ostream& out);
-  void write_to_file_action(size_t from, size_t to, std::string_view filename, std::string& property, edit_buffer& buffer);
-  void read_from_file_action(size_t before, std::string_view filename, std::string& property, edit_buffer& buffer);
-  void edit_file_action(std::string_view filename, std::string& property, edit_buffer& buffer);
+  void write_to_file_action(std::ostream& out, size_t from, size_t to, std::string_view filename, std::string& property, edit_buffer& buffer);
+  void read_from_file_action(std::ostream& out, size_t before, std::string_view filename, std::string& property, edit_buffer& buffer);
+  void edit_file_action(std::ostream& out, std::string_view filename, std::string& property, edit_buffer& buffer);
   void substitute_action(size_t from, size_t to, std::string_view pattern, std::string_view replacement, bool replace_all, edit_buffer& buffer);
   void global_action(size_t from, size_t to, std::string_view pattern, stiX::parsed_command const& action,
                      std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename);
