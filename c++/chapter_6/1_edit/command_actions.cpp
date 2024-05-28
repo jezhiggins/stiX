@@ -65,6 +65,13 @@ namespace {
     if (!filename.empty())
       property = filename;
   }
+
+  bool filename_is_good(std::string_view const property, std::ostream& out) {
+    if (!property.empty())
+      return true;
+    error_action(out);
+    return false;
+  }
 }
 
 void stiX::line_index_action(std::ostream& out, size_t const to) {
@@ -114,34 +121,29 @@ void stiX::filename_action(std::string_view const filename, std::string& propert
 void stiX::write_to_file_action(std::ostream& out, size_t from, size_t to, std::string_view const filename, std::string& property, edit_buffer& buffer) {
   update_filename_property(filename, property);
 
-  if (!property.empty()) {
+  if (filename_is_good(property, out)) {
     auto destination = std::ofstream(property);
     write_lines(destination, from, to, buffer);
   }
-  else
-    error_action(out);
 }
 
 void stiX::read_from_file_action(std::ostream& out, size_t before, std::string_view filename, std::string& property, edit_buffer& buffer) {
   update_filename_property(filename, property);
 
-  if (!property.empty()) {
+  if (filename_is_good(property, out)) {
     auto source = std::ifstream(property);
     read_lines(source, before, false, buffer);
   }
-  else
-    error_action(out);
 }
 
 void stiX::edit_file_action(std::ostream& out, std::string_view filename, std::string& property, edit_buffer& buffer) {
   update_filename_property(filename, property);
 
-  if (!property.empty()) {
+  if (filename_is_good(property, out)) {
     if (!buffer.empty())
       delete_action(1, buffer.last(), buffer);
     read_from_file_action(out, 0, filename, property, buffer);
-  } else
-    error_action(out);
+  }
 }
 
 void stiX::substitute_action(
