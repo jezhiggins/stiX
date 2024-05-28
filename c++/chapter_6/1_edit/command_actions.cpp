@@ -96,32 +96,35 @@ void stiX::print_action(std::ostream& out, size_t const from, size_t const to, e
   write_lines(out, from, to, buffer);
 }
 
+namespace {
+  void update_filename_property(std::string_view const filename, std::string& property) {
+    if (!filename.empty())
+      property = filename;
+  }
+}
+
 void stiX::filename_action(std::string_view const filename, std::string& property, std::ostream& out) {
-  if (!filename.empty())
-    property = filename;
+  update_filename_property(filename, property);
 
   out << (!property.empty() ? property : "?") << "\n";
 }
 
 void stiX::write_to_file_action(size_t from, size_t to, std::string_view const filename, std::string& property, edit_buffer& buffer) {
-  if (!filename.empty())
-    property = filename;
+  update_filename_property(filename, property);
 
   auto destination = std::ofstream(property);
   write_lines(destination, from, to, buffer);
 }
 
 void stiX::read_from_file_action(size_t before, std::string_view filename, std::string& property, edit_buffer& buffer) {
-  if (!filename.empty())
-    property = filename;
+  update_filename_property(filename, property);
 
   auto source = std::ifstream(property);
   read_lines(source, before, false, buffer);
 }
 
 void stiX::edit_file_action(std::string_view filename, std::string& property, edit_buffer& buffer) {
-  if (!filename.empty())
-    property = filename;
+  update_filename_property(filename, property);
 
   if (!buffer.empty())
     delete_action(1, buffer.last(), buffer);
