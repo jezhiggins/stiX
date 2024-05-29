@@ -131,7 +131,16 @@ namespace {
     {"1,$s/fruit/veg/gp",     {"1,$s/fruit/veg/gp",5, 10},  {1, 10, 5, 's', { .search_pattern = "fruit", .replacement = "veg", .all = true, .and_print = true }}},
     {"g/line/p",              {"g/line/p", 5, 10},   {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
     {"g#line#p",              {"g#line#p", 5, 10},   {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
-    {"g/line/p with space",   {"g/line/p  ", 5, 10}, {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}}
+    {"g/line/p with space",   {"g/line/p  ", 5, 10}, {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
+    {"1,$g/line/p",           {"1,$g/line/p", 5,10}, {1, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
+    {".,6g#line#p",           {".,6g#line#p", 5,10}, {5, 10, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
+    {"1,.g/line/p with space",{"1,.g/line/p ",5,10}, {1,  5, 5, 'g', { .search_pattern = "line", .replacement = "p" }}},
+    {"x/line/p",              {"x/line/p", 5, 10},   {1, 10, 5, 'x', { .search_pattern = "line", .replacement = "p" }}},
+    {"x#line#p",              {"x#line#p", 5, 10},   {1, 10, 5, 'x', { .search_pattern = "line", .replacement = "p" }}},
+    {"x/line/p with space",   {"x/line/p  ", 5, 10}, {1, 10, 5, 'x', { .search_pattern = "line", .replacement = "p" }}},
+    {"1,$x/line/p",           {"1,$x/line/p", 5,10}, {1, 10, 5, 'x', { .search_pattern = "line", .replacement = "p" }}},
+    {".,6x#line#p",           {".,6x#line#p", 5,10}, {5, 10, 5, 'x', { .search_pattern = "line", .replacement = "p" }}},
+    {"1,.x/line/p with space",{"1,.x/line/p ",5,10}, {1,  5, 5, 'x', { .search_pattern = "line", .replacement = "p" }}}
   };
 
   auto bad_indexes_test_cases = parse_test_cases {
@@ -171,7 +180,10 @@ namespace {
     {"= with p then garbage",   {"1,4=pp",    5, 10}},
     {"g no pattern",            {"g",         5, 10}},
     {"g unterminated pattern",  {"g/fruit",   5, 10}},
-    {"g no action",             {"g/line/",   5, 10}}
+    {"g no action",             {"g/line/",   5, 10}},
+    {"x no pattern",            {"x",         5, 10}},
+    {"x unterminated pattern",  {"x/fruit",   5, 10}},
+    {"x no action",             {"x/line/",   5, 10}}
   };
 
   auto forward_search_tests = parse_test_cases {

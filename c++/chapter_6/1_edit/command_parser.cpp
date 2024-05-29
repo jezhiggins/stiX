@@ -318,7 +318,7 @@ namespace {
     }
 
     static bool wants_search_action(char const c) {
-      return code_match(c, "g");
+      return code_match(c, "gx");
     }
 
     bool parse_trailing_print() {
