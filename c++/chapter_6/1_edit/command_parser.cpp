@@ -118,7 +118,7 @@ namespace {
     }
 
     void add_default_indicies() {
-      if (code_match(code, "gw")) {
+      if (code_match(code, "gwx")) {
         indicies.emplace_back(int_index(1), stiX::expression_separator::unchanged);
         indicies.emplace_back(last_index_fn, stiX::expression_separator::unchanged);
       }
@@ -461,7 +461,7 @@ namespace {
     { 'd', stiX::make_delete_action },
     { 'e', stiX::make_edit_action },
     { 'f', stiX::make_filename_action },
-    { 'g', stiX::make_global_action },
+    { 'g', stiX::make_global_match_action },
     { 'i', stiX::make_insert_action },
     { 'm', stiX::make_move_action },
     { 'p', stiX::make_print_action },
@@ -470,6 +470,7 @@ namespace {
     { 'r', stiX::make_read_file_action },
     { 's', stiX::make_substitute_action },
     { 'w', stiX::make_write_file_action },
+    { 'x', stiX::make_global_mismatch_action },
     { '=', stiX::make_line_index_action }
   };
 } // namespace

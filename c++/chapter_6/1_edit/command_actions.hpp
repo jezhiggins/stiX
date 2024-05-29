@@ -56,10 +56,14 @@ namespace stiX {
                               size_t to_index,
                               size_t destination,
                               command_extras const& extras);
-  action make_global_action(size_t from_index,
-                            size_t to_index,
-                            size_t destination,
-                            command_extras const& extras);
+  action make_global_match_action(size_t from_index,
+                                  size_t to_index,
+                                  size_t destination,
+                                  command_extras const& extras);
+  action make_global_mismatch_action(size_t from_index,
+                                     size_t to_index,
+                                     size_t destination,
+                                     command_extras const& extras);
   action make_insert_action(size_t from_index,
                             size_t to_index,
                             size_t destination,
