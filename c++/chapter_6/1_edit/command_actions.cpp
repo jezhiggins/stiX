@@ -245,7 +245,7 @@ namespace {
     auto pattern = extras.search_pattern;
     auto action = stiX::parse_command(extras.replacement);
 
-    if (code_match(action.code, "aciq?"))
+    if (code_match(action.code, "acgiqx?"))
       return stiX::command::error;
 
     return [from_index, to_index, pattern, action, match](std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename) {
