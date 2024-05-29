@@ -486,7 +486,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
     }
   }
 
-  SECTION("global action") {
+  SECTION("global g action") {
     SECTION("g matches all lines, replace action") {
       auto e = three_line_buffer();
 
@@ -494,7 +494,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_action(1, 3, "%", action, dummy, dummy, e, f);
+      global_match_action(1, 3, "%", action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Entry 1");
@@ -508,7 +508,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_action(1, 3, "[13]", action, dummy, dummy, e, f);
+      global_match_action(1, 3, "[13]", action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Entry 1");
@@ -522,7 +522,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command(".+1s/line/Entry/");
-      global_action(1, 3, "%", action, dummy, dummy, e, f);
+      global_match_action(1, 3, "%", action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 1");
@@ -536,7 +536,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command("m0");
-      global_action(1, 3, "%", action, dummy, dummy, e, f);
+      global_match_action(1, 3, "%", action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 3");

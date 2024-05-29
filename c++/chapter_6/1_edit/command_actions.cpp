@@ -178,7 +178,7 @@ namespace {
   };
 }
 
-void stiX::global_action(
+void stiX::global_match_action(
   size_t from,
   size_t to,
   std::string_view pattern,
@@ -263,7 +263,7 @@ action stiX::make_global_action(size_t const from_index, size_t const to_index, 
     return stiX::command::error;
 
   return [from_index, to_index, pattern, action](std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename) {
-    global_action(from_index, to_index, pattern, action, in, out, buffer, filename);
+    global_match_action(from_index, to_index, pattern, action, in, out, buffer, filename);
   };
 }
 action stiX::make_insert_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
