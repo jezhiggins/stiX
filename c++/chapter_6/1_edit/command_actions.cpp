@@ -212,6 +212,39 @@ void stiX::global_match_action(
   }
 }
 
+void stiX::global_mismatch_action(
+  size_t from,
+  size_t to,
+  std::string_view pattern,
+  stiX::parsed_command const& action,
+  std::istream& in,
+  std::ostream& out,
+  edit_buffer& buffer,
+  std::string& filename)
+{
+  auto matcher = compile_pattern(pattern);
+
+  for (auto i = 1; i <= buffer.last(); ++i)
+    buffer.clear_mark(i);
+
+  for (auto i = from; i <= to; ++i) {
+    auto l = buffer.line_at(i);
+
+    if (!matcher.match(l))
+      buffer.set_mark(i);
+  }
+
+  for (auto i = next_mark(from, buffer); i != -1; i = next_mark(i, buffer)) {
+    buffer.clear_mark(i);
+    buffer.set_dot(i);
+
+    auto command = action.compile(buffer);
+    command(in, out, buffer, filename);
+
+    if (command.is_error())
+      return;
+  }
+}
 
 ////////////////////
 namespace {

@@ -33,6 +33,8 @@ namespace stiX {
   void substitute_action(size_t from, size_t to, std::string_view pattern, std::string_view replacement, bool replace_all, edit_buffer& buffer);
   void global_match_action(size_t from, size_t to, std::string_view pattern, stiX::parsed_command const& action,
                            std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename);
+  void global_mismatch_action(size_t from, size_t to, std::string_view pattern, stiX::parsed_command const& action,
+                              std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename);
 
   action make_append_action(size_t from_index,
                             size_t to_index,

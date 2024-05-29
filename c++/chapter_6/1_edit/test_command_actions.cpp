@@ -544,4 +544,37 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       REQUIRE(e.line_at(3) == "line 1");
     }
   }
+
+
+  SECTION("global x action") {
+    SECTION("x mismatches all lines, replace action") {
+      auto e = three_line_buffer();
+
+      auto dummy = std::stringstream { };
+      auto f = std::string { };
+
+      auto action = stiX::parse_command("s/line/Entry/");
+      global_mismatch_action(1, 3, "bunkum", action, dummy, dummy, e, f);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "Entry 1");
+      REQUIRE(e.line_at(2) == "Entry 2");
+      REQUIRE(e.line_at(3) == "Entry 3");
+    }
+    SECTION("x matches all lines, replace action not applied") {
+      auto e = three_line_buffer();
+
+      auto dummy = std::stringstream { };
+      auto f = std::string { };
+
+      auto action = stiX::parse_command("s/line/Entry/");
+      global_mismatch_action(1, 3, "%", action, dummy, dummy, e, f);
+
+      REQUIRE(e.dot() == 3);
+      REQUIRE(e.line_at(1) == "line 1");
+      REQUIRE(e.line_at(2) == "line 2");
+      REQUIRE(e.line_at(3) == "line 3");
+    }
+  }
+
 }
