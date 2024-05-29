@@ -79,21 +79,15 @@ namespace {
     return (index <= buffer.last()) ? index : -1;
   }
 
-  void global_action(
-    size_t from,
-    size_t to,
-    std::string_view pattern,
-    bool match,
-    stiX::parsed_command const& action,
-    std::istream& in,
-    std::ostream& out,
-    edit_buffer& buffer,
-    std::string& filename)
-  {
-    auto matcher = compile_pattern(pattern);
-
+  void clear_marks(edit_buffer& buffer) {
     for (auto i = 1; i <= buffer.last(); ++i)
       buffer.clear_mark(i);
+  }
+
+  void mark_lines(size_t const from, size_t const to,
+                  std::string_view pattern, bool match,
+                  edit_buffer& buffer) {
+    auto matcher = compile_pattern(pattern);
 
     for (auto i = from; i <= to; ++i) {
       auto l = buffer.line_at(i);
@@ -101,7 +95,16 @@ namespace {
       if (matcher.match(l) == match)
         buffer.set_mark(i);
     }
+  }
 
+  void action_marked_lines(
+    size_t const from,
+    stiX::parsed_command const& action,
+    std::istream& in,
+    std::ostream& out,
+    edit_buffer& buffer,
+    std::string& filename)
+  {
     for (auto i = next_mark(from, buffer); i != -1; i = next_mark(i, buffer)) {
       buffer.clear_mark(i);
       buffer.set_dot(i);
@@ -112,6 +115,24 @@ namespace {
       if (command.is_error())
         return;
     }
+  }
+
+  void global_action(
+    size_t const from,
+    size_t const to,
+    std::string_view pattern,
+    bool match,
+    stiX::parsed_command const& action,
+    std::istream& in,
+    std::ostream& out,
+    edit_buffer& buffer,
+    std::string& filename)
+  {
+    clear_marks(buffer);
+
+    mark_lines(from, to, pattern, match, buffer);
+
+    action_marked_lines(from, action, in, out, buffer, filename);
   }
 } // namespace
 
