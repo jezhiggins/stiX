@@ -116,24 +116,6 @@ namespace {
         return;
     }
   }
-
-  void global_action(
-    size_t const from,
-    size_t const to,
-    std::string_view pattern,
-    bool match,
-    stiX::parsed_command const& action,
-    std::istream& in,
-    std::ostream& out,
-    edit_buffer& buffer,
-    std::string& filename)
-  {
-    clear_marks(buffer);
-
-    mark_lines(from, to, pattern, match, buffer);
-
-    action_marked_lines(from, action, in, out, buffer, filename);
-  }
 } // namespace
 
 void stiX::line_index_action(std::ostream& out, size_t const to) {
@@ -228,32 +210,22 @@ void stiX::substitute_action(
   }
 }
 
-void stiX::global_match_action(
-  size_t from,
-  size_t to,
+void stiX::global_action(
+  size_t const from,
+  size_t const to,
   std::string_view pattern,
+  bool match,
   stiX::parsed_command const& action,
   std::istream& in,
   std::ostream& out,
   edit_buffer& buffer,
   std::string& filename)
 {
-  global_action(from, to, pattern, true, action,
-                in, out, buffer, filename);
-}
+  clear_marks(buffer);
 
-void stiX::global_mismatch_action(
-  size_t from,
-  size_t to,
-  std::string_view pattern,
-  stiX::parsed_command const& action,
-  std::istream& in,
-  std::ostream& out,
-  edit_buffer& buffer,
-  std::string& filename)
-{
-  global_action(from, to, pattern, false, action,
-                in, out, buffer, filename);
+  mark_lines(from, to, pattern, match, buffer);
+
+  action_marked_lines(from, action, in, out, buffer, filename);
 }
 
 ////////////////////

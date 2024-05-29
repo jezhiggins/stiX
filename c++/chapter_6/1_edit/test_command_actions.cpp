@@ -494,7 +494,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_match_action(1, 3, "%", action, dummy, dummy, e, f);
+      global_action(1, 3, "%", true, action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Entry 1");
@@ -508,7 +508,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_match_action(1, 3, "[13]", action, dummy, dummy, e, f);
+      global_action(1, 3, "[13]", true, action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Entry 1");
@@ -522,7 +522,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command(".+1s/line/Entry/");
-      global_match_action(1, 3, "%", action, dummy, dummy, e, f);
+      global_action(1, 3, "%", true, action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 1");
@@ -536,7 +536,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command("m0");
-      global_match_action(1, 3, "%", action, dummy, dummy, e, f);
+      global_action(1, 3, "%", true, action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 3");
@@ -554,7 +554,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_mismatch_action(1, 3, "bunkum", action, dummy, dummy, e, f);
+      global_action(1, 3, "bunkum", false, action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Entry 1");
@@ -568,7 +568,7 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_mismatch_action(1, 3, "%", action, dummy, dummy, e, f);
+      global_action(1, 3, "%", false, action, dummy, dummy, e, f);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 1");
