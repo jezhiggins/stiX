@@ -261,6 +261,25 @@ namespace {
   action from_is_good(size_t const from, action fn) {
     return from != 0 ? fn : stiX::command::error;
   }
+
+  action make_global_action(
+    size_t const from_index,
+    size_t const to_index,
+    command_extras const& extras,
+    bool match) {
+    if (from_index == 0)
+      return stiX::command::error;
+
+    auto pattern = extras.search_pattern;
+    auto action = stiX::parse_command(extras.replacement);
+
+    if (code_match(action.code, "aciq?"))
+      return stiX::command::error;
+
+    return [from_index, to_index, pattern, action, match](std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename) {
+      global_action(from_index, to_index, pattern, match, action, in, out, buffer, filename);
+    };
+  }
 }
 
 action stiX::make_append_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
@@ -295,34 +314,14 @@ action stiX::make_filename_action(size_t const, size_t const, size_t const, comm
     filename_action(new_filename, filename,  out);
   };
 }
+
 action stiX::make_global_match_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
-  if (from_index == 0)
-    return stiX::command::error;
-
-  auto pattern = extras.search_pattern;
-  auto action = stiX::parse_command(extras.replacement);
-
-  if (code_match(action.code, "aciq?"))
-    return stiX::command::error;
-
-  return [from_index, to_index, pattern, action](std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename) {
-    global_match_action(from_index, to_index, pattern, action, in, out, buffer, filename);
-  };
+  return make_global_action(from_index, to_index, extras, true);
 }
 action stiX::make_global_mismatch_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
-  if (from_index == 0)
-    return stiX::command::error;
-
-  auto pattern = extras.search_pattern;
-  auto action = stiX::parse_command(extras.replacement);
-
-  if (code_match(action.code, "aciq?"))
-    return stiX::command::error;
-
-  return [from_index, to_index, pattern, action](std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename) {
-    global_mismatch_action(from_index, to_index, pattern, action, in, out, buffer, filename);
-  };
+  return make_global_action(from_index, to_index, extras, false);
 }
+
 action stiX::make_insert_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
   return [to_index](std::istream& in, std::ostream&, edit_buffer& buffer, std::string&) {
     insert_action(in, to_index, buffer);
