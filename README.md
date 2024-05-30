@@ -51,6 +51,10 @@ and [two](https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html)
 1. [find](https://www.jezuk.co.uk/blog/2021/08/sticpp-find.html) 
 2. [change](https://www.jezuk.co.uk/blog/2022/01/sticpp-change.html)
 
+### Chapter 6 - Editing
+
+1. edit 
+
 ## License
 
 Copyright 2019-2024 [JezUK Ltd](http://www.jezuk.co.uk/)
