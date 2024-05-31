@@ -7,7 +7,8 @@
 
 namespace stiX {
   class edit_buffer;
-  using line_expression = std::function<size_t(edit_buffer const&, size_t)>;
+  using line_expression =
+    std::function<std::tuple<size_t, std::string>(edit_buffer const&, size_t, std::string_view)>;
 
   enum class expression_separator : bool {
     unchanged = false,

@@ -25,55 +25,59 @@ namespace {
   bool is_error(size_t const i) { return i == stiX::command::line_error; }
 
   stiX::line_expression int_index(size_t const index) {
-    return [index](stiX::edit_buffer const&, size_t) { return index; };
+    return [index](stiX::edit_buffer const&, size_t, std::string_view) -> std::tuple<size_t, std::string>
+      { return { index, "" }; };
   }
   stiX::line_expression add_offset(stiX::line_expression const& ref_fn, size_t const index) {
-    return [ref_fn, index](stiX::edit_buffer const& buffer, size_t const dot) {
-      return ref_fn(buffer, dot) + index;
+    return [ref_fn, index](stiX::edit_buffer const& buffer, size_t const dot, std::string_view last_pat) -> std::tuple<size_t, std::string> {
+      auto [i, p] = ref_fn(buffer, dot, last_pat);
+      return { i + index, p };
     };
   }
 
-  size_t dot_index_fn(stiX::edit_buffer const&, size_t const dot) {
-    return dot;
+  std::tuple<size_t, std::string> dot_index_fn(stiX::edit_buffer const&, size_t const dot, std::string_view) {
+    return { dot, "" };
   }
-  size_t last_index_fn(stiX::edit_buffer const& buffer, size_t) {
-    return buffer.last();
+  std::tuple<size_t, std::string> last_index_fn(stiX::edit_buffer const& buffer, size_t, std::string_view) {
+    return { buffer.last(), "" };
   }
-  size_t line_error_fn(stiX::edit_buffer const&, size_t) {
-    return stiX::command::line_error;
+  std::tuple<size_t, std::string> line_error_fn(stiX::edit_buffer const&, size_t, std::string_view) {
+    return { stiX::command::line_error, "" };
   }
 
   stiX::line_expression search(
-    std::string_view const pattern,
+    std::string const& pattern,
     size_t(next_index)(size_t, stiX::edit_buffer const&)
   ) {
-    if (pattern.empty()) return line_error_fn;
+    return [pattern, next_index](stiX::edit_buffer const& buffer, size_t const dot, std::string_view) ->
+    std::tuple<size_t, std::string> {
+      if (pattern.empty())
+        return { stiX::command::line_error, pattern };
 
-    auto matcher = stiX::compile_pattern(pattern);
-    return [matcher, next_index](stiX::edit_buffer const& buffer, size_t const dot) {
+      auto matcher = stiX::compile_pattern(pattern);
       size_t index = dot;
       do {
         index = next_index(index, buffer);
 
         if (matcher.match(buffer.line_at(index)))
-          return index;
+          return { index, pattern };
       } while (index != dot);
 
-      return stiX::command::line_error;
+      return { stiX::command::line_error, pattern };
     };
   }
 
   size_t next_line(size_t i, stiX::edit_buffer const& buffer) {
     return (i < buffer.last()) ? ++i : 1;
   }
-  stiX::line_expression forward_search(std::string_view const pattern) {
+  stiX::line_expression forward_search(std::string const& pattern) {
     return search(pattern, next_line);
   }
 
   size_t prev_line(size_t i, stiX::edit_buffer const& buffer) {
     return (i > 1) ? --i : buffer.last();
   }
-  stiX::line_expression backward_search(std::string_view const pattern) {
+  stiX::line_expression backward_search(std::string const& pattern) {
     return search(pattern, prev_line);
   }
 
@@ -192,7 +196,7 @@ namespace {
 
     stiX::line_expression parse_search(
       char const delimiter,
-      stiX::line_expression(make_search)(std::string_view)
+      stiX::line_expression(make_search)(std::string const&)
     ) {
       input.advance();
       auto const pattern = fetch_pattern(delimiter);
@@ -437,9 +441,17 @@ namespace {
     bool has_failed = false;
   };
 
-  size_t index_or_error(stiX::line_expression const& fn, stiX::edit_buffer const& buffer, size_t const dot) {
-    auto const index = fn(buffer, dot);
-    return index <= buffer.last() ? index : stiX::command::line_error;
+  std::tuple<size_t, std::string> index_or_error(
+    stiX::line_expression const& fn,
+    stiX::edit_buffer const& buffer,
+    size_t const dot,
+    std::string_view previous_pattern
+  ) {
+    auto const [index, last_pattern] = fn(buffer, dot, previous_pattern);
+    return {
+      index <= buffer.last() ? index : stiX::command::line_error,
+      last_pattern
+    };
   }
 
   bool is_error(size_t const from, size_t const to, char const code) {
@@ -497,38 +509,46 @@ stiX::parsed_command stiX::parse_command(std::string_view const input) {
 }
 
 namespace {
-  std::tuple<size_t, size_t, size_t> eval_line_expressions(
+  std::tuple<size_t, size_t, size_t, std::string> eval_line_expressions(
     std::vector<stiX::line_expression_step> const& line_expressions,
-    stiX::edit_buffer const& buffer)
+    stiX::edit_buffer const& buffer,
+    std::string_view previous_pattern)
   {
     auto dot = buffer.dot();
+    auto last_pattern = std::string { previous_pattern };
     auto line_numbers = std::vector<size_t> { };
 
     for (auto const& [expr, separator] : line_expressions) {
-      auto index = index_or_error(expr, buffer, dot);
+      auto [index, pattern] = index_or_error(expr, buffer, dot, last_pattern);
       dot = (separator == stiX::expression_separator::update) ? index : dot;
+      last_pattern = !pattern.empty() ? pattern : last_pattern;
       line_numbers.push_back(index);
     }
 
     if (line_numbers.size() > 2)
       line_numbers.erase(line_numbers.begin(), line_numbers.end()-2);
 
-    return { line_numbers.front(), line_numbers.back(), dot };
+    return { line_numbers.front(), line_numbers.back(), dot, last_pattern };
   }
 }
 
 stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) const {
-  auto const [from, to, updated_dot] =
-    eval_line_expressions(line_expressions, buffer);
+  auto const [
+    from,
+    to,
+    updated_dot,
+    last_pattern] =
+      eval_line_expressions(line_expressions, buffer, "");
 
   if (is_error(from, to, code))
     return { command::error };
 
   auto destination = command::line_error;
   if (extras.destination_expression != nullptr) {
-    destination = index_or_error(extras.destination_expression, buffer, updated_dot);
-    if (is_error(destination) || are_overlapping(from, to,destination))
+    auto const [ d, _ ] = index_or_error(extras.destination_expression, buffer, updated_dot, last_pattern);
+    if (is_error(d) || are_overlapping(from, to, d))
       return { command::error };
+    destination = d;
   }
 
   auto set_dot = updated_dot != buffer.dot()
