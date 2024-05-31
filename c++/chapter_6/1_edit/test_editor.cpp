@@ -892,7 +892,7 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "\\\\p\n"
       ">?\n"
     );
-    x_editor_test(
+    editor_test(
       "i\n"
       "line 1\n"
       "line 2\n"
@@ -911,7 +911,7 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "\\\\p\n"
       ">line 3\n"
     );
-    x_editor_test(
+    editor_test(
       "i\n"
       "bgein\n"
       "  one\n"

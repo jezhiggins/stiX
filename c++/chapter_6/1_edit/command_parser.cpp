@@ -46,11 +46,12 @@ namespace {
   }
 
   stiX::line_expression search(
-    std::string const& pattern,
+    std::string const& search_pattern,
     size_t(next_index)(size_t, stiX::edit_buffer const&)
   ) {
-    return [pattern, next_index](stiX::edit_buffer const& buffer, size_t const dot, std::string_view) ->
+    return [search_pattern, next_index](stiX::edit_buffer const& buffer, size_t const dot, std::string_view last_pat) ->
     std::tuple<size_t, std::string> {
+      auto pattern = std::string { !search_pattern.empty() ? search_pattern : last_pat };
       if (pattern.empty())
         return { stiX::command::line_error, pattern };
 

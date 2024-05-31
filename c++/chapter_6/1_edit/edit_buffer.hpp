@@ -26,8 +26,9 @@ namespace stiX {
     }
     std::string_view filename() const { return filename_; }
 
-    void set_pattern(std::string_view pattern) {
+    std::string_view set_pattern(std::string_view pattern) {
       if (!pattern.empty()) pattern_ = pattern;
+      return pattern_;
     }
     std::string_view pattern() const { return pattern_; }
 

@@ -192,8 +192,7 @@ void stiX::substitute_action(
   std::string_view replacement,
   bool replace_all,
   edit_buffer& buffer) {
-
-  auto matcher = compile_pattern(pattern);
+  auto matcher = compile_pattern(buffer.set_pattern(pattern));
   auto replacer = prepare_replacement(replacement);
 
   auto change_fn = replace_all ? apply_change : apply_change_once;
