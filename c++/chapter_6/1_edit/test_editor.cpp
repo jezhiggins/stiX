@@ -926,6 +926,17 @@ TEST_CASE("Chapter 6 - edit - editor") {
       "//s//begin/p\n"
       ">begin again\n"
     );
+    editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      "line 4\n"
+      "line 5\n"
+      ".\n"
+      "3s//oops/p\n"
+      ">?\n"
+    );
   }
 }
 

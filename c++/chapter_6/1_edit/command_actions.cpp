@@ -192,7 +192,7 @@ void stiX::substitute_action(
   std::string_view replacement,
   bool replace_all,
   edit_buffer& buffer) {
-  auto matcher = compile_pattern(buffer.set_pattern(pattern));
+  auto matcher = compile_pattern(pattern);
   auto replacer = prepare_replacement(replacement);
 
   auto change_fn = replace_all ? apply_change : apply_change_once;
@@ -329,8 +329,11 @@ action stiX::make_substitute_action(size_t const from_index, size_t const to_ind
   auto pattern = extras.search_pattern;
   auto replacement = extras.replacement;
   auto replace_all = extras.replace_all;
-  return [from_index, to_index, pattern, replacement, replace_all](std::istream&, std::ostream&, edit_buffer& buffer) {
-    substitute_action(from_index, to_index, pattern, replacement, replace_all, buffer);
+  return [from_index, to_index, pattern, replacement, replace_all](std::istream&, std::ostream& out, edit_buffer& buffer) {
+      if (!buffer.set_pattern(pattern).empty())
+        substitute_action(from_index, to_index, buffer.pattern(), replacement, replace_all, buffer);
+      else
+        error_action(out);
   };
 }
 action stiX::make_write_file_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
