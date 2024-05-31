@@ -14,8 +14,7 @@ namespace stiX {
     void operator()(
       std::istream& in,
       std::ostream& out,
-      edit_buffer& buffer,
-      std::string& filename) const;
+      edit_buffer& buffer) const;
 
     bool is_error() const;
 

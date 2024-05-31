@@ -12,9 +12,9 @@ namespace stiX {
     constexpr size_t const line_error = std::numeric_limits<size_t>::max();
     constexpr char const code_error = '?';
 
-    void error(std::istream&, std::ostream&, edit_buffer&, std::string&);
-    void noop(std::istream&, std::ostream&, edit_buffer&, std::string&);
-    void and_print(std::istream&, std::ostream&, edit_buffer&, std::string&);
+    void error(std::istream&, std::ostream&, edit_buffer&);
+    void noop(std::istream&, std::ostream&, edit_buffer&);
+    void and_print(std::istream&, std::ostream&, edit_buffer&);
     action update_dot(size_t dot);
   };
 }

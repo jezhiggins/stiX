@@ -27,6 +27,6 @@ void editor::handle_command(std::string_view line, std::istream&in, std::ostream
   auto parsed_command = parse_command(line);
   auto commands = parsed_command.compile(buffer_);
 
-  commands(in, out, buffer_, filename_);
+  commands(in, out, buffer_);
 }
 

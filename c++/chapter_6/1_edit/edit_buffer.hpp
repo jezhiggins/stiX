@@ -21,11 +21,17 @@ namespace stiX {
     size_t dot() const { return dot_; }
     size_t last() const { return buffer_.size(); }
 
+    void set_filename(std::string_view filename) {
+      if (!filename.empty()) filename_ = filename;
+    }
+    std::string_view filename() const { return filename_; }
+
     bool empty() const { return buffer_.size() == 0; }
 
   private:
     size_t dot_ = 0;
     line_buffer buffer_;
+    std::string filename_;
   };
 
 }

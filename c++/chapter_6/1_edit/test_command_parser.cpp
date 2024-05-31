@@ -233,8 +233,7 @@ void verify_from_to_dot_expectations(
   auto& command = list[0];
 
   auto dummy = std::stringstream { };
-  auto f = std::string { };
-  command(dummy, dummy, buffer, f);
+  command(dummy, dummy, buffer);
 
   REQUIRE(buffer.dot() == expected.dot);
 }
@@ -279,9 +278,8 @@ void indexes_are_bad(parse_test_case const& tc) {
     auto& command = list[0];
 
     auto io = std::stringstream { };
-    auto f = std::string { };
 
-    command(io, io, buffer, f);
+    command(io, io, buffer);
 
     REQUIRE(io.str() == "?\n");
   }

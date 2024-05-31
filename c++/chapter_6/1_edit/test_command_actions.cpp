@@ -373,32 +373,33 @@ TEST_CASE("Chapter 6 - edit - command actions") {
 
   SECTION("filename action") {
     SECTION("f filename") {
-      std::string filename = "donkey";
+      auto e = five_line_buffer();
       std::ostringstream os;
 
-      stiX::filename_action("fruit", filename, os);
+      stiX::filename_action(os, "fruit", e);
 
-      REQUIRE(filename == "fruit");
+      REQUIRE(e.filename() == "fruit");
       REQUIRE(os.str() == "fruit\n");
     }
 
     SECTION("f, not filename set") {
-      std::string filename;
+      auto e = five_line_buffer();
       std::ostringstream os;
 
-      stiX::filename_action("", filename, os);
+      stiX::filename_action(os, "", e);
 
-      REQUIRE(filename.empty());
+      REQUIRE(e.filename().empty());
       REQUIRE(os.str() == "?\n");
     }
 
     SECTION("f, filename already set") {
-      std::string filename = "donkey";
+      auto e = five_line_buffer();
+      e.set_filename("donkey");
       std::ostringstream os;
 
-      stiX::filename_action("", filename, os);
+      stiX::filename_action(os, "", e);
 
-      REQUIRE(filename == "donkey");
+      REQUIRE(e.filename() == "donkey");
       REQUIRE(os.str() == "donkey\n");
     }
   }
@@ -491,10 +492,9 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto e = three_line_buffer();
 
       auto dummy = std::stringstream { };
-      auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_action(1, 3, "%", true, action, dummy, dummy, e, f);
+      global_action(1, 3, "%", true, action, dummy, dummy, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Entry 1");
@@ -505,10 +505,9 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto e = three_line_buffer();
 
       auto dummy = std::stringstream { };
-      auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_action(1, 3, "[13]", true, action, dummy, dummy, e, f);
+      global_action(1, 3, "[13]", true, action, dummy, dummy, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Entry 1");
@@ -519,10 +518,9 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto e = three_line_buffer();
 
       auto dummy = std::stringstream { };
-      auto f = std::string { };
 
       auto action = stiX::parse_command(".+1s/line/Entry/");
-      global_action(1, 3, "%", true, action, dummy, dummy, e, f);
+      global_action(1, 3, "%", true, action, dummy, dummy, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 1");
@@ -533,10 +531,9 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto e = three_line_buffer();
 
       auto dummy = std::stringstream { };
-      auto f = std::string { };
 
       auto action = stiX::parse_command("m0");
-      global_action(1, 3, "%", true, action, dummy, dummy, e, f);
+      global_action(1, 3, "%", true, action, dummy, dummy, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 3");
@@ -551,10 +548,9 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto e = three_line_buffer();
 
       auto dummy = std::stringstream { };
-      auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_action(1, 3, "bunkum", false, action, dummy, dummy, e, f);
+      global_action(1, 3, "bunkum", false, action, dummy, dummy, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "Entry 1");
@@ -565,10 +561,9 @@ TEST_CASE("Chapter 6 - edit - command actions") {
       auto e = three_line_buffer();
 
       auto dummy = std::stringstream { };
-      auto f = std::string { };
 
       auto action = stiX::parse_command("s/line/Entry/");
-      global_action(1, 3, "%", false, action, dummy, dummy, e, f);
+      global_action(1, 3, "%", false, action, dummy, dummy, e);
 
       REQUIRE(e.dot() == 3);
       REQUIRE(e.line_at(1) == "line 1");

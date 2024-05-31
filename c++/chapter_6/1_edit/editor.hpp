@@ -14,7 +14,6 @@ namespace stiX {
     void handle_command(std::string_view line, std::istream& in, std::ostream& out);
 
     edit_buffer buffer_;
-    std::string filename_;
   };
 }
 

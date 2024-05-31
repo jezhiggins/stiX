@@ -102,15 +102,14 @@ namespace {
     stiX::parsed_command const& action,
     std::istream& in,
     std::ostream& out,
-    edit_buffer& buffer,
-    std::string& filename)
+    edit_buffer& buffer)
   {
     for (auto i = next_mark(from, buffer); i != -1; i = next_mark(i, buffer)) {
       buffer.clear_mark(i);
       buffer.set_dot(i);
 
       auto command = action.compile(buffer);
-      command(in, out, buffer, filename);
+      command(in, out, buffer);
 
       if (command.is_error())
         return;
@@ -156,33 +155,33 @@ void stiX::print_action(std::ostream& out, size_t const from, size_t const to, e
   write_lines(out, from, to, buffer);
 }
 
-void stiX::filename_action(std::string_view const filename, std::string& property, std::ostream& out) {
-  update_filename_property(filename, property);
-
-  out << (!property.empty() ? property : "?") << "\n";
+void stiX::filename_action(std::ostream& out, std::string_view const filename, edit_buffer& buffer) {
+  buffer.set_filename(filename);
+  out << (!buffer.filename().empty() ? buffer.filename() : "?") << "\n";
 }
 
-void stiX::write_to_file_action(std::ostream& out, size_t from, size_t to, std::string_view const filename, std::string& property, edit_buffer& buffer) {
-  if (filename_is_good(property, out)) {
-    auto destination = std::ofstream(property);
+void stiX::write_to_file_action(std::ostream& out, size_t from, size_t to, std::string_view const filename, edit_buffer& buffer) {
+  auto f = std::string { !filename.empty() ? filename : buffer.filename() };
+  if (filename_is_good(f, out)) {
+    auto destination = std::ofstream { f };
     write_lines(destination, from, to, buffer);
   }
 }
 
-void stiX::read_from_file_action(std::ostream& out, size_t before, std::string_view filename, std::string& property, edit_buffer& buffer) {
-  if (filename_is_good(property, out)) {
-    auto source = std::ifstream(property);
+void stiX::read_from_file_action(std::ostream& out, size_t before, std::string_view filename, edit_buffer& buffer) {
+  auto f = std::string { !filename.empty() ? filename : buffer.filename() };
+  if (filename_is_good(f, out)) {
+    auto source = std::ifstream { f };
     read_lines(source, before, false, buffer);
   }
 }
 
-void stiX::edit_file_action(std::ostream& out, std::string_view filename, std::string& property, edit_buffer& buffer) {
-  update_filename_property(filename, property);
-
-  if (filename_is_good(property, out)) {
+void stiX::edit_file_action(std::ostream& out, std::string_view filename, edit_buffer& buffer) {
+  buffer.set_filename(filename);
+  if (filename_is_good(buffer.filename(), out)) {
     if (!buffer.empty())
       delete_action(1, buffer.last(), buffer);
-    read_from_file_action(out, 0, filename, property, buffer);
+    read_from_file_action(out, 0, filename, buffer);
   }
 }
 
@@ -218,14 +217,13 @@ void stiX::global_action(
   stiX::parsed_command const& action,
   std::istream& in,
   std::ostream& out,
-  edit_buffer& buffer,
-  std::string& filename)
+  edit_buffer& buffer)
 {
   clear_marks(buffer);
 
   mark_lines(from, to, pattern, match, buffer);
 
-  action_marked_lines(from, action, in, out, buffer, filename);
+  action_marked_lines(from, action, in, out, buffer);
 }
 
 ////////////////////
@@ -248,42 +246,42 @@ namespace {
     if (code_match(action.code, "acgiqx?"))
       return stiX::command::error;
 
-    return [from_index, to_index, pattern, action, match](std::istream& in, std::ostream& out, edit_buffer& buffer, std::string& filename) {
-      global_action(from_index, to_index, pattern, match, action, in, out, buffer, filename);
+    return [from_index, to_index, pattern, action, match](std::istream& in, std::ostream& out, edit_buffer& buffer) {
+      global_action(from_index, to_index, pattern, match, action, in, out, buffer);
     };
   }
 }
 
 action stiX::make_append_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
-  return [to_index](std::istream& in, std::ostream&, edit_buffer& buffer, std::string&) {
+  return [to_index](std::istream& in, std::ostream&, edit_buffer& buffer) {
     append_action(in, to_index, buffer);
   };
 }
 
 action stiX::make_change_action(size_t const from_index, size_t const to_index, size_t const, command_extras const&) {
   return from_is_good(from_index,
-    [from_index, to_index](std::istream& in, std::ostream&, edit_buffer& buffer, std::string&) {
+    [from_index, to_index](std::istream& in, std::ostream&, edit_buffer& buffer) {
       change_action(in, from_index, to_index, buffer);
     }
   );
 }
 action stiX::make_delete_action(size_t const from_index, size_t const to_index, size_t const, command_extras const&) {
   return from_is_good(from_index,
-    [from_index, to_index](std::istream&, std::ostream&, edit_buffer& buffer, std::string&) {
+    [from_index, to_index](std::istream&, std::ostream&, edit_buffer& buffer) {
       delete_action(from_index, to_index, buffer);
     }
   );
 }
 action stiX::make_edit_action(size_t const, size_t const, size_t const, command_extras const& extras) {
   auto new_filename = extras.filename;
-  return [new_filename](std::istream&, std::ostream& out, edit_buffer& buffer, std::string& filename) {
-    edit_file_action(out, new_filename, filename, buffer);
+  return [new_filename](std::istream&, std::ostream& out, edit_buffer& buffer) {
+    edit_file_action(out, new_filename, buffer);
   };
 }
 action stiX::make_filename_action(size_t const, size_t const, size_t const, command_extras const& extras) {
   auto new_filename = extras.filename;
-  return [new_filename](std::istream& in, std::ostream& out, edit_buffer&, std::string& filename) {
-    filename_action(new_filename, filename,  out);
+  return [new_filename](std::istream& in, std::ostream& out, edit_buffer& buffer) {
+    filename_action(out, new_filename, buffer);
   };
 }
 
@@ -295,57 +293,57 @@ action stiX::make_global_mismatch_action(size_t const from_index, size_t const t
 }
 
 action stiX::make_insert_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
-  return [to_index](std::istream& in, std::ostream&, edit_buffer& buffer, std::string&) {
+  return [to_index](std::istream& in, std::ostream&, edit_buffer& buffer) {
     insert_action(in, to_index, buffer);
   };
 }
 action stiX::make_move_action(size_t const from_index, size_t const to_index, size_t const destination,
                               command_extras const&) {
-  return [from_index, to_index, destination](std::istream&, std::ostream&, edit_buffer& buffer, std::string&) {
+  return [from_index, to_index, destination](std::istream&, std::ostream&, edit_buffer& buffer) {
     move_action(from_index, to_index, destination, buffer);
   };
 }
 action stiX::make_print_action(size_t const from_index, size_t const to_index, size_t const, command_extras const&) {
   return from_is_good(from_index,
-    [from_index, to_index](std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
+    [from_index, to_index](std::istream&, std::ostream& out, edit_buffer& buffer) {
       print_action(out, from_index, to_index, buffer);
     }
   );
 }
 action stiX::make_print_next_line_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
-  return [to_index](std::istream&, std::ostream& out, edit_buffer& buffer, std::string&) {
+  return [to_index](std::istream&, std::ostream& out, edit_buffer& buffer) {
     print_action(out, to_index, to_index, buffer);
   };
 }
 action stiX::make_quit_action(size_t const, size_t const, size_t const, command_extras const&) {
-  return [](std::istream&, std::ostream&, edit_buffer&, std::string&) {
+  return [](std::istream&, std::ostream&, edit_buffer&) {
     std::exit(0);
   };
 }
 action stiX::make_read_file_action(size_t const, size_t const to_index, size_t const, command_extras const& extras) {
   auto new_filename = extras.filename;
-  return [to_index, new_filename](std::istream&, std::ostream& out, edit_buffer& buffer, std::string& filename) {
-    read_from_file_action(out, to_index, new_filename, filename, buffer);
+  return [to_index, new_filename](std::istream&, std::ostream& out, edit_buffer& buffer) {
+    read_from_file_action(out, to_index, new_filename, buffer);
   };
 }
 action stiX::make_substitute_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
   auto pattern = extras.search_pattern;
   auto replacement = extras.replacement;
   auto replace_all = extras.replace_all;
-  return [from_index, to_index, pattern, replacement, replace_all](std::istream&, std::ostream&, edit_buffer& buffer, std::string& filename) {
+  return [from_index, to_index, pattern, replacement, replace_all](std::istream&, std::ostream&, edit_buffer& buffer) {
     substitute_action(from_index, to_index, pattern, replacement, replace_all, buffer);
   };
 }
 action stiX::make_write_file_action(size_t const from_index, size_t const to_index, size_t const, command_extras const& extras) {
   auto new_filename = extras.filename;
   return from_is_good(from_index,
-    [from_index, to_index, new_filename](std::istream&, std::ostream& out, edit_buffer& buffer, std::string& filename) {
-      write_to_file_action(out, from_index, to_index, new_filename, filename, buffer);
+    [from_index, to_index, new_filename](std::istream&, std::ostream& out, edit_buffer& buffer) {
+      write_to_file_action(out, from_index, to_index, new_filename, buffer);
     }
   );
 }
 action stiX::make_line_index_action(size_t const, size_t const to_index, size_t const, command_extras const&) {
-  return [to_index](std::istream&, std::ostream& out, edit_buffer&, std::string&) {
+  return [to_index](std::istream&, std::ostream& out, edit_buffer&) {
     line_index_action(out, to_index);
   };
 }
