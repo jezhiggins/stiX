@@ -16,6 +16,7 @@ namespace stiX {
     void noop(std::istream&, std::ostream&, edit_buffer&);
     void and_print(std::istream&, std::ostream&, edit_buffer&);
     action update_dot(size_t dot);
+    action update_pattern(std::string const& last_pattern);
   };
 }
 

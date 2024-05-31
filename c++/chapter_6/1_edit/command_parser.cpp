@@ -511,11 +511,10 @@ stiX::parsed_command stiX::parse_command(std::string_view const input) {
 namespace {
   std::tuple<size_t, size_t, size_t, std::string> eval_line_expressions(
     std::vector<stiX::line_expression_step> const& line_expressions,
-    stiX::edit_buffer const& buffer,
-    std::string_view previous_pattern)
+    stiX::edit_buffer const& buffer)
   {
     auto dot = buffer.dot();
-    auto last_pattern = std::string { previous_pattern };
+    auto last_pattern = std::string { buffer.pattern() };
     auto line_numbers = std::vector<size_t> { };
 
     for (auto const& [expr, separator] : line_expressions) {
@@ -538,7 +537,7 @@ stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) co
     to,
     updated_dot,
     last_pattern] =
-      eval_line_expressions(line_expressions, buffer, "");
+      eval_line_expressions(line_expressions, buffer);
 
   if (is_error(from, to, code))
     return { command::error };
@@ -554,6 +553,7 @@ stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) co
   auto set_dot = updated_dot != buffer.dot()
     ? command::update_dot(updated_dot)
     : command::noop;
+  auto set_pattern = command::update_pattern(last_pattern);
 
   auto command = command_for_code(
       code,
@@ -566,7 +566,7 @@ stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) co
     ? command::and_print
     : command::noop;
 
-  return { set_dot, command, and_then } ;
+  return { set_dot, set_pattern, command, and_then } ;
 }
 
 bool stiX::code_match(char const c, std::string_view const codes) {

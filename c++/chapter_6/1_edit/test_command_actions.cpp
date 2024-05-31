@@ -542,7 +542,6 @@ TEST_CASE("Chapter 6 - edit - command actions") {
     }
   }
 
-
   SECTION("global x action") {
     SECTION("x mismatches all lines, replace action") {
       auto e = three_line_buffer();

@@ -17,4 +17,9 @@ stiX::action stiX::command::update_dot(size_t const dot) {
     buffer.set_dot(dot);
   };
 }
+stiX::action stiX::command::update_pattern(std::string const& last_pattern) {
+  return [last_pattern](std::istream&, std::ostream&, edit_buffer& buffer) {
+    buffer.set_pattern(last_pattern);
+  };
+}
 
