@@ -39,11 +39,16 @@ namespace {
   size_t last_index_fn(stiX::edit_buffer const& buffer, size_t) {
     return buffer.last();
   }
+  size_t line_error_fn(stiX::edit_buffer const&, size_t) {
+    return stiX::command::line_error;
+  }
 
   stiX::line_expression search(
     std::string_view const pattern,
     size_t(next_index)(size_t, stiX::edit_buffer const&)
   ) {
+    if (pattern.empty()) return line_error_fn;
+
     auto matcher = stiX::compile_pattern(pattern);
     return [matcher, next_index](stiX::edit_buffer const& buffer, size_t const dot) {
       size_t index = dot;
@@ -70,10 +75,6 @@ namespace {
   }
   stiX::line_expression backward_search(std::string_view const pattern) {
     return search(pattern, prev_line);
-  }
-
-  size_t line_error_fn(stiX::edit_buffer const&, size_t) {
-    return stiX::command::line_error;
   }
 
   stiX::parsed_command parse_error() {

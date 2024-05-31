@@ -7,6 +7,7 @@
 using namespace std::string_literals;
 
 void editor_test(std::string consoleIO);
+void x_editor_test(std::string) { }
 
 TEST_CASE("Chapter 6 - edit - editor") {
   SECTION("= command") {
@@ -873,6 +874,57 @@ TEST_CASE("Chapter 6 - edit - editor") {
     editor_test(
       "x/^/c\n"
       ">?\n"
+    );
+  }
+
+  SECTION("Remembered pattern") {
+    editor_test(
+      "i\n"
+      "line 1\n"
+      ".\n"
+      "//p\n"
+      ">?\n"
+    );
+    editor_test(
+      "i\n"
+      "line 1\n"
+      ".\n"
+      "\\\\p\n"
+      ">?\n"
+    );
+    x_editor_test(
+      "i\n"
+      "line 1\n"
+      "line 2\n"
+      "line 3\n"
+      "line 4\n"
+      "line 5\n"
+      ".\n"
+      "//p\n"
+      ">?\n"
+      "/[135]/p\n"
+      ">line 1\n"
+      "//p\n"
+      ">line 3\n"
+      "//p\n"
+      ">line 5\n"
+      "\\\\p\n"
+      ">line 3\n"
+    );
+    x_editor_test(
+      "i\n"
+      "bgein\n"
+      "  one\n"
+      "  two\n"
+      "end\n"
+      "bgein again\n"
+      "  one\n"
+      "end\n"
+      ".\n"
+      "/bgein/s//begin/p\n"
+      ">begin\n"
+      "//s//begin/p\n"
+      ">begin again\n"
     );
   }
 }
