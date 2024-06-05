@@ -236,3 +236,16 @@ add_executable(edit_test
         ${edit_sources}
         chapter_6/1_edit/test_command_actions.cpp)
 target_link_libraries(edit_test stix testsupport)
+
+set (format_sources
+)
+add_executable(format
+		chapter_7/1_format/1_format.cpp
+		${format_sources})
+target_link_libraries(format stix)
+
+add_executable(format_test
+		chapter_7/1_format/test_format.cpp
+		${format_sources}
+)
+target_link_libraries(format_test stix testsupport)
