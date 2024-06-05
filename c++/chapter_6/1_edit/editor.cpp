@@ -23,10 +23,10 @@ void editor::process(std::istream& in, std::ostream& out) {
   }
 }
 
-void editor::handle_command(std::string_view line, std::istream&in, std::ostream&out) {
+void editor::handle_command(std::string_view line, std::istream& in, std::ostream& out) {
   auto parsed_command = parse_command(line);
-  auto commands = parsed_command.compile(buffer_);
+  auto command = parsed_command.compile(buffer_);
 
-  commands(in, out, buffer_);
+  command(in, out, buffer_);
 }
 
