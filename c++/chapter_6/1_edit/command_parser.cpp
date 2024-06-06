@@ -113,10 +113,10 @@ namespace {
 
       line_number_defaults();
 
-      return command();
+      return parse_result();
     }
 
-    stiX::parsed_command command() const {
+    stiX::parsed_command parse_result() const {
       if (is_error())
         return parse_error();
 
