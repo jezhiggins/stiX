@@ -530,6 +530,25 @@ namespace {
 
     return { line_numbers.front(), line_numbers.back(), dot, last_pattern };
   }
+
+  size_t eval_destination_expression(
+    stiX::line_expression const& destination_expression,
+    stiX::edit_buffer const& buffer,
+    size_t const dot,
+    size_t const from,
+    size_t const to,
+    std::string_view last_pattern
+  ) {
+    if (destination_expression == nullptr)
+      return 0;
+
+    auto const [ destination, _ ] =
+      index_or_error(destination_expression, buffer, dot, last_pattern);
+    if (are_overlapping(from, to, destination))
+      return stiX::command::line_error;
+
+    return destination;
+  }
 }
 
 stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) const {
@@ -543,13 +562,16 @@ stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) co
   if (is_error(from, to, code))
     return { command::error };
 
-  auto destination = command::line_error;
-  if (extras.destination_expression != nullptr) {
-    auto const [ d, _ ] = index_or_error(extras.destination_expression, buffer, updated_dot, last_pattern);
-    if (is_error(d) || are_overlapping(from, to, d))
-      return { command::error };
-    destination = d;
-  }
+  auto destination = eval_destination_expression(
+    extras.destination_expression,
+    buffer,
+    updated_dot,
+    from,
+    to,
+    last_pattern);
+
+  if (is_error(destination))
+    return { command:: error };
 
   auto set_dot = updated_dot != buffer.dot()
     ? command::update_dot(updated_dot)
