@@ -512,8 +512,8 @@ stiX::parsed_command stiX::parse_command(std::string_view const input) {
 namespace {
   std::tuple<size_t, size_t, size_t, std::string> eval_line_expressions(
     std::vector<stiX::line_expression_step> const& line_expressions,
-    stiX::edit_buffer const& buffer)
-  {
+    stiX::edit_buffer const& buffer
+  ) {
     auto dot = buffer.dot();
     auto last_pattern = std::string { buffer.pattern() };
     auto line_numbers = std::vector<size_t> { };
@@ -573,9 +573,7 @@ stiX::commands stiX::parsed_command::compile(stiX::edit_buffer const& buffer) co
   if (is_error(destination))
     return { command:: error };
 
-  auto set_dot = updated_dot != buffer.dot()
-    ? command::update_dot(updated_dot)
-    : command::noop;
+  auto set_dot = command::update_dot(updated_dot);
   auto set_pattern = command::update_pattern(last_pattern);
 
   auto command = command_for_code(
