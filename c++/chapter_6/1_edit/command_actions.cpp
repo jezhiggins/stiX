@@ -168,11 +168,11 @@ void stiX::write_to_file_action(std::ostream& out, size_t from, size_t to, std::
   }
 }
 
-void stiX::read_from_file_action(std::ostream& out, size_t before, std::string_view filename, edit_buffer& buffer) {
+void stiX::read_from_file_action(std::ostream& out, size_t after, std::string_view filename, edit_buffer& buffer) {
   auto f = std::string { !filename.empty() ? filename : buffer.filename() };
   if (filename_is_good(f, out)) {
     auto source = std::ifstream { f };
-    read_lines(source, before, false, buffer);
+    read_lines(source, after, false, buffer);
   }
 }
 
