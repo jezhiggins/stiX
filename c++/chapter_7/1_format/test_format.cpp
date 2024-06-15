@@ -12,6 +12,15 @@ TEST_CASE("unformatted text") {
   SECTION("two short lines, one short output line") {
     format_test("hello\nworld\n", "hello world\n");
   }
+
+  SECTION("long enough to wrap") {
+    format_test(
+      "It is a truth universally acknowledged, that a "
+      "single man in possession of a good fortune, must "
+      "be in want of a wife.",
+      "It is a truth universally acknowledged, that a single man in\n"
+      "possession of a good fortune, must be in want of a wife.\n");
+  }
 }
 
 void format_test(std::string input, std::string expected) {
