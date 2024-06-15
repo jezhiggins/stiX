@@ -41,6 +41,10 @@
 // indentation.
 //
 
-int main() {
+#include "format.hpp"
+#include <iostream>
 
+int main() {
+  auto formatter = stiX::formatter { };
+  formatter(std::cin, std::cout);
 }
