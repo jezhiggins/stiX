@@ -53,7 +53,7 @@ and [two](https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html)
 
 ### Chapter 6 - Editing
 
-1. edit 
+1. [edit](https://www.jezuk.co.uk/blog/2024/06/ed-ed-hooray.html) 
 
 ## License
 
