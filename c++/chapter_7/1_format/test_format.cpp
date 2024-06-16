@@ -1,16 +1,25 @@
 #include "../../testlib/testlib.hpp"
 
-#include "format.hpp"
+#include "formatter.hpp"
 
-void format_test(std::string input, std::string expected);
+struct test_options {
+  bool const no_fill;
+};
+
+void format_test(
+  std::string input,
+  std::string expected,
+  test_options opts = { });
+
+constinit auto no_fill = test_options { .no_fill = true };
 
 TEST_CASE("unformatted text") {
   SECTION("short line") {
-    format_test("hello\n", "hello\n");
+    format_test("hello\n", "hello\n", no_fill);
   }
 
   SECTION("two short lines, one short output line") {
-    format_test("hello\nworld\n", "hello world\n");
+    format_test("hello\nworld\n", "hello world\n", no_fill);
   }
 
   SECTION("long enough to wrap") {
@@ -19,16 +28,22 @@ TEST_CASE("unformatted text") {
       "single man in possession of a good fortune, must "
       "be in want of a wife.",
       "It is a truth universally acknowledged, that a single man in\n"
-      "possession of a good fortune, must be in want of a wife.\n");
+      "possession of a good fortune, must be in want of a wife.\n",
+      no_fill);
   }
 }
 
-void format_test(std::string input, std::string expected) {
+void format_test(
+    std::string input,
+    std::string expected,
+    test_options opts) {
   auto in = std::istringstream { };
   in.str(input);
 
   auto out = std::ostringstream { };
-  stiX::format(in, out);
+
+  auto formatter = stiX::screen_formatter { in, out };
+  formatter.format();
 
   auto output = out.str();
   REQUIRE(output == expected);

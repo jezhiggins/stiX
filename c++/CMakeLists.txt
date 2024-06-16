@@ -239,7 +239,8 @@ target_link_libraries(edit_test stix testsupport)
 
 set (format_sources
 		chapter_7/1_format/format.hpp
-		chapter_7/1_format/format.cpp
+		chapter_7/1_format/formatter.hpp
+		chapter_7/1_format/formatter.cpp
 )
 add_executable(format
 		chapter_7/1_format/1_format.cpp
