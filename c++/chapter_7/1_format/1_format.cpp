@@ -45,6 +45,5 @@
 #include <iostream>
 
 int main() {
-  auto formatter = stiX::formatter { };
-  formatter(std::cin, std::cout);
+  stiX::format(std::cin, std::cout);
 }

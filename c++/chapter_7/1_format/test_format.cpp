@@ -28,8 +28,7 @@ void format_test(std::string input, std::string expected) {
   in.str(input);
 
   auto out = std::ostringstream { };
-  auto formatter = stiX::formatter { };
-  formatter(in, out);
+  stiX::format(in, out);
 
   auto output = out.str();
   REQUIRE(output == expected);

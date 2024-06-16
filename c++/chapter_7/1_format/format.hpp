@@ -4,10 +4,7 @@
 #include <iosfwd>
 
 namespace stiX {
-  class formatter {
-  public:
-    void operator()(std::istream &in, std::ostream &out);
-  };
+  void format(std::istream& in, std::ostream& out);
 }
 
 #endif
