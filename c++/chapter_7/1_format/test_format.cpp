@@ -43,6 +43,9 @@ void format_test(
   auto out = std::ostringstream { };
 
   auto formatter = stiX::screen_formatter { in, out };
+  if (opts.no_fill)
+    formatter.nofill();
+
   formatter.format();
 
   auto output = out.str();

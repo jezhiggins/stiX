@@ -8,8 +8,10 @@ namespace stiX {
   class screen_formatter {
   public:
     screen_formatter(std::istream& in, std::ostream &out);
-    
+
     void format();
+
+    void nofill();
 
     screen_formatter() = delete;
     screen_formatter(screen_formatter const&) = delete;

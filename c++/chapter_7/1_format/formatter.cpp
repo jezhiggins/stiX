@@ -36,6 +36,11 @@ void stiX::screen_formatter::format() {
   flush();
 }
 
+////////////////////
+void stiX::screen_formatter::nofill() {
+}
+
+////////////////////
 void stiX::screen_formatter::flush_if_wraps() {
   while (buffer_.length() > maxlen_) {
     auto break_at = buffer_.rfind(' ', maxlen_);
