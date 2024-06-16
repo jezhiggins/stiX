@@ -2,52 +2,60 @@
 
 #include "formatter.hpp"
 
-struct test_options {
-  bool const no_fill;
-};
+#include <filesystem>
+namespace fs = std::filesystem;
 
 void format_test(
-  std::string const& input,
-  std::string const& expected,
-  test_options opts = { });
+  std::istream& input,
+  std::string const& expected);
+std::string read_expected(fs::path test_file);
 
-constinit auto no_fill = test_options { .no_fill = true };
-
-TEST_CASE("unformatted text") {
-  SECTION("short line") {
-    format_test("hello\n", "hello\n", no_fill);
+void test_fixture(fs::path const& test_file) {
+  DYNAMIC_SECTION(test_file.filename()) {
+    auto input = std::ifstream(test_file);
+    format_test(input, read_expected(test_file));
   }
+}
+void find_tests_in_directory(fs::path const& dir) {
+  DYNAMIC_SECTION(dir.filename()) {
+    for(auto const& test_file : fs::directory_iterator { dir }) {
+      if (test_file.path().extension() != ".txt")
+        continue;
 
-  SECTION("two short lines, one short output line") {
-    format_test("hello\nworld\n", "hello world\n", no_fill);
+      test_fixture(test_file.path());
+    }
   }
+}
 
-  SECTION("long enough to wrap") {
-    format_test(
-      "It is a truth universally acknowledged, that a "
-      "single man in possession of a good fortune, must "
-      "be in want of a wife.",
-      "It is a truth universally acknowledged, that a single man in\n"
-      "possession of a good fortune, must be in want of a wife.\n",
-      no_fill);
+TEST_CASE("Test fixtures") {
+  auto test_dir = fs::current_path() / "../chapter_7/1_format/test_fixtures";
+  for (auto const& dir : fs::directory_iterator { test_dir }) {
+    find_tests_in_directory(dir.path());
   }
 }
 
 void format_test(
-    std::string const& input,
-    std::string const& expected,
-    test_options opts) {
-  auto in = std::istringstream { };
-  in.str(input);
-
+    std::istream& input,
+    std::string const& expected) {
   auto out = std::ostringstream { };
 
-  auto formatter = stiX::screen_formatter { in, out };
-  if (opts.no_fill)
-    formatter.nofill();
-
+  auto formatter = stiX::screen_formatter { input, out };
   formatter.format();
 
   auto output = out.str();
   REQUIRE(output == expected);
 }
+
+std::string read_expected(fs::path test_file) {
+  test_file.replace_extension(".exp");
+  auto exp_file = std::ifstream(test_file);
+
+  auto expected = std::string { };
+  std::copy(
+    std::istreambuf_iterator<char>{ exp_file },
+    std::istreambuf_iterator<char>{ },
+    std::back_inserter(expected)
+  );
+  return expected;
+}
+
