@@ -7,8 +7,8 @@ struct test_options {
 };
 
 void format_test(
-  std::string input,
-  std::string expected,
+  std::string const& input,
+  std::string const& expected,
   test_options opts = { });
 
 constinit auto no_fill = test_options { .no_fill = true };
@@ -34,8 +34,8 @@ TEST_CASE("unformatted text") {
 }
 
 void format_test(
-    std::string input,
-    std::string expected,
+    std::string const& input,
+    std::string const& expected,
     test_options opts) {
   auto in = std::istringstream { };
   in.str(input);
