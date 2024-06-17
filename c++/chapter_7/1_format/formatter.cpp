@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <string>
+#include "format_functions.hpp"
 
 using namespace std::string_literals;
 
@@ -43,7 +44,7 @@ void stiX::screen_formatter::flush_if_wraps() {
   while (buffer_.length() > max_width_) {
     auto break_at = buffer_.rfind(' ', max_width_);
 
-    line(buffer_.substr(0, break_at));
+    line(fill_line(buffer_.substr(0, break_at), max_width_));
 
     buffer_ = buffer_.substr(break_at + 1);
   }

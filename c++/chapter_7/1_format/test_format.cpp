@@ -1,4 +1,5 @@
 #include "../../testlib/testlib.hpp"
+#include "../../lib/getline.hpp"
 
 #include "formatter.hpp"
 
@@ -7,7 +8,7 @@ namespace fs = std::filesystem;
 
 void format_test(
   std::istream& input,
-  std::string const& expected);
+  std::string expected);
 std::string read_expected(fs::path test_file);
 
 void test_fixture(fs::path const& test_file) {
@@ -40,7 +41,7 @@ size_t line_count(std::string const& l) {
 
 void format_test(
     std::istream& input,
-    std::string const& expected) {
+    std::string expected) {
   auto out = std::ostringstream { };
 
   auto formatter = stiX::screen_formatter { input, out };
@@ -54,7 +55,14 @@ void format_test(
   INFO("Line count");
   REQUIRE(output_count == expected_count);
   INFO("Contents");
-  REQUIRE(output == expected);
+
+  auto ob = std::istringstream { output };
+  auto eb = std::istringstream { expected };
+  while(ob) {
+    auto o = stiX::getline(ob);
+    auto e = stiX::getline(eb);
+    REQUIRE(o == e);
+  }
 }
 
 std::string read_expected(fs::path test_file) {
