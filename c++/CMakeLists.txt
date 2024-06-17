@@ -241,6 +241,8 @@ set (format_sources
 		chapter_7/1_format/format.hpp
 		chapter_7/1_format/formatter.hpp
 		chapter_7/1_format/formatter.cpp
+		chapter_7/1_format/format_functions.hpp
+		chapter_7/1_format/format_functions.cpp
 )
 add_executable(format
 		chapter_7/1_format/1_format.cpp
@@ -250,5 +252,6 @@ target_link_libraries(format stix)
 add_executable(format_test
 		chapter_7/1_format/test_format.cpp
 		${format_sources}
+		chapter_7/1_format/test_functions.cpp
 )
 target_link_libraries(format_test stix testsupport)
