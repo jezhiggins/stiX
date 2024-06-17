@@ -18,7 +18,8 @@ namespace stiX {
   private:
     void flush_if_wraps();
     void flush();
-    
+
+    void line(std::string_view line);
     void page_end();
 
     std::istream& in_;

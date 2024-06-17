@@ -42,14 +42,20 @@ void stiX::screen_formatter::format() {
 void stiX::screen_formatter::flush_if_wraps() {
   while (buffer_.length() > max_width_) {
     auto break_at = buffer_.rfind(' ', max_width_);
-    out_ << buffer_.substr(0, break_at) << '\n';
+
+    line(buffer_.substr(0, break_at));
+
     buffer_ = buffer_.substr(break_at + 1);
   }
 }
 
 void stiX::screen_formatter::flush() {
-  out_ << buffer_ << '\n';
+  line(buffer_);
   buffer_.clear();
+}
+
+void stiX::screen_formatter::line(std::string_view line) {
+  out_ << line << '\n';
 
   if (++line_ == max_lines_)
     line_ = 0;
@@ -58,13 +64,8 @@ void stiX::screen_formatter::flush() {
 void stiX::screen_formatter::page_end() {
   flush();
 
-  if (line_ == 0)
-    return;
-
-  while (line_ != max_lines_) {
-    out_ << '\n';
-    ++line_;
-  }
+  while (line_ != 0)
+    line("");
 }
 
 ///////////
