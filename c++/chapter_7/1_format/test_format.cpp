@@ -34,6 +34,10 @@ TEST_CASE("Test fixtures") {
   }
 }
 
+size_t line_count(std::string const& l) {
+  return std::ranges::count_if(l, [](char c) { return c == '\n'; });
+}
+
 void format_test(
     std::istream& input,
     std::string const& expected) {
@@ -43,6 +47,13 @@ void format_test(
   formatter.format();
 
   auto output = out.str();
+
+  auto output_count = line_count(output);
+  auto expected_count = line_count(expected);
+
+  INFO("Line count");
+  REQUIRE(output_count == expected_count);
+  INFO("Contents");
   REQUIRE(output == expected);
 }
 

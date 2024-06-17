@@ -11,8 +11,6 @@ namespace stiX {
 
     void format();
 
-    void nofill();
-
     screen_formatter() = delete;
     screen_formatter(screen_formatter const&) = delete;
     screen_formatter(screen_formatter&&) = delete;
@@ -20,10 +18,15 @@ namespace stiX {
   private:
     void flush_if_wraps();
     void flush();
+    
+    void page_end();
 
     std::istream& in_;
     std::ostream& out_;
-    size_t maxlen_;
+
+    size_t line_;
+    size_t max_width_;
+    size_t max_lines_;
     std::string buffer_;
   };
 }

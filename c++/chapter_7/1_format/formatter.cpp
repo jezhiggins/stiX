@@ -17,7 +17,9 @@ namespace {
 stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream &out) :
   in_(in),
   out_(out),
-  maxlen_(60) {
+  line_(0),
+  max_width_(60),
+  max_lines_(66) {
 }
 
 void stiX::screen_formatter::format() {
@@ -33,17 +35,13 @@ void stiX::screen_formatter::format() {
     separator = space;
   }
 
-  flush();
-}
-
-////////////////////
-void stiX::screen_formatter::nofill() {
+  page_end();
 }
 
 ////////////////////
 void stiX::screen_formatter::flush_if_wraps() {
-  while (buffer_.length() > maxlen_) {
-    auto break_at = buffer_.rfind(' ', maxlen_);
+  while (buffer_.length() > max_width_) {
+    auto break_at = buffer_.rfind(' ', max_width_);
     out_ << buffer_.substr(0, break_at) << '\n';
     buffer_ = buffer_.substr(break_at + 1);
   }
@@ -52,6 +50,21 @@ void stiX::screen_formatter::flush_if_wraps() {
 void stiX::screen_formatter::flush() {
   out_ << buffer_ << '\n';
   buffer_.clear();
+
+  if (++line_ == max_lines_)
+    line_ = 0;
+}
+
+void stiX::screen_formatter::page_end() {
+  flush();
+
+  if (line_ == 0)
+    return;
+
+  while (line_ != max_lines_) {
+    out_ << '\n';
+    ++line_;
+  }
 }
 
 ///////////
