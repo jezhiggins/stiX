@@ -24,6 +24,9 @@ namespace stiX {
     void line(std::string_view line);
     void page_end();
 
+    void nf_no_fill();
+    void fi_fill_on();
+
     std::istream& in_;
     std::ostream& out_;
 

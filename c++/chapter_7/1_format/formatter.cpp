@@ -43,14 +43,10 @@ void stiX::screen_formatter::format() {
 
 ////////////////////
 void stiX::screen_formatter::handle_command(std::string const& line) {
-  if (line == ".nf") {
-    flush();
-    fill_ = false;
-  }
-  if (line == ".fi") {
-    flush();
-    fill_ = true;
-  }
+  if (line == ".nf")
+    nf_no_fill();
+  if (line == ".fi")
+    fi_fill_on();
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
@@ -93,6 +89,16 @@ void stiX::screen_formatter::page_end() {
 
   while (line_ != 0)
     line("");
+}
+
+///////////
+void stiX::screen_formatter::nf_no_fill() {
+  flush();
+  fill_ = false;
+}
+void stiX::screen_formatter::fi_fill_on() {
+  flush();
+  fill_ = true;
 }
 
 ///////////

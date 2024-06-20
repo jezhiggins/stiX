@@ -1,0 +1,6 @@
+.nf
+It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.
+.fi
+It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.
+.nf
+It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.
