@@ -16,6 +16,8 @@ namespace stiX {
     screen_formatter(screen_formatter&&) = delete;
 
   private:
+    void handle_command(std::string const& line);
+    void handle_text(std::string const& line);
     void flush_if_wraps();
     void flush();
 
@@ -29,6 +31,8 @@ namespace stiX {
     size_t max_width_;
     size_t max_lines_;
     std::string buffer_;
+
+    bool fill_;
   };
 }
 

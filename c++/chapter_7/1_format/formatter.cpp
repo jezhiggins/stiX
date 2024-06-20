@@ -13,6 +13,10 @@ namespace {
   constinit auto eof = std::char_traits<char>::eof();
   constinit auto null = std::string_view { };
   constinit auto space = std::string_view { " " };
+
+  bool is_command(std::string const& line) {
+    return !line.empty() && line.front() == '.';
+  }
 }
 
 stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream &out) :
@@ -20,26 +24,45 @@ stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream &out) :
   out_(out),
   line_(0),
   max_width_(60),
-  max_lines_(66) {
+  max_lines_(66),
+  fill_(true) {
 }
 
 void stiX::screen_formatter::format() {
-  auto separator = null;
-
   while (in_.peek() != eof) {
     auto line = stiX::getline(in_);
 
-    buffer_ += separator;
-    buffer_ += line;
-    flush_if_wraps();
-
-    separator = space;
+    if (is_command(line))
+      handle_command(line);
+    else
+      handle_text(line);
   }
 
   page_end();
 }
 
 ////////////////////
+void stiX::screen_formatter::handle_command(std::string const& line) {
+  if (line == ".nf") {
+    flush();
+    fill_ = false;
+  }
+  if (line == ".fi") {
+    flush();
+    fill_ = true;
+  }
+}
+
+void stiX::screen_formatter::handle_text(std::string const& line) {
+  buffer_ += buffer_.empty() ? null : space;
+  buffer_ += line;
+
+  if (fill_)
+    flush_if_wraps();
+  else
+    flush();
+}
+
 void stiX::screen_formatter::flush_if_wraps() {
   while (buffer_.length() > max_width_) {
     auto break_at = buffer_.rfind(' ', max_width_);
@@ -51,6 +74,9 @@ void stiX::screen_formatter::flush_if_wraps() {
 }
 
 void stiX::screen_formatter::flush() {
+  if (buffer_.empty())
+    return;
+
   line(buffer_);
   buffer_.clear();
 }
