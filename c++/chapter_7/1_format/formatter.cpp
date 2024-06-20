@@ -93,12 +93,14 @@ void stiX::screen_formatter::page_end() {
 
 ///////////
 void stiX::screen_formatter::nf_no_fill() {
-  flush();
-  fill_ = false;
+  set_fill_mode(false);
 }
 void stiX::screen_formatter::fi_fill_on() {
+  set_fill_mode(true);
+}
+void stiX::screen_formatter::set_fill_mode(bool on) {
   flush();
-  fill_ = true;
+  fill_ = on;
 }
 
 ///////////

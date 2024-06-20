@@ -26,6 +26,7 @@ namespace stiX {
 
     void nf_no_fill();
     void fi_fill_on();
+    void set_fill_mode(bool on);
 
     std::istream& in_;
     std::ostream& out_;
