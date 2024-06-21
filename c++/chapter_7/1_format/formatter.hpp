@@ -27,8 +27,7 @@ namespace stiX {
 
     enum class value_type {
       Absolute,
-      Offset,
-      NegativeOffset
+      Offset
     };
 
     struct command_parameter {
