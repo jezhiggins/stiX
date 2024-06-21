@@ -47,6 +47,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     nf_no_fill();
   if (line == ".fi")
     fi_fill_on();
+  if (line == ".br")
+    flush();
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
