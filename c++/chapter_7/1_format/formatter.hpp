@@ -18,10 +18,11 @@ namespace stiX {
   private:
     void handle_command(std::string const& line);
     void handle_text(std::string const& line);
-    void flush_if_wraps();
+    void flush_if_wraps(std::string const& line);
     void flush();
 
-    void line(std::string_view line);
+    void line_print(std::string_view line);
+    void blank_line();
     void page_end();
 
     void nf_no_fill();

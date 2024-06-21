@@ -50,20 +50,25 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
-  buffer_ += buffer_.empty() ? null : space;
-  buffer_ += line;
+  if (line.empty()) {
+    blank_line();
+    return;
+  }
 
-  if (fill_)
-    flush_if_wraps();
+  if (!fill_)
+    line_print(line);
   else
-    flush();
+    flush_if_wraps(line);
 }
 
-void stiX::screen_formatter::flush_if_wraps() {
+void stiX::screen_formatter::flush_if_wraps(std::string const& line) {
+  buffer_ += (buffer_.empty() || line.empty()) ? null : space;
+  buffer_ += line;
+
   while (buffer_.length() > max_width_) {
     auto break_at = buffer_.rfind(' ', max_width_);
 
-    line(fill_line(buffer_.substr(0, break_at), max_width_));
+    line_print(fill_line(buffer_.substr(0, break_at), max_width_));
 
     buffer_ = buffer_.substr(break_at + 1);
   }
@@ -73,11 +78,16 @@ void stiX::screen_formatter::flush() {
   if (buffer_.empty())
     return;
 
-  line(buffer_);
+  line_print(buffer_);
   buffer_.clear();
 }
 
-void stiX::screen_formatter::line(std::string_view line) {
+void stiX::screen_formatter::blank_line() {
+  flush();
+  line_print("");
+}
+
+void stiX::screen_formatter::line_print(std::string_view line) {
   out_ << line << '\n';
 
   if (++line_ == max_lines_)
@@ -88,7 +98,7 @@ void stiX::screen_formatter::page_end() {
   flush();
 
   while (line_ != 0)
-    line("");
+    line_print("");
 }
 
 ///////////
