@@ -51,8 +51,9 @@ stiX::screen_formatter::command_parameter stiX::screen_formatter::parse_value(
   auto b = line.find_first_of("+-0123456789", 3);
   if (line[b] == '+' || line[b] == '-')
       type = value_type::Offset;
+  b += (line[b] == '+');
 
-  auto e = line.find_first_not_of("+-0123456789", b);
+  auto e = line.find_first_not_of("-0123456789", b);
   if (e == std::string::npos) e = line.size();
 
   auto value = def_value;
