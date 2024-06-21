@@ -43,11 +43,13 @@ void stiX::screen_formatter::format() {
 
 ////////////////////
 void stiX::screen_formatter::handle_command(std::string const& line) {
-  if (line == ".nf")
+  auto command = line.substr(0, 3);
+
+  if (command == ".nf")
     nf_no_fill();
-  if (line == ".fi")
+  if (command == ".fi")
     fi_fill_on();
-  if (line == ".br")
+  if (command == ".br")
     flush();
 }
 
