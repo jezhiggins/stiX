@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <string>
+#include <charconv>
 #include "format_functions.hpp"
 
 using namespace std::string_literals;
@@ -42,8 +43,35 @@ void stiX::screen_formatter::format() {
 }
 
 ////////////////////
+stiX::screen_formatter::command_parameter stiX::screen_formatter::parse_value(
+    std::string const& line,
+    int def_value) const {
+  auto type = value_type::Absolute;
+
+  auto b = line.find_first_of("+-0123456789", 3);
+  switch(line[b]) {
+    case '+':
+      type = value_type::Offset;
+      ++b;
+      break;
+    case '-':
+      type = value_type::NegativeOffset;
+      ++b;
+      break;
+  }
+  auto e = line.find_first_not_of("+-0123456789", b);
+  if (e == std::string::npos) e = line.size();
+
+  auto value = def_value;
+  std::from_chars(line.data() + b, line.data() + e, value);
+  return { value, type };
+}
+
 void stiX::screen_formatter::handle_command(std::string const& line) {
   auto command = line.substr(0, 3);
+  auto param = [&line, this](size_t def_value) {
+    return parse_value(line, def_value);
+  };
 
   if (command == ".nf")
     nf_no_fill();
@@ -51,6 +79,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     fi_fill_on();
   if (command == ".br")
     flush();
+  if (command == ".rm")
+    set_width(param(60));
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
@@ -116,6 +146,20 @@ void stiX::screen_formatter::set_fill_mode(bool on) {
   flush();
   fill_ = on;
 }
+void stiX::screen_formatter::set_width(command_parameter update) {
+  switch (update.type) {
+    case value_type::Absolute:
+      max_width_ = update.value;
+      break;
+    case value_type::Offset:
+      max_width_ += update.value;
+      break;
+    case value_type::NegativeOffset:
+      max_width_ -= update.value;
+      break;
+  }
+}
+
 
 ///////////
 void stiX::format(std::istream& in, std::ostream& out) {
