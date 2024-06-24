@@ -77,6 +77,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_right_margin(param(60));
   if (command == ".pl")
     set_page_length(param(66));
+  if (command == ".sp")
+    vertical_space(param(1));
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
@@ -142,13 +144,26 @@ void stiX::screen_formatter::set_fill_mode(bool on) {
   flush();
   fill_ = on;
 }
+void stiX::screen_formatter::vertical_space(command_parameter param) {
+  flush();
+
+  auto spaces = size_t{0};
+  set_variable(spaces, param, 1, max_lines_ - line_);
+
+  for (auto i = 0; i != spaces; ++i)
+    line_print("");
+}
 void stiX::screen_formatter::set_right_margin(command_parameter param) {
   set_variable(max_width_, param);
 }
 void stiX::screen_formatter::set_page_length(command_parameter param) {
   set_variable(max_lines_, param);
 }
-void stiX::screen_formatter::set_variable(size_t& var, command_parameter update) {
+void stiX::screen_formatter::set_variable(
+  size_t& var,
+  command_parameter update,
+  size_t minimum,
+  size_t maximum) {
   switch (update.type) {
     case value_type::Absolute:
       var = update.value;
@@ -157,6 +172,9 @@ void stiX::screen_formatter::set_variable(size_t& var, command_parameter update)
       var += update.value;
       break;
   }
+
+  var = std::max(var, minimum);
+  var = std::min(var, maximum);
 }
 
 

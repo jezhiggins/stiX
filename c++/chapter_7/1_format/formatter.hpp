@@ -3,6 +3,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <limits>
 
 namespace stiX {
   class screen_formatter {
@@ -41,9 +42,13 @@ namespace stiX {
     void nf_no_fill();
     void fi_fill_on();
     void set_fill_mode(bool on);
+    void vertical_space(command_parameter param);
     void set_right_margin(command_parameter param);
     void set_page_length(command_parameter param);
-    void set_variable(size_t& var, command_parameter update);
+    void set_variable(size_t& var,
+                      command_parameter update,
+                      size_t minimum = 0,
+                      size_t maximum = std::numeric_limits<size_t>::max());
 
     std::istream& in_;
     std::ostream& out_;
