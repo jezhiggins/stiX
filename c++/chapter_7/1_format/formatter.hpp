@@ -51,6 +51,7 @@ namespace stiX {
                       command_parameter update,
                       size_t minimum = 0,
                       size_t maximum = std::numeric_limits<size_t>::max());
+    size_t lines_remaining() const;
 
     std::istream& in_;
     std::ostream& out_;

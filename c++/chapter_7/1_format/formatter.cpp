@@ -126,7 +126,7 @@ void stiX::screen_formatter::line_print(std::string_view line) {
   out_ << line << '\n';
   if (++line_ == max_lines_)
     line_ = 0;
-  auto line_space = std::min(line_space_-1, max_lines_-line_);
+  auto line_space = std::min(line_space_-1, lines_remaining());
   for (auto i = 0; i != line_space; ++i)
     line_feed();
 }
@@ -158,7 +158,7 @@ void stiX::screen_formatter::vertical_space(command_parameter param) {
   flush();
 
   auto spaces = size_t{0};
-  set_variable(spaces, param, 1, max_lines_ - line_);
+  set_variable(spaces, param, 1, lines_remaining());
 
   for (auto i = 0; i != spaces; ++i)
     line_feed();
@@ -188,6 +188,9 @@ void stiX::screen_formatter::set_variable(
 
   var = std::max(var, minimum);
   var = std::min(var, maximum);
+}
+size_t stiX::screen_formatter::lines_remaining() const {
+  return max_lines_ - line_;
 }
 
 
