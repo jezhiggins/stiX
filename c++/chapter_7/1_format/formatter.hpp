@@ -23,6 +23,7 @@ namespace stiX {
     void flush();
 
     void line_print(std::string_view line);
+    void line_feed();
     void blank_line();
     void page_end();
 
@@ -45,6 +46,7 @@ namespace stiX {
     void vertical_space(command_parameter param);
     void set_right_margin(command_parameter param);
     void set_page_length(command_parameter param);
+    void set_line_space(command_parameter param);
     void set_variable(size_t& var,
                       command_parameter update,
                       size_t minimum = 0,
@@ -56,6 +58,7 @@ namespace stiX {
     size_t line_;
     size_t max_width_;
     size_t max_lines_;
+    size_t line_space_;
     std::string buffer_;
 
     bool fill_;

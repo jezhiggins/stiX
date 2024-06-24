@@ -26,6 +26,7 @@ stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream &out) :
   line_(0),
   max_width_(60),
   max_lines_(66),
+  line_space_(1),
   fill_(true) {
 }
 
@@ -79,6 +80,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_page_length(param(66));
   if (command == ".sp")
     vertical_space(param(1));
+  if (command == ".ls")
+    set_line_space(param(1));
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
@@ -121,7 +124,14 @@ void stiX::screen_formatter::blank_line() {
 
 void stiX::screen_formatter::line_print(std::string_view line) {
   out_ << line << '\n';
-
+  if (++line_ == max_lines_)
+    line_ = 0;
+  auto line_space = std::min(line_space_-1, max_lines_-line_);
+  for (auto i = 0; i != line_space; ++i)
+    line_feed();
+}
+void stiX::screen_formatter::line_feed() {
+  out_ << '\n';
   if (++line_ == max_lines_)
     line_ = 0;
 }
@@ -130,7 +140,7 @@ void stiX::screen_formatter::page_end() {
   flush();
 
   while (line_ != 0)
-    line_print("");
+    line_feed();
 }
 
 ///////////
@@ -151,13 +161,16 @@ void stiX::screen_formatter::vertical_space(command_parameter param) {
   set_variable(spaces, param, 1, max_lines_ - line_);
 
   for (auto i = 0; i != spaces; ++i)
-    line_print("");
+    line_feed();
 }
 void stiX::screen_formatter::set_right_margin(command_parameter param) {
   set_variable(max_width_, param);
 }
 void stiX::screen_formatter::set_page_length(command_parameter param) {
   set_variable(max_lines_, param);
+}
+void stiX::screen_formatter::set_line_space(command_parameter param) {
+  set_variable(line_space_, param);
 }
 void stiX::screen_formatter::set_variable(
   size_t& var,
