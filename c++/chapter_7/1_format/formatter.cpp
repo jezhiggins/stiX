@@ -74,7 +74,7 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
   if (command == ".br")
     flush();
   if (command == ".rm")
-    set_width(param(60));
+    set_right_margin(param(60));
   if (command == ".pl")
     set_page_length(param(66));
 }
@@ -142,7 +142,7 @@ void stiX::screen_formatter::set_fill_mode(bool on) {
   flush();
   fill_ = on;
 }
-void stiX::screen_formatter::set_width(command_parameter param) {
+void stiX::screen_formatter::set_right_margin(command_parameter param) {
   set_variable(max_width_, param);
 }
 void stiX::screen_formatter::set_page_length(command_parameter param) {
