@@ -42,6 +42,8 @@ namespace stiX {
     void fi_fill_on();
     void set_fill_mode(bool on);
     void set_width(command_parameter param);
+    void set_page_length(command_parameter param);
+    void set_variable(size_t& var, command_parameter update);
 
     std::istream& in_;
     std::ostream& out_;

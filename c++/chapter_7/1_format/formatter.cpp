@@ -75,6 +75,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     flush();
   if (command == ".rm")
     set_width(param(60));
+  if (command == ".pl")
+    set_page_length(param(66));
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
@@ -140,13 +142,19 @@ void stiX::screen_formatter::set_fill_mode(bool on) {
   flush();
   fill_ = on;
 }
-void stiX::screen_formatter::set_width(command_parameter update) {
+void stiX::screen_formatter::set_width(command_parameter param) {
+  set_variable(max_width_, param);
+}
+void stiX::screen_formatter::set_page_length(command_parameter param) {
+  set_variable(max_lines_, param);
+}
+void stiX::screen_formatter::set_variable(size_t& var, command_parameter update) {
   switch (update.type) {
     case value_type::Absolute:
-      max_width_ = update.value;
+      var = update.value;
       break;
     case value_type::Offset:
-      max_width_ += update.value;
+      var += update.value;
       break;
   }
 }
