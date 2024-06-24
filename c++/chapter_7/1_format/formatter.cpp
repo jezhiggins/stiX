@@ -15,6 +15,9 @@ namespace {
   constinit auto null = std::string_view { };
   constinit auto space = std::string_view { " " };
 
+  constinit auto default_right_margin = 60;
+  constinit auto default_page_length = 66;
+
   bool is_command(std::string const& line) {
     return !line.empty() && line.front() == '.';
   }
@@ -24,8 +27,8 @@ stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream &out) :
   in_(in),
   out_(out),
   line_(0),
-  max_width_(60),
-  max_lines_(66),
+  max_width_(default_right_margin),
+  max_lines_(default_page_length),
   line_space_(1),
   fill_(true) {
 }
@@ -75,9 +78,9 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
   if (command == ".br")
     flush();
   if (command == ".rm")
-    set_right_margin(param(60));
+    set_right_margin(param(default_right_margin));
   if (command == ".pl")
-    set_page_length(param(66));
+    set_page_length(param(default_page_length));
   if (command == ".sp")
     vertical_space(param(1));
   if (command == ".ls")
