@@ -126,10 +126,9 @@ void stiX::screen_formatter::blank_line() {
 }
 
 void stiX::screen_formatter::line_print(std::string_view line) {
-  out_ << line << '\n';
-  if (++line_ == max_lines_)
-    line_ = 0;
-  auto line_space = std::min(line_space_-1, lines_remaining());
+  out_ << line;
+
+  auto line_space = std::min(line_space_, lines_remaining());
   for (auto i = 0; i != line_space; ++i)
     line_feed();
 }
