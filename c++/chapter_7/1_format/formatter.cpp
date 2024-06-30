@@ -30,6 +30,7 @@ stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream &out) :
   max_width_(default_right_margin),
   max_lines_(default_page_length),
   line_space_(1),
+  centring_(0),
   fill_(true) {
 }
 
@@ -85,9 +86,17 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     vertical_space(param(1));
   if (command == ".ls")
     set_line_space(param(1));
+  if (command == ".ce")
+    set_centre_count(param(1));
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
+  if (centring_) {
+    --centring_;
+    line_print(centre_line(line, max_width_));
+    return;
+  }
+
   if (line.empty()) {
     blank_line();
     return;
@@ -173,6 +182,9 @@ void stiX::screen_formatter::set_page_length(command_parameter param) {
 }
 void stiX::screen_formatter::set_line_space(command_parameter param) {
   set_variable(line_space_, param);
+}
+void stiX::screen_formatter::set_centre_count(command_parameter param) {
+  set_variable(centring_, param);
 }
 void stiX::screen_formatter::set_variable(
   size_t& var,
