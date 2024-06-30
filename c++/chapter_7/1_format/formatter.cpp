@@ -23,12 +23,20 @@ namespace {
   }
 }
 
-stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream &out) :
+stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream& out) :
+  screen_formatter(in, out, default_right_margin, default_page_length) {
+}
+
+stiX::screen_formatter::screen_formatter(
+    std::istream& in,
+    std::ostream& out,
+    size_t page_width,
+    size_t page_length) :
   in_(in),
   out_(out),
   line_(0),
-  max_width_(default_right_margin),
-  max_lines_(default_page_length),
+  max_width_(page_width),
+  max_lines_(page_length),
   line_space_(1),
   centring_(0),
   fill_(true) {
@@ -211,5 +219,10 @@ size_t stiX::screen_formatter::lines_remaining() const {
 ///////////
 void stiX::format(std::istream& in, std::ostream& out) {
   auto formatter = screen_formatter { in, out };
+  formatter.format();
+}
+
+void stiX::format(std::istream& in, std::ostream& out, size_t page_width, size_t page_length) {
+  auto formatter = screen_formatter { in, out, page_width, page_length };
   formatter.format();
 }

@@ -8,7 +8,8 @@
 namespace stiX {
   class screen_formatter {
   public:
-    screen_formatter(std::istream& in, std::ostream &out);
+    screen_formatter(std::istream& in, std::ostream& out);
+    screen_formatter(std::istream& in, std::ostream& out, size_t page_width, size_t page_length);
 
     void format();
 

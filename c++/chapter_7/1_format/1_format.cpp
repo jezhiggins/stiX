@@ -21,7 +21,7 @@
 //
 //  .bp n      yes       n=+1       begin page numbered n
 //x .br                  yes        cause break
-//  .ce n      yes       n=1        centre next n lines
+//x .ce n      yes       n=1        centre next n lines
 //x .fi        yes                  start filling
 //  .fo str    no        empty      footer title
 //  .he str    no        empty      header title
@@ -43,7 +43,24 @@
 
 #include "format.hpp"
 #include <iostream>
+#include <algorithm>
+#ifdef __linux__
+#include <sys/ioctl.h>
+#include <unistd.h>
+#endif
 
 int main() {
+#ifdef __linux__
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  
+  auto width = std::min<size_t>(w.ws_col, 200);
+  auto length = std::min<size_t>(w.ws_row, 66);
+  width = width != 0 ? width : 60;
+  length = length != 0 ? length : 66;
+
+  stiX::format(std::cin, std::cout, width, length);
+#else
   stiX::format(std::cin, std::cout);
+#endif
 }
