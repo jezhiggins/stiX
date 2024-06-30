@@ -42,8 +42,8 @@ std::string stiX::centre_line(std::string const& line_in, size_t width) {
 }
 
 namespace {
-  constinit std::string start_underline = "\e[4m";
-  constinit std::string end_underline = "\e[0m";
+  constinit std::string start_underline = "\x1B[4m";
+  constinit std::string end_underline = "\x1B[0m";
 
   size_t word_start(std::string const& line, size_t from) {
     while (isspace(line[from]) && from != line.size())
@@ -57,8 +57,8 @@ namespace {
   }
 }
 
-std::string stiX::underline(std::string const& line_in) {
-  auto line = line_in;
+std::string stiX::underline(std::string_view line_in) {
+  auto line = std::string { line_in };
 
   auto boundary = word_start(line, 0);
   while (boundary != line.size()) {

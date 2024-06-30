@@ -39,6 +39,7 @@ stiX::screen_formatter::screen_formatter(
   max_lines_(page_length),
   line_space_(1),
   centring_(0),
+  underline_(0),
   fill_(true) {
 }
 
@@ -95,7 +96,9 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
   if (command == ".ls")
     set_line_space(param(1));
   if (command == ".ce")
-    set_centre_count(param(1));
+    set_centre(param(1));
+  if (command == ".ul")
+    set_underline(param(1));
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
@@ -143,7 +146,12 @@ void stiX::screen_formatter::blank_line() {
 }
 
 void stiX::screen_formatter::line_print(std::string_view line) {
-  out_ << line;
+  if (underline_) {
+    --underline_;
+    out_ << stiX::underline(line);
+  }
+  else
+    out_ << line;
 
   auto line_space = std::min(line_space_, lines_remaining());
   for (auto i = 0; i != line_space; ++i)
@@ -191,8 +199,11 @@ void stiX::screen_formatter::set_page_length(command_parameter param) {
 void stiX::screen_formatter::set_line_space(command_parameter param) {
   set_variable(line_space_, param);
 }
-void stiX::screen_formatter::set_centre_count(command_parameter param) {
+void stiX::screen_formatter::set_centre(command_parameter param) {
   set_variable(centring_, param);
+}
+void stiX::screen_formatter::set_underline(command_parameter param) {
+  set_variable(underline_, param);
 }
 void stiX::screen_formatter::set_variable(
   size_t& var,

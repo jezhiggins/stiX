@@ -48,7 +48,8 @@ namespace stiX {
     void set_right_margin(command_parameter param);
     void set_page_length(command_parameter param);
     void set_line_space(command_parameter param);
-    void set_centre_count(command_parameter param);
+    void set_centre(command_parameter param);
+    void set_underline(command_parameter param);
     void set_variable(size_t& var,
                       command_parameter update,
                       size_t minimum = 0,
@@ -63,6 +64,7 @@ namespace stiX {
     size_t max_lines_;
     size_t line_space_;
     size_t centring_;
+    size_t underline_;
     std::string buffer_;
 
     bool fill_;
