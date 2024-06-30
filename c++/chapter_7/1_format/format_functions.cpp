@@ -1,6 +1,7 @@
 
 #include "format_functions.hpp"
 #include <algorithm>
+#include <functional>
 
 namespace {
   void fill_to_width(std::string& line, size_t width) {
@@ -45,15 +46,16 @@ namespace {
   constinit std::string start_underline = "\x1B[4m";
   constinit std::string end_underline = "\x1B[0m";
 
-  size_t word_start(std::string const& line, size_t from) {
-    while (isspace(line[from]) && from != line.size())
+  size_t find_boundary(std::string const& line, size_t from, auto predicate) {
+    while (predicate(line[from]) && from != line.size())
       ++from;
     return from;
   }
+  size_t word_start(std::string const& line, size_t from) {
+    return find_boundary(line, from, isspace);
+  }
   size_t word_end(std::string const& line, size_t from) {
-    while (!isspace(line[from]) && from != line.size())
-      ++from;
-    return from;
+    return find_boundary(line, from, std::not_fn(isspace));
   }
 }
 
@@ -66,11 +68,9 @@ std::string stiX::underline(std::string_view line_in) {
     boundary += start_underline.size();
 
     boundary = word_end(line, boundary);
-    if (boundary != line.size())
-      line.insert(boundary, end_underline);
-    else
-      line.append(end_underline);
+    line.insert(boundary, end_underline);
     boundary += end_underline.size();
+
     boundary = word_start(line, boundary);
   }
 
