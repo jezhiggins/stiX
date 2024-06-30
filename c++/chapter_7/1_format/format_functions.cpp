@@ -31,3 +31,12 @@ std::string stiX::fill_line(std::string_view line_in, size_t width) {
 
   return line;
 }
+
+std::string stiX::centre_line(std::string_view line_in, size_t width) {
+  auto padding = (width - line_in.size()) / 2;
+
+  auto line = std::string(padding, ' ');
+  line.append(line_in);
+
+  return line;
+}

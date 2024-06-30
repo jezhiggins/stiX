@@ -10,3 +10,10 @@ TEST_CASE("fill line") {
   REQUIRE(stiX::fill_line("big fat pig", 15) == "big   fat   pig");
   REQUIRE(stiX::fill_line("big fat pig", 16) == "big    fat   pig");
 }
+
+TEST_CASE("centre line") {
+  REQUIRE(stiX::centre_line("hello", 9) == "  hello");
+  REQUIRE(stiX::centre_line("hello", 8) == " hello");
+  REQUIRE(stiX::centre_line("hello", 10) == "  hello");
+  REQUIRE(stiX::centre_line("hello", 5) == "hello");
+}
