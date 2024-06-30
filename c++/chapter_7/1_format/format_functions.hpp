@@ -4,8 +4,9 @@
 #include <string>
 
 namespace stiX {
-  std::string fill_line(std::string_view line, size_t width);
-  std::string centre_line(std::string_view line, size_t width);
+  std::string fill_line(std::string const& line_in, size_t width);
+  std::string centre_line(std::string const& line_in, size_t width);
+  std::string underline(std::string const& line_in);
 }
 
 #endif //STICPP_FORMAT_FUNCTIONS_HPP

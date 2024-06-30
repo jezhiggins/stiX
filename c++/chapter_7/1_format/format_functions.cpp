@@ -21,8 +21,8 @@ namespace {
   }
 }
 
-std::string stiX::fill_line(std::string_view line_in, size_t width) {
-  auto line = std::string { line_in };
+std::string stiX::fill_line(std::string const& line_in, size_t width) {
+  auto line = line_in;
 
   if (line.find(' ') == std::string::npos)
     return line;
@@ -32,11 +32,47 @@ std::string stiX::fill_line(std::string_view line_in, size_t width) {
   return line;
 }
 
-std::string stiX::centre_line(std::string_view line_in, size_t width) {
+std::string stiX::centre_line(std::string const& line_in, size_t width) {
   auto padding = (width - line_in.size()) / 2;
 
   auto line = std::string(padding, ' ');
   line.append(line_in);
+
+  return line;
+}
+
+namespace {
+  constinit std::string start_underline = "\e[4m";
+  constinit std::string end_underline = "\e[0m";
+
+  size_t word_start(std::string const& line, size_t from) {
+    while (isspace(line[from]) && from != line.size())
+      ++from;
+    return from;
+  }
+  size_t word_end(std::string const& line, size_t from) {
+    while (!isspace(line[from]) && from != line.size())
+      ++from;
+    return from;
+  }
+}
+
+std::string stiX::underline(std::string const& line_in) {
+  auto line = line_in;
+
+  auto boundary = word_start(line, 0);
+  while (boundary != line.size()) {
+    line.insert(boundary, start_underline);
+    boundary += start_underline.size();
+
+    boundary = word_end(line, boundary);
+    if (boundary != line.size())
+      line.insert(boundary, end_underline);
+    else
+      line.append(end_underline);
+    boundary += end_underline.size();
+    boundary = word_start(line, boundary);
+  }
 
   return line;
 }

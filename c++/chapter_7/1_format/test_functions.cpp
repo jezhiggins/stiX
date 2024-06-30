@@ -17,3 +17,10 @@ TEST_CASE("centre line") {
   REQUIRE(stiX::centre_line("hello", 10) == "  hello");
   REQUIRE(stiX::centre_line("hello", 5) == "hello");
 }
+
+TEST_CASE("underline") {
+  REQUIRE(stiX::underline("hello") == "\e[4mhello\e[0m");
+  REQUIRE(stiX::underline("hello world") == "\e[4mhello\e[0m \e[4mworld\e[0m");
+  REQUIRE(stiX::underline("  hello world  ") == "  \e[4mhello\e[0m \e[4mworld\e[0m  ");
+  REQUIRE(stiX::underline("     ") == "     ");
+}
