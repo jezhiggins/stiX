@@ -36,7 +36,7 @@ stiX::screen_formatter::screen_formatter(
   out_(out),
   line_(0),
   right_margin_(page_width),
-  max_lines_(page_length),
+  page_length_(page_length),
   line_space_(1),
   centring_(0),
   underline_(0),
@@ -159,7 +159,7 @@ void stiX::screen_formatter::line_print(std::string_view line) {
 }
 void stiX::screen_formatter::line_feed() {
   out_ << '\n';
-  if (++line_ == max_lines_)
+  if (++line_ == page_length_)
     line_ = 0;
 }
 
@@ -194,7 +194,7 @@ void stiX::screen_formatter::set_right_margin(command_parameter param) {
   set_variable(right_margin_, param);
 }
 void stiX::screen_formatter::set_page_length(command_parameter param) {
-  set_variable(max_lines_, param);
+  set_variable(page_length_, param);
 }
 void stiX::screen_formatter::set_line_space(command_parameter param) {
   set_variable(line_space_, param);
@@ -223,7 +223,7 @@ void stiX::screen_formatter::set_variable(
   var = std::min(var, maximum);
 }
 size_t stiX::screen_formatter::lines_remaining() const {
-  return max_lines_ - line_;
+  return page_length_ - line_;
 }
 
 
