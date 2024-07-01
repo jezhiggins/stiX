@@ -1,0 +1,9 @@
+Good Programming is not learned from generalities,
+but by seeing how significant programs can be made
+clean, easy to read, easy to maintain and modify,
+human-engineered, efficient, and reliable, by the
+application of common sense and good programming
+practices.
+.sp 0
+Careful study and imitation of good programs
+leads to better writing.
