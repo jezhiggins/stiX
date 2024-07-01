@@ -200,6 +200,7 @@ void stiX::screen_formatter::set_line_space(command_parameter param) {
   set_variable(line_space_, param);
 }
 void stiX::screen_formatter::set_centre(command_parameter param) {
+  flush();
   set_variable(centring_, param);
 }
 void stiX::screen_formatter::set_underline(command_parameter param) {
