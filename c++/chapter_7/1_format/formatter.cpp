@@ -17,6 +17,9 @@ namespace {
 
   constinit auto default_right_margin = 60;
   constinit auto default_page_length = 66;
+  constinit auto default_vertical_space = 1;
+  constinit auto default_line_space = 1;
+  constinit auto default_active_lines = 1;
 
   bool is_command(std::string const& line) {
     return !line.empty() && line.front() == '.';
@@ -37,7 +40,7 @@ stiX::screen_formatter::screen_formatter(
   current_line_(0),
   right_margin_(page_width),
   page_length_(page_length),
-  line_space_(1),
+  line_space_(default_line_space),
   centring_(0),
   underline_(0),
   fill_(true) {
@@ -92,13 +95,13 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
   if (command == ".pl")
     set_page_length(param(default_page_length));
   if (command == ".sp")
-    vertical_space(param(1));
+    vertical_space(param(default_vertical_space));
   if (command == ".ls")
-    set_line_space(param(1));
+    set_line_space(param(default_line_space));
   if (command == ".ce")
-    set_centre(param(1));
+    set_centre(param(default_active_lines));
   if (command == ".ul")
-    set_underline(param(1));
+    set_underline(param(default_active_lines));
 }
 
 void stiX::screen_formatter::handle_text(std::string const& line) {
