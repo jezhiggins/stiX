@@ -34,7 +34,7 @@ stiX::screen_formatter::screen_formatter(
     size_t page_length) :
   in_(in),
   out_(out),
-  line_(0),
+  current_line_(0),
   right_margin_(page_width),
   page_length_(page_length),
   line_space_(1),
@@ -159,14 +159,14 @@ void stiX::screen_formatter::line_print(std::string_view line) {
 }
 void stiX::screen_formatter::line_feed() {
   out_ << '\n';
-  if (++line_ == page_length_)
-    line_ = 0;
+  if (++current_line_ == page_length_)
+    current_line_ = 0;
 }
 
 void stiX::screen_formatter::page_end() {
   flush();
 
-  while (line_ != 0)
+  while (current_line_ != 0)
     line_feed();
 }
 
@@ -223,7 +223,7 @@ void stiX::screen_formatter::set_variable(
   var = std::min(var, maximum);
 }
 size_t stiX::screen_formatter::lines_remaining() const {
-  return page_length_ - line_;
+  return page_length_ - current_line_;
 }
 
 

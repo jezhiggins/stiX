@@ -59,7 +59,7 @@ namespace stiX {
     std::istream& in_;
     std::ostream& out_;
 
-    size_t line_;
+    size_t current_line_;
     size_t right_margin_;
     size_t page_length_;
     size_t line_space_;
