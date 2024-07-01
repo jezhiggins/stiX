@@ -35,7 +35,7 @@ stiX::screen_formatter::screen_formatter(
   in_(in),
   out_(out),
   line_(0),
-  max_width_(page_width),
+  right_margin_(page_width),
   max_lines_(page_length),
   line_space_(1),
   centring_(0),
@@ -104,7 +104,7 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
 void stiX::screen_formatter::handle_text(std::string const& line) {
   if (centring_) {
     --centring_;
-    line_print(centre_line(line, max_width_));
+    line_print(centre_line(line, right_margin_));
     return;
   }
 
@@ -123,10 +123,10 @@ void stiX::screen_formatter::flush_if_wraps(std::string const& line) {
   buffer_ += (buffer_.empty() || line.empty()) ? null : space;
   buffer_ += line;
 
-  while (buffer_.length() > max_width_) {
-    auto break_at = buffer_.rfind(' ', max_width_);
+  while (buffer_.length() > right_margin_) {
+    auto break_at = buffer_.rfind(' ', right_margin_);
 
-    line_print(fill_line(buffer_.substr(0, break_at), max_width_));
+    line_print(fill_line(buffer_.substr(0, break_at), right_margin_));
 
     buffer_ = buffer_.substr(break_at + 1);
   }
@@ -191,7 +191,7 @@ void stiX::screen_formatter::vertical_space(command_parameter param) {
     line_feed();
 }
 void stiX::screen_formatter::set_right_margin(command_parameter param) {
-  set_variable(max_width_, param);
+  set_variable(right_margin_, param);
 }
 void stiX::screen_formatter::set_page_length(command_parameter param) {
   set_variable(max_lines_, param);

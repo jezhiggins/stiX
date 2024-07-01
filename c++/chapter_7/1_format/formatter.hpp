@@ -60,7 +60,7 @@ namespace stiX {
     std::ostream& out_;
 
     size_t line_;
-    size_t max_width_;
+    size_t right_margin_;
     size_t max_lines_;
     size_t line_space_;
     size_t centring_;
