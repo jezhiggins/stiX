@@ -33,8 +33,8 @@ std::string stiX::fill_line(std::string const& line_in, size_t width) {
   return line;
 }
 
-std::string stiX::centre_line(std::string const& line_in, size_t width) {
-  auto padding = (width - line_in.size()) / 2;
+std::string stiX::centre_line(std::string const& line_in, size_t char_count, size_t width) {
+  auto padding = (width - char_count) / 2;
 
   auto line = std::string(padding, ' ');
   line.append(line_in);
@@ -87,4 +87,18 @@ std::string stiX::underline(std::string_view line_in) {
   }
 
   return line;
+}
+
+std::vector<stiX::word_width> stiX::split_into_words(std::string const& line_in) {
+  auto tokens = std::vector<stiX::word_width> { };
+
+  auto boundary = word_start(line_in, 0);
+  while (boundary != line_in.size()) {
+    auto end = word_end(line_in, boundary);
+
+    tokens.emplace_back(line_in.substr(boundary, end), end-boundary);
+    boundary = word_start(line_in, end);
+  }
+
+  return tokens;
 }
