@@ -26,12 +26,26 @@ TEST_CASE("underline") {
 }
 
 TEST_CASE("tokenise & width") {
-  auto toks = stiX::split_into_words("hello world!");
-  auto expected = std::vector<stiX::word_width> { { "hello", 5 }, { "world!", 6 } };
+  SECTION("unformatted text") {
+    auto toks = stiX::split_into_words("\e[4mhello\e[0m \e[4mworld!\e[0m");
+    auto expected = std::vector<stiX::word_width>{{"\e[4mhello\e[0m",  5},
+                                                  {"\e[4mworld!\e[0m", 6}};
 
-  REQUIRE(toks.size() == expected.size());
-  for (auto i = 0; i != toks.size(); ++i) {
-    REQUIRE(toks[i].word == expected[i].word);
-    REQUIRE(toks[i].width == expected[i].width);
+    REQUIRE(toks.size() == expected.size());
+    for (auto i = 0; i != toks.size(); ++i) {
+      REQUIRE(toks[i].word == expected[i].word);
+      REQUIRE(toks[i].width == expected[i].width);
+    }
+  }
+  SECTION("underlined text") {
+    auto toks = stiX::split_into_words("hello world!");
+    auto expected = std::vector<stiX::word_width>{{"hello",  5},
+                                                  {"world!", 6}};
+
+    REQUIRE(toks.size() == expected.size());
+    for (auto i = 0; i != toks.size(); ++i) {
+      REQUIRE(toks[i].word == expected[i].word);
+      REQUIRE(toks[i].width == expected[i].width);
+    }
   }
 }

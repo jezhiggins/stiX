@@ -43,6 +43,7 @@ std::string stiX::centre_line(std::string const& line_in, size_t char_count, siz
 }
 
 namespace {
+  constinit char escape_char = '\x1B';
   constinit std::string start_underline_control = "\x1B[4m";
   constinit std::string end_underline_control = "\x1B[0m";
 
@@ -89,6 +90,18 @@ std::string stiX::underline(std::string_view line_in) {
   return line;
 }
 
+namespace {
+  size_t count_word_width(std::string const& w) {
+    size_t l = 0;
+    for(auto i = w.begin(); i != w.end(); ++i)
+      if (*i == escape_char)
+        i += 3;
+      else
+        ++l;
+    return l;
+  }
+}
+
 std::vector<stiX::word_width> stiX::split_into_words(std::string const& line_in) {
   auto tokens = std::vector<stiX::word_width> { };
 
@@ -96,7 +109,8 @@ std::vector<stiX::word_width> stiX::split_into_words(std::string const& line_in)
   while (boundary != line_in.size()) {
     auto end = word_end(line_in, boundary);
 
-    tokens.emplace_back(line_in.substr(boundary, end), end-boundary);
+    auto word = line_in.substr(boundary, end);
+    tokens.emplace_back(word, count_word_width(word));
     boundary = word_start(line_in, end);
   }
 
