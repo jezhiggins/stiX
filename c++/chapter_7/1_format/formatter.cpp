@@ -104,7 +104,12 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_underline(param(default_active_lines));
 }
 
-void stiX::screen_formatter::handle_text(std::string const& line) {
+void stiX::screen_formatter::handle_text(std::string line) {
+  if (underline_) {
+    --underline_;
+    line = stiX::underline(line);
+  }
+
   if (centring_) {
     --centring_;
     line_print(centre_line(line, right_margin_));
@@ -119,20 +124,22 @@ void stiX::screen_formatter::handle_text(std::string const& line) {
   if (!fill_)
     line_print(line);
   else
-    flush_if_wraps(line);
+    line_buffer(line);
 }
 
-void stiX::screen_formatter::flush_if_wraps(std::string const& line) {
-  buffer_ += (buffer_.empty() || line.empty()) ? null : space;
-  buffer_ += line;
+void stiX::screen_formatter::line_buffer(std::string const& line) {
+  for (auto word: split_into_words(line)) {
+    if (count_width(buffer_) + word.width >= right_margin_)
+      fill_and_flush();
 
-  while (buffer_.length() > right_margin_) {
-    auto break_at = buffer_.rfind(' ', right_margin_);
-
-    line_print(fill_line(buffer_.substr(0, break_at), right_margin_));
-
-    buffer_ = buffer_.substr(break_at + 1);
+    buffer_ += buffer_.empty() ? null : space;
+    buffer_ += word.word;
   }
+}
+
+void stiX::screen_formatter::fill_and_flush() {
+  buffer_ = fill_line(buffer_, right_margin_);
+  flush();
 }
 
 void stiX::screen_formatter::flush() {
@@ -149,12 +156,7 @@ void stiX::screen_formatter::blank_line() {
 }
 
 void stiX::screen_formatter::line_print(std::string_view line) {
-  if (underline_) {
-    --underline_;
-    out_ << stiX::underline(line);
-  }
-  else
-    out_ << line;
+  out_ << line;
 
   auto line_space = std::min(line_space_, lines_remaining());
   for (auto i = 0; i != line_space; ++i)

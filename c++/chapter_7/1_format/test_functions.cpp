@@ -12,10 +12,10 @@ TEST_CASE("fill line") {
 }
 
 TEST_CASE("centre line") {
-  REQUIRE(stiX::centre_line("hello", 5, 9) == "  hello");
-  REQUIRE(stiX::centre_line("hello", 5, 8) == " hello");
-  REQUIRE(stiX::centre_line("hello", 5, 10) == "  hello");
-  REQUIRE(stiX::centre_line("hello", 5, 5) == "hello");
+  REQUIRE(stiX::centre_line("hello", 9) == "  hello");
+  REQUIRE(stiX::centre_line("hello", 8) == " hello");
+  REQUIRE(stiX::centre_line("hello", 10) == "  hello");
+  REQUIRE(stiX::centre_line("hello", 5) == "hello");
 }
 
 TEST_CASE("underline") {
@@ -38,8 +38,11 @@ TEST_CASE("tokenise & width") {
     }
   }
   SECTION("underlined text") {
-    auto toks = stiX::split_into_words("hello world!");
+    auto toks = stiX::split_into_words("hello everybody in the world!");
     auto expected = std::vector<stiX::word_width>{{"hello",  5},
+                                                  {"everybody", 9},
+                                                  {"in", 2},
+                                                  {"the", 3},
                                                   {"world!", 6}};
 
     REQUIRE(toks.size() == expected.size());

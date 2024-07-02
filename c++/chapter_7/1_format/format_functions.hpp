@@ -6,8 +6,10 @@
 
 namespace stiX {
   std::string fill_line(std::string const& line_in, size_t width);
-  std::string centre_line(std::string const& line_in, size_t char_count, size_t width);
+  std::string centre_line(std::string const& line_in, size_t width);
   std::string underline(std::string_view line_in);
+
+  size_t count_width(std::string const& w);
 
   struct word_width {
     std::string const word;

@@ -19,8 +19,9 @@ namespace stiX {
 
   private:
     void handle_command(std::string const& line);
-    void handle_text(std::string const& line);
-    void flush_if_wraps(std::string const& line);
+    void handle_text(std::string line);
+    void line_buffer(std::string const& line);
+    void fill_and_flush();
     void flush();
 
     void line_print(std::string_view line);
