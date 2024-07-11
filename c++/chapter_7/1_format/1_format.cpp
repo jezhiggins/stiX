@@ -25,7 +25,7 @@
 //x .fi        yes                  start filling
 //  .fo str    no        empty      footer title
 //  .he str    no        empty      header title
-//  .in n      no        n=0        indent n spaces
+//x .in n      no        n=0        indent n spaces
 //x .ls n      no        n=1        line spacing is n
 //x .nf        yes                  stop filling
 //x .pl n      no        n=66       set page length to n

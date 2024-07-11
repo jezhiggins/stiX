@@ -51,24 +51,29 @@ namespace stiX {
     void set_line_space(command_parameter param);
     void set_centre(command_parameter param);
     void set_underline(command_parameter param);
+    void set_indent(command_parameter param);
     void set_variable(size_t& var,
                       command_parameter update,
                       size_t minimum = 0,
                       size_t maximum = std::numeric_limits<size_t>::max());
+    size_t fillable_width() const;
     size_t lines_remaining() const;
 
     std::istream& in_;
     std::ostream& out_;
 
-    size_t current_line_;
     size_t right_margin_;
     size_t page_length_;
+
     size_t line_space_;
     size_t centring_;
     size_t underline_;
-    std::string buffer_;
 
     bool fill_;
+    size_t indent_;
+
+    size_t current_line_;
+    std::string buffer_;
   };
 }
 

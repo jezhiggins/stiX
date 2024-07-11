@@ -37,13 +37,14 @@ stiX::screen_formatter::screen_formatter(
     size_t page_length) :
   in_(in),
   out_(out),
-  current_line_(0),
   right_margin_(page_width),
   page_length_(page_length),
   line_space_(default_line_space),
   centring_(0),
   underline_(0),
-  fill_(true) {
+  fill_(true),
+  indent_(0),
+  current_line_(0) {
 }
 
 void stiX::screen_formatter::format() {
@@ -102,6 +103,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_centre(param(default_active_lines));
   if (command == ".ul")
     set_underline(param(default_active_lines));
+  if (command == ".in")
+    set_indent(param(0));
 }
 
 void stiX::screen_formatter::handle_text(std::string line) {
@@ -112,7 +115,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
 
   if (centring_) {
     --centring_;
-    line_print(centre_line(line, right_margin_));
+    line_print(centre_line(line, fillable_width()));
     return;
   }
 
@@ -129,7 +132,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
 
 void stiX::screen_formatter::line_buffer(std::string const& line) {
   for (auto word: split_into_words(line)) {
-    if (count_width(buffer_) + word.width >= right_margin_)
+    if (count_width(buffer_) + word.width >= fillable_width())
       fill_and_flush();
 
     buffer_ += buffer_.empty() ? null : space;
@@ -138,7 +141,7 @@ void stiX::screen_formatter::line_buffer(std::string const& line) {
 }
 
 void stiX::screen_formatter::fill_and_flush() {
-  buffer_ = fill_line(buffer_, right_margin_);
+  buffer_ = fill_line(buffer_, fillable_width());
   flush();
 }
 
@@ -156,7 +159,8 @@ void stiX::screen_formatter::blank_line() {
 }
 
 void stiX::screen_formatter::line_print(std::string_view line) {
-  out_ << line;
+  if (!line.empty())
+    out_ << std::string(indent_, ' ') << line;
 
   auto line_space = std::min(line_space_, lines_remaining());
   for (auto i = 0; i != line_space; ++i)
@@ -211,6 +215,9 @@ void stiX::screen_formatter::set_centre(command_parameter param) {
 void stiX::screen_formatter::set_underline(command_parameter param) {
   set_variable(underline_, param);
 }
+void stiX::screen_formatter::set_indent(command_parameter param) {
+  set_variable(indent_, param);
+}
 void stiX::screen_formatter::set_variable(
   size_t& var,
   command_parameter update,
@@ -227,6 +234,9 @@ void stiX::screen_formatter::set_variable(
 
   var = std::max(var, minimum);
   var = std::min(var, maximum);
+}
+size_t stiX::screen_formatter::fillable_width() const {
+  return right_margin_ - indent_;
 }
 size_t stiX::screen_formatter::lines_remaining() const {
   return page_length_ - current_line_;
