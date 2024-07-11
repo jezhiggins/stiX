@@ -4,6 +4,7 @@
 #include <iosfwd>
 #include <string>
 #include <limits>
+#include <optional>
 
 namespace stiX {
   class screen_formatter {
@@ -52,11 +53,14 @@ namespace stiX {
     void set_centre(command_parameter param);
     void set_underline(command_parameter param);
     void set_indent(command_parameter param);
+    void set_next_indent(command_parameter param);
+    void clear_next_indent();
     void set_variable(size_t& var,
                       command_parameter update,
                       size_t minimum = 0,
                       size_t maximum = std::numeric_limits<size_t>::max());
     size_t fillable_width() const;
+    size_t indent() const;
     size_t lines_remaining() const;
 
     std::istream& in_;
@@ -71,6 +75,7 @@ namespace stiX {
 
     bool fill_;
     size_t indent_;
+    std::optional<size_t> next_indent_;
 
     size_t current_line_;
     std::string buffer_;

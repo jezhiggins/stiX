@@ -31,8 +31,8 @@
 //x .pl n      no        n=66       set page length to n
 //x .rm n      no        n=60       set right margin to n
 //x .sp n      yes       n=1        space down n lines or to bottom of page
-//  .ti n      yes       n=0        temporary indent of n
-// x.ul n      no        n=1        underline words from next n lines
+//x .ti n      yes       n=0        temporary indent of n
+//x .ul n      no        n=1        underline words from next n lines
 //
 // A blank input line causes a break and is passed to the output unchanged.
 // Similarly, an input line that begins with blanks causes a break and is written
