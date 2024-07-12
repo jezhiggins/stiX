@@ -126,7 +126,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
   }
 
   if (line.empty()) {
-    blank_line();
+    print_blank_line();
     return;
   }
 
@@ -175,7 +175,7 @@ void stiX::screen_formatter::flush() {
   buffer_.clear();
 }
 
-void stiX::screen_formatter::blank_line() {
+void stiX::screen_formatter::print_blank_line() {
   flush();
   line_print("");
 }
