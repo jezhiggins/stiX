@@ -27,6 +27,7 @@ namespace stiX {
     void flush();
 
     void line_print(std::string_view line);
+    void line_spacing();
     void line_feed();
     void blank_line();
     void page_end();

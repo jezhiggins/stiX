@@ -185,6 +185,9 @@ void stiX::screen_formatter::line_print(std::string_view line) {
     out_ << std::string(indent(), blank) << line;
   clear_next_indent();
 
+  line_spacing();
+}
+void stiX::screen_formatter::line_spacing() {
   auto line_space = std::min(line_space_, lines_remaining());
   for (auto i = 0; i != line_space; ++i)
     line_feed();
