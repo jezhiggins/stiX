@@ -121,7 +121,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
 
   if (centring_) {
     --centring_;
-    line_print(centre_line(line, fillable_width()));
+    print_line(centre_line(line, fillable_width()));
     return;
   }
 
@@ -131,7 +131,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
   }
 
   if (!fill_)
-    line_print(line);
+    print_line(line);
   else
     line_buffer(line);
 }
@@ -171,16 +171,16 @@ void stiX::screen_formatter::flush() {
   if (buffer_.empty())
     return;
 
-  line_print(buffer_);
+  print_line(buffer_);
   buffer_.clear();
 }
 
 void stiX::screen_formatter::print_blank_line() {
   flush();
-  line_print("");
+  print_line("");
 }
 
-void stiX::screen_formatter::line_print(std::string_view line) {
+void stiX::screen_formatter::print_line(std::string_view line) {
   if (!line.empty())
     out_ << std::string(indent(), blank) << line;
   clear_next_indent();

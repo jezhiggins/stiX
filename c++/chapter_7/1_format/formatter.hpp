@@ -26,7 +26,7 @@ namespace stiX {
     void fill_and_flush();
     void flush();
 
-    void line_print(std::string_view line);
+    void print_line(std::string_view line);
     void line_spacing();
     void line_feed();
     void print_blank_line();
