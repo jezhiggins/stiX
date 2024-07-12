@@ -137,10 +137,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
 }
 
 void stiX::screen_formatter::leading_blanks(std::string &line) {
-  if (line.empty())
-    return;
-
-  if (line[0] != blank)
+  if (line.empty() || line[0] != blank)
     return;
 
   auto last_leading_blank = line.find_first_not_of(blank);
