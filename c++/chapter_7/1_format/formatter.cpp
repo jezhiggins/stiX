@@ -117,8 +117,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
   apply_underlining(line);
 
   if (centring_) {
-    --centring_;
-    print_line(centre_line(line, fillable_width()));
+    print_centred_line(line);
     return;
   }
 
@@ -176,13 +175,16 @@ void stiX::screen_formatter::flush() {
   print_line(buffer_);
   buffer_.clear();
 }
-
+void stiX::screen_formatter::print_centred_line(std::string const& line) {
+  --centring_;
+  print_line(centre_line(line, fillable_width()));
+}
 void stiX::screen_formatter::print_blank_line() {
   flush();
   print_line("");
 }
 
-void stiX::screen_formatter::print_line(std::string_view line) {
+void stiX::screen_formatter::print_line(std::string const& line) {
   if (!line.empty())
     out_ << leading_indent() << line;
 

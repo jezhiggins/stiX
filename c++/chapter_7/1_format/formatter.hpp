@@ -27,10 +27,11 @@ namespace stiX {
     void fill_and_flush();
     void flush();
 
-    void print_line(std::string_view line);
+    void print_line(std::string const& line);
     std::string leading_indent();
     void line_spacing();
     void line_feed();
+    void print_centred_line(std::string const& line);
     void print_blank_line();
     void page_end();
 
