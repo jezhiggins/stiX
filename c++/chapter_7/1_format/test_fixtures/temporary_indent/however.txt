@@ -1,4 +1,4 @@
-.rm 60
+.rm 50
 .in 4
 .ti -4
 1. It is a truth universally acknowledged, that a

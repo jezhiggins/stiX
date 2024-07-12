@@ -14,6 +14,7 @@ namespace {
   constinit auto eof = std::char_traits<char>::eof();
   constinit auto null = std::string_view { };
   constinit auto space = std::string_view { " " };
+  constinit auto blank = ' ';
 
   constinit auto default_right_margin = 60;
   constinit auto default_page_length = 66;
@@ -111,6 +112,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
 }
 
 void stiX::screen_formatter::handle_text(std::string line) {
+  leading_blanks(line);
+
   if (underline_) {
     --underline_;
     line = stiX::underline(line);
@@ -131,6 +134,22 @@ void stiX::screen_formatter::handle_text(std::string line) {
     line_print(line);
   else
     line_buffer(line);
+}
+
+void stiX::screen_formatter::leading_blanks(std::string &line) {
+  if (line.empty())
+    return;
+
+  if (line[0] != blank)
+    return;
+
+  auto last_leading_blank = line.find_first_not_of(blank);
+  line = line.substr(last_leading_blank);
+
+  if (!line.empty()) {
+    flush();
+    next_indent_ = last_leading_blank;
+  }
 }
 
 void stiX::screen_formatter::line_buffer(std::string const& line) {
@@ -163,7 +182,7 @@ void stiX::screen_formatter::blank_line() {
 
 void stiX::screen_formatter::line_print(std::string_view line) {
   if (!line.empty())
-    out_ << std::string(indent(), ' ') << line;
+    out_ << std::string(indent(), blank) << line;
   clear_next_indent();
 
   auto line_space = std::min(line_space_, lines_remaining());
