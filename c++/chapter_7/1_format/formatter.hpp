@@ -28,6 +28,7 @@ namespace stiX {
     void flush();
 
     void print_line(std::string_view line);
+    std::string leading_indent();
     void line_spacing();
     void line_feed();
     void print_blank_line();
