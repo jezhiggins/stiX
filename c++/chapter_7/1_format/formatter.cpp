@@ -116,16 +116,15 @@ void stiX::screen_formatter::handle_text(std::string line) {
 
   apply_underlining(line);
 
-  if (centring_) {
-    print_centred_line(line);
-    return;
-  }
-
   if (line.empty()) {
     print_blank_line();
     return;
   }
 
+  if (centring_) {
+    print_centred_line(line);
+    return;
+  }
   if (!fill_)
     print_line(line);
   else
@@ -287,7 +286,6 @@ size_t stiX::screen_formatter::indent() const {
 size_t stiX::screen_formatter::lines_remaining() const {
   return page_length_ - current_line_;
 }
-
 
 ///////////
 void stiX::format(std::istream& in, std::ostream& out) {
