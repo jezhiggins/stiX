@@ -133,7 +133,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
   if (!fill_)
     print_line(line);
   else
-    line_buffer(line);
+    buffer_line(line);
 }
 
 void stiX::screen_formatter::leading_blanks(std::string &line) {
@@ -152,7 +152,7 @@ void stiX::screen_formatter::leading_blanks(std::string &line) {
   }
 }
 
-void stiX::screen_formatter::line_buffer(std::string const& line) {
+void stiX::screen_formatter::buffer_line(std::string const& line) {
   for (auto word: split_into_words(line)) {
     if (count_width(buffer_) + word.width >= fillable_width())
       fill_and_flush();
