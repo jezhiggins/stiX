@@ -22,6 +22,7 @@ namespace stiX {
     void handle_command(std::string const& line);
     void handle_text(std::string line);
     void leading_blanks(std::string& line);
+    void apply_underlining(std::string& line);
     void buffer_line(std::string const& line);
     void fill_and_flush();
     void flush();
