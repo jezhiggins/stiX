@@ -51,7 +51,7 @@ stiX::screen_formatter::screen_formatter(
   indent_(0),
   next_indent_(),
   current_line_(0),
-  current_page_(0) {
+  current_page_(1) {
 }
 
 void stiX::screen_formatter::format() {
@@ -127,6 +127,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_next_indent(param(0));
   if (command == ".he")
     set_header(string_param(line));
+  if (command == ".bp")
+    page_break(param(current_page_+1));
 }
 
 void stiX::screen_formatter::handle_text(std::string line) {
@@ -223,8 +225,10 @@ void stiX::screen_formatter::line_spacing() {
 }
 void stiX::screen_formatter::line_feed() {
   out_ << '\n';
-  if (++current_line_ == page_length_)
+  if (++current_line_ == page_length_) {
     current_line_ = 0;
+    ++current_page_;
+  }
 }
 void stiX::screen_formatter::line_feed(size_t count) {
   for (auto c = 0; c != count; ++c)
@@ -239,8 +243,6 @@ void stiX::screen_formatter::page_end() {
 }
 
 void stiX::screen_formatter::print_header() {
-  ++current_page_;
-
   if (header_.empty())
     return;
 
@@ -267,11 +269,14 @@ void stiX::screen_formatter::set_fill_mode(bool on) {
 void stiX::screen_formatter::vertical_space(command_parameter param) {
   flush();
 
-  auto spaces = size_t{0};
-  set_variable(spaces, param, 0, lines_remaining());
+  auto lines = size_t{0};
+  set_variable(lines, param, 0, lines_remaining());
 
-  for (auto i = 0; i != spaces; ++i)
-    line_feed();
+  line_feed(lines);
+}
+void stiX::screen_formatter::page_break(command_parameter param) {
+  page_end();
+  set_variable(current_page_, param);
 }
 void stiX::screen_formatter::set_right_margin(command_parameter param) {
   set_variable(right_margin_, param);

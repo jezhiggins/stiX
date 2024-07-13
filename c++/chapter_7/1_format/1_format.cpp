@@ -19,12 +19,12 @@
 //
 // command    break?    default     function
 //
-//  .bp n      yes       n=+1       begin page numbered n
+//x .bp n      yes       n=+1       begin page numbered n
 //x .br                  yes        cause break
 //x .ce n      yes       n=1        centre next n lines
 //x .fi        yes                  start filling
 //  .fo str    no        empty      footer title
-//  .he str    no        empty      header title
+//x .he str    no        empty      header title
 //x .in n      no        n=0        indent n spaces
 //x .ls n      no        n=1        line spacing is n
 //x .nf        yes                  stop filling

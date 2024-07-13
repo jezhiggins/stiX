@@ -56,6 +56,7 @@ namespace stiX {
     void fi_fill_on();
     void set_fill_mode(bool on);
     void vertical_space(command_parameter param);
+    void page_break(command_parameter param);
     void set_right_margin(command_parameter param);
     void set_page_length(command_parameter param);
     void set_line_space(command_parameter param);
