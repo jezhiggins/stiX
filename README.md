@@ -55,6 +55,10 @@ and [two](https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html)
 
 1. [edit](https://www.jezuk.co.uk/blog/2024/06/ed-ed-hooray.html) 
 
+### Chapter 7 - Formatting 
+
+1. format
+
 ## License
 
 Copyright 2019-2024 [JezUK Ltd](http://www.jezuk.co.uk/)
