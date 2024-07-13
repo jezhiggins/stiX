@@ -19,20 +19,20 @@
 //
 // command    break?    default     function
 //
-//x .bp n      yes       n=+1       begin page numbered n
-//x .br                  yes        cause break
-//x .ce n      yes       n=1        centre next n lines
-//x .fi        yes                  start filling
+//  .bp n      yes       n=+1       begin page numbered n
+//  .br                  yes        cause break
+//  .ce n      yes       n=1        centre next n lines
+//  .fi        yes                  start filling
 //  .fo str    no        empty      footer title
-//x .he str    no        empty      header title
-//x .in n      no        n=0        indent n spaces
-//x .ls n      no        n=1        line spacing is n
-//x .nf        yes                  stop filling
-//x .pl n      no        n=66       set page length to n
-//x .rm n      no        n=60       set right margin to n
-//x .sp n      yes       n=1        space down n lines or to bottom of page
-//x .ti n      yes       n=0        temporary indent of n
-//x .ul n      no        n=1        underline words from next n lines
+//  .he str    no        empty      header title
+//  .in n      no        n=0        indent n spaces
+//  .ls n      no        n=1        line spacing is n
+//  .nf        yes                  stop filling
+//  .pl n      no        n=66       set page length to n
+//  .rm n      no        n=60       set right margin to n
+//  .sp n      yes       n=1        space down n lines or to bottom of page
+//  .ti n      yes       n=0        temporary indent of n
+//  .ul n      no        n=1        underline words from next n lines
 //
 // A blank input line causes a break and is passed to the output unchanged.
 // Similarly, an input line that begins with blanks causes a break and is written
