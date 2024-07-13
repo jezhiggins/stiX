@@ -47,6 +47,8 @@ namespace stiX {
     command_parameter parse_value(
       std::string const& line,
       int def_value) const;
+    std::string string_param(
+      std::string const& line) const;
 
     void nf_no_fill();
     void fi_fill_on();
@@ -64,6 +66,9 @@ namespace stiX {
                       command_parameter update,
                       size_t minimum = 0,
                       size_t maximum = std::numeric_limits<size_t>::max());
+
+    void set_header(std::string const& header);
+
     size_t fillable_width() const;
     size_t indent() const;
     size_t lines_remaining() const;
@@ -77,6 +82,8 @@ namespace stiX {
     size_t line_space_;
     size_t centring_;
     size_t underline_;
+
+    std::string header_;
 
     bool fill_;
     size_t indent_;

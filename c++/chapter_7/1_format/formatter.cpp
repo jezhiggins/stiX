@@ -21,6 +21,8 @@ namespace {
   constinit auto default_vertical_space = 1;
   constinit auto default_line_space = 1;
   constinit auto default_active_lines = 1;
+  constinit auto hf_margin_above = 1;
+  constinit auto hf_margin_below = 2;
 
   bool is_command(std::string const& line) {
     return !line.empty() && line.front() == '.';
@@ -81,6 +83,13 @@ stiX::screen_formatter::command_parameter stiX::screen_formatter::parse_value(
   return { value, type };
 }
 
+std::string stiX::screen_formatter::string_param(
+  std::string const& line) const
+{
+  return line.substr(line.find_first_not_of(blank, 3));
+}
+
+
 void stiX::screen_formatter::handle_command(std::string const& line) {
   auto command = line.substr(0, 3);
   auto param = [&line, this](size_t def_value) {
@@ -109,6 +118,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_indent(param(0));
   if (command == ".ti")
     set_next_indent(param(0));
+  if (command == ".he")
+    set_header(string_param(line));
 }
 
 void stiX::screen_formatter::handle_text(std::string line) {
@@ -277,6 +288,11 @@ void stiX::screen_formatter::set_variable(
   var = std::max(var, minimum);
   var = std::min(var, maximum);
 }
+
+void stiX::screen_formatter::set_header(std::string const& header) {
+  header_ = header;
+}
+
 size_t stiX::screen_formatter::fillable_width() const {
   return right_margin_ - indent();
 }
