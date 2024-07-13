@@ -92,6 +92,7 @@ namespace stiX {
     std::optional<size_t> next_indent_;
 
     size_t current_line_;
+    size_t current_page_;
     std::string buffer_;
   };
 }

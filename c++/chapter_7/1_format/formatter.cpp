@@ -1,12 +1,14 @@
 #include "formatter.hpp"
 #include "format.hpp"
 
-#include "../../lib/getline.hpp"
-
 #include <sstream>
 #include <string>
 #include <charconv>
 #include "format_functions.hpp"
+#include "../../lib/getline.hpp"
+#include "../../lib/regex/pattern_matcher.hpp"
+#include "../../lib/regex/replacement.hpp"
+#include "../../lib/regex/change.hpp"
 
 using namespace std::string_literals;
 
@@ -48,7 +50,8 @@ stiX::screen_formatter::screen_formatter(
   fill_(true),
   indent_(0),
   next_indent_(),
-  current_line_(0) {
+  current_line_(0),
+  current_page_(0) {
 }
 
 void stiX::screen_formatter::format() {
@@ -93,7 +96,6 @@ std::string stiX::screen_formatter::string_param(
     title = title.substr(1);
   return title;
 }
-
 
 void stiX::screen_formatter::handle_command(std::string const& line) {
   auto command = line.substr(0, 3);
@@ -237,11 +239,18 @@ void stiX::screen_formatter::page_end() {
 }
 
 void stiX::screen_formatter::print_header() {
+  ++current_page_;
+
   if (header_.empty())
     return;
 
+  auto matcher = compile_pattern("#");
+  auto replacer = prepare_replacement(std::to_string(current_page_));
+  auto o = std::ostringstream { };
+  apply_change(matcher, replacer, header_, o);
+
   line_feed(hf_margin_above);
-  print_line(header_);
+  print_line(o.str());
   line_feed(hf_margin_below);
 }
 ///////////
