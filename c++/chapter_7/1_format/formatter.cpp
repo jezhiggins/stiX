@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <charconv>
+#include <functional>
 #include "format_functions.hpp"
 #include "../../lib/getline.hpp"
 #include "../../lib/regex/pattern_matcher.hpp"
@@ -143,14 +144,17 @@ void stiX::screen_formatter::handle_text(std::string line) {
     return;
   }
 
-  if (centring_) {
-    print_centred_line(line);
-    return;
-  }
-  if (!fill_)
-    print_line(line);
-  else
-    buffer_line(line);
+  output_line(line);
+}
+
+void stiX::screen_formatter::output_line(std::string const& line) {
+  std::invoke(output_mode, this, line);
+}
+
+stiX::screen_formatter::output_mem_fn stiX::screen_formatter::output_mode() const {
+  if (centring_)
+    return &screen_formatter::print_centred_line;
+  return fill_ ? &screen_formatter::buffer_line : &screen_formatter::print_line;
 }
 
 void stiX::screen_formatter::leading_blanks(std::string &line) {
