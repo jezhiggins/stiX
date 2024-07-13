@@ -90,7 +90,7 @@ namespace stiX {
     size_t page_length_;
 
     size_t line_space_;
-    size_t centring_;
+    size_t centering_;
     size_t underline_;
 
     std::string header_;

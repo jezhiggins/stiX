@@ -46,7 +46,7 @@ stiX::screen_formatter::screen_formatter(
   right_margin_(page_width),
   page_length_(page_length),
   line_space_(default_line_space),
-  centring_(0),
+  centering_(0),
   underline_(0),
   fill_(true),
   indent_(0),
@@ -198,7 +198,7 @@ void stiX::screen_formatter::flush() {
 void stiX::screen_formatter::print_centred_line(std::string const& line) {
   print_line(centre_line(line, fillable_width()));
 
-  if (--centring_ == 0)
+  if (--centering_ == 0)
     set_output_mode();
 }
 void stiX::screen_formatter::print_blank_line() {
@@ -319,8 +319,8 @@ void stiX::screen_formatter::set_line_space(command_parameter param) {
 }
 void stiX::screen_formatter::set_centre(command_parameter param) {
   flush();
-  set_variable(centring_, param);
-  if (centring_)
+  set_variable(centering_, param);
+  if (centering_)
     output_mode_ = &screen_formatter::print_centred_line;
   else
     set_output_mode();
