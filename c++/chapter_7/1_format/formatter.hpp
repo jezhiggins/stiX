@@ -22,8 +22,6 @@ namespace stiX {
     void handle_command(std::string const& line);
     void handle_text(std::string line);
     void output_line(std::string const& line);
-    using output_mem_fn = void(screen_formatter::*)(std::string const&);
-    output_mem_fn output_mode() const;
     void leading_blanks(std::string& line);
     void apply_underlining(std::string& line);
     void buffer_line(std::string const& line);
@@ -61,6 +59,7 @@ namespace stiX {
     void nf_no_fill();
     void fi_fill_on();
     void set_fill_mode(bool on);
+    void set_output_mode();
     void vertical_space(command_parameter param);
     void page_break(command_parameter param);
     void set_right_margin(command_parameter param);
@@ -104,6 +103,9 @@ namespace stiX {
     size_t current_line_;
     size_t current_page_;
     std::string buffer_;
+
+    using output_fn = void(screen_formatter::*)(std::string const&);
+    output_fn output_mode_;
   };
 }
 

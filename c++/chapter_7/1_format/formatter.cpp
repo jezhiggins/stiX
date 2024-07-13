@@ -52,7 +52,8 @@ stiX::screen_formatter::screen_formatter(
   indent_(0),
   next_indent_(),
   current_line_(0),
-  current_page_(1) {
+  current_page_(1),
+  output_mode_(&screen_formatter::buffer_line) {
 }
 
 void stiX::screen_formatter::format() {
@@ -148,13 +149,7 @@ void stiX::screen_formatter::handle_text(std::string line) {
 }
 
 void stiX::screen_formatter::output_line(std::string const& line) {
-  std::invoke(output_mode, this, line);
-}
-
-stiX::screen_formatter::output_mem_fn stiX::screen_formatter::output_mode() const {
-  if (centring_)
-    return &screen_formatter::print_centred_line;
-  return fill_ ? &screen_formatter::buffer_line : &screen_formatter::print_line;
+  std::invoke(output_mode_, this, line);
 }
 
 void stiX::screen_formatter::leading_blanks(std::string &line) {
@@ -201,8 +196,10 @@ void stiX::screen_formatter::flush() {
   buffer_.clear();
 }
 void stiX::screen_formatter::print_centred_line(std::string const& line) {
-  --centring_;
   print_line(centre_line(line, fillable_width()));
+
+  if (--centring_ == 0)
+    set_output_mode();
 }
 void stiX::screen_formatter::print_blank_line() {
   flush();
@@ -289,7 +286,15 @@ void stiX::screen_formatter::fi_fill_on() {
 void stiX::screen_formatter::set_fill_mode(bool on) {
   flush();
   fill_ = on;
+  set_output_mode();
 }
+
+void stiX::screen_formatter::set_output_mode() {
+  output_mode_ = fill_
+    ? &screen_formatter::buffer_line
+    : &screen_formatter::print_line;
+}
+
 void stiX::screen_formatter::vertical_space(command_parameter param) {
   flush();
 
@@ -315,6 +320,10 @@ void stiX::screen_formatter::set_line_space(command_parameter param) {
 void stiX::screen_formatter::set_centre(command_parameter param) {
   flush();
   set_variable(centring_, param);
+  if (centring_)
+    output_mode_ = &screen_formatter::print_centred_line;
+  else
+    set_output_mode();
 }
 void stiX::screen_formatter::set_underline(command_parameter param) {
   set_variable(underline_, param);
