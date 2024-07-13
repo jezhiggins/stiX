@@ -195,6 +195,9 @@ void stiX::screen_formatter::print_blank_line() {
 }
 
 void stiX::screen_formatter::print_line(std::string const& line) {
+  if (current_line_ == 0)
+    print_header();
+
   if (!line.empty())
     out_ << leading_indent() << line;
 
@@ -216,6 +219,10 @@ void stiX::screen_formatter::line_feed() {
   if (++current_line_ == page_length_)
     current_line_ = 0;
 }
+void stiX::screen_formatter::line_feed(size_t count) {
+  for (auto c = 0; c != count; ++c)
+    line_feed();
+}
 
 void stiX::screen_formatter::page_end() {
   flush();
@@ -224,6 +231,14 @@ void stiX::screen_formatter::page_end() {
     line_feed();
 }
 
+void stiX::screen_formatter::print_header() {
+  if (header_.empty())
+    return;
+
+  line_feed(hf_margin_above);
+  print_line(header_);
+  line_feed(hf_margin_below);
+}
 ///////////
 void stiX::screen_formatter::nf_no_fill() {
   set_fill_mode(false);
