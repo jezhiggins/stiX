@@ -86,7 +86,12 @@ stiX::screen_formatter::command_parameter stiX::screen_formatter::parse_value(
 std::string stiX::screen_formatter::string_param(
   std::string const& line) const
 {
-  return line.substr(line.find_first_not_of(blank, 3));
+  auto title = line.substr(line.find_first_not_of(blank, 3));
+  auto leading_quote = !title.empty() &&
+    (title[0] == '\'' || title[0] == '\"');
+  if (leading_quote)
+    title = title.substr(1);
+  return title;
 }
 
 
