@@ -36,6 +36,7 @@ namespace stiX {
     void print_blank_line();
     void page_end();
     void print_header();
+    void print_footer();
 
     enum class value_type {
       Absolute,
@@ -71,10 +72,12 @@ namespace stiX {
                       size_t maximum = std::numeric_limits<size_t>::max());
 
     void set_header(std::string const& header);
+    void set_footer(std::string const& footer);
 
     size_t fillable_width() const;
     size_t indent() const;
     size_t lines_remaining() const;
+    size_t bottom_margin() const;
 
     std::istream& in_;
     std::ostream& out_;
@@ -87,6 +90,7 @@ namespace stiX {
     size_t underline_;
 
     std::string header_;
+    std::string footer_;
 
     bool fill_;
     size_t indent_;

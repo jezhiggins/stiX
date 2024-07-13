@@ -127,6 +127,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_next_indent(param(0));
   if (command == ".he")
     set_header(string_param(line));
+  if (command == ".fo")
+    set_footer(string_param(line));
   if (command == ".bp")
     page_break(param(current_page_+1));
 }
@@ -225,7 +227,10 @@ void stiX::screen_formatter::line_spacing() {
 }
 void stiX::screen_formatter::line_feed() {
   out_ << '\n';
-  if (++current_line_ == page_length_) {
+
+  if (++current_line_ == bottom_margin()) {
+    print_footer();
+
     current_line_ = 0;
     ++current_page_;
   }
@@ -239,7 +244,7 @@ void stiX::screen_formatter::page_end() {
   flush();
 
   while (current_line_ != 0)
-    line_feed();
+    print_blank_line();
 }
 
 void stiX::screen_formatter::print_header() {
@@ -254,6 +259,20 @@ void stiX::screen_formatter::print_header() {
   line_feed(hf_margin_above);
   print_line(o.str());
   line_feed(hf_margin_below);
+}
+
+void stiX::screen_formatter::print_footer() {
+  if (footer_.empty())
+    return;
+
+  auto matcher = compile_pattern("#");
+  auto replacer = prepare_replacement(std::to_string(current_page_));
+  auto o = std::ostringstream { };
+  apply_change(matcher, replacer, footer_, o);
+
+  line_feed(hf_margin_below);
+  print_line(o.str());
+  line_feed(hf_margin_above);
 }
 ///////////
 void stiX::screen_formatter::nf_no_fill() {
@@ -326,6 +345,9 @@ void stiX::screen_formatter::set_variable(
 void stiX::screen_formatter::set_header(std::string const& header) {
   header_ = header;
 }
+void stiX::screen_formatter::set_footer(std::string const& footer) {
+  footer_ = footer;
+}
 
 size_t stiX::screen_formatter::fillable_width() const {
   return right_margin_ - indent();
@@ -334,9 +356,14 @@ size_t stiX::screen_formatter::indent() const {
   return next_indent_.value_or(indent_);
 }
 size_t stiX::screen_formatter::lines_remaining() const {
-  return page_length_ - current_line_;
+  return bottom_margin() - current_line_;
 }
-
+size_t stiX::screen_formatter::bottom_margin() const {
+  auto footer_length = footer_.empty()
+    ? 0
+    : hf_margin_above + hf_margin_below + 1;
+  return page_length_ - footer_length;
+}
 ///////////
 void stiX::format(std::istream& in, std::ostream& out) {
   auto formatter = screen_formatter { in, out };
