@@ -213,6 +213,13 @@ void stiX::screen_formatter::print_line(std::string const& line) {
     out_ << leading_indent() << line;
 
   line_spacing();
+
+  if (current_line_ == bottom_margin()) {
+    print_footer();
+
+    current_line_ = 0;
+    ++current_page_;
+  }
 }
 std::string stiX::screen_formatter::leading_indent() {
   auto i = indent();
@@ -225,15 +232,13 @@ void stiX::screen_formatter::line_spacing() {
   for (auto i = 0; i != line_space; ++i)
     line_feed();
 }
+void stiX::screen_formatter::put_line(std::string const& line) {
+  out_ << line;
+  line_feed();
+}
 void stiX::screen_formatter::line_feed() {
   out_ << '\n';
-
-  if (++current_line_ == bottom_margin()) {
-    print_footer();
-
-    current_line_ = 0;
-    ++current_page_;
-  }
+  ++current_line_;
 }
 void stiX::screen_formatter::line_feed(size_t count) {
   for (auto c = 0; c != count; ++c)
@@ -248,32 +253,28 @@ void stiX::screen_formatter::page_end() {
 }
 
 void stiX::screen_formatter::print_header() {
-  if (header_.empty())
-    return;
-
-  auto matcher = compile_pattern("#");
-  auto replacer = prepare_replacement(std::to_string(current_page_));
-  auto o = std::ostringstream { };
-  apply_change(matcher, replacer, header_, o);
-
-  line_feed(hf_margin_above);
-  print_line(o.str());
-  line_feed(hf_margin_below);
+  print_title(header_, hf_margin_above, hf_margin_below);
 }
-
 void stiX::screen_formatter::print_footer() {
-  if (footer_.empty())
+  print_title(footer_, hf_margin_below, hf_margin_above);
+}
+void stiX::screen_formatter::print_title(
+    std::string const& title,
+    size_t margin_before,
+    size_t margin_after) {
+  if (title.empty())
     return;
 
   auto matcher = compile_pattern("#");
   auto replacer = prepare_replacement(std::to_string(current_page_));
   auto o = std::ostringstream { };
-  apply_change(matcher, replacer, footer_, o);
+  apply_change(matcher, replacer, title, o);
 
-  line_feed(hf_margin_below);
-  print_line(o.str());
-  line_feed(hf_margin_above);
+  line_feed(margin_before);
+  put_line(o.str());
+  line_feed(margin_after);
 }
+
 ///////////
 void stiX::screen_formatter::nf_no_fill() {
   set_fill_mode(false);
@@ -291,7 +292,8 @@ void stiX::screen_formatter::vertical_space(command_parameter param) {
   auto lines = size_t{0};
   set_variable(lines, param, 0, lines_remaining());
 
-  line_feed(lines);
+  for (auto l = 0; l != lines; ++l)
+    print_blank_line();
 }
 void stiX::screen_formatter::page_break(command_parameter param) {
   page_end();

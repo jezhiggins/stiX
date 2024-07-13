@@ -30,6 +30,7 @@ namespace stiX {
     void print_line(std::string const& line);
     std::string leading_indent();
     void line_spacing();
+    void put_line(std::string const& line);
     void line_feed();
     void line_feed(size_t count);
     void print_centred_line(std::string const& line);
@@ -37,6 +38,7 @@ namespace stiX {
     void page_end();
     void print_header();
     void print_footer();
+    void print_title(std::string const& title, size_t margin_before, size_t margin_after);
 
     enum class value_type {
       Absolute,
