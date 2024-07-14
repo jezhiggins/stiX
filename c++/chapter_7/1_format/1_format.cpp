@@ -40,6 +40,9 @@
 // the conventional manner by hand will retain its original paragraph breaks and
 // indentation.
 //
+// My extensions
+//  .bo n      yes       n=1        bold words from next n lines
+//
 
 #include "format.hpp"
 #include <iostream>

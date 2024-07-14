@@ -49,6 +49,8 @@ namespace {
   constinit char escape_char = '\x1B';
   constinit std::string start_underline_control = "\x1B[4m";
   constinit std::string end_underline_control = "\x1B[0m";
+  constinit std::string start_bold_control = "\x1B[1m";
+  constinit std::string end_bold_control = "\x1B[0m";
 
   size_t find_boundary(std::string const& line, size_t from, auto predicate) {
     while (predicate(line[from]) && from != line.size())
@@ -62,35 +64,40 @@ namespace {
     return find_boundary(line, from, std::not_fn(isspace));
   }
 
-  void insert_underline_control(
+  void insert_style_control(
     std::string& line,
     size_t& boundary,
     std::string const& control) {
     line.insert(boundary, control);
     boundary += control.size();
   }
-  void begin_underlining(std::string& line, size_t& boundary) {
-    insert_underline_control(line, boundary, start_underline_control);
-  }
-  void end_underlining(std::string& line, size_t& boundary) {
-    insert_underline_control(line, boundary, end_underline_control);
+
+  std::string style(
+    std::string const& line_in,
+    std::string const& start,
+    std::string const& end) {
+    auto line = std::string { line_in };
+
+    auto boundary = word_start(line, 0);
+    while (boundary != line.size()) {
+      insert_style_control(line, boundary, start);
+
+      boundary = word_end(line, boundary);
+      insert_style_control(line, boundary, end);
+
+      boundary = word_start(line, boundary);
+    }
+
+    return line;
   }
 }
 
-std::string stiX::underline(std::string_view line_in) {
-  auto line = std::string { line_in };
+std::string stiX::underline(std::string const& line_in) {
+  return style(line_in, start_underline_control, end_underline_control);
+}
 
-  auto boundary = word_start(line, 0);
-  while (boundary != line.size()) {
-    begin_underlining(line, boundary);
-
-    boundary = word_end(line, boundary);
-    end_underlining(line, boundary);
-
-    boundary = word_start(line, boundary);
-  }
-
-  return line;
+std::string stiX::embolden(std::string const& line_in) {
+  return style(line_in, start_bold_control, end_bold_control);
 }
 
 size_t stiX::count_width(std::string const& w) {
