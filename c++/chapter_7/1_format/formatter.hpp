@@ -24,8 +24,11 @@ namespace stiX {
     void output_line(std::string const& line);
     void leading_blanks(std::string& line);
     void apply_styles(std::string& line);
+    using style_fn = std::string(std::string const&);
+    void apply_style(std::string& line, size_t& control_var, style_fn styler);
     void apply_underlining(std::string& line);
-    void apply_bold(std::string& bold);
+    void apply_bold(std::string& line);
+    void apply_italic(std::string& line);
     void buffer_line(std::string const& line);
     void fill_and_flush();
     void flush();
@@ -70,6 +73,7 @@ namespace stiX {
     void set_centre(command_parameter param);
     void set_underline(command_parameter param);
     void set_bold(command_parameter param);
+    void set_italic(command_parameter param);
     void set_indent(command_parameter param);
     void set_next_indent(command_parameter param);
     void clear_next_indent();
@@ -96,6 +100,7 @@ namespace stiX {
     size_t centering_;
     size_t underline_;
     size_t bold_;
+    size_t italic_;
 
     std::string header_;
     std::string footer_;

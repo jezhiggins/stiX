@@ -49,6 +49,7 @@ stiX::screen_formatter::screen_formatter(
   centering_(0),
   underline_(0),
   bold_(0),
+  italic_(0),
   fill_(true),
   indent_(0),
   next_indent_(),
@@ -126,6 +127,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_underline(param(default_active_lines));
   if (command == ".bo")
     set_bold(param(default_active_lines));
+  if (command == ".it")
+    set_italic(param(default_active_lines));
   if (command == ".in")
     set_indent(param(0));
   if (command == ".ti")
@@ -171,21 +174,27 @@ void stiX::screen_formatter::leading_blanks(std::string &line) {
 void stiX::screen_formatter::apply_styles(std::string& line) {
   apply_underlining(line);
   apply_bold(line);
+  apply_italic(line);
+}
+void stiX::screen_formatter::apply_style(
+    std::string& line,
+    size_t& control_var,
+    style_fn styler) {
+  if (!control_var)
+    return;
+
+  --control_var;
+  line = styler(line);
 }
 
 void stiX::screen_formatter::apply_underlining(std::string& line) {
-  if (!underline_)
-    return;
-
-  --underline_;
-  line = stiX::underline(line);
+  apply_style(line, underline_, stiX::underline);
 }
 void stiX::screen_formatter::apply_bold(std::string& line) {
-  if (!bold_)
-    return;
-
-  --bold_;
-  line = stiX::embolden(line);
+  apply_style(line, bold_, stiX::embolden);
+}
+void stiX::screen_formatter::apply_italic(std::string &line) {
+  apply_style(line, italic_, stiX::italicise);
 }
 
 void stiX::screen_formatter::buffer_line(std::string const& line) {
@@ -345,6 +354,9 @@ void stiX::screen_formatter::set_underline(command_parameter param) {
 }
 void stiX::screen_formatter::set_bold(command_parameter param) {
   set_variable(bold_, param);
+}
+void stiX::screen_formatter::set_italic(command_parameter param) {
+  set_variable(italic_, param);
 }
 void stiX::screen_formatter::set_indent(command_parameter param) {
   set_variable(indent_, param);

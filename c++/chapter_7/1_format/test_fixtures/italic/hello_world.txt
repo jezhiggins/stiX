@@ -1,0 +1,19 @@
+.pl 10
+.rm 66
+.it
+Hello World
+.br
+Hello World
+.br
+.ul 2
+.bo 2
+.it 2
+Hello World
+.br
+.ce 2
+Hello World
+.br
+Hello World
+.br
+Hello World
+.br
