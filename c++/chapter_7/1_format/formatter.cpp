@@ -50,6 +50,7 @@ stiX::screen_formatter::screen_formatter(
   underline_(0),
   bold_(0),
   italic_(0),
+  strikethrough_(0),
   fill_(true),
   indent_(0),
   next_indent_(),
@@ -129,6 +130,8 @@ void stiX::screen_formatter::handle_command(std::string const& line) {
     set_bold(param(default_active_lines));
   if (command == ".it")
     set_italic(param(default_active_lines));
+  if (command == ".st")
+    set_stikethrough(param(default_active_lines));
   if (command == ".in")
     set_indent(param(0));
   if (command == ".ti")
@@ -175,6 +178,7 @@ void stiX::screen_formatter::apply_styles(std::string& line) {
   apply_underlining(line);
   apply_bold(line);
   apply_italic(line);
+  apply_strikethrough(line);
 }
 void stiX::screen_formatter::apply_style(
     std::string& line,
@@ -195,6 +199,9 @@ void stiX::screen_formatter::apply_bold(std::string& line) {
 }
 void stiX::screen_formatter::apply_italic(std::string &line) {
   apply_style(line, italic_, stiX::italicise);
+}
+void stiX::screen_formatter::apply_strikethrough(std::string &line) {
+  apply_style(line, strikethrough_, stiX::strikethrough);
 }
 
 void stiX::screen_formatter::buffer_line(std::string const& line) {
@@ -357,6 +364,9 @@ void stiX::screen_formatter::set_bold(command_parameter param) {
 }
 void stiX::screen_formatter::set_italic(command_parameter param) {
   set_variable(italic_, param);
+}
+void stiX::screen_formatter::set_stikethrough(command_parameter param) {
+  set_variable(strikethrough_, param);
 }
 void stiX::screen_formatter::set_indent(command_parameter param) {
   set_variable(indent_, param);

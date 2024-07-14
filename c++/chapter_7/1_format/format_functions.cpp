@@ -53,6 +53,8 @@ namespace {
   constinit std::string end_bold_control = "\x1B[0m";
   constinit std::string start_italic_control = "\x1B[3m";
   constinit std::string end_italic_control = "\x1B[0m";
+  constinit std::string start_strikethrough_control = "\x1B[9m";
+  constinit std::string end_strikethrough_control = "\x1B[0m";
 
   size_t find_boundary(std::string const& line, size_t from, auto predicate) {
     while (predicate(line[from]) && from != line.size())
@@ -102,6 +104,9 @@ std::string stiX::embolden(std::string const& line_in) {
 }
 std::string stiX::italicise(std::string const& line_in) {
   return style(line_in, start_italic_control, end_italic_control);
+}
+std::string stiX::strikethrough(const std::string &line_in) {
+  return style(line_in, start_strikethrough_control, end_strikethrough_control);
 }
 
 size_t stiX::count_width(std::string const& w) {

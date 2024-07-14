@@ -43,6 +43,7 @@
 // My extensions
 //  .bo n      yes       n=1        bold words from next n lines
 //  .it n      yes       n=1        italicise words from the next n lines
+//  .st n      yes       n=1        strikethrough words from the next n lines
 //
 
 #include "format.hpp"

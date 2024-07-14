@@ -10,6 +10,7 @@ namespace stiX {
   std::string underline(std::string const& line_in);
   std::string embolden(std::string const& line_in);
   std::string italicise(std::string const& line_in);
+  std::string strikethrough(std::string const& line_in);
 
   size_t count_width(std::string const& w);
 

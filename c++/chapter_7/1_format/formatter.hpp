@@ -29,6 +29,7 @@ namespace stiX {
     void apply_underlining(std::string& line);
     void apply_bold(std::string& line);
     void apply_italic(std::string& line);
+    void apply_strikethrough(std::string& line);
     void buffer_line(std::string const& line);
     void fill_and_flush();
     void flush();
@@ -74,6 +75,7 @@ namespace stiX {
     void set_underline(command_parameter param);
     void set_bold(command_parameter param);
     void set_italic(command_parameter param);
+    void set_stikethrough(command_parameter param);
     void set_indent(command_parameter param);
     void set_next_indent(command_parameter param);
     void clear_next_indent();
@@ -101,6 +103,7 @@ namespace stiX {
     size_t underline_;
     size_t bold_;
     size_t italic_;
+    size_t strikethrough_;
 
     std::string header_;
     std::string footer_;
