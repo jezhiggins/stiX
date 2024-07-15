@@ -47,25 +47,56 @@
 //
 
 #include "format.hpp"
+#include "../../lib/arguments.hpp"
 #include <iostream>
+#include <fstream>
 #include <algorithm>
+#include <tuple>
 #ifdef __linux__
 #include <sys/ioctl.h>
 #include <unistd.h>
 #endif
 
-int main() {
+namespace {
+  std::tuple<size_t, size_t> console_size() {
 #ifdef __linux__
-  struct winsize w;
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-  
-  auto width = std::min<size_t>(w.ws_col, 200);
-  auto length = std::min<size_t>(w.ws_row, 66);
-  width = width != 0 ? width : 60;
-  length = length != 0 ? length : 66;
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
-  stiX::format(std::cin, std::cout, width, length);
+    auto width = std::min<size_t>(w.ws_col, 200);
+    auto length = std::min<size_t>(w.ws_row, 66);
+    width = width != 0 ? width : 60;
+    length = length != 0 ? length : 66;
+    return { width, length };
 #else
-  stiX::format(std::cin, std::cout);
+    return { 60, 66 };
 #endif
+  }
+
+  void format_file(std::string const& filename) {
+    auto file = std::ifstream(filename);
+    if (!file)
+      return;
+
+    auto [width, length] = console_size();
+    stiX::format(file, std::cout, width, length);
+  }
+
+  void format_files(std::vector<std::string> const& filenames) {
+    std::ranges::for_each(filenames, format_file);
+  }
+
+  void format_cin() {
+    auto [width, length] = console_size();
+    stiX::format(std::cin, std::cout, width, length);
+  }
+}
+
+int main(int argc, char const* argv[]) {
+  auto filenames = stiX::make_arguments(argc, argv);
+
+  if (filenames.empty())
+    format_cin();
+  else
+    format_files(filenames);
 }
