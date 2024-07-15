@@ -66,18 +66,18 @@ namespace stiX {
     void fi_fill_on();
     void set_fill_mode(bool on);
     void set_output_mode();
-    void vertical_space(command_parameter param);
-    void page_break(command_parameter param);
-    void set_right_margin(command_parameter param);
-    void set_page_length(command_parameter param);
-    void set_line_space(command_parameter param);
-    void set_centre(command_parameter param);
-    void set_underline(command_parameter param);
-    void set_bold(command_parameter param);
-    void set_italic(command_parameter param);
-    void set_stikethrough(command_parameter param);
-    void set_indent(command_parameter param);
-    void set_next_indent(command_parameter param);
+    void vertical_space(command_parameter const& param);
+    void page_break(command_parameter const& param);
+    void set_right_margin(command_parameter const& param);
+    void set_page_length(command_parameter const& param);
+    void set_line_space(command_parameter const& param);
+    void set_centre(command_parameter const& param);
+    void set_underline(command_parameter const& param);
+    void set_bold(command_parameter const& param);
+    void set_italic(command_parameter const& param);
+    void set_stikethrough(command_parameter const& param);
+    void set_indent(command_parameter const& param);
+    void set_next_indent(command_parameter const& param);
     void clear_next_indent();
     void set_variable(size_t& var,
                       command_parameter update,

@@ -326,7 +326,7 @@ void stiX::screen_formatter::set_output_mode() {
     : &screen_formatter::print_line;
 }
 
-void stiX::screen_formatter::vertical_space(command_parameter param) {
+void stiX::screen_formatter::vertical_space(command_parameter const& param) {
   flush();
 
   auto lines = size_t{0};
@@ -335,20 +335,20 @@ void stiX::screen_formatter::vertical_space(command_parameter param) {
   for (auto l = 0; l != lines; ++l)
     print_blank_line();
 }
-void stiX::screen_formatter::page_break(command_parameter param) {
+void stiX::screen_formatter::page_break(command_parameter const& param) {
   page_end();
   set_variable(current_page_, param);
 }
-void stiX::screen_formatter::set_right_margin(command_parameter param) {
+void stiX::screen_formatter::set_right_margin(command_parameter const& param) {
   set_variable(right_margin_, param);
 }
-void stiX::screen_formatter::set_page_length(command_parameter param) {
+void stiX::screen_formatter::set_page_length(command_parameter const& param) {
   set_variable(page_length_, param);
 }
-void stiX::screen_formatter::set_line_space(command_parameter param) {
+void stiX::screen_formatter::set_line_space(command_parameter const& param) {
   set_variable(line_space_, param);
 }
-void stiX::screen_formatter::set_centre(command_parameter param) {
+void stiX::screen_formatter::set_centre(command_parameter const& param) {
   flush();
   set_variable(centering_, param);
   if (centering_)
@@ -356,22 +356,22 @@ void stiX::screen_formatter::set_centre(command_parameter param) {
   else
     set_output_mode();
 }
-void stiX::screen_formatter::set_underline(command_parameter param) {
+void stiX::screen_formatter::set_underline(command_parameter const& param) {
   set_variable(underline_, param);
 }
-void stiX::screen_formatter::set_bold(command_parameter param) {
+void stiX::screen_formatter::set_bold(command_parameter const& param) {
   set_variable(bold_, param);
 }
-void stiX::screen_formatter::set_italic(command_parameter param) {
+void stiX::screen_formatter::set_italic(command_parameter const& param) {
   set_variable(italic_, param);
 }
-void stiX::screen_formatter::set_stikethrough(command_parameter param) {
+void stiX::screen_formatter::set_stikethrough(command_parameter const& param) {
   set_variable(strikethrough_, param);
 }
-void stiX::screen_formatter::set_indent(command_parameter param) {
+void stiX::screen_formatter::set_indent(command_parameter const& param) {
   set_variable(indent_, param);
 }
-void stiX::screen_formatter::set_next_indent(command_parameter param) {
+void stiX::screen_formatter::set_next_indent(command_parameter const& param) {
   auto next = indent_;
   set_variable(next, param);
   next_indent_ = next;
