@@ -25,7 +25,7 @@ namespace stiX {
     void leading_blanks(std::string& line);
     void apply_styles(std::string& line);
     using style_fn = std::string(std::string const&);
-    void apply_style(std::string& line, size_t& control_var, style_fn styler);
+    static void apply_style(std::string& line, size_t& control_var, style_fn styler);
     void apply_underlining(std::string& line);
     void apply_bold(std::string& line);
     void apply_italic(std::string& line);
@@ -56,11 +56,11 @@ namespace stiX {
       int value;
       value_type type;
     };
-    command_parameter parse_value(
+    static command_parameter parse_value(
       std::string const& line,
-      int def_value) const;
-    std::string string_param(
-      std::string const& line) const;
+      int def_value) ;
+    static std::string string_param(
+      std::string const& line) ;
 
     void nf_no_fill();
     void fi_fill_on();
@@ -79,7 +79,7 @@ namespace stiX {
     void set_indent(command_parameter const& param);
     void set_next_indent(command_parameter const& param);
     void clear_next_indent();
-    void set_variable(size_t& var,
+    static void set_variable(size_t& var,
                       command_parameter update,
                       size_t minimum = 0,
                       size_t maximum = std::numeric_limits<size_t>::max());

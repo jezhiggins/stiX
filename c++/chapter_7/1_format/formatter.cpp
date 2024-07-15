@@ -75,7 +75,7 @@ void stiX::screen_formatter::format() {
 ////////////////////
 stiX::screen_formatter::command_parameter stiX::screen_formatter::parse_value(
     std::string const& line,
-    int def_value) const {
+    int def_value) {
   auto type = value_type::Absolute;
 
   auto b = line.find_first_of("+-0123456789", 3);
@@ -92,7 +92,7 @@ stiX::screen_formatter::command_parameter stiX::screen_formatter::parse_value(
 }
 
 std::string stiX::screen_formatter::string_param(
-  std::string const& line) const
+  std::string const& line)
 {
   auto title = line.substr(line.find_first_not_of(blank, 3));
   auto leading_quote = !title.empty() &&
@@ -205,7 +205,7 @@ void stiX::screen_formatter::apply_strikethrough(std::string &line) {
 }
 
 void stiX::screen_formatter::buffer_line(std::string const& line) {
-  for (auto word: split_into_words(line)) {
+  for (auto const& word: split_into_words(line)) {
     if (count_width(buffer_) + word.width >= fillable_width())
       fill_and_flush();
 
