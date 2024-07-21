@@ -5,12 +5,20 @@
 #include <string>
 #include <limits>
 #include <optional>
+#include <functional>
 
 namespace stiX {
+  using page_callback = std::function<void()>;
+
   class screen_formatter {
   public:
     screen_formatter(std::istream& in, std::ostream& out);
-    screen_formatter(std::istream& in, std::ostream& out, size_t page_width, size_t page_length);
+    screen_formatter(
+      std::istream& in,
+      std::ostream& out,
+      size_t page_width,
+      size_t page_length,
+      page_callback callback);
 
     void format();
 
@@ -97,6 +105,8 @@ namespace stiX {
 
     size_t right_margin_;
     size_t page_length_;
+
+    page_callback page_callback_;
 
     size_t line_space_;
     size_t centering_;

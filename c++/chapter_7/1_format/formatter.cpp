@@ -30,21 +30,30 @@ namespace {
   bool is_command(std::string const& line) {
     return !line.empty() && line.front() == '.';
   }
+
+  void null_page_callback() { }
 }
 
 stiX::screen_formatter::screen_formatter(std::istream& in, std::ostream& out) :
-  screen_formatter(in, out, default_right_margin, default_page_length) {
+  screen_formatter(
+    in,
+    out,
+    default_right_margin,
+    default_page_length,
+    null_page_callback) {
 }
 
 stiX::screen_formatter::screen_formatter(
     std::istream& in,
     std::ostream& out,
     size_t page_width,
-    size_t page_length) :
+    size_t page_length,
+    page_callback callback) :
   in_(in),
   out_(out),
   right_margin_(page_width),
   page_length_(page_length),
+  page_callback_(callback),
   line_space_(default_line_space),
   centering_(0),
   underline_(0),
@@ -249,6 +258,8 @@ void stiX::screen_formatter::print_line(std::string const& line) {
   if (current_line_ == bottom_margin()) {
     print_footer();
 
+    page_callback_();
+
     current_line_ = 0;
     ++current_page_;
   }
@@ -425,7 +436,27 @@ void stiX::format(std::istream& in, std::ostream& out) {
   formatter.format();
 }
 
-void stiX::format(std::istream& in, std::ostream& out, size_t page_width, size_t page_length) {
-  auto formatter = screen_formatter { in, out, page_width, page_length };
+void stiX::format(
+    std::istream& in,
+    std::ostream& out,
+    size_t page_width,
+    size_t page_length) {
+  format(in, out, page_width, page_length, null_page_callback);
+}
+
+
+void stiX::format(
+    std::istream& in,
+    std::ostream& out,
+    size_t page_width,
+    size_t page_length,
+    page_callback callback) {
+  auto formatter = screen_formatter {
+    in,
+    out,
+    page_width,
+    page_length,
+    callback
+  };
   formatter.format();
 }

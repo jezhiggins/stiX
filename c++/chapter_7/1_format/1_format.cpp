@@ -73,13 +73,17 @@ namespace {
 #endif
   }
 
+  void wait_for_keypress() {
+    getchar();
+  }
+
   void format_file(std::string const& filename) {
     auto file = std::ifstream(filename);
     if (!file)
       return;
 
     auto [width, length] = console_size();
-    stiX::format(file, std::cout, width, length);
+    stiX::format(file, std::cout, width, length, wait_for_keypress);
   }
 
   void format_files(std::vector<std::string> const& filenames) {

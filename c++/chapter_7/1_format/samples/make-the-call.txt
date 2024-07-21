@@ -1,10 +1,10 @@
 .he Make The Call : Yr glygfa o Hescwm Uchaf, rhif 13
-.fo Friday 21 June 2024
+.fo Friday 21 June 2024, page #
 At the back end of last year, I was talking with GeePaw about Friday Geek’s Night Out.
 FGNO is a regular call GeePaw and his friends have to just talk programming
 nonsense. I sounded like a lot of fun, and although I didn’t say so I was a teensy
 bit jealous. He just said I should start my own.
-.ul
+.it
 “You know people, right?”
 he said, turning his innocent gaze upon me.
 
