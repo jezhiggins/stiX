@@ -22,10 +22,9 @@ public:
                 : empty;
         output += c;
 
-        if (stiX::isnewline(c))
-            position_ = 0;
-        else
-            ++position_;
+        position_ = (stiX::isnewline(c))
+            ? 0
+            : position_ + 1;
         spaces_ = position_;
 
         return output;
