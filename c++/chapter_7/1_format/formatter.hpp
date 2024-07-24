@@ -39,6 +39,7 @@ namespace stiX {
     void apply_italic(std::string& line);
     void apply_strikethrough(std::string& line);
     void buffer_line(std::string const& line);
+    void fill_buffer();
     void fill_and_flush();
     void flush();
 
@@ -119,6 +120,7 @@ namespace stiX {
     std::string footer_;
 
     bool fill_;
+    bool fill_direction_;
     size_t indent_;
     std::optional<size_t> next_indent_;
 

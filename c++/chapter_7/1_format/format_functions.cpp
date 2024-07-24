@@ -5,7 +5,6 @@
 
 namespace {
   void fill_to_width(std::string& line, size_t width) {
-    auto flip = false;
     auto space = line.find(' ');
     auto line_width = stiX::count_width(line);
 
@@ -14,14 +13,9 @@ namespace {
       ++line_width;
 
       space = line.find(' ', line.find_first_not_of(' ', space));
-      if (space == std::string::npos) {
-        std::reverse(line.begin(), line.end());
-        flip = !flip;
+      if (space == std::string::npos)
         space = line.find(' ');
-      }
     }
-    if (flip)
-      std::reverse(line.begin(), line.end());
   }
 }
 

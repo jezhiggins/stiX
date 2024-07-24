@@ -22,7 +22,7 @@ And I missed them.
 So, prompted by GeePaw, I emailed them and laid out what I was thinking …
 
 .in 4
-That's is a regular Zoom call (every Tuesday!) that GeePaw and a group of his software
+That's a regular Zoom call (every Tuesday!) that GeePaw and a group of his software
 friends have every week. There's no particular agenda - sometimes they look at piece
 of code someone brings, or talk about a work situation, or "sometimes we just grouch
 about stuff". Not everyone in the group is there every time, but every week there's a
