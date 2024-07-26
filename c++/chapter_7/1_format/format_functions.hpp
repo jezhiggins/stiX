@@ -12,7 +12,7 @@ namespace stiX {
   std::string italicise(std::string const& line_in);
   std::string strikethrough(std::string const& line_in);
 
-  size_t count_width(std::string const& w);
+  size_t width_of(std::string const& w);
 
   struct word_width {
     std::string const word;

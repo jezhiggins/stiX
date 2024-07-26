@@ -6,7 +6,7 @@
 namespace {
   void fill_to_width(std::string& line, size_t width) {
     auto space = line.find(' ');
-    auto line_width = stiX::count_width(line);
+    auto line_width = stiX::width_of(line);
 
     while (line_width != width) {
       line.insert(space, " ");
@@ -31,7 +31,7 @@ std::string stiX::fill_line(std::string const& line_in, size_t width) {
 }
 
 std::string stiX::centre_line(std::string const& line_in, size_t width) {
-  auto padding = (width - count_width(line_in)) / 2;
+  auto padding = (width - width_of(line_in)) / 2;
 
   auto line = std::string(padding, ' ');
   line.append(line_in);
@@ -103,7 +103,7 @@ std::string stiX::strikethrough(const std::string &line_in) {
   return style(line_in, start_strikethrough_control, end_strikethrough_control);
 }
 
-size_t stiX::count_width(std::string const& w) {
+size_t stiX::width_of(std::string const& w) {
   size_t l = 0;
   for(auto i = w.begin(); i != w.end(); ++i)
     if (*i == escape_char)
@@ -121,7 +121,7 @@ std::vector<stiX::word_width> stiX::split_into_words(std::string const& line_in)
     auto end = word_end(line_in, boundary);
 
     auto word = line_in.substr(boundary, end-boundary);
-    tokens.emplace_back(word, count_width(word));
+    tokens.emplace_back(word, width_of(word));
     boundary = word_start(line_in, end);
   }
 

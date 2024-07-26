@@ -216,7 +216,7 @@ void stiX::screen_formatter::apply_strikethrough(std::string &line) {
 
 void stiX::screen_formatter::buffer_line(std::string const& line) {
   for (auto const& word: split_into_words(line)) {
-    if (count_width(buffer_) + word.width >= fillable_width())
+    if (width_of(buffer_) + word.width >= fillable_width())
       fill_and_flush();
 
     buffer_ += buffer_.empty() ? null : space;
@@ -254,7 +254,7 @@ void stiX::screen_formatter::fill_buffer() {
 }
 
 void stiX::screen_formatter::fill_and_flush() {
-  if (count_width(buffer_) != fillable_width())
+  if (width_of(buffer_) != fillable_width())
     fill_buffer();
 
   flush();
