@@ -20,10 +20,10 @@ namespace {
 }
 
 std::string stiX::fill_line(std::string const& line_in, size_t width) {
-  auto line = line_in;
+  if (line_in.find(' ') == std::string::npos)
+    return line_in;
 
-  if (line.find(' ') == std::string::npos)
-    return line;
+  auto line = line_in;
 
   fill_to_width(line, width);
 

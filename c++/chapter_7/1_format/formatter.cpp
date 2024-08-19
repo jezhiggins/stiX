@@ -61,7 +61,7 @@ stiX::screen_formatter::screen_formatter(
   italic_(0),
   strikethrough_(0),
   fill_(true),
-  fill_direction_(false),
+  filler_(),
   indent_(0),
   next_indent_(),
   current_line_(0),
@@ -224,33 +224,8 @@ void stiX::screen_formatter::buffer_line(std::string const& line) {
   }
 }
 
-namespace {
-  class reverser {
-  public:
-    reverser(std::string& buffer, bool& direction)
-      : b(buffer), d(direction) {
-      flip();
-    }
-    ~reverser() {
-      flip();
-      d = !d;
-    }
-
-  private:
-    void flip() {
-      if (d)
-        std::reverse(b.begin(), b.end());
-    }
-
-    std::string& b;
-    bool& d;
-  };
-}
-
 void stiX::screen_formatter::fill_buffer() {
-  auto r = reverser(buffer_, fill_direction_);
-
-  buffer_ = fill_line(buffer_, fillable_width());
+  buffer_ = filler_(buffer_, fillable_width());
 }
 
 void stiX::screen_formatter::fill_and_flush() {

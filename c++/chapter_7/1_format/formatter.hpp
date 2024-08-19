@@ -6,6 +6,7 @@
 #include <limits>
 #include <optional>
 #include <functional>
+#include "filler.hpp"
 
 namespace stiX {
   using page_callback = std::function<void()>;
@@ -120,7 +121,7 @@ namespace stiX {
     std::string footer_;
 
     bool fill_;
-    bool fill_direction_;
+    filler filler_;
     size_t indent_;
     std::optional<size_t> next_indent_;
 

@@ -243,6 +243,8 @@ set (format_sources
 		chapter_7/1_format/formatter.cpp
 		chapter_7/1_format/format_functions.hpp
 		chapter_7/1_format/format_functions.cpp
+		chapter_7/1_format/filler.cpp
+		chapter_7/1_format/filler.hpp
 )
 add_executable(format
 		chapter_7/1_format/1_format.cpp
