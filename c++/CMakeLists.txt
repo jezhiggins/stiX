@@ -257,3 +257,11 @@ add_executable(format_test
 		chapter_7/1_format/test_functions.cpp
 )
 target_link_libraries(format_test stix testsupport)
+
+add_executable(macro
+		chapter_8/1_macro/1_macro.cpp)
+target_link_libraries(stix)
+
+add_executable(macro_test
+		chapter_8/1_macro/test_macro.cpp
+)
