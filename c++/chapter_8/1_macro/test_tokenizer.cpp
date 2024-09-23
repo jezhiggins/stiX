@@ -3,14 +3,32 @@
 using namespace std::string_literals;
 
 namespace stiX {
+  class stream_token_iterator {
+  public:
+    stream_token_iterator(std::istream& input) :
+      input_(&input) {
+    }
+    stream_token_iterator() :
+      input_() {
+    }
+
+    std::string operator*() { return "one"; }
+
+  private:
+    std::istream* input_;
+  };
+
   class tokenizer {
   public:
     tokenizer(std::istream& input) :
       input_(input) {
     }
 
-    std::string begin() {
-      return "one";
+    stream_token_iterator begin() const {
+      return stream_token_iterator(input_);
+    }
+    stream_token_iterator end() const {
+      return stream_token_iterator();
     }
 
   private:
@@ -22,5 +40,6 @@ TEST_CASE("tokenizer") {
   auto input = std::istringstream("one");
 
   auto tok = stiX::tokenizer(input);
-  REQUIRE(tok.begin() == "one"s);
+  auto toki = tok.begin();
+  REQUIRE(*toki == "one"s);
 }
