@@ -7,15 +7,21 @@ namespace stiX {
   public:
     stream_token_iterator(std::istream& input) :
       input_(&input) {
+      next_token();
     }
     stream_token_iterator() :
       input_() {
     }
 
-    std::string operator*() { return "one"; }
+    std::string operator*() { return token_; }
 
   private:
+    void next_token() {
+      token_ = "one";
+    }
+
     std::istream* input_;
+    std::string token_;
   };
 
   class tokenizer {
