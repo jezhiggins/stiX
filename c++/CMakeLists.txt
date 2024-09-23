@@ -28,7 +28,8 @@ add_library(stix STATIC
         lib/regex/replacement.cpp
 	lib/regex/replacement.hpp
 	lib/regex/change.cpp
-	lib/regex/change.hpp)
+	lib/regex/change.hpp
+		lib/chars.cpp)
 
 add_library(testsupport STATIC
         testlib/testlib.hpp
@@ -266,3 +267,5 @@ add_executable(macro_test
 		chapter_8/1_macro/test_macro.cpp
 		chapter_8/1_macro/test_tokenizer.cpp
 )
+target_link_libraries(macro_test stix testsupport)
+

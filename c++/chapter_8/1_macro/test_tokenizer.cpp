@@ -1,5 +1,7 @@
 #define ADDITIONAL_TESTS
 #include "../../testlib/testlib.hpp"
+#include "../../lib/chars.hpp"
+
 using namespace std::string_literals;
 
 namespace stiX {
@@ -7,7 +9,7 @@ namespace stiX {
   public:
     stream_token_iterator(std::istream& input) :
       input_(&input) {
-      next_token();
+      token();
     }
     stream_token_iterator() :
       input_() {
@@ -16,9 +18,24 @@ namespace stiX {
     std::string operator*() { return token_; }
 
   private:
-    void next_token() {
-      token_ = "one";
-    }
+    void token() {
+      token_.clear();
+      if (!*input_) {
+        input_ = std::nullptr_t {};
+        return;
+      }
+      while(*input_ && token_.empty())
+        token_ = next_token();
+    } // token
+
+    std::string next_token() {
+      std::string tok;
+
+      while(*input_ && stiX::isalnum(input_->peek()))
+        tok += static_cast<char>(input_->get());
+
+      return tok;
+    } // next_token
 
     std::istream* input_;
     std::string token_;
@@ -43,9 +60,11 @@ namespace stiX {
 }
 
 TEST_CASE("tokenizer") {
-  auto input = std::istringstream("one");
+  SECTION("one") {
+    auto input = std::istringstream("one");
 
-  auto tok = stiX::tokenizer(input);
-  auto toki = tok.begin();
-  REQUIRE(*toki == "one"s);
+    auto tok = stiX::tokenizer(input);
+    auto toki = tok.begin();
+    REQUIRE(*toki == "one"s);
+  }
 }
