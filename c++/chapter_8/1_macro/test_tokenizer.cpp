@@ -16,30 +16,43 @@ namespace stiX {
     }
 
     std::string operator*() { return token_; }
+    stream_token_iterator& operator++() {
+      token();
+      return *this;
+    }
 
   private:
     void token() {
       token_.clear();
-      if (!*input_) {
-        input_ = std::nullptr_t {};
-        return;
-      }
-      while(*input_ && token_.empty())
+      while(input_available() && token_.empty())
         token_ = next_token();
     } // token
 
     std::string next_token() {
       std::string tok;
 
-      while(*input_ && stiX::isalnum(input_->peek()))
+      while(input_available() && stiX::isalnum(input_->peek()))
         tok += static_cast<char>(input_->get());
 
       return tok;
     } // next_token
 
+    bool input_available() {
+      if (input_ && input_->good())
+        return true;
+      input_ = std::nullptr_t { };
+      return false;
+    }
+
     std::istream* input_;
     std::string token_;
+
+    friend bool operator==(stream_token_iterator const&, stream_token_iterator const&);
   };
+
+  bool operator==(stream_token_iterator const& lhs, stream_token_iterator const& rhs) {
+    return !lhs.input_ && !rhs.input_;
+  }
 
   class tokenizer {
   public:
@@ -66,5 +79,7 @@ TEST_CASE("tokenizer") {
     auto tok = stiX::tokenizer(input);
     auto toki = tok.begin();
     REQUIRE(*toki == "one"s);
+    ++toki;
+    REQUIRE(toki == tok.end());
   }
 }
