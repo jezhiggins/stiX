@@ -5,6 +5,8 @@
 using namespace std::string_literals;
 
 namespace stiX {
+  constexpr auto eof = std::char_traits<char>::eof();
+
   class stream_token_iterator {
   public:
     stream_token_iterator(std::istream& input) :
@@ -37,7 +39,7 @@ namespace stiX {
     } // next_token
 
     bool input_available() {
-      if (!(input_ && input_->good()))
+      if (!(input_ && input_->good() && peek() != eof))
         input_ = std::nullptr_t { };
       return input_;
     }
@@ -108,6 +110,34 @@ TEST_CASE("tokenizer") {
     ++toki;
     REQUIRE(toki != tok.end());
     REQUIRE(*toki == "three"s);
+    ++toki;
+    REQUIRE(toki == tok.end());
+  }
+
+  SECTION("define(x, 1)") {
+    auto input = std::istringstream("define(x, 1)");
+
+    auto tok = stiX::tokenizer(input);
+    auto toki = tok.begin();
+    REQUIRE(*toki == "define"s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == "("s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == "x"s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == ","s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == " "s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == "1"s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == ")"s);
     ++toki;
     REQUIRE(toki == tok.end());
   }
