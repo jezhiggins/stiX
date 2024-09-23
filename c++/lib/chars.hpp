@@ -8,6 +8,7 @@ namespace stiX {
     inline bool isbackspace(char c) { return c == '\b'; }
 
     bool isalnum(char c);
+    bool iswhitespace(char c);
 }
 
 #endif //STICPP_CHARTESTS_H

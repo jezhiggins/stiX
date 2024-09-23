@@ -31,6 +31,9 @@ namespace stiX {
     std::string next_token() {
       std::string tok;
 
+      while(input_available() && stiX::iswhitespace(input_->peek()))
+        input_->get();
+
       while(input_available() && stiX::isalnum(input_->peek()))
         tok += static_cast<char>(input_->get());
 
@@ -51,7 +54,9 @@ namespace stiX {
   };
 
   bool operator==(stream_token_iterator const& lhs, stream_token_iterator const& rhs) {
-    return !lhs.input_ && !rhs.input_;
+    return
+      lhs.token_.empty() && !lhs.input_ &&
+      rhs.token_.empty() && !rhs.input_;
   }
 
   class tokenizer {
@@ -79,6 +84,22 @@ TEST_CASE("tokenizer") {
     auto tok = stiX::tokenizer(input);
     auto toki = tok.begin();
     REQUIRE(*toki == "one"s);
+    ++toki;
+    REQUIRE(toki == tok.end());
+  }
+
+  SECTION("one two three") {
+    auto input = std::istringstream("one two three");
+
+    auto tok = stiX::tokenizer(input);
+    auto toki = tok.begin();
+    REQUIRE(*toki == "one"s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == "two"s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == "three"s);
     ++toki;
     REQUIRE(toki == tok.end());
   }
