@@ -29,14 +29,12 @@ namespace stiX {
     } // token
 
     std::string next_token() {
+      if(input_available() && !stiX::isalnum(input_->peek()))
+        return std::string { static_cast<char>(input_->get()) };
+
       std::string tok;
-
-      while(input_available() && stiX::iswhitespace(input_->peek()))
-        input_->get();
-
       while(input_available() && stiX::isalnum(input_->peek()))
         tok += static_cast<char>(input_->get());
-
       return tok;
     } // next_token
 
@@ -96,7 +94,13 @@ TEST_CASE("tokenizer") {
     REQUIRE(*toki == "one"s);
     ++toki;
     REQUIRE(toki != tok.end());
+    REQUIRE(*toki == " "s);
+    ++toki;
+    REQUIRE(toki != tok.end());
     REQUIRE(*toki == "two"s);
+    ++toki;
+    REQUIRE(toki != tok.end());
+    REQUIRE(*toki == " "s);
     ++toki;
     REQUIRE(toki != tok.end());
     REQUIRE(*toki == "three"s);
