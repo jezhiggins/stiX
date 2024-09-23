@@ -23,26 +23,30 @@ namespace stiX {
 
   private:
     void token() {
-      token_.clear();
-      while(input_available() && token_.empty())
-        token_ = next_token();
+      token_ = next_token();
     } // token
 
     std::string next_token() {
-      if(input_available() && !stiX::isalnum(input_->peek()))
-        return std::string { static_cast<char>(input_->get()) };
+      if(input_available() && !stiX::isalnum(peek()))
+        return std::string { get() };
 
       std::string tok;
-      while(input_available() && stiX::isalnum(input_->peek()))
-        tok += static_cast<char>(input_->get());
+      while(input_available() && stiX::isalnum(peek()))
+        tok += get();
       return tok;
     } // next_token
 
     bool input_available() {
-      if (input_ && input_->good())
-        return true;
-      input_ = std::nullptr_t { };
-      return false;
+      if (!(input_ && input_->good()))
+        input_ = std::nullptr_t { };
+      return input_;
+    }
+
+    char peek() const {
+      return static_cast<char>(input_->peek());
+    }
+    char get() {
+      return static_cast<char>(input_->get());
     }
 
     std::istream* input_;
