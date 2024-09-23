@@ -264,4 +264,5 @@ target_link_libraries(stix)
 
 add_executable(macro_test
 		chapter_8/1_macro/test_macro.cpp
+		chapter_8/1_macro/test_tokenizer.cpp
 )
