@@ -81,64 +81,35 @@ namespace stiX {
   };
 }
 
+void test_tokenizer(std::string in, std::vector<std::string> expected) {
+  SECTION(in) {
+    auto input = std::istringstream(in);
+
+    auto tok = stiX::tokenizer(input);
+    auto e = expected.begin();
+    for (auto token: tok) {
+      if (e == expected.end())
+        FAIL("Too many tokens");
+      REQUIRE(token == *e);
+      ++e;
+    }
+    if (e != expected.end())
+      FAIL("Not enough tokens");
+  }
+}
+
 TEST_CASE("tokenizer") {
-  SECTION("one") {
-    auto input = std::istringstream("one");
-
-    auto tok = stiX::tokenizer(input);
-    auto toki = tok.begin();
-    REQUIRE(*toki == "one"s);
-    ++toki;
-    REQUIRE(toki == tok.end());
-  }
-
-  SECTION("one two three") {
-    auto input = std::istringstream("one two three");
-
-    auto tok = stiX::tokenizer(input);
-    auto toki = tok.begin();
-    REQUIRE(*toki == "one"s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == " "s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == "two"s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == " "s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == "three"s);
-    ++toki;
-    REQUIRE(toki == tok.end());
-  }
-
-  SECTION("define(x, 1)") {
-    auto input = std::istringstream("define(x, 1)");
-
-    auto tok = stiX::tokenizer(input);
-    auto toki = tok.begin();
-    REQUIRE(*toki == "define"s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == "("s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == "x"s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == ","s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == " "s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == "1"s);
-    ++toki;
-    REQUIRE(toki != tok.end());
-    REQUIRE(*toki == ")"s);
-    ++toki;
-    REQUIRE(toki == tok.end());
-  }
+  test_tokenizer("one", { "one" });
+  test_tokenizer("one two three", {
+    "one", " ", "two", " ", "three"
+  });
+  test_tokenizer("define(x, 1)", {
+    "define",
+    "(",
+    "x",
+    ",",
+    " ",
+    "1",
+    ")"
+  });
 }
