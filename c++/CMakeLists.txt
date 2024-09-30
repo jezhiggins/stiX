@@ -262,6 +262,8 @@ target_link_libraries(format_test stix testsupport)
 set (macro_sources
 		chapter_8/1_macro/tokenizer.hpp
 		chapter_8/1_macro/tokenizer.cpp
+		chapter_8/1_macro/macro.hpp
+		chapter_8/1_macro/macro.cpp
 )
 add_executable(macro
 		chapter_8/1_macro/1_macro.cpp
@@ -269,9 +271,9 @@ add_executable(macro
 target_link_libraries(macro stix)
 
 add_executable(macro_test
-		${macro_sources}
 		chapter_8/1_macro/test_macro.cpp
 		chapter_8/1_macro/test_tokenizer.cpp
+		${macro_sources}
 )
 target_link_libraries(macro_test stix testsupport)
 

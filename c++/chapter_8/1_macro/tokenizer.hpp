@@ -1,3 +1,6 @@
+#ifndef STICPP_TOKENIZER_HPP
+#define STICPP_TOKENIZER_HPP
+
 #include "../../lib/chars.hpp"
 #include <iosfwd>
 #include <string>
@@ -43,3 +46,5 @@ namespace stiX {
     std::istream& input_;
   };
 }
+
+#endif // STICPP_TOKENIZER_HPP
