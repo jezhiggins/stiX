@@ -259,11 +259,17 @@ add_executable(format_test
 )
 target_link_libraries(format_test stix testsupport)
 
+set (macro_sources
+		chapter_8/1_macro/tokenizer.hpp
+		chapter_8/1_macro/tokenizer.cpp
+)
 add_executable(macro
-		chapter_8/1_macro/1_macro.cpp)
-target_link_libraries(stix)
+		chapter_8/1_macro/1_macro.cpp
+		${macro_sources})
+target_link_libraries(macro stix)
 
 add_executable(macro_test
+		${macro_sources}
 		chapter_8/1_macro/test_macro.cpp
 		chapter_8/1_macro/test_tokenizer.cpp
 )
