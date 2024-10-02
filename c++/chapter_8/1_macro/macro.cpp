@@ -1,6 +1,8 @@
 #include "macro.hpp"
 #include "tokenizer.hpp"
+#include "../../lib/chars.hpp"
 #include <stdexcept>
+#include <format>
 
 namespace {
   class macro_processor {
@@ -10,7 +12,11 @@ namespace {
     void process_to(std::ostream& out);
 
   private:
+    bool token_available() const;
     std::string next_token();
+    void expect_next(std::string const& expected);
+    void skip_whitespace();
+
     void definition();
 
     stiX::tokenizer tokenizer_;
@@ -23,7 +29,7 @@ macro_processor::macro_processor(std::istream& in) :
 }
 
 void macro_processor::process_to(std::ostream& out) {
-  while(tok_ != tokenizer_.end()) {
+  while(token_available()) {
     auto token = next_token();
     if (token == "define")
       definition();
@@ -32,8 +38,12 @@ void macro_processor::process_to(std::ostream& out) {
   }
 } // process_to
 
+bool macro_processor::token_available() const {
+  return tok_ != tokenizer_.end();
+}
+
 std::string macro_processor::next_token() {
-  if (tok_ == tokenizer_.end())
+  if (!token_available())
     throw std::runtime_error("Unexpected end of input");
 
   auto token = *tok_;
@@ -41,11 +51,28 @@ std::string macro_processor::next_token() {
   return token;
 } // next_token
 
-void macro_processor::definition() {
-  if (next_token() != "(")
-    throw std::runtime_error("Expected (");
+void macro_processor::expect_next(std::string const& expected) {
+  auto next = token_available() ? next_token() : "<EOF>";
+  if (expected != next)
+    throw std::runtime_error(std::format("Expected {}", expected));
+} // expect_next
 
-  while (next_token() != ")");
+bool iswhitespace(std::string const& token) {
+  return token.size() == 1 && stiX::iswhitespace(token[0]);
+}
+
+void macro_processor::skip_whitespace() {
+  while (token_available() && iswhitespace(*tok_))
+    ++tok_;
+} // skip_whitespace
+
+void macro_processor::definition() {
+  expect_next("(");
+  auto def = next_token();
+  expect_next(",");
+  skip_whitespace();
+  auto replacement = next_token();
+  expect_next(")");
 }
 
 } // namespace
