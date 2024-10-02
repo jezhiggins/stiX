@@ -3,13 +3,20 @@
 
 TEST_CASE("macro") {
   SECTION("pass through") {
-    auto macro = stiX::macro_processor { };
-
-    auto in = std::istringstream { "nothing going on here" };
+    auto in = std::istringstream { "nothing going on here\nat all" };
     auto out = std::ostringstream { };
 
-    macro.process(in, out);
+    stiX::macro_process(in, out);
 
-    REQUIRE(out.str() == "nothing going on here");
+    REQUIRE(out.str() == "nothing going on here\nat all");
+  }
+
+  SECTION("identify a definition") {
+    auto in = std::istringstream { "nothing going on here\ndefine(x, y)\nat all" };
+    auto out = std::ostringstream { };
+
+    stiX::macro_process(in, out);
+
+    REQUIRE(out.str() == "nothing going on here\n\nat all");
   }
 }
