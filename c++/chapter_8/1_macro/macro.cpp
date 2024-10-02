@@ -1,12 +1,36 @@
 #include "macro.hpp"
-#include "../../lib/copy.hpp"
+#include "tokenizer.hpp"
 
-stiX::macro_processor::macro_processor() {
+namespace {
+  class macro_processor {
+  public:
+    macro_processor(std::istream& in);
+
+    void process_to(std::ostream& out);
+
+  private:
+    stiX::tokenizer tokenizer_;
+    stiX::stream_token_iterator tok_;
+  };
+
+macro_processor::macro_processor(std::istream& in) :
+  tokenizer_(in),
+  tok_(tokenizer_.begin()) {
 }
 
-void stiX::macro_processor::process(
+void macro_processor::process_to(std::ostream& out) {
+  while(tok_ != tokenizer_.end()) {
+    out << *tok_;
+    ++tok_;
+  }
+}
+
+} // namespace
+
+void stiX::macro_process(
     std::istream& in,
     std::ostream& out
 ) {
-  stiX::copy(in, out);
+  auto macro = macro_processor { in };
+  macro.process_to(out);
 }

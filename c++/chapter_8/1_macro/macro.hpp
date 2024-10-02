@@ -2,14 +2,10 @@
 #define STICPP_MACRO_HPP
 
 #include <iosfwd>
+#include "tokenizer.hpp"
 
 namespace stiX {
-  class macro_processor {
-  public:
-    macro_processor();
-
-    void process(std::istream& in, std::ostream& out);
-  };
+    void macro_process(std::istream& in, std::ostream& out);
 }
 
 #endif // STICPP_MACRO_HPP
