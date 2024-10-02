@@ -1,5 +1,6 @@
 #include "macro.hpp"
 #include "tokenizer.hpp"
+#include <stdexcept>
 
 namespace {
   class macro_processor {
@@ -9,6 +10,7 @@ namespace {
     void process_to(std::ostream& out);
 
   private:
+    std::string next_token();
     void definition();
 
     stiX::tokenizer tokenizer_;
@@ -22,19 +24,28 @@ macro_processor::macro_processor(std::istream& in) :
 
 void macro_processor::process_to(std::ostream& out) {
   while(tok_ != tokenizer_.end()) {
-    auto token = *tok_;
+    auto token = next_token();
     if (token == "define")
       definition();
     else
-      out << *tok_;
-
-    ++tok_;
+      out << token;
   }
 } // process_to
 
+std::string macro_processor::next_token() {
+  if (tok_ == tokenizer_.end())
+    throw std::runtime_error("Unexpected end of input");
+
+  auto token = *tok_;
+  ++tok_;
+  return token;
+} // next_token
+
 void macro_processor::definition() {
-  while(*tok_ != ")")
-    ++tok_;
+  if (next_token() != "(")
+    throw std::runtime_error("Expected (");
+
+  while (next_token() != ")");
 }
 
 } // namespace
