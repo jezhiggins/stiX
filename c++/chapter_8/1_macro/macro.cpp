@@ -69,6 +69,8 @@ void macro_processor::skip_whitespace() {
 void macro_processor::definition() {
   expect_next("(");
   auto def = next_token();
+  if (!stiX::isalnum(def))
+    throw std::runtime_error(std::format("{} is not alphanumeric", def));
   expect_next(",");
   skip_whitespace();
   auto replacement = next_token();

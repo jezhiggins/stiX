@@ -1,6 +1,8 @@
 #ifndef STICPP_CHARTESTS_H
 #define STICPP_CHARTESTS_H
 
+#include <string_view>
+
 namespace stiX {
     inline bool isspace(char c) { return c == ' '; }
     inline bool istab(char c) { return c == '\t'; }
@@ -9,6 +11,8 @@ namespace stiX {
 
     bool isalnum(char c);
     bool iswhitespace(char c);
+
+    bool isalnum(std::string_view s);
 }
 
 #endif //STICPP_CHARTESTS_H

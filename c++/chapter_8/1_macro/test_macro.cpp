@@ -27,7 +27,8 @@ TEST_CASE("Bad macros") {
     { "define[x, y]", "Expected (" },
     { "define", "Expected (" },
     { "define(x:y)", "Expected ," },
-    { "define(x, y]", "Expected )" }
+    { "define(x, y]", "Expected )" },
+    { "define(99, x)", "99 is not alphanumeric" }
   };
   for (auto b : bad) {
     DYNAMIC_SECTION(b.first) {
