@@ -12,8 +12,17 @@ TEST_CASE("macro") {
     REQUIRE(out.str() == "nothing going on here\nat all");
   }
 
-  SECTION("identify a definition") {
+  SECTION("identify a simple define") {
     auto in = std::istringstream{"nothing going on here\ndefine(x, y)\nat all"};
+    auto out = std::ostringstream{};
+
+    stiX::macro_process(in, out);
+
+    REQUIRE(out.str() == "nothing going on here\n\nat all");
+  }
+
+  SECTION("identify a define with parenthesised replacement") {
+    auto in = std::istringstream{"nothing going on here\ndefine(ENDFILE, (-1))\nat all"};
     auto out = std::ostringstream{};
 
     stiX::macro_process(in, out);

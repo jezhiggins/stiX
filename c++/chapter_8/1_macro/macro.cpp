@@ -73,8 +73,19 @@ void macro_processor::definition() {
     throw std::runtime_error(std::format("{} is not alphanumeric", def));
   expect_next(",");
   skip_whitespace();
-  auto replacement = next_token();
-  expect_next(")");
+  auto replacement = std::string { };
+  auto parens = 0;
+  while (parens >= 0 && token_available()) {
+    auto tok = next_token();
+    if (tok == ")")
+      --parens;
+    if (tok == "(")
+      ++parens;
+    replacement += tok;
+  }
+  if (!token_available())
+    throw std::runtime_error("Expected )");
+  replacement.pop_back();
 }
 
 } // namespace
