@@ -1,7 +1,6 @@
 #ifndef STICPP_TOKENIZER_HPP
 #define STICPP_TOKENIZER_HPP
 
-#include "../../lib/chars.hpp"
 #include <iosfwd>
 #include <string>
 

@@ -1,4 +1,5 @@
 #include "tokenizer.hpp"
+#include "../../lib/chars.hpp"
 #include <iostream>
 
 constexpr auto eof = std::char_traits<char>::eof();
