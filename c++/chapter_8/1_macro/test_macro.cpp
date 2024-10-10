@@ -2,32 +2,32 @@
 #include "macro.hpp"
 #include <vector>
 
+struct good_case {
+  std::string name;
+  std::string input;
+  std::string expected;
+};
+
 TEST_CASE("macro") {
-  SECTION("pass through") {
-    auto in = std::istringstream{"nothing going on here\nat all"};
-    auto out = std::ostringstream{};
+  auto good = std::vector<good_case> {
+    { "pass through", "nothing going on here\nat all", "nothing going on here\nat all" },
+    { "simple define", "nothing going on here\ndefine(x, y)\nat all", "nothing going on here\n\nat all"},
+    { "define with parenthesised replacement",
+      "nothing going on here\ndefine(ENDFILE, (-1))\nat all",
+      "nothing going on here\n\nat all" },
+    { "simple replacement",
+      "define(DONE, ENDFILE)\nif (getit(line) = DONE) then putit(sumline)",
+      "\nif (getit(line) = ENDFILE) then putit(sumline)"}
+  };
+  for (auto g : good) {
+    DYNAMIC_SECTION(g.name) {
+      auto in = std::istringstream{g.input};
+      auto out = std::ostringstream{};
 
-    stiX::macro_process(in, out);
+      stiX::macro_process(in, out);
 
-    REQUIRE(out.str() == "nothing going on here\nat all");
-  }
-
-  SECTION("identify a simple define") {
-    auto in = std::istringstream{"nothing going on here\ndefine(x, y)\nat all"};
-    auto out = std::ostringstream{};
-
-    stiX::macro_process(in, out);
-
-    REQUIRE(out.str() == "nothing going on here\n\nat all");
-  }
-
-  SECTION("identify a define with parenthesised replacement") {
-    auto in = std::istringstream{"nothing going on here\ndefine(ENDFILE, (-1))\nat all"};
-    auto out = std::ostringstream{};
-
-    stiX::macro_process(in, out);
-
-    REQUIRE(out.str() == "nothing going on here\n\nat all");
+      REQUIRE(g.expected == out.str());
+    }
   }
 }
 
@@ -37,6 +37,7 @@ TEST_CASE("Bad macros") {
     { "define", "Expected (" },
     { "define(x:y)", "Expected ," },
     { "define(x, y]", "Expected )" },
+    { "define(x, (((y))", "Expected )" },
     { "define(99, x)", "99 is not alphanumeric" }
   };
   for (auto b : bad) {

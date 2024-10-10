@@ -3,6 +3,7 @@
 #include "../../lib/chars.hpp"
 #include <stdexcept>
 #include <format>
+#include <map>
 
 namespace {
   class macro_processor {
@@ -17,10 +18,16 @@ namespace {
     void expect_next(std::string const& expected);
     void skip_whitespace();
 
-    void definition();
+    void install_definition();
+    std::pair<std::string, std::string> get_definition();
+
+    bool is_macro(std::string const& tok) const;
+    std::string const& macro_definition(std::string const& tok);
 
     stiX::tokenizer tokenizer_;
     stiX::stream_token_iterator tok_;
+
+    std::map<std::string, std::string> definitions_;
   };
 
 macro_processor::macro_processor(std::istream& in) :
@@ -32,7 +39,9 @@ void macro_processor::process_to(std::ostream& out) {
   while(token_available()) {
     auto token = next_token();
     if (token == "define")
-      definition();
+      install_definition();
+    else if (is_macro(token))
+      out << macro_definition(token);
     else
       out << token;
   }
@@ -66,7 +75,12 @@ void macro_processor::skip_whitespace() {
     ++tok_;
 } // skip_whitespace
 
-void macro_processor::definition() {
+void macro_processor::install_definition() {
+  auto [ def, replacement ] = get_definition();
+  definitions_[def] = replacement;
+}
+
+std::pair<std::string, std::string> macro_processor::get_definition() {
   expect_next("(");
   auto def = next_token();
   if (!stiX::isalnum(def))
@@ -86,6 +100,16 @@ void macro_processor::definition() {
   if (!token_available())
     throw std::runtime_error("Expected )");
   replacement.pop_back();
+
+  return { def, replacement };
+}
+
+bool macro_processor::is_macro(std::string const& tok) const {
+  return definitions_.contains(tok);
+}
+
+std::string const& macro_processor::macro_definition(std::string const& tok) {
+  return definitions_[tok];
 }
 
 } // namespace
