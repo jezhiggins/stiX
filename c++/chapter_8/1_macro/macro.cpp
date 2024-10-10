@@ -8,9 +8,34 @@
 #include <queue>
 
 namespace {
+  class push_back_buffer {
+  public:
+    push_back_buffer() { }
+
+    bool token_available() const {
+      return !buf_.empty();
+    }
+
+    std::string pop_token() {
+      auto tok = buf_.front();
+      buf_.pop();
+      return tok;
+    }
+    void push_tokens(std::string const& str) {
+      auto rstream = std::istringstream { str };
+      auto rtok = stiX::tokenizer(rstream);
+
+      for (auto const& r : rtok)
+        buf_.push(r);
+    }
+
+  private:
+    std::queue<std::string> buf_;
+  };
+
   class macro_processor {
   public:
-    macro_processor(std::istream& in);
+    explicit macro_processor(std::istream& in);
 
     void process_to(std::ostream& out);
 
@@ -27,11 +52,9 @@ namespace {
     std::string const& macro_definition(std::string const& tok);
     void apply_macro(std::string const& tok);
 
-    void push_back(std::string const& replacement);
-
     stiX::tokenizer tokenizer_;
     stiX::stream_token_iterator tok_;
-    std::queue<std::string> push_back_buffer_;
+    push_back_buffer buffer_;
 
     std::map<std::string, std::string> definitions_;
   };
@@ -44,6 +67,7 @@ macro_processor::macro_processor(std::istream& in) :
 void macro_processor::process_to(std::ostream& out) {
   while(token_available()) {
     auto token = next_token();
+
     if (token == "define")
       install_definition();
     else if (is_macro(token))
@@ -54,20 +78,15 @@ void macro_processor::process_to(std::ostream& out) {
 } // process_to
 
 bool macro_processor::token_available() const {
-  if (!push_back_buffer_.empty())
-    return true;
-  return tok_ != tokenizer_.end();
+  return buffer_.token_available() || tok_ != tokenizer_.end();
 }
 
 std::string macro_processor::next_token() {
   if (!token_available())
     throw std::runtime_error("Unexpected end of input");
 
-  if (!push_back_buffer_.empty()) {
-    auto tok = push_back_buffer_.front();
-    push_back_buffer_.pop();
-    return tok;
-  }
+  if (buffer_.token_available())
+    return buffer_.pop_token();
 
   auto token = *tok_;
   ++tok_;
@@ -127,15 +146,7 @@ std::string const& macro_processor::macro_definition(std::string const& tok) {
 }
 
 void macro_processor::apply_macro(std::string const& tok) {
-  push_back(macro_definition(tok));
-}
-
-void macro_processor::push_back(std::string const& replacement) {
-  auto rstream = std::istringstream { replacement };
-  auto rtok = stiX::tokenizer(rstream);
-
-  for (auto const& r : rtok)
-    push_back_buffer_.push(r);
+  buffer_.push_tokens(macro_definition(tok));
 }
 
 } // namespace

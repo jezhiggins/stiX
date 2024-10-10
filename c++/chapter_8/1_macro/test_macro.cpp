@@ -8,7 +8,7 @@ struct good_case {
   std::string expected;
 };
 
-TEST_CASE("macro") {
+TEST_CASE("Good macros") {
   auto good = std::vector<good_case> {
     { "pass through", "nothing going on here\nat all", "nothing going on here\nat all" },
     { "simple define", "nothing going on here\ndefine(x, y)\nat all", "nothing going on here\n\nat all"},
