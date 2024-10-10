@@ -2,8 +2,10 @@
 #include "tokenizer.hpp"
 #include "../../lib/chars.hpp"
 #include <stdexcept>
+#include <sstream>
 #include <format>
 #include <map>
+#include <queue>
 
 namespace {
   class macro_processor {
@@ -23,9 +25,13 @@ namespace {
 
     bool is_macro(std::string const& tok) const;
     std::string const& macro_definition(std::string const& tok);
+    void apply_macro(std::string const& tok);
+
+    void push_back(std::string const& replacement);
 
     stiX::tokenizer tokenizer_;
     stiX::stream_token_iterator tok_;
+    std::queue<std::string> push_back_buffer_;
 
     std::map<std::string, std::string> definitions_;
   };
@@ -41,19 +47,27 @@ void macro_processor::process_to(std::ostream& out) {
     if (token == "define")
       install_definition();
     else if (is_macro(token))
-      out << macro_definition(token);
+      apply_macro(token);
     else
       out << token;
   }
 } // process_to
 
 bool macro_processor::token_available() const {
+  if (!push_back_buffer_.empty())
+    return true;
   return tok_ != tokenizer_.end();
 }
 
 std::string macro_processor::next_token() {
   if (!token_available())
     throw std::runtime_error("Unexpected end of input");
+
+  if (!push_back_buffer_.empty()) {
+    auto tok = push_back_buffer_.front();
+    push_back_buffer_.pop();
+    return tok;
+  }
 
   auto token = *tok_;
   ++tok_;
@@ -110,6 +124,18 @@ bool macro_processor::is_macro(std::string const& tok) const {
 
 std::string const& macro_processor::macro_definition(std::string const& tok) {
   return definitions_[tok];
+}
+
+void macro_processor::apply_macro(std::string const& tok) {
+  push_back(macro_definition(tok));
+}
+
+void macro_processor::push_back(std::string const& replacement) {
+  auto rstream = std::istringstream { replacement };
+  auto rtok = stiX::tokenizer(rstream);
+
+  for (auto const& r : rtok)
+    push_back_buffer_.push(r);
 }
 
 } // namespace

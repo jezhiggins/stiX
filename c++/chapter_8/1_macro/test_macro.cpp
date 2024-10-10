@@ -17,7 +17,10 @@ TEST_CASE("macro") {
       "nothing going on here\n\nat all" },
     { "simple replacement",
       "define(DONE, ENDFILE)\nif (getit(line) = DONE) then putit(sumline)",
-      "\nif (getit(line) = ENDFILE) then putit(sumline)"}
+      "\nif (getit(line) = ENDFILE) then putit(sumline)" },
+    { "nested replacement",
+      "define(ENDFILE, (-1))\ndefine(DONE, ENDFILE)\nif (getit(line) = DONE) then putit(sumline)",
+      "\n\nif (getit(line) = (-1)) then putit(sumline)"}
   };
   for (auto g : good) {
     DYNAMIC_SECTION(g.name) {
