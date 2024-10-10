@@ -10,7 +10,7 @@ namespace stiX {
     stream_token_iterator(std::istream& input) ;
     stream_token_iterator();
 
-    std::string operator*();
+    std::string const& operator*() const;
     stream_token_iterator& operator++();
 
   private:

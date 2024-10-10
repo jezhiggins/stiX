@@ -16,11 +16,16 @@ namespace {
       return !buf_.empty();
     }
 
+    std::string const& peek_token() const {
+      return buf_.front();
+    }
+
     std::string pop_token() {
       auto tok = buf_.front();
       buf_.pop();
       return tok;
     }
+
     void push_tokens(std::string const& str) {
       auto rstream = std::istringstream { str };
       auto rtok = stiX::tokenizer(rstream);
@@ -33,6 +38,32 @@ namespace {
     std::queue<std::string> buf_;
   };
 
+  class token_stream {
+  public:
+    explicit token_stream(std::istream& in):
+      tokenizer_(in),
+      tok_(tokenizer_.begin()) {
+    }
+
+    bool token_available() const {
+      return tok_ != tokenizer_.end();
+    }
+
+    std::string const& peek_token() const {
+      return *tok_;
+    }
+
+    std::string pop_token() {
+      auto tok = *tok_;
+      ++tok_;
+      return tok;
+    }
+
+  private:
+    stiX::tokenizer tokenizer_;
+    stiX::stream_token_iterator tok_;
+  };
+
   class macro_processor {
   public:
     explicit macro_processor(std::istream& in);
@@ -41,6 +72,7 @@ namespace {
 
   private:
     bool token_available() const;
+    std::string const& peek_token();
     std::string next_token();
     void expect_next(std::string const& expected);
     void skip_whitespace();
@@ -52,16 +84,14 @@ namespace {
     std::string const& macro_definition(std::string const& tok);
     void apply_macro(std::string const& tok);
 
-    stiX::tokenizer tokenizer_;
-    stiX::stream_token_iterator tok_;
+    token_stream stream_;
     push_back_buffer buffer_;
 
     std::map<std::string, std::string> definitions_;
   };
 
 macro_processor::macro_processor(std::istream& in) :
-  tokenizer_(in),
-  tok_(tokenizer_.begin()) {
+  stream_(in) {
 }
 
 void macro_processor::process_to(std::ostream& out) {
@@ -78,8 +108,18 @@ void macro_processor::process_to(std::ostream& out) {
 } // process_to
 
 bool macro_processor::token_available() const {
-  return buffer_.token_available() || tok_ != tokenizer_.end();
+  return buffer_.token_available() || stream_.token_available();
 }
+
+std::string const& macro_processor::peek_token() {
+  if (!token_available())
+    throw std::runtime_error("Unexpected end of input");
+
+  if (buffer_.token_available())
+    return buffer_.peek_token();
+
+  return stream_.peek_token();
+} // next_token
 
 std::string macro_processor::next_token() {
   if (!token_available())
@@ -88,9 +128,7 @@ std::string macro_processor::next_token() {
   if (buffer_.token_available())
     return buffer_.pop_token();
 
-  auto token = *tok_;
-  ++tok_;
-  return token;
+  return stream_.pop_token();
 } // next_token
 
 void macro_processor::expect_next(std::string const& expected) {
@@ -104,8 +142,8 @@ bool iswhitespace(std::string const& token) {
 }
 
 void macro_processor::skip_whitespace() {
-  while (token_available() && iswhitespace(*tok_))
-    ++tok_;
+  while (token_available() && iswhitespace(peek_token()))
+    next_token();
 } // skip_whitespace
 
 void macro_processor::install_definition() {

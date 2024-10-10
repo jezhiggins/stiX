@@ -12,7 +12,7 @@ stiX::stream_token_iterator::stream_token_iterator() :
   input_() {
 }
 
-std::string stiX::stream_token_iterator::operator*() {
+std::string const& stiX::stream_token_iterator::operator*() const {
   return token_;
 }
 
