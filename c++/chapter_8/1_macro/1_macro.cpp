@@ -50,6 +50,9 @@
 // permitting multi-level definitions to be expanded to final form.
 //
 
-int main() {
+#include "macro.hpp"
+#include <iostream>
 
+int main() {
+  stiX::macro_process(std::cin, std::cout);
 }
