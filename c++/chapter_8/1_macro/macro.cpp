@@ -7,6 +7,8 @@
 #include <map>
 #include <queue>
 
+using namespace std::string_view_literals;
+
 namespace {
   class push_back_buffer {
   public:
@@ -90,6 +92,11 @@ namespace {
     std::map<std::string, std::string> definitions_;
   };
 
+  auto constexpr Define = "define"sv;
+  auto constexpr LeftParen = "("sv;
+  auto constexpr RightParen = ")"sv;
+  auto constexpr EndOfInput = "<EOF>"sv;
+
 macro_processor::macro_processor(std::istream& in) :
   stream_(in) {
 }
@@ -98,7 +105,7 @@ void macro_processor::process_to(std::ostream& out) {
   while(token_available()) {
     auto token = next_token();
 
-    if (token == "define")
+    if (token == Define)
       install_definition();
     else if (is_macro(token))
       apply_macro(token);
@@ -132,7 +139,7 @@ std::string macro_processor::next_token() {
 } // next_token
 
 void macro_processor::expect_next(std::string_view expected) {
-  auto const next = token_available() ? next_token() : "<EOF>";
+  auto const next = token_available() ? next_token() : EndOfInput;
   if (expected != next)
     throw std::runtime_error(std::format("Expected {}", expected));
 } // expect_next
@@ -152,7 +159,7 @@ void macro_processor::install_definition() {
 }
 
 std::pair<std::string, std::string> macro_processor::get_definition() {
-  expect_next("(");
+  expect_next(LeftParen);
   auto def = next_token();
   if (!stiX::isalnum(def))
     throw std::runtime_error(std::format("{} is not alphanumeric", def));
@@ -162,9 +169,9 @@ std::pair<std::string, std::string> macro_processor::get_definition() {
   auto parens = 0;
   while (parens >= 0 && token_available()) {
     auto tok = next_token();
-    if (tok == ")")
+    if (tok == RightParen)
       --parens;
-    if (tok == "(")
+    if (tok == LeftParen)
       ++parens;
     replacement += tok;
   }
