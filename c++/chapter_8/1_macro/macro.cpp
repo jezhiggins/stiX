@@ -82,6 +82,7 @@ namespace {
     void install_definition();
     std::pair<std::string, std::string> get_definition();
     std::string get_definition_name();
+    std::string get_definition_replacement();
 
     bool is_macro(std::string const& tok) const;
     std::string const& macro_definition(std::string const& tok);
@@ -167,7 +168,13 @@ std::pair<std::string, std::string> macro_processor::get_definition() {
 
   expect_next(Comma);
   skip_whitespace();
-  
+
+  auto replacement = get_definition_replacement();
+
+  return { def, replacement };
+}
+
+std::string macro_processor::get_definition_replacement() {
   auto replacement = std::string { };
   auto parens = 0;
   while (parens >= 0 && token_available()) {
@@ -182,7 +189,7 @@ std::pair<std::string, std::string> macro_processor::get_definition() {
     throw std::runtime_error("Expected )");
   replacement.pop_back();
 
-  return { def, replacement };
+  return replacement;
 }
 
 std::string macro_processor::get_definition_name() {
