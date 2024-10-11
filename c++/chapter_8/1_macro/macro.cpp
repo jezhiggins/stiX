@@ -81,6 +81,7 @@ namespace {
 
     void install_definition();
     std::pair<std::string, std::string> get_definition();
+    std::string get_definition_name();
 
     bool is_macro(std::string const& tok) const;
     std::string const& macro_definition(std::string const& tok);
@@ -94,6 +95,7 @@ namespace {
 
   auto constexpr Define = "define"sv;
   auto constexpr LeftParen = "("sv;
+  auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;
   auto constexpr EndOfInput = "<EOF>"sv;
 
@@ -160,11 +162,12 @@ void macro_processor::install_definition() {
 
 std::pair<std::string, std::string> macro_processor::get_definition() {
   expect_next(LeftParen);
-  auto def = next_token();
-  if (!stiX::isalnum(def))
-    throw std::runtime_error(std::format("{} is not alphanumeric", def));
-  expect_next(",");
+
+  auto def = get_definition_name();
+
+  expect_next(Comma);
   skip_whitespace();
+  
   auto replacement = std::string { };
   auto parens = 0;
   while (parens >= 0 && token_available()) {
@@ -180,6 +183,15 @@ std::pair<std::string, std::string> macro_processor::get_definition() {
   replacement.pop_back();
 
   return { def, replacement };
+}
+
+std::string macro_processor::get_definition_name() {
+  auto def = next_token();
+
+  if (!stiX::isalnum(def))
+    throw std::runtime_error(std::format("{} is not alphanumeric", def));
+
+  return def;
 }
 
 bool macro_processor::is_macro(std::string const& tok) const {
