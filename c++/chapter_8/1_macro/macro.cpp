@@ -169,10 +169,10 @@ std::pair<std::string, std::string> macro_processor::get_definition() {
   auto parens = 0;
   while (parens >= 0 && token_available()) {
     auto tok = next_token();
-    if (tok == RightParen)
-      --parens;
-    if (tok == LeftParen)
-      ++parens;
+
+    parens -= (tok == RightParen);
+    parens += (tok == LeftParen);
+
     replacement += tok;
   }
   if (!token_available())
