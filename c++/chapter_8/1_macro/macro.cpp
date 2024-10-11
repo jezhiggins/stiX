@@ -119,23 +119,23 @@ bool macro_processor::token_available() const {
 }
 
 std::string const& macro_processor::peek_token() {
-  if (!token_available())
-    throw std::runtime_error("Unexpected end of input");
-
   if (buffer_.token_available())
     return buffer_.peek_token();
 
-  return stream_.peek_token();
+  if (stream_.token_available())
+    return stream_.peek_token();
+
+  throw std::runtime_error("Unexpected end of input");
 } // next_token
 
 std::string macro_processor::next_token() {
-  if (!token_available())
-    throw std::runtime_error("Unexpected end of input");
-
   if (buffer_.token_available())
     return buffer_.pop_token();
 
-  return stream_.pop_token();
+  if (stream_.token_available())
+    return stream_.pop_token();
+
+  throw std::runtime_error("Unexpected end of input");
 } // next_token
 
 void macro_processor::expect_next(std::string_view expected) {
