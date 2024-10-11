@@ -74,7 +74,7 @@ namespace {
     bool token_available() const;
     std::string const& peek_token();
     std::string next_token();
-    void expect_next(std::string const& expected);
+    void expect_next(std::string_view expected);
     void skip_whitespace();
 
     void install_definition();
@@ -131,8 +131,8 @@ std::string macro_processor::next_token() {
   return stream_.pop_token();
 } // next_token
 
-void macro_processor::expect_next(std::string const& expected) {
-  auto next = token_available() ? next_token() : "<EOF>";
+void macro_processor::expect_next(std::string_view expected) {
+  auto const next = token_available() ? next_token() : "<EOF>";
   if (expected != next)
     throw std::runtime_error(std::format("Expected {}", expected));
 } // expect_next

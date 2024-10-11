@@ -7,7 +7,7 @@
 namespace stiX {
   class stream_token_iterator {
   public:
-    stream_token_iterator(std::istream& input) ;
+    explicit stream_token_iterator(std::istream& input) ;
     stream_token_iterator();
 
     std::string const& operator*() const;
