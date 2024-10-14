@@ -80,6 +80,7 @@ namespace {
     std::string next_token();
     void expect_next(std::string_view expected);
     void skip_whitespace();
+    token_seq next_parens_sequence(bool half_open);
 
     void install_definition();
     std::pair<std::string, token_seq> get_definition();
@@ -156,7 +157,33 @@ bool iswhitespace(std::string const& token) {
 void macro_processor::skip_whitespace() {
   while (token_available() && iswhitespace(peek_token()))
     next_token();
-} // skip_whitespace
+}
+
+token_seq macro_processor::next_parens_sequence(bool half_open) {
+  auto replacement = token_seq { };
+  if (!half_open) {
+    if (peek_token() != LeftParen)
+      return replacement;
+    next_token();
+  }
+
+  auto parens = 0;
+  while (parens >= 0 && token_available()) {
+    auto tok = next_token();
+
+    parens -= (tok == RightParen);
+    parens += (tok == LeftParen);
+
+    replacement.push_back(tok);
+  }
+  if (!token_available())
+    throw std::runtime_error("Expected )");
+
+  if (half_open)
+    replacement.pop_back();
+
+  return replacement;
+}
 
 void macro_processor::install_definition() {
   auto [ def, replacement ] = get_definition();
@@ -177,21 +204,7 @@ std::pair<std::string, token_seq> macro_processor::get_definition() {
 }
 
 token_seq macro_processor::get_definition_replacement() {
-  auto replacement = token_seq { };
-  auto parens = 0;
-  while (parens >= 0 && token_available()) {
-    auto tok = next_token();
-
-    parens -= (tok == RightParen);
-    parens += (tok == LeftParen);
-
-    replacement.push_back(tok);
-  }
-  if (!token_available())
-    throw std::runtime_error("Expected )");
-  replacement.pop_back();
-
-  return replacement;
+  return next_parens_sequence(true);
 }
 
 std::string macro_processor::get_definition_name() {
@@ -212,6 +225,7 @@ token_seq const& macro_processor::macro_definition(std::string const& tok) {
 }
 
 void macro_processor::apply_macro(std::string const& tok) {
+  auto arguments = next_parens_sequence(false);
   buffer_.push_tokens(macro_definition(tok));
 }
 

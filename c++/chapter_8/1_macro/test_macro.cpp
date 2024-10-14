@@ -41,6 +41,13 @@ TEST_CASE("Text replacement") {
   build_good_tests(good);
 }
 
+TEST_CASE("macros with arguments") {
+  auto good = std::vector<good_case> {
+    { "arguments provided, not used", "define(x, y)x x(q) (x)", "y y (y)" }
+  };
+  build_good_tests(good);
+}
+
 TEST_CASE("Ill-formed macros") {
   auto bad = std::vector<std::pair<std::string, std::string>> {
     { "define[x, y]", "Expected (" },
