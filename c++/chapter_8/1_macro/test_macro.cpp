@@ -8,20 +8,7 @@ struct good_case {
   std::string expected;
 };
 
-TEST_CASE("Good macros") {
-  auto good = std::vector<good_case> {
-    { "pass through", "nothing going on here\nat all", "nothing going on here\nat all" },
-    { "simple define", "nothing going on here\ndefine(x, y)\nat all", "nothing going on here\n\nat all"},
-    { "define with parenthesised replacement",
-      "nothing going on here\ndefine(ENDFILE, (-1))\nat all",
-      "nothing going on here\n\nat all" },
-    { "simple replacement",
-      "define(DONE, ENDFILE)\nif (getit(line) = DONE) then putit(sumline)",
-      "\nif (getit(line) = ENDFILE) then putit(sumline)" },
-    { "nested replacement",
-      "define(ENDFILE, (-1))\ndefine(DONE, ENDFILE)\nif (getit(line) = DONE) then putit(sumline)",
-      "\n\nif (getit(line) = (-1)) then putit(sumline)"}
-  };
+void build_good_tests(std::vector<good_case> const& good) {
   for (auto g : good) {
     DYNAMIC_SECTION(g.name) {
       auto in = std::istringstream{g.input};
@@ -34,7 +21,27 @@ TEST_CASE("Good macros") {
   }
 }
 
-TEST_CASE("Bad macros") {
+TEST_CASE("Text replacement") {
+  auto good = std::vector<good_case> {
+    { "pass through", "nothing going on here\nat all", "nothing going on here\nat all" },
+    { "simple define", "nothing going on here\ndefine(x, y)\nat all", "nothing going on here\n\nat all"},
+    { "define with parenthesised replacement",
+      "nothing going on here\ndefine(ENDFILE, (-1))\nat all",
+      "nothing going on here\n\nat all" },
+    { "simple replacement",
+      "define(DONE, ENDFILE)\nif (getit(line) = DONE) then putit(sumline)",
+      "\nif (getit(line) = ENDFILE) then putit(sumline)" },
+    { "nested replacement",
+      "define(ENDFILE, (-1))\ndefine(DONE, ENDFILE)\nif (getit(line) = DONE) then putit(sumline)",
+      "\n\nif (getit(line) = (-1)) then putit(sumline)"},
+    { "nested replacement, opposite order",
+      "define(DONE, ENDFILE)\ndefine(ENDFILE, (-1))\nif (getit(line) = DONE) then putit(sumline)",
+      "\n\nif (getit(line) = (-1)) then putit(sumline)"}
+  };
+  build_good_tests(good);
+}
+
+TEST_CASE("Ill-formed macros") {
   auto bad = std::vector<std::pair<std::string, std::string>> {
     { "define[x, y]", "Expected (" },
     { "define", "Expected (" },
