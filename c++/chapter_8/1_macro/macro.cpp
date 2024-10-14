@@ -6,10 +6,13 @@
 #include <format>
 #include <map>
 #include <queue>
+#include <algorithm>
 
 using namespace std::string_view_literals;
 
 namespace {
+  using token_seq = std::vector<std::string>;
+
   class push_back_buffer {
   public:
     push_back_buffer() { }
@@ -28,12 +31,11 @@ namespace {
       return tok;
     }
 
-    void push_tokens(std::string const& str) {
-      auto rstream = std::istringstream { str };
-      auto rtok = stiX::tokenizer(rstream);
-
-      for (auto const& r : rtok)
-        buf_.push(r);
+    void push_tokens(token_seq const& tokens) {
+      std::ranges::for_each(
+        tokens,
+        [this](auto& tok) { buf_.push(tok); }
+      );
     }
 
   private:
@@ -80,18 +82,18 @@ namespace {
     void skip_whitespace();
 
     void install_definition();
-    std::pair<std::string, std::string> get_definition();
+    std::pair<std::string, token_seq> get_definition();
     std::string get_definition_name();
-    std::string get_definition_replacement();
+    token_seq get_definition_replacement();
 
     bool is_macro(std::string const& tok) const;
-    std::string const& macro_definition(std::string const& tok);
+    token_seq const& macro_definition(std::string const& tok);
     void apply_macro(std::string const& tok);
 
     token_stream stream_;
     push_back_buffer buffer_;
 
-    std::map<std::string, std::string> definitions_;
+    std::map<std::string, token_seq> definitions_;
   };
 
   auto constexpr Define = "define"sv;
@@ -161,7 +163,7 @@ void macro_processor::install_definition() {
   definitions_[def] = replacement;
 }
 
-std::pair<std::string, std::string> macro_processor::get_definition() {
+std::pair<std::string, token_seq> macro_processor::get_definition() {
   expect_next(LeftParen);
 
   auto def = get_definition_name();
@@ -174,8 +176,8 @@ std::pair<std::string, std::string> macro_processor::get_definition() {
   return { def, replacement };
 }
 
-std::string macro_processor::get_definition_replacement() {
-  auto replacement = std::string { };
+token_seq macro_processor::get_definition_replacement() {
+  auto replacement = token_seq { };
   auto parens = 0;
   while (parens >= 0 && token_available()) {
     auto tok = next_token();
@@ -183,7 +185,7 @@ std::string macro_processor::get_definition_replacement() {
     parens -= (tok == RightParen);
     parens += (tok == LeftParen);
 
-    replacement += tok;
+    replacement.push_back(tok);
   }
   if (!token_available())
     throw std::runtime_error("Expected )");
@@ -205,7 +207,7 @@ bool macro_processor::is_macro(std::string const& tok) const {
   return definitions_.contains(tok);
 }
 
-std::string const& macro_processor::macro_definition(std::string const& tok) {
+token_seq const& macro_processor::macro_definition(std::string const& tok) {
   return definitions_[tok];
 }
 
