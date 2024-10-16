@@ -13,10 +13,10 @@ using namespace std::string_view_literals;
 namespace {
   using token_seq = std::deque<std::string>;
 
-  class push_back_buffer {
+  class token_buffer {
   public:
-    push_back_buffer() { }
-    push_back_buffer(token_seq const& tokens): buf_(tokens) { }
+    token_buffer() { }
+    token_buffer(token_seq const& tokens): buf_(tokens) { }
 
     bool token_available() const {
       return !buf_.empty();
@@ -93,7 +93,7 @@ namespace {
     std::vector<token_seq> gather_arguments();
 
     token_stream stream_;
-    push_back_buffer buffer_;
+    token_buffer buffer_;
 
     std::map<std::string, token_seq> definitions_;
   };
@@ -226,7 +226,7 @@ token_seq const& macro_processor::macro_definition(std::string const& tok) {
 
 void macro_processor::apply_macro(std::string const& tok) {
   auto arguments = gather_arguments();
-  auto definition = push_back_buffer { macro_definition(tok) };
+  auto definition = token_buffer {macro_definition(tok) };
 
   auto definition_with_arg_substitution = token_seq { };
   auto defs = std::back_inserter(definition_with_arg_substitution);
@@ -263,7 +263,7 @@ int argument_index(std::string const& index_tok) {
 
 std::vector<token_seq> macro_processor::gather_arguments() {
   auto arguments = std::vector<token_seq> { };
-  auto in_brackets = push_back_buffer { next_parens_sequence(false) };
+  auto in_brackets = token_buffer {next_parens_sequence(false) };
 
   auto arg = token_seq { };
   while(in_brackets.token_available()) {
