@@ -62,6 +62,27 @@ TEST_CASE("macros with arguments") {
     { "two args, with a macro as an argument",
       "define(ENDFILE, (-1))\ndefine(smash, $1$2)\nsmash(monkey, ENDFILE)",
       "\n\nmonkey(-1)" },
+    { "three args, only one given",
+      "define(smash, $1!$2?$3#)\nsmash(monkey)",
+      "\nmonkey!?#" },
+    { "three args, two given",
+      "define(smash, $1!$2?$3#)\nsmash(monkey, trousers)",
+      "\nmonkey!trousers?#" },
+    { "three args, three given",
+      "define(smash, $1!$2?$3#)\nsmash(hairy, monkey, trousers)",
+      "\nhairy!monkey?trousers#" },
+    { "three args, one empty",
+      "define(smash, $1!$2?$3#)\nsmash(hairy, , trousers)",
+      "\nhairy!?trousers#" },
+    { "three args, two empty",
+      "define(smash, $1!$2?$3#)\nsmash(,,trousers)",
+      "\n!?trousers#" },
+    { "three args, two empty",
+      "define(smash, $1!$2?$3#)\nsmash(, monkey, )",
+      "\n!monkey?#" },
+    { "three args, all empty",
+      "define(smash, $1!$2?$3#)\nsmash(,,)",
+      "\n!?#" }
   };
   build_good_tests(good);
 }

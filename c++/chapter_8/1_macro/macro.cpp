@@ -268,21 +268,18 @@ std::vector<token_seq> macro_processor::gather_arguments() {
   auto arguments = std::vector<token_seq> { };
   auto in_brackets = token_buffer { next_parens_sequence(false) };
 
-  auto arg = token_seq { };
   while(in_brackets.token_available()) {
-    if (in_brackets.peek_token() == ",") {
-      arguments.push_back(arg);
-      arg.clear();
+    while(in_brackets.token_available() &&
+          stiX::iswhitespace(in_brackets.peek_token()))
       in_brackets.pop_token();
-    }
-    while(in_brackets.token_available() && stiX::iswhitespace(in_brackets.peek_token()))
-      in_brackets.pop_token();
-    while(in_brackets.token_available() && in_brackets.peek_token() != ",")
-      arg.push_back(in_brackets.pop_token());
-  }
 
-  if (!arg.empty())
-    arguments.push_back(arg);
+    arguments.push_back({ });
+    while(in_brackets.token_available() && in_brackets.peek_token() != ",")
+      arguments.back().push_back(in_brackets.pop_token());
+
+    if (in_brackets.token_available())
+      in_brackets.pop_token(); // must be a comma
+  }
 
   return arguments;
 }
