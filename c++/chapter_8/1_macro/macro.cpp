@@ -9,6 +9,7 @@
 #include <algorithm>
 
 using namespace std::string_view_literals;
+using namespace std::string_literals;
 
 namespace {
   using token_seq = std::deque<std::string>;
@@ -102,7 +103,7 @@ namespace {
   auto constexpr LeftParen = "("sv;
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;
-  auto constexpr EndOfInput = "<EOF>"sv;
+  auto constexpr EndOfInput = "<EOF>"s;
 
 macro_processor::macro_processor(std::istream& in) :
   stream_(in) {
@@ -132,7 +133,7 @@ std::string const& macro_processor::peek_token() {
   if (stream_.token_available())
     return stream_.peek_token();
 
-  throw std::runtime_error("Unexpected end of input");
+  return EndOfInput;
 } // next_token
 
 std::string macro_processor::next_token() {
@@ -239,8 +240,10 @@ void macro_processor::apply_macro(std::string const& tok) {
       auto const index_tok = definition.pop_token();
       auto const index = argument_index(index_tok);
 
-      if (index != -1 && index < arguments.size())
-        std::ranges::copy(arguments[index], defs);
+      if (index != -1) {
+        if (index < arguments.size())
+          std::ranges::copy(arguments[index], defs);
+      }
       else { // bad index, so just pop it in there
         defs = tok;
         defs = index_tok;
@@ -263,7 +266,7 @@ int argument_index(std::string const& index_tok) {
 
 std::vector<token_seq> macro_processor::gather_arguments() {
   auto arguments = std::vector<token_seq> { };
-  auto in_brackets = token_buffer {next_parens_sequence(false) };
+  auto in_brackets = token_buffer { next_parens_sequence(false) };
 
   auto arg = token_seq { };
   while(in_brackets.token_available()) {

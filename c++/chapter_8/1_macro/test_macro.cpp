@@ -55,7 +55,13 @@ TEST_CASE("macros with arguments") {
       "\nx:=x+1\ny:=y+1" },
     { "two args",
       "define(smash, $1$2)\nsmash(monkey, trousers)",
-      "\nmonkeytrousers" }
+      "\nmonkeytrousers" },
+    { "two args, only one given",
+        "define(smash, $1$2)\nsmash(monkey)",
+        "\nmonkey" },
+    { "two args, with a macro as an argument",
+      "define(ENDFILE, (-1))\ndefine(smash, $1$2)\nsmash(monkey, ENDFILE)",
+      "\n\nmonkey(-1)" },
   };
   build_good_tests(good);
 }
