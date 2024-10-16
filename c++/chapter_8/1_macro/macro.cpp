@@ -68,6 +68,8 @@ namespace {
     stiX::stream_token_iterator tok_;
   };
 
+  int argument_index(std::string const& index_tok);
+
   class macro_processor {
   public:
     explicit macro_processor(std::istream& in);
@@ -90,6 +92,7 @@ namespace {
     bool is_macro(std::string const& tok) const;
     token_seq const& macro_definition(std::string const& tok);
     void apply_macro(std::string const& tok);
+    std::vector<token_seq> gather_arguments();
 
     token_stream stream_;
     push_back_buffer buffer_;
@@ -179,8 +182,7 @@ token_seq macro_processor::next_parens_sequence(bool half_open) {
   if (parens >= 0)
     throw std::runtime_error("Expected )");
 
-  if (half_open)
-    replacement.pop_back();
+  replacement.pop_back();
 
   return replacement;
 }
@@ -225,34 +227,44 @@ token_seq const& macro_processor::macro_definition(std::string const& tok) {
 }
 
 void macro_processor::apply_macro(std::string const& tok) {
-  auto arguments = next_parens_sequence(false);
+  auto arguments = gather_arguments();
   auto const& definition = macro_definition(tok);
 
   auto definition_with_arg_substitution = token_seq { };
-  for(auto  i = definition.begin();
-      i != definition.end();
-      ++i) {
+  for(auto  i = definition.begin(); i != definition.end(); ++i) {
     auto const& tok = *i;
-    if (tok != "$" || i+1 == definition.end())
+
+    if (tok != "$" || i+1 == definition.end()) 
       definition_with_arg_substitution.push_back(tok);
     else {
       ++i;
-      auto const& index_tok = *i;
-      if (index_tok.length() != 1)
-        continue;
+      auto index = argument_index(*i);
 
-      auto index = -1;
-      std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
-      if (index == -1)
-        continue;
-
-      --index;
-      if (index < arguments.size())
-        definition_with_arg_substitution.push_back(arguments[index]);
+      if (index != -1 && index < arguments.size())
+        std::ranges::copy(arguments[index], std::back_inserter(definition_with_arg_substitution));
     }
   }
 
   buffer_.push_tokens(definition_with_arg_substitution);
+}
+
+int argument_index(std::string const& index_tok) {
+  if (index_tok.length() != 1)
+    return -1;
+
+  auto index = 0;
+  std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
+
+  return index-1;
+}
+
+std::vector<token_seq> macro_processor::gather_arguments() {
+  auto arguments = std::vector<token_seq> { };
+  auto in_brackets = next_parens_sequence(false);
+
+  arguments.push_back(in_brackets);
+
+  return arguments;
 }
 
 } // namespace
