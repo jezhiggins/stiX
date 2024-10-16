@@ -103,7 +103,7 @@ namespace {
   auto constexpr LeftParen = "("sv;
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;
-  auto constexpr EndOfInput = "<EOF>"s;
+  auto const EndOfInput = "<EOF>"s;
 
 macro_processor::macro_processor(std::istream& in) :
   stream_(in) {
