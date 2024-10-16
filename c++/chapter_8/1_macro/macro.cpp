@@ -11,7 +11,7 @@
 using namespace std::string_view_literals;
 
 namespace {
-  using token_seq = std::vector<std::string>;
+  using token_seq = std::deque<std::string>;
 
   class push_back_buffer {
   public:
@@ -234,7 +234,7 @@ void macro_processor::apply_macro(std::string const& tok) {
   for(auto  i = definition.begin(); i != definition.end(); ++i) {
     auto const& tok = *i;
 
-    if (tok != "$" || i+1 == definition.end()) 
+    if (tok != "$" || i+1 == definition.end())
       definition_with_arg_substitution.push_back(tok);
     else {
       ++i;
@@ -262,7 +262,23 @@ std::vector<token_seq> macro_processor::gather_arguments() {
   auto arguments = std::vector<token_seq> { };
   auto in_brackets = next_parens_sequence(false);
 
-  arguments.push_back(in_brackets);
+  auto arg = token_seq { };
+  while(!in_brackets.empty()) {
+    if (in_brackets.front() == ",") {
+      arguments.push_back(arg);
+      arg.clear();
+      in_brackets.pop_front();
+    }
+    while(!in_brackets.empty() && stiX::iswhitespace(in_brackets.front()))
+      in_brackets.pop_front();
+    while(!in_brackets.empty() && in_brackets.front() != ",") {
+      arg.push_back(in_brackets.front());
+      in_brackets.pop_front();
+    }
+  }
+
+  if (!arg.empty())
+    arguments.push_back(arg);
 
   return arguments;
 }

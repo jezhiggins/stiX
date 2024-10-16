@@ -13,3 +13,10 @@ bool stiX::isalnum(std::string_view s) {
 
   return std::all_of(s.begin()+1, s.end(), [](char c) { return stiX::isalnum(c); });
 }
+
+bool stiX::iswhitespace(std::string_view s) {
+  if (!iswhitespace(*s.begin()))
+    return false;
+
+  return std::all_of(s.begin()+1, s.end(), [](char c) { return iswhitespace(c); });
+}

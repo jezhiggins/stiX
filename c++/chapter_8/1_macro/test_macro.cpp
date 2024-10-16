@@ -52,7 +52,10 @@ TEST_CASE("macros with arguments") {
       " int x;" },
     { "one arg, used twice",
       "define(incr, $1:=$1+1)\nincr(x)\nincr(y)",
-      "\nx:=x+1\ny:=y+1" }
+      "\nx:=x+1\ny:=y+1" },
+    { "two args",
+      "define(smash, $1$2)\nsmash(monkey, trousers)",
+      "\nmonkeytrousers" }
   };
   build_good_tests(good);
 }

@@ -13,6 +13,7 @@ namespace stiX {
     bool iswhitespace(char c);
 
     bool isalnum(std::string_view s);
+    bool iswhitespace(std::string_view s);
 }
 
 #endif //STICPP_CHARTESTS_H
