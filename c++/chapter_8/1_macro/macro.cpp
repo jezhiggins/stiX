@@ -16,6 +16,7 @@ namespace {
   class push_back_buffer {
   public:
     push_back_buffer() { }
+    push_back_buffer(token_seq const& tokens): buf_(tokens) { }
 
     bool token_available() const {
       return !buf_.empty();
@@ -27,19 +28,16 @@ namespace {
 
     std::string pop_token() {
       auto tok = buf_.front();
-      buf_.pop();
+      buf_.pop_front();
       return tok;
     }
 
     void push_tokens(token_seq const& tokens) {
-      std::ranges::for_each(
-        tokens,
-        [this](auto& tok) { buf_.push(tok); }
-      );
+      std::ranges::copy(tokens, std::back_inserter(buf_));
     }
 
   private:
-    std::queue<std::string> buf_;
+    token_seq buf_;
   };
 
   class token_stream {
@@ -228,20 +226,25 @@ token_seq const& macro_processor::macro_definition(std::string const& tok) {
 
 void macro_processor::apply_macro(std::string const& tok) {
   auto arguments = gather_arguments();
-  auto const& definition = macro_definition(tok);
+  auto definition = push_back_buffer { macro_definition(tok) };
 
   auto definition_with_arg_substitution = token_seq { };
-  for(auto  i = definition.begin(); i != definition.end(); ++i) {
-    auto const& tok = *i;
+  auto defs = std::back_inserter(definition_with_arg_substitution);
+  while (definition.token_available()) {
+    auto const tok = definition.pop_token();
 
-    if (tok != "$" || i+1 == definition.end())
-      definition_with_arg_substitution.push_back(tok);
+    if (tok != "$" || !definition.token_available())
+      defs = tok;
     else {
-      ++i;
-      auto index = argument_index(*i);
+      auto const index_tok = definition.pop_token();
+      auto const index = argument_index(index_tok);
 
       if (index != -1 && index < arguments.size())
-        std::ranges::copy(arguments[index], std::back_inserter(definition_with_arg_substitution));
+        std::ranges::copy(arguments[index], defs);
+      else { // bad index, so just pop it in there
+        defs = tok;
+        defs = index_tok;
+      }
     }
   }
 
