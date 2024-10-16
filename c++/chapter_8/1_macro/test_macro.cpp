@@ -44,8 +44,15 @@ TEST_CASE("Text replacement") {
 
 TEST_CASE("macros with arguments") {
   auto good = std::vector<good_case> {
-    { "arguments provided, not used", "define(x, y)x x(q) (x)", "y y (y)" },
-    { "one arg, used", "define(def, int $1;) def(x)", " int x;" }
+    { "arguments provided, not used",
+      "define(x, y)x x(q) (x)",
+      "y y (y)" },
+    { "one arg, used",
+      "define(def, int $1;) def(x)",
+      " int x;" },
+    { "one arg, used twice",
+      "define(incr, $1:=$1+1)\nincr(x)\nincr(y)",
+      "\nx:=x+1\ny:=y+1" }
   };
   build_good_tests(good);
 }
