@@ -176,7 +176,7 @@ token_seq macro_processor::next_parens_sequence(bool half_open) {
 
     replacement.push_back(tok);
   }
-  if (!token_available())
+  if (parens >= 0)
     throw std::runtime_error("Expected )");
 
   if (half_open)
@@ -226,7 +226,33 @@ token_seq const& macro_processor::macro_definition(std::string const& tok) {
 
 void macro_processor::apply_macro(std::string const& tok) {
   auto arguments = next_parens_sequence(false);
-  buffer_.push_tokens(macro_definition(tok));
+  auto const& definition = macro_definition(tok);
+
+  auto definition_with_arg_substitution = token_seq { };
+  for(auto  i = definition.begin();
+      i != definition.end();
+      ++i) {
+    auto const& tok = *i;
+    if (tok != "$" || i+1 == definition.end())
+      definition_with_arg_substitution.push_back(tok);
+    else {
+      ++i;
+      auto const& index_tok = *i;
+      if (index_tok.length() != 1)
+        continue;
+
+      auto index = -1;
+      std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
+      if (index == -1)
+        continue;
+
+      --index;
+      if (index < arguments.size())
+        definition_with_arg_substitution.push_back(arguments[index]);
+    }
+  }
+
+  buffer_.push_tokens(definition_with_arg_substitution);
 }
 
 } // namespace

@@ -33,17 +33,19 @@ TEST_CASE("Text replacement") {
       "\nif (getit(line) = ENDFILE) then putit(sumline)" },
     { "nested replacement",
       "define(ENDFILE, (-1))\ndefine(DONE, ENDFILE)\nif (getit(line) = DONE) then putit(sumline)",
-      "\n\nif (getit(line) = (-1)) then putit(sumline)"},
+      "\n\nif (getit(line) = (-1)) then putit(sumline)" },
     { "nested replacement, opposite order",
       "define(DONE, ENDFILE)\ndefine(ENDFILE, (-1))\nif (getit(line) = DONE) then putit(sumline)",
-      "\n\nif (getit(line) = (-1)) then putit(sumline)"}
+      "\n\nif (getit(line) = (-1)) then putit(sumline)" },
+    { "just a define", "define(one, two)", "" }
   };
   build_good_tests(good);
 }
 
 TEST_CASE("macros with arguments") {
   auto good = std::vector<good_case> {
-    { "arguments provided, not used", "define(x, y)x x(q) (x)", "y y (y)" }
+    { "arguments provided, not used", "define(x, y)x x(q) (x)", "y y (y)" },
+    { "one arg, used", "define(def, int $1;) def(x)", " int x;" }
   };
   build_good_tests(good);
 }
