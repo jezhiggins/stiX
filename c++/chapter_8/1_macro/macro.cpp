@@ -274,7 +274,7 @@ std::vector<token_seq> macro_processor::gather_arguments() {
       in_brackets.pop_token();
 
     arguments.push_back({ });
-    while(in_brackets.token_available() && in_brackets.peek_token() != ",")
+    while(in_brackets.token_available() && in_brackets.peek_token() != Comma)
       arguments.back().push_back(in_brackets.pop_token());
 
     if (in_brackets.token_available())
