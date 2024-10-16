@@ -263,21 +263,19 @@ int argument_index(std::string const& index_tok) {
 
 std::vector<token_seq> macro_processor::gather_arguments() {
   auto arguments = std::vector<token_seq> { };
-  auto in_brackets = next_parens_sequence(false);
+  auto in_brackets = push_back_buffer { next_parens_sequence(false) };
 
   auto arg = token_seq { };
-  while(!in_brackets.empty()) {
-    if (in_brackets.front() == ",") {
+  while(in_brackets.token_available()) {
+    if (in_brackets.peek_token() == ",") {
       arguments.push_back(arg);
       arg.clear();
-      in_brackets.pop_front();
+      in_brackets.pop_token();
     }
-    while(!in_brackets.empty() && stiX::iswhitespace(in_brackets.front()))
-      in_brackets.pop_front();
-    while(!in_brackets.empty() && in_brackets.front() != ",") {
-      arg.push_back(in_brackets.front());
-      in_brackets.pop_front();
-    }
+    while(in_brackets.token_available() && stiX::iswhitespace(in_brackets.peek_token()))
+      in_brackets.pop_token();
+    while(in_brackets.token_available() && in_brackets.peek_token() != ",")
+      arg.push_back(in_brackets.pop_token());
   }
 
   if (!arg.empty())
