@@ -80,7 +80,7 @@ namespace {
     std::string const& peek_token();
     std::string pop_token();
     void expect_next(std::string_view expected);
-    token_seq next_parens_sequence(bool half_open);
+    token_seq next_parens_sequence();
 
     void install_definition();
     std::pair<std::string, token_seq> get_definition();
@@ -196,13 +196,8 @@ void macro_processor::expect_next(std::string_view expected) {
     throw std::runtime_error(std::format("Expected {}", expected));
 } // expect_next
 
-token_seq macro_processor::next_parens_sequence(bool half_open) {
+token_seq macro_processor::next_parens_sequence() {
   auto replacement = token_seq { };
-  if (!half_open) {
-    if (peek_token() != LeftParen)
-      return replacement;
-    pop_token();
-  }
 
   auto parens = 0;
   while (parens >= 0 && token_available()) {
@@ -240,7 +235,7 @@ std::pair<std::string, token_seq> macro_processor::get_definition() {
 }
 
 token_seq macro_processor::get_definition_replacement() {
-  return next_parens_sequence(true);
+  return next_parens_sequence();
 }
 
 std::string macro_processor::get_definition_name() {
