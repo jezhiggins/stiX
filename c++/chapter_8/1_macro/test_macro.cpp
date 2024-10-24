@@ -85,10 +85,16 @@ TEST_CASE("macros with arguments") {
       "\n!?#" },
     { "two args, left recursive",
       "define(concat, $1-$2+)\nconcat(concat(A, B), C)",
-      "\nA-B+-C+"},
+      "\nA-B+-C+" },
     { "two args, right recursive",
       "define(concat, $1-$2+)\nconcat(A, concat(B, C))",
-      "\nA-B-C++"}
+      "\nA-B-C++" },
+    { "two args, recursive on both sides",
+      "define(concat, $1-$2+)\nconcat(concat(A, B), concat(C, D))",
+      "\nA-B+-C-D++" },
+    { "two args, right recursive with a left recurse",
+        "define(concat, $1-$2+)\nconcat(A, concat(concat(B, C), D))",
+        "\nA-B-C+-D++" }
   };
   build_good_tests(good);
 }
