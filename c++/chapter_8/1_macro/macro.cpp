@@ -78,7 +78,7 @@ namespace {
   private:
     bool token_available() const;
     std::string const& peek_token();
-    std::string next_token();
+    std::string pop_token();
     void expect_next(std::string_view expected);
     token_seq next_parens_sequence(bool half_open);
 
@@ -97,7 +97,7 @@ namespace {
 
     std::map<std::string, token_seq> definitions_;
 
-    friend void skip_whitespace(macro_processor*);
+    friend void skip_whitespace(auto&);
   };
 
   auto constexpr Define = "define"sv;
@@ -110,9 +110,12 @@ namespace {
     return token.size() == 1 && stiX::iswhitespace(token[0]);
   }
 
-  void skip_whitespace(macro_processor* tokens) {
-    while (tokens->token_available() && iswhitespace(tokens->peek_token()))
-      tokens->next_token();
+  void skip_whitespace(auto& tokens) {
+    while (tokens.token_available() && iswhitespace(tokens.peek_token()))
+      tokens.pop_token();
+  }
+  void skip_whitespace(macro_processor* mp) {
+    skip_whitespace(*mp);
   }
 
 
@@ -122,7 +125,7 @@ namespace {
 
 void macro_processor::process_to(std::ostream& out) {
   while(token_available()) {
-    auto token = next_token();
+    auto token = pop_token();
 
     if (token == Define)
       install_definition();
@@ -145,9 +148,9 @@ std::string const& macro_processor::peek_token() {
     return stream_.peek_token();
 
   return EndOfInput;
-} // next_token
+} // pop_token
 
-std::string macro_processor::next_token() {
+std::string macro_processor::pop_token() {
   if (buffer_.token_available())
     return buffer_.pop_token();
 
@@ -155,10 +158,10 @@ std::string macro_processor::next_token() {
     return stream_.pop_token();
 
   throw std::runtime_error("Unexpected end of input");
-} // next_token
+} // pop_token
 
 void macro_processor::expect_next(std::string_view expected) {
-  auto const next = token_available() ? next_token() : EndOfInput;
+  auto const next = token_available() ? pop_token() : EndOfInput;
   if (expected != next)
     throw std::runtime_error(std::format("Expected {}", expected));
 } // expect_next
@@ -168,12 +171,12 @@ token_seq macro_processor::next_parens_sequence(bool half_open) {
   if (!half_open) {
     if (peek_token() != LeftParen)
       return replacement;
-    next_token();
+    pop_token();
   }
 
   auto parens = 0;
   while (parens >= 0 && token_available()) {
-    auto tok = next_token();
+    auto tok = pop_token();
 
     parens -= (tok == RightParen);
     parens += (tok == LeftParen);
@@ -211,7 +214,7 @@ token_seq macro_processor::get_definition_replacement() {
 }
 
 std::string macro_processor::get_definition_name() {
-  auto def = next_token();
+  auto def = pop_token();
 
   if (!stiX::isalnum(def))
     throw std::runtime_error(std::format("{} is not alphanumeric", def));
@@ -271,9 +274,7 @@ std::vector<token_seq> macro_processor::gather_arguments() {
   auto in_brackets = token_buffer { next_parens_sequence(false) };
 
   while(in_brackets.token_available()) {
-    while(in_brackets.token_available() &&
-          stiX::iswhitespace(in_brackets.peek_token()))
-      in_brackets.pop_token();
+    skip_whitespace(in_brackets);
 
     arguments.push_back({ });
     while(in_brackets.token_available() && in_brackets.peek_token() != Comma)
