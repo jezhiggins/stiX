@@ -118,8 +118,15 @@ namespace {
     skip_whitespace(*mp);
   }
 
+  token_seq next_argument(token_buffer& tokens) {
+    auto arg = token_seq { };
+    while(tokens.token_available() && tokens.peek_token() != Comma)
+      arg.push_back(tokens.pop_token());
+    return arg;
+  }
 
-  macro_processor::macro_processor(std::istream& in) :
+/////////////////////
+macro_processor::macro_processor(std::istream& in) :
   stream_(in) {
 }
 
@@ -276,9 +283,7 @@ std::vector<token_seq> macro_processor::gather_arguments() {
   while(in_brackets.token_available()) {
     skip_whitespace(in_brackets);
 
-    arguments.push_back({ });
-    while(in_brackets.token_available() && in_brackets.peek_token() != Comma)
-      arguments.back().push_back(in_brackets.pop_token());
+    arguments.push_back(next_argument(in_brackets));
 
     if (in_brackets.token_available())
       in_brackets.pop_token(); // must be a comma
