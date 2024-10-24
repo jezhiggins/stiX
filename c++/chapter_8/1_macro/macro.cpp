@@ -196,26 +196,6 @@ void macro_processor::expect_next(std::string_view expected) {
     throw std::runtime_error(std::format("Expected {}", expected));
 } // expect_next
 
-token_seq macro_processor::next_parens_sequence() {
-  auto replacement = token_seq { };
-
-  auto parens = 0;
-  while (parens >= 0 && token_available()) {
-    auto tok = pop_token();
-
-    parens -= (tok == RightParen);
-    parens += (tok == LeftParen);
-
-    replacement.push_back(tok);
-  }
-  if (parens >= 0)
-    throw std::runtime_error("Expected )");
-
-  replacement.pop_back();
-
-  return replacement;
-}
-
 void macro_processor::install_definition() {
   auto [ def, replacement ] = get_definition();
   definitions_[def] = replacement;
@@ -235,7 +215,19 @@ std::pair<std::string, token_seq> macro_processor::get_definition() {
 }
 
 token_seq macro_processor::get_definition_replacement() {
-  return next_parens_sequence();
+  auto replacement = token_seq { };
+
+  while (token_available() && peek_token() != RightParen) {
+    if (peek_token() == LeftParen) {
+      auto parens = parenthesised_sequence(this);
+      std::ranges::copy(parens, std::back_inserter(replacement));
+    } else
+      replacement.push_back(pop_token());
+  }
+
+  expect_next(RightParen);
+
+  return replacement;
 }
 
 std::string macro_processor::get_definition_name() {
