@@ -80,7 +80,6 @@ namespace {
     std::string const& peek_token();
     std::string next_token();
     void expect_next(std::string_view expected);
-    void skip_whitespace();
     token_seq next_parens_sequence(bool half_open);
 
     void install_definition();
@@ -97,6 +96,8 @@ namespace {
     token_buffer buffer_;
 
     std::map<std::string, token_seq> definitions_;
+
+    friend void skip_whitespace(macro_processor*);
   };
 
   auto constexpr Define = "define"sv;
@@ -105,7 +106,17 @@ namespace {
   auto constexpr RightParen = ")"sv;
   auto const EndOfInput = "<EOF>"s;
 
-macro_processor::macro_processor(std::istream& in) :
+  bool iswhitespace(std::string const& token) {
+    return token.size() == 1 && stiX::iswhitespace(token[0]);
+  }
+
+  void skip_whitespace(macro_processor* tokens) {
+    while (tokens->token_available() && iswhitespace(tokens->peek_token()))
+      tokens->next_token();
+  }
+
+
+  macro_processor::macro_processor(std::istream& in) :
   stream_(in) {
 }
 
@@ -152,15 +163,6 @@ void macro_processor::expect_next(std::string_view expected) {
     throw std::runtime_error(std::format("Expected {}", expected));
 } // expect_next
 
-bool iswhitespace(std::string const& token) {
-  return token.size() == 1 && stiX::iswhitespace(token[0]);
-}
-
-void macro_processor::skip_whitespace() {
-  while (token_available() && iswhitespace(peek_token()))
-    next_token();
-}
-
 token_seq macro_processor::next_parens_sequence(bool half_open) {
   auto replacement = token_seq { };
   if (!half_open) {
@@ -197,7 +199,7 @@ std::pair<std::string, token_seq> macro_processor::get_definition() {
   auto def = get_definition_name();
 
   expect_next(Comma);
-  skip_whitespace();
+  skip_whitespace(this);
 
   auto replacement = get_definition_replacement();
 
