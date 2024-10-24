@@ -16,7 +16,7 @@ namespace {
 
   class token_buffer {
   public:
-    token_buffer() { }
+    explicit token_buffer() { }
     token_buffer(token_seq const& tokens): buf_(tokens) { }
 
     bool token_available() const {
@@ -98,6 +98,7 @@ namespace {
     std::map<std::string, token_seq> definitions_;
 
     friend void skip_whitespace(auto&);
+    friend token_seq parenthesised_sequence(macro_processor*);
   };
 
   auto constexpr Define = "define"sv;
@@ -124,6 +125,28 @@ namespace {
       arg.push_back(tokens.pop_token());
     return arg;
   }
+
+  token_seq parenthesised_sequence(macro_processor* mp) {
+    auto inner = token_seq { };
+    if (!mp->token_available() || mp->peek_token() != LeftParen)
+      return inner;
+
+    auto parens = 0;
+    do {
+      auto tok = mp->pop_token();
+
+      parens -= (tok == RightParen);
+      parens += (tok == LeftParen);
+
+      inner.push_back(tok);
+    } while (parens != 0 && mp->token_available());
+
+    if (parens != 0)
+      throw std::runtime_error("Expected )");
+
+    return inner;
+  }
+
 
 /////////////////////
 macro_processor::macro_processor(std::istream& in) :
@@ -277,8 +300,15 @@ int argument_index(std::string const& index_tok) {
 }
 
 std::vector<token_seq> macro_processor::gather_arguments() {
+  auto argument_tokens = parenthesised_sequence(this);
+  if (argument_tokens.empty())
+    return { };
+
+  argument_tokens.pop_front();
+  argument_tokens.pop_back();
+
   auto arguments = std::vector<token_seq> { };
-  auto in_brackets = token_buffer { next_parens_sequence(false) };
+  auto in_brackets = token_buffer { argument_tokens };
 
   while(in_brackets.token_available()) {
     skip_whitespace(in_brackets);
