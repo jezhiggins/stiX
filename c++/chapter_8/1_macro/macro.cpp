@@ -272,38 +272,33 @@ void macro_processor::apply_macro(std::string const& tok) {
   auto arguments = gather_arguments();
   auto definition = token_buffer {macro_definition(tok) };
 
-  auto definition_with_arg_substitution = token_seq { };
-  auto defs = std::back_inserter(definition_with_arg_substitution);
+  auto with_arg_substitution = token_seq { };
   while (definition.token_available()) {
     auto const tok = definition.pop_token();
 
     if (tok != "$" || !definition.token_available())
-      defs = tok;
+      with_arg_substitution.push_back(tok);
     else {
       auto const index_tok = definition.pop_token();
       auto const index = argument_index(index_tok);
 
       if (index != -1) {
         if (index < arguments.size())
-          std::ranges::copy(arguments[index], defs);
+          std::ranges::copy(arguments[index], std::back_inserter(with_arg_substitution));
       }
       else { // bad index, so just pop it in there
-        defs = tok;
-        defs = index_tok;
+        with_arg_substitution.push_back(tok);
+        with_arg_substitution.push_back(index_tok);
       }
     }
   }
 
-  buffer_.push_tokens(definition_with_arg_substitution);
+  buffer_.push_tokens(with_arg_substitution);
 }
 
 int argument_index(std::string const& index_tok) {
-  if (index_tok.length() != 1)
-    return -1;
-
   auto index = 0;
   std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
-
   return index-1;
 }
 
@@ -316,15 +311,15 @@ std::vector<token_seq> macro_processor::gather_arguments() {
   argument_tokens.pop_back();
 
   auto arguments = std::vector<token_seq> { };
-  auto in_brackets = token_buffer { argument_tokens };
+  auto tokens = token_buffer { argument_tokens };
 
-  while(in_brackets.token_available()) {
-    skip_whitespace(in_brackets);
+  while(tokens.token_available()) {
+    skip_whitespace(tokens);
 
-    arguments.push_back(next_argument(in_brackets));
+    arguments.push_back(next_argument(tokens));
 
-    if (in_brackets.token_available())
-      in_brackets.pop_token(); // must be a comma
+    if (tokens.token_available())
+      tokens.pop_token(); // must be a comma
   }
 
   return arguments;
