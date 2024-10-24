@@ -7,6 +7,7 @@
 #include <map>
 #include <queue>
 #include <algorithm>
+#include <ranges>
 
 using namespace std::string_view_literals;
 using namespace std::string_literals;
@@ -34,7 +35,9 @@ namespace {
     }
 
     void push_tokens(token_seq const& tokens) {
-      std::ranges::copy(tokens, std::back_inserter(buf_));
+      std::ranges::copy(
+        std::ranges::reverse_view(tokens),
+        std::front_inserter(buf_));
     }
 
   private:
@@ -98,7 +101,7 @@ namespace {
     std::map<std::string, token_seq> definitions_;
 
     friend void skip_whitespace(auto&);
-    friend token_seq parenthesised_sequence(macro_processor*);
+    friend token_seq parenthesised_sequence(auto&);
   };
 
   auto constexpr Define = "define"sv;
@@ -119,32 +122,43 @@ namespace {
     skip_whitespace(*mp);
   }
 
-  token_seq next_argument(token_buffer& tokens) {
-    auto arg = token_seq { };
-    while(tokens.token_available() && tokens.peek_token() != Comma)
-      arg.push_back(tokens.pop_token());
-    return arg;
-  }
-
-  token_seq parenthesised_sequence(macro_processor* mp) {
+  token_seq parenthesised_sequence(auto& tokens) {
     auto inner = token_seq { };
-    if (!mp->token_available() || mp->peek_token() != LeftParen)
+    if (!tokens.token_available() || tokens.peek_token() != LeftParen)
       return inner;
 
     auto parens = 0;
     do {
-      auto tok = mp->pop_token();
+      auto tok = tokens.pop_token();
 
       parens -= (tok == RightParen);
       parens += (tok == LeftParen);
 
       inner.push_back(tok);
-    } while (parens != 0 && mp->token_available());
+    } while (parens != 0 && tokens.token_available());
 
     if (parens != 0)
       throw std::runtime_error("Expected )");
 
     return inner;
+  }
+
+  token_seq parenthesised_sequence(macro_processor* mp) {
+    return parenthesised_sequence(*mp);
+  }
+
+  token_seq next_argument(token_buffer& tokens) {
+    auto arg = token_seq { };
+
+    while (tokens.token_available() && tokens.peek_token() != Comma) {
+      if (tokens.peek_token() == LeftParen) {
+        auto parens = parenthesised_sequence(tokens);
+        std::ranges::copy(parens, std::back_inserter(arg));
+      } else
+        arg.push_back(tokens.pop_token());
+    }
+
+    return arg;
   }
 
 

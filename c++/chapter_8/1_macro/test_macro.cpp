@@ -82,7 +82,13 @@ TEST_CASE("macros with arguments") {
       "\n!monkey?#" },
     { "three args, all empty",
       "define(smash, $1!$2?$3#)\nsmash(,,)",
-      "\n!?#" }
+      "\n!?#" },
+    { "two args, left recursive",
+      "define(concat, $1-$2+)\nconcat(concat(A, B), C)",
+      "\nA-B+-C+"},
+    { "two args, right recursive",
+      "define(concat, $1-$2+)\nconcat(A, concat(B, C))",
+      "\nA-B-C++"}
   };
   build_good_tests(good);
 }
