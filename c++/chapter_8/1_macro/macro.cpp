@@ -103,7 +103,8 @@ namespace {
     friend void skip_whitespace(auto&);
     friend token_seq parenthesised_sequence(auto&);
     friend bool not_reached(auto&, std::string_view);
-  };
+    friend token_seq gather_until(auto&, std::string_view);
+    };
 
   auto constexpr Define = "define"sv;
   auto constexpr LeftParen = "("sv;
@@ -154,10 +155,10 @@ namespace {
     return not_reached(*mp, end_marker);
   }
 
-  token_seq next_argument(token_buffer& tokens) {
+  token_seq gather_until(auto& tokens, std::string_view end_token) {
     auto arg = token_seq { };
 
-    while (not_reached(tokens, Comma)) {
+    while (not_reached(tokens, end_token)) {
       if (tokens.peek_token() == LeftParen) {
         auto parens = parenthesised_sequence(tokens);
         std::ranges::copy(parens, std::back_inserter(arg));
@@ -166,6 +167,13 @@ namespace {
     }
 
     return arg;
+  }
+  token_seq gather_until(macro_processor* mp, std::string_view end_token) {
+    return gather_until(*mp, end_token);
+  }
+
+  token_seq next_argument(token_buffer& tokens) {
+    return gather_until(tokens, Comma);
   }
 
 
@@ -236,15 +244,7 @@ std::pair<std::string, token_seq> macro_processor::get_definition() {
 }
 
 token_seq macro_processor::get_definition_replacement() {
-  auto replacement = token_seq { };
-
-  while (not_reached(this, RightParen)) {
-    if (peek_token() == LeftParen) {
-      auto parens = parenthesised_sequence(this);
-      std::ranges::copy(parens, std::back_inserter(replacement));
-    } else
-      replacement.push_back(pop_token());
-  }
+  auto replacement = gather_until(this, RightParen);
 
   expect_next(RightParen);
 
