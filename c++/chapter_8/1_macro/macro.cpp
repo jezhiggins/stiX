@@ -15,6 +15,20 @@ using namespace std::string_literals;
 namespace {
   using token_seq = std::deque<std::string>;
 
+  token_seq& operator+=(token_seq& seq, std::string const& tok) {
+    seq.push_back(tok);
+    return seq;
+  }
+  token_seq& operator+=(token_seq& seq, std::string&& tok) {
+    seq.push_back(std::move(tok));
+    return seq;
+  }
+
+  token_seq& operator+=(token_seq& seq, token_seq&& tok) {
+    std::ranges::copy(tok, std::back_inserter(seq));
+    return seq;
+  }
+
   class token_buffer {
   public:
     explicit token_buffer() { }
@@ -103,7 +117,7 @@ namespace {
     friend token_seq parenthesised_sequence(auto&);
     friend bool not_reached(auto&, std::string_view);
     friend token_seq gather_until(auto&, std::string_view);
-    };
+  };
 
   auto constexpr Define = "define"sv;
   auto constexpr LeftParen = "("sv;
@@ -136,7 +150,7 @@ namespace {
       parens -= (tok == RightParen);
       parens += (tok == LeftParen);
 
-      inner.push_back(tok);
+      inner += tok;
     } while (parens != 0 && tokens.token_available());
 
     if (parens != 0)
@@ -162,13 +176,11 @@ namespace {
   token_seq gather_until(auto& tokens, std::string_view end_token) {
     auto arg = token_seq { };
 
-    while (not_reached(tokens, end_token)) {
-      if (tokens.peek_token() == LeftParen) {
-        auto parens = parenthesised_sequence(tokens);
-        std::ranges::copy(parens, std::back_inserter(arg));
-      } else
-        arg.push_back(tokens.pop_token());
-    }
+    while (not_reached(tokens, end_token))
+      if (tokens.peek_token() == LeftParen)
+        arg += parenthesised_sequence(tokens);
+      else
+        arg += tokens.pop_token();
 
     return arg;
   }
@@ -296,13 +308,10 @@ void macro_processor::apply_macro(std::string const& tok) {
   auto with_arg_substitution = token_seq { };
   while (definition.token_available()) {
     while (not_reached(definition, Dollar))
-      with_arg_substitution.push_back(definition.pop_token());
+      with_arg_substitution += definition.pop_token();
 
     if (is_next(definition, Dollar))
-      std::ranges::copy(
-        argument_substitution(definition, arguments),
-        std::back_inserter(with_arg_substitution)
-      );
+      with_arg_substitution += argument_substitution(definition, arguments);
   }
 
   buffer_.push_tokens(with_arg_substitution);
