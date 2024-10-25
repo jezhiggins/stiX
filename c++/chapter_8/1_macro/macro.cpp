@@ -109,6 +109,7 @@ namespace {
   auto constexpr LeftParen = "("sv;
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;
+  auto constexpr Dollar = "$"sv;
   auto const EndOfInput = "<EOF>"s;
 
   bool iswhitespace(std::string const& token) {
@@ -277,10 +278,10 @@ void macro_processor::apply_macro(std::string const& tok) {
 
   auto with_arg_substitution = token_seq { };
   while (definition.token_available()) {
-    while (not_reached(definition, "$"))
+    while (not_reached(definition, Dollar))
       with_arg_substitution.push_back(definition.pop_token());
 
-    if (is_next(definition, "$"))
+    if (is_next(definition, Dollar))
     {
       auto const dollar = definition.pop_token();
       auto const index_tok = definition.pop_token();
