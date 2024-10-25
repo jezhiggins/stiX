@@ -272,8 +272,25 @@ token_seq const& macro_processor::macro_definition(std::string const& tok) {
   return definitions_[tok];
 }
 
+token_seq argument_substitution(
+    token_buffer& definition,
+    std::vector<token_seq> const& arguments
+) {
+  auto const dollar = definition.pop_token();
+  auto const index_tok = definition.pop_token();
+  auto const index = argument_index(index_tok);
+
+  if (index == -1)
+    return { dollar, index_tok };
+
+  if (index >= arguments.size())
+    return { };
+
+  return arguments[index];
+}
+
 void macro_processor::apply_macro(std::string const& tok) {
-  auto arguments = gather_arguments();
+  auto const arguments = gather_arguments();
   auto definition = token_buffer { macro_definition(tok) };
 
   auto with_arg_substitution = token_seq { };
@@ -282,20 +299,10 @@ void macro_processor::apply_macro(std::string const& tok) {
       with_arg_substitution.push_back(definition.pop_token());
 
     if (is_next(definition, Dollar))
-    {
-      auto const dollar = definition.pop_token();
-      auto const index_tok = definition.pop_token();
-      auto const index = argument_index(index_tok);
-
-      if (index != -1) {
-        if (index < arguments.size())
-          std::ranges::copy(arguments[index], std::back_inserter(with_arg_substitution));
-      }
-      else { // bad index, so just pop it in there
-        with_arg_substitution.push_back(dollar);
-        with_arg_substitution.push_back(index_tok);
-      }
-    }
+      std::ranges::copy(
+        argument_substitution(definition, arguments),
+        std::back_inserter(with_arg_substitution)
+      );
   }
 
   buffer_.push_tokens(with_arg_substitution);
@@ -304,7 +311,7 @@ void macro_processor::apply_macro(std::string const& tok) {
 int argument_index(std::string const& index_tok) {
   auto index = 0;
   std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
-  return index-1;
+  return index - 1;
 }
 
 std::vector<token_seq> macro_processor::gather_arguments() {
