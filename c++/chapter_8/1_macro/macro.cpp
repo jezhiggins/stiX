@@ -83,7 +83,6 @@ namespace {
     std::string const& peek_token();
     std::string pop_token();
     void expect_next(std::string_view expected);
-    token_seq next_parens_sequence();
 
     void install_definition();
     std::pair<std::string, token_seq> get_definition();
@@ -125,10 +124,10 @@ namespace {
   }
 
   token_seq parenthesised_sequence(auto& tokens) {
-    auto inner = token_seq { };
     if (!tokens.token_available() || tokens.peek_token() != LeftParen)
-      return inner;
+      return { };
 
+    auto inner = token_seq { };
     auto parens = 0;
     do {
       auto tok = tokens.pop_token();
@@ -146,6 +145,10 @@ namespace {
   }
   token_seq parenthesised_sequence(macro_processor* mp) {
     return parenthesised_sequence(*mp);
+  }
+
+  bool is_next(auto& tokens, std::string_view expected) {
+    return tokens.token_available() && tokens.peek_token() == expected;
   }
 
   bool not_reached(auto& tokens, std::string_view end_marker) {
@@ -270,15 +273,16 @@ token_seq const& macro_processor::macro_definition(std::string const& tok) {
 
 void macro_processor::apply_macro(std::string const& tok) {
   auto arguments = gather_arguments();
-  auto definition = token_buffer {macro_definition(tok) };
+  auto definition = token_buffer { macro_definition(tok) };
 
   auto with_arg_substitution = token_seq { };
   while (definition.token_available()) {
-    auto const tok = definition.pop_token();
+    while (not_reached(definition, "$"))
+      with_arg_substitution.push_back(definition.pop_token());
 
-    if (tok != "$" || !definition.token_available())
-      with_arg_substitution.push_back(tok);
-    else {
+    if (is_next(definition, "$"))
+    {
+      auto const dollar = definition.pop_token();
       auto const index_tok = definition.pop_token();
       auto const index = argument_index(index_tok);
 
@@ -287,7 +291,7 @@ void macro_processor::apply_macro(std::string const& tok) {
           std::ranges::copy(arguments[index], std::back_inserter(with_arg_substitution));
       }
       else { // bad index, so just pop it in there
-        with_arg_substitution.push_back(tok);
+        with_arg_substitution.push_back(dollar);
         with_arg_substitution.push_back(index_tok);
       }
     }
