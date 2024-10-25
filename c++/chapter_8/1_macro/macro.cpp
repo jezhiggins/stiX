@@ -295,10 +295,9 @@ token_seq argument_substitution(
   if (index == -1)
     return { dollar, index_tok };
 
-  if (index >= arguments.size())
-    return { };
-
-  return arguments[index];
+  return (index < arguments.size())
+    ? arguments[index]
+    : token_seq { };
 }
 
 void macro_processor::apply_macro(std::string const& tok) {
