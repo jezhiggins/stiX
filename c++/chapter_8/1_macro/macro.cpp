@@ -212,132 +212,131 @@ namespace {
     return gather_until(tokens, Comma);
   }
 
-/////////////////////
-void macro_processor::process_to(std::ostream& out) {
-  while(source_.token_available()) {
-    auto token = source_.pop_token();
+  /////////////////////
+  void macro_processor::process_to(std::ostream& out) {
+    while(source_.token_available()) {
+      auto token = source_.pop_token();
 
-    if (token == Define)
-      install_definition();
-    else if (is_macro(token))
-      apply_macro(token);
-    else
-      out << token;
-  }
-} // process_to
+      if (token == Define)
+        install_definition();
+      else if (is_macro(token))
+        apply_macro(token);
+      else
+        out << token;
+    }
+  } // process_to
 
-void macro_processor::expect_next(std::string_view expected) {
-  auto const next = source_.token_available() ? source_.pop_token() : EndOfInput;
-  if (expected != next)
-    throw std::runtime_error(std::format("Expected {}", expected));
-} // expect_next
+  void macro_processor::expect_next(std::string_view expected) {
+    auto const next = source_.token_available() ? source_.pop_token() : EndOfInput;
+    if (expected != next)
+      throw std::runtime_error(std::format("Expected {}", expected));
+  } // expect_next
 
-void macro_processor::install_definition() {
-  auto [ def, replacement ] = get_definition();
-  definitions_[def] = replacement;
-}
-
-std::pair<std::string, token_seq> macro_processor::get_definition() {
-  expect_next(LeftParen);
-
-  auto def = get_definition_name();
-
-  expect_next(Comma);
-  skip_whitespace(source_);
-
-  auto replacement = get_definition_replacement();
-
-  return { def, replacement };
-}
-
-token_seq macro_processor::get_definition_replacement() {
-  auto replacement = gather_until(source_, RightParen);
-
-  expect_next(RightParen);
-
-  return replacement;
-}
-
-std::string macro_processor::get_definition_name() {
-  auto def = source_.pop_token();
-
-  if (!stiX::isalnum(def))
-    throw std::runtime_error(std::format("{} is not alphanumeric", def));
-
-  return def;
-}
-
-bool macro_processor::is_macro(std::string const& tok) const {
-  return definitions_.contains(tok);
-}
-
-token_seq const& macro_processor::macro_definition(std::string const& tok) {
-  return definitions_[tok];
-}
-
-token_seq argument_substitution(
-    token_buffer& definition,
-    std::vector<token_seq> const& arguments
-) {
-  auto const dollar = definition.pop_token();
-  auto const index_tok =
-    definition.token_available() ? definition.peek_token() : "";
-  auto const index = argument_index(index_tok);
-
-  if (index == -1)
-    return { dollar };
-
-  definition.pop_token();
-  return (index < arguments.size())
-    ? arguments[index]
-    : token_seq { };
-}
-
-void macro_processor::apply_macro(std::string const& tok) {
-  auto const arguments = gather_arguments();
-  auto definition = token_buffer { macro_definition(tok) };
-
-  auto with_arg_substitution = token_seq { };
-  while (definition.token_available()) {
-    while (not_reached(definition, Dollar))
-      with_arg_substitution += definition.pop_token();
-
-    if (is_next(definition, Dollar))
-      with_arg_substitution += argument_substitution(definition, arguments);
+  void macro_processor::install_definition() {
+    auto [ def, replacement ] = get_definition();
+    definitions_[def] = replacement;
   }
 
-  source_.push_tokens(with_arg_substitution);
-}
+  std::pair<std::string, token_seq> macro_processor::get_definition() {
+    expect_next(LeftParen);
 
-int argument_index(std::string const& index_tok) {
-  auto index = 0;
-  std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
-  return index - 1;
-}
+    auto def = get_definition_name();
 
-std::vector<token_seq> macro_processor::gather_arguments() {
-  auto argument_tokens = parenthesised_sequence(source_);
-  if (argument_tokens.empty())
-    return { };
+    expect_next(Comma);
+    skip_whitespace(source_);
 
-  argument_tokens.pop_front();
-  argument_tokens.pop_back();
+    auto replacement = get_definition_replacement();
 
-  auto arguments = std::vector<token_seq> { };
-  auto tokens = token_buffer { argument_tokens };
-
-  while(tokens.token_available()) {
-    skip_whitespace(tokens);
-
-    arguments.push_back(next_argument(tokens));
-
-    if (tokens.token_available())
-      tokens.pop_token(); // must be a comma
+    return { def, replacement };
   }
 
-  return arguments;
-}
+  token_seq macro_processor::get_definition_replacement() {
+    auto replacement = gather_until(source_, RightParen);
 
+    expect_next(RightParen);
+
+    return replacement;
+  }
+
+  std::string macro_processor::get_definition_name() {
+    auto def = source_.pop_token();
+
+    if (!stiX::isalnum(def))
+      throw std::runtime_error(std::format("{} is not alphanumeric", def));
+
+    return def;
+  }
+
+  bool macro_processor::is_macro(std::string const& tok) const {
+    return definitions_.contains(tok);
+  }
+
+  token_seq const& macro_processor::macro_definition(std::string const& tok) {
+    return definitions_[tok];
+  }
+
+  token_seq argument_substitution(
+      token_buffer& definition,
+      std::vector<token_seq> const& arguments
+  ) {
+    auto const dollar = definition.pop_token();
+    auto const index_tok =
+      definition.token_available() ? definition.peek_token() : "";
+    auto const index = argument_index(index_tok);
+
+    if (index == -1)
+      return { dollar };
+
+    definition.pop_token();
+    return (index < arguments.size())
+      ? arguments[index]
+      : token_seq { };
+  }
+
+  void macro_processor::apply_macro(std::string const& tok) {
+    auto const arguments = gather_arguments();
+    auto definition = token_buffer { macro_definition(tok) };
+
+    auto with_arg_substitution = token_seq { };
+    while (definition.token_available()) {
+      while (not_reached(definition, Dollar))
+        with_arg_substitution += definition.pop_token();
+
+      if (is_next(definition, Dollar))
+        with_arg_substitution += argument_substitution(definition, arguments);
+    }
+
+    source_.push_tokens(with_arg_substitution);
+  }
+
+  int argument_index(std::string const& index_tok) {
+    auto index = 0;
+    std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
+    return index - 1;
+  }
+
+  std::vector<token_seq> macro_processor::gather_arguments() {
+    auto argument_tokens = parenthesised_sequence(source_);
+    if (argument_tokens.empty())
+      return { };
+
+    argument_tokens.pop_front();
+    argument_tokens.pop_back();
+
+    auto arguments = std::vector<token_seq> { };
+    auto tokens = token_buffer { argument_tokens };
+
+    while(tokens.token_available()) {
+      skip_whitespace(tokens);
+
+      arguments.push_back(next_argument(tokens));
+
+      if (tokens.token_available())
+        tokens.pop_token(); // must be a comma
+    }
+
+    return arguments;
+  }
 } // namespace
 
 void stiX::macro_process(
