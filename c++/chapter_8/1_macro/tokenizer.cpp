@@ -4,8 +4,8 @@
 
 constexpr auto eof = std::char_traits<char>::eof();
 
-stiX::stream_token_iterator::stream_token_iterator(std::istream& input) :
-  input_(&input) {
+stiX::stream_token_iterator::stream_token_iterator(std::istream* input) :
+  input_(input) {
   next_token();
 }
 stiX::stream_token_iterator::stream_token_iterator() :
@@ -56,7 +56,7 @@ bool stiX::operator==(
 
 /////////////
 stiX::tokenizer::tokenizer(std::istream& input) :
-  input_(input) {
+  input_(&input) {
 }
 
 stiX::stream_token_iterator stiX::tokenizer::begin() const {

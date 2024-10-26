@@ -29,6 +29,8 @@ namespace {
     return seq;
   }
 
+  auto const EndOfInput = std::string { 1, '\0' };
+
   class token_buffer {
   public:
     token_buffer() = default;
@@ -60,6 +62,7 @@ namespace {
 
   class token_stream {
   public:
+    token_stream() = default;
     explicit token_stream(std::istream& in):
       tokenizer_(in),
       tok_(tokenizer_.begin()) {
@@ -84,18 +87,55 @@ namespace {
     stiX::stream_token_iterator tok_;
   };
 
+  class token_source {
+  public:
+    token_source() = default;
+    explicit token_source(std::istream& is) :
+      stream_(is) { }
+
+    bool token_available() const {
+      return buffer_.token_available() || stream_.token_available();
+    }
+
+    std::string const& peek_token() const {
+      if (buffer_.token_available())
+        return buffer_.peek_token();
+
+      if (stream_.token_available())
+        return stream_.peek_token();
+
+      return EndOfInput;
+    }
+
+    std::string pop_token() {
+      if (buffer_.token_available())
+        return buffer_.pop_token();
+
+      if (stream_.token_available())
+        return stream_.pop_token();
+
+      throw std::runtime_error("Unexpected end of input");
+    }
+
+    void push_tokens(token_seq const& tokens) {
+      buffer_.push_tokens(tokens);
+    }
+
+  private:
+    token_buffer buffer_;
+    token_stream stream_;
+  };
+
   int argument_index(std::string const& index_tok);
 
   class macro_processor {
   public:
-    explicit macro_processor(std::istream& in);
+    explicit macro_processor(std::istream& in) :
+      source_(in) { }
 
     void process_to(std::ostream& out);
 
   private:
-    bool token_available() const;
-    std::string const& peek_token();
-    std::string pop_token();
     void expect_next(std::string_view expected);
 
     void install_definition();
@@ -108,15 +148,8 @@ namespace {
     void apply_macro(std::string const& tok);
     std::vector<token_seq> gather_arguments();
 
-    token_stream stream_;
-    token_buffer buffer_;
-
+    token_source source_;
     std::map<std::string, token_seq> definitions_;
-
-    friend void skip_whitespace(auto&);
-    friend token_seq parenthesised_sequence(auto&);
-    friend bool not_reached(auto&, std::string_view);
-    friend token_seq gather_until(auto&, std::string_view);
   };
 
   auto constexpr Define = "define"sv;
@@ -124,7 +157,6 @@ namespace {
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;
   auto constexpr Dollar = "$"sv;
-  auto const EndOfInput = std::string { 1, '\0' };
 
   bool iswhitespace(std::string const& token) {
     return token.size() == 1 && stiX::iswhitespace(token[0]);
@@ -133,9 +165,6 @@ namespace {
   void skip_whitespace(auto& tokens) {
     while (tokens.token_available() && iswhitespace(tokens.peek_token()))
       tokens.pop_token();
-  }
-  void skip_whitespace(macro_processor* mp) {
-    skip_whitespace(*mp);
   }
 
   token_seq parenthesised_sequence(auto& tokens) {
@@ -158,9 +187,6 @@ namespace {
 
     return inner;
   }
-  token_seq parenthesised_sequence(macro_processor* mp) {
-    return parenthesised_sequence(*mp);
-  }
 
   bool is_next(auto& tokens, std::string_view expected) {
     return tokens.token_available() && tokens.peek_token() == expected;
@@ -168,9 +194,6 @@ namespace {
 
   bool not_reached(auto& tokens, std::string_view end_marker) {
     return tokens.token_available() && tokens.peek_token() != end_marker;
-  }
-  bool not_reached(macro_processor* mp, std::string_view end_marker) {
-    return not_reached(*mp, end_marker);
   }
 
   token_seq gather_until(auto& tokens, std::string_view end_token) {
@@ -184,23 +207,15 @@ namespace {
 
     return arg;
   }
-  token_seq gather_until(macro_processor* mp, std::string_view end_token) {
-    return gather_until(*mp, end_token);
-  }
 
   token_seq next_argument(token_buffer& tokens) {
     return gather_until(tokens, Comma);
   }
 
-
 /////////////////////
-macro_processor::macro_processor(std::istream& in) :
-  stream_(in) {
-}
-
 void macro_processor::process_to(std::ostream& out) {
-  while(token_available()) {
-    auto token = pop_token();
+  while(source_.token_available()) {
+    auto token = source_.pop_token();
 
     if (token == Define)
       install_definition();
@@ -211,32 +226,8 @@ void macro_processor::process_to(std::ostream& out) {
   }
 } // process_to
 
-bool macro_processor::token_available() const {
-  return buffer_.token_available() || stream_.token_available();
-}
-
-std::string const& macro_processor::peek_token() {
-  if (buffer_.token_available())
-    return buffer_.peek_token();
-
-  if (stream_.token_available())
-    return stream_.peek_token();
-
-  return EndOfInput;
-} // peek_token
-
-std::string macro_processor::pop_token() {
-  if (buffer_.token_available())
-    return buffer_.pop_token();
-
-  if (stream_.token_available())
-    return stream_.pop_token();
-
-  throw std::runtime_error("Unexpected end of input");
-} // pop_token
-
 void macro_processor::expect_next(std::string_view expected) {
-  auto const next = token_available() ? pop_token() : EndOfInput;
+  auto const next = source_.token_available() ? source_.pop_token() : EndOfInput;
   if (expected != next)
     throw std::runtime_error(std::format("Expected {}", expected));
 } // expect_next
@@ -252,7 +243,7 @@ std::pair<std::string, token_seq> macro_processor::get_definition() {
   auto def = get_definition_name();
 
   expect_next(Comma);
-  skip_whitespace(this);
+  skip_whitespace(source_);
 
   auto replacement = get_definition_replacement();
 
@@ -260,7 +251,7 @@ std::pair<std::string, token_seq> macro_processor::get_definition() {
 }
 
 token_seq macro_processor::get_definition_replacement() {
-  auto replacement = gather_until(this, RightParen);
+  auto replacement = gather_until(source_, RightParen);
 
   expect_next(RightParen);
 
@@ -268,7 +259,7 @@ token_seq macro_processor::get_definition_replacement() {
 }
 
 std::string macro_processor::get_definition_name() {
-  auto def = pop_token();
+  auto def = source_.pop_token();
 
   if (!stiX::isalnum(def))
     throw std::runtime_error(std::format("{} is not alphanumeric", def));
@@ -315,7 +306,7 @@ void macro_processor::apply_macro(std::string const& tok) {
       with_arg_substitution += argument_substitution(definition, arguments);
   }
 
-  buffer_.push_tokens(with_arg_substitution);
+  source_.push_tokens(with_arg_substitution);
 }
 
 int argument_index(std::string const& index_tok) {
@@ -325,7 +316,7 @@ int argument_index(std::string const& index_tok) {
 }
 
 std::vector<token_seq> macro_processor::gather_arguments() {
-  auto argument_tokens = parenthesised_sequence(this);
+  auto argument_tokens = parenthesised_sequence(source_);
   if (argument_tokens.empty())
     return { };
 
