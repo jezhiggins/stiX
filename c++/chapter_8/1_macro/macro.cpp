@@ -31,8 +31,8 @@ namespace {
 
   class token_buffer {
   public:
-    explicit token_buffer() { }
-    token_buffer(token_seq const& tokens): buf_(tokens) { }
+    token_buffer() = default;
+    explicit token_buffer(token_seq const& tokens): buf_(tokens) { }
 
     bool token_available() const {
       return !buf_.empty();
