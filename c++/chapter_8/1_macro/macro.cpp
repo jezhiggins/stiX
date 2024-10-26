@@ -13,7 +13,30 @@ using namespace std::string_view_literals;
 using namespace std::string_literals;
 
 namespace {
-  using token_seq = std::deque<std::string>;
+
+  class token_seq {
+  public:
+    using const_iterator = std::deque<std::string>::const_iterator;
+    using value_type = std::string;
+
+    token_seq() = default;
+    token_seq(std::initializer_list<std::string> toks) : seq_(std::move(toks)) { }
+
+    const_iterator begin() const { return seq_.begin(); }
+    const_iterator end() const { return seq_.end(); }
+
+    bool empty() const { return seq_.empty(); }
+
+    std::string const& front() const { return seq_.front(); }
+
+    void pop_front() { seq_.pop_front(); }
+    void pop_back() { seq_.pop_back(); }
+
+    void push_front(std::string const& tok) { seq_.push_front(tok); }
+    void push_back(std::string const& tok) { seq_.push_back(tok); }
+  private:
+    std::deque<std::string> seq_;
+  };
 
   token_seq& operator+=(token_seq& seq, std::string const& tok) {
     seq.push_back(tok);
