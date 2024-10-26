@@ -38,7 +38,8 @@ TEST_CASE("Text replacement") {
       "define(DONE, ENDFILE)\ndefine(ENDFILE, (-1))\nif (getit(line) = DONE) then putit(sumline)",
       "\n\nif (getit(line) = (-1)) then putit(sumline)" },
     { "just a define", "define(one, two)", "" },
-    { "looks like an argument, but isn't", "define(dollar, $)\ndollar!", "\n$!"}
+    { "looks like an argument, but isn't", "define(dollar, $)\ndollar!", "\n$!"},
+    { "expansion includes $", "define(dollar, $$1)\ndollar(5)!", "\n$5!"}
   };
   build_good_tests(good);
 }

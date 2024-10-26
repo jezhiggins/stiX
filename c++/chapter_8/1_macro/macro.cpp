@@ -290,12 +290,13 @@ token_seq argument_substitution(
 ) {
   auto const dollar = definition.pop_token();
   auto const index_tok =
-    definition.token_available() ? definition.pop_token() : "";
+    definition.token_available() ? definition.peek_token() : "";
   auto const index = argument_index(index_tok);
 
   if (index == -1)
-    return { dollar, index_tok };
+    return { dollar };
 
+  definition.pop_token();
   return (index < arguments.size())
     ? arguments[index]
     : token_seq { };
