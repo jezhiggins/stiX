@@ -289,7 +289,8 @@ token_seq argument_substitution(
     std::vector<token_seq> const& arguments
 ) {
   auto const dollar = definition.pop_token();
-  auto const index_tok = definition.pop_token();
+  auto const index_tok =
+    definition.token_available() ? definition.pop_token() : "";
   auto const index = argument_index(index_tok);
 
   if (index == -1)

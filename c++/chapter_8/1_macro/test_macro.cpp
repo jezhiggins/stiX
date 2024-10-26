@@ -37,7 +37,8 @@ TEST_CASE("Text replacement") {
     { "nested replacement, opposite order",
       "define(DONE, ENDFILE)\ndefine(ENDFILE, (-1))\nif (getit(line) = DONE) then putit(sumline)",
       "\n\nif (getit(line) = (-1)) then putit(sumline)" },
-    { "just a define", "define(one, two)", "" }
+    { "just a define", "define(one, two)", "" },
+    { "looks like an argument, but isn't", "define(dollar, $)\ndollar!", "\n$!"}
   };
   build_good_tests(good);
 }
