@@ -20,7 +20,7 @@ namespace {
     using value_type = std::string;
 
     token_seq() = default;
-    token_seq(std::initializer_list<std::string> toks) : seq_(std::move(toks)) { }
+    token_seq(std::initializer_list<std::string> toks) : seq_(toks) { }
 
     const_iterator begin() const { return seq_.begin(); }
     const_iterator end() const { return seq_.end(); }
@@ -34,23 +34,23 @@ namespace {
 
     void push_front(std::string const& tok) { seq_.push_front(tok); }
     void push_back(std::string const& tok) { seq_.push_back(tok); }
+
+    token_seq& operator+=(std::string const& tok) {
+      seq_.push_back(tok);
+      return *this;
+    }
+    token_seq& operator+=(std::string&& tok) {
+      seq_.push_back(std::move(tok));
+      return *this;
+    }
+    token_seq& operator+=(token_seq&& tok) {
+      std::ranges::copy(tok, std::back_inserter(seq_));
+      return *this;
+    }
+
   private:
     std::deque<std::string> seq_;
   };
-
-  token_seq& operator+=(token_seq& seq, std::string const& tok) {
-    seq.push_back(tok);
-    return seq;
-  }
-  token_seq& operator+=(token_seq& seq, std::string&& tok) {
-    seq.push_back(std::move(tok));
-    return seq;
-  }
-
-  token_seq& operator+=(token_seq& seq, token_seq&& tok) {
-    std::ranges::copy(tok, std::back_inserter(seq));
-    return seq;
-  }
 
   auto const EndOfInput = std::string { 1, '\0' };
 
