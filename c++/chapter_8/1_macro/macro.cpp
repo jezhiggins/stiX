@@ -124,7 +124,7 @@ namespace {
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;
   auto constexpr Dollar = "$"sv;
-  auto const EndOfInput = "<EOF>"s;
+  auto const EndOfInput = std::string { 1, '\0' };
 
   bool iswhitespace(std::string const& token) {
     return token.size() == 1 && stiX::iswhitespace(token[0]);
@@ -223,7 +223,7 @@ std::string const& macro_processor::peek_token() {
     return stream_.peek_token();
 
   return EndOfInput;
-} // pop_token
+} // peek_token
 
 std::string macro_processor::pop_token() {
   if (buffer_.token_available())
