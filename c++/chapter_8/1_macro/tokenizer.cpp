@@ -6,7 +6,7 @@ constexpr auto eof = std::char_traits<char>::eof();
 
 stiX::stream_token_iterator::stream_token_iterator(std::istream& input) :
   input_(&input) {
-  token();
+  next_token();
 }
 stiX::stream_token_iterator::stream_token_iterator() :
   input_() {
@@ -17,22 +17,19 @@ std::string const& stiX::stream_token_iterator::operator*() const {
 }
 
 stiX::stream_token_iterator& stiX::stream_token_iterator::operator++() {
-  token();
+  next_token();
   return *this;
 }
 
-void stiX::stream_token_iterator::token() {
-  token_ = next_token();
-} // token
+void stiX::stream_token_iterator::next_token() {
+  if(input_available() && !stiX::isalnum(peek())) {
+    token_ = std::string{get()};
+    return;
+  }
 
-std::string stiX::stream_token_iterator::next_token() {
-  if(input_available() && !stiX::isalnum(peek()))
-    return std::string { get() };
-
-  std::string tok;
+  token_.clear();
   while(input_available() && stiX::isalnum(peek()))
-    tok += get();
-  return tok;
+    token_ += get();
 } // next_token
 
 bool stiX::stream_token_iterator::input_available() {

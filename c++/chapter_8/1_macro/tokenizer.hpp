@@ -14,8 +14,7 @@ namespace stiX {
     stream_token_iterator& operator++();
 
   private:
-    void token();
-    std::string next_token();
+    void next_token();
 
     bool input_available();
 
