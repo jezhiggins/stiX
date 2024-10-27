@@ -1,7 +1,7 @@
 #include "macro.hpp"
 #include "tokenizer.hpp"
 #include "token_buffer.hpp"
-#include "token_stream.hpp"
+#include "token_source.hpp"
 #include "../../lib/chars.hpp"
 #include <stdexcept>
 #include <format>
@@ -14,48 +14,7 @@ using namespace std::string_literals;
 namespace {
   using stiX::token_seq;
   using stiX::token_buffer;
-  using stiX::token_stream;
-
-  auto const EndOfInput = std::string { 1, '\0' };
-
-  class token_source {
-  public:
-    token_source() = default;
-    explicit token_source(std::istream& is) :
-      stream_(is) { }
-
-    bool token_available() const {
-      return buffer_.token_available() || stream_.token_available();
-    }
-
-    std::string const& peek_token() const {
-      if (buffer_.token_available())
-        return buffer_.peek_token();
-
-      if (stream_.token_available())
-        return stream_.peek_token();
-
-      return EndOfInput;
-    }
-
-    std::string pop_token() {
-      if (buffer_.token_available())
-        return buffer_.pop_token();
-
-      if (stream_.token_available())
-        return stream_.pop_token();
-
-      throw std::runtime_error("Unexpected end of input");
-    }
-
-    void push_tokens(token_seq const& tokens) {
-      buffer_.push_tokens(tokens);
-    }
-
-  private:
-    token_buffer buffer_;
-    token_stream stream_;
-  };
+  using stiX::token_source;
 
   int argument_index(std::string const& index_tok);
 
@@ -158,7 +117,9 @@ namespace {
   } // process_to
 
   void macro_processor::expect_next(std::string_view expected) {
-    auto const next = source_.token_available() ? source_.pop_token() : EndOfInput;
+    auto const next = source_.token_available()
+      ? source_.pop_token()
+      : stiX::token_source::EndOfInput;
     if (expected != next)
       throw std::runtime_error(std::format("Expected {}", expected));
   } // expect_next
