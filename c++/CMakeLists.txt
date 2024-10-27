@@ -266,6 +266,10 @@ set (macro_sources
 		chapter_8/1_macro/macro.cpp
 		chapter_8/1_macro/token_seq.hpp
 		chapter_8/1_macro/token_seq.cpp
+		chapter_8/1_macro/token_buffer.hpp
+		chapter_8/1_macro/token_buffer.cpp
+		chapter_8/1_macro/token_stream.hpp
+		chapter_8/1_macro/token_stream.cpp
 )
 add_executable(macro
 		chapter_8/1_macro/1_macro.cpp

@@ -1,6 +1,7 @@
 #include "macro.hpp"
 #include "tokenizer.hpp"
 #include "token_buffer.hpp"
+#include "token_stream.hpp"
 #include "../../lib/chars.hpp"
 #include <stdexcept>
 #include <format>
@@ -13,35 +14,9 @@ using namespace std::string_literals;
 namespace {
   using stiX::token_seq;
   using stiX::token_buffer;
+  using stiX::token_stream;
 
   auto const EndOfInput = std::string { 1, '\0' };
-
-  class token_stream {
-  public:
-    token_stream() = default;
-    explicit token_stream(std::istream& in):
-      tokenizer_(in),
-      tok_(tokenizer_.begin()) {
-    }
-
-    bool token_available() const {
-      return tok_ != tokenizer_.end();
-    }
-
-    std::string const& peek_token() const {
-      return *tok_;
-    }
-
-    std::string pop_token() {
-      auto tok = *tok_;
-      ++tok_;
-      return tok;
-    }
-
-  private:
-    stiX::tokenizer tokenizer_;
-    stiX::stream_token_iterator tok_;
-  };
 
   class token_source {
   public:
