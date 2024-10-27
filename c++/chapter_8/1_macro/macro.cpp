@@ -118,11 +118,10 @@ namespace {
   } // process_to
 
   void macro_processor::expect_next(std::string_view expected) {
-    auto const next = source_.token_available()
-      ? source_.pop_token()
-      : stiX::EndOfInput;
+    auto const& next = source_.peek_token();
     if (expected != next)
       throw std::runtime_error(std::format("Expected {}", expected));
+    source_.pop_token();
   } // expect_next
 
   void macro_processor::install_definition() {
@@ -173,7 +172,7 @@ namespace {
       std::vector<token_seq> const& arguments
   ) {
     auto const dollar = definition.pop_token();
-    auto const index_tok = definition.peek_token();
+    auto const& index_tok = definition.peek_token();
     auto const index = argument_index(index_tok);
 
     if (index == -1)
