@@ -24,9 +24,6 @@ namespace stiX {
       buffer_.push_tokens(tokens);
     }
 
-    static std::string constexpr EndOfInput =
-      std::string { 1, '\0' };
-
   private:
     token_buffer buffer_;
     token_stream stream_;

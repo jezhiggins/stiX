@@ -2,6 +2,7 @@
 #include "tokenizer.hpp"
 #include "token_buffer.hpp"
 #include "token_source.hpp"
+#include "end_of_input.hpp"
 #include "../../lib/chars.hpp"
 #include <stdexcept>
 #include <format>
@@ -119,7 +120,7 @@ namespace {
   void macro_processor::expect_next(std::string_view expected) {
     auto const next = source_.token_available()
       ? source_.pop_token()
-      : stiX::token_source::EndOfInput;
+      : stiX::EndOfInput;
     if (expected != next)
       throw std::runtime_error(std::format("Expected {}", expected));
   } // expect_next

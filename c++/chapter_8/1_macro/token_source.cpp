@@ -1,4 +1,5 @@
 #include "token_source.hpp"
+#include "end_of_input.hpp"
 #include <stdexcept>
 
 std::string const& stiX::token_source::peek_token() const {

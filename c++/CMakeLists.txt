@@ -272,6 +272,7 @@ set (macro_sources
 		chapter_8/1_macro/token_stream.cpp
 		chapter_8/1_macro/token_source.hpp
 		chapter_8/1_macro/token_source.cpp
+		chapter_8/1_macro/end_of_input.hpp
 )
 add_executable(macro
 		chapter_8/1_macro/1_macro.cpp
