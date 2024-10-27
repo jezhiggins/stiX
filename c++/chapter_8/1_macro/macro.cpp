@@ -54,12 +54,12 @@ namespace {
   }
 
   void skip_whitespace(auto& tokens) {
-    while (tokens.token_available() && is_whitespace(tokens.peek_token()))
+    while (is_whitespace(tokens.peek_token()))
       tokens.pop_token();
   }
 
   token_seq parenthesised_sequence(auto& tokens) {
-    if (!tokens.token_available() || tokens.peek_token() != LeftParen)
+    if (tokens.peek_token() != LeftParen)
       return { };
 
     auto inner = token_seq { };
@@ -80,7 +80,7 @@ namespace {
   }
 
   bool is_next(auto& tokens, std::string_view expected) {
-    return tokens.token_available() && tokens.peek_token() == expected;
+    return tokens.peek_token() == expected;
   }
 
   bool not_reached(auto& tokens, std::string_view end_marker) {
@@ -173,8 +173,7 @@ namespace {
       std::vector<token_seq> const& arguments
   ) {
     auto const dollar = definition.pop_token();
-    auto const index_tok =
-      definition.token_available() ? definition.peek_token() : "";
+    auto const index_tok = definition.peek_token();
     auto const index = argument_index(index_tok);
 
     if (index == -1)
