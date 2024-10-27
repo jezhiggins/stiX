@@ -1,51 +1,20 @@
 #include "macro.hpp"
 #include "tokenizer.hpp"
-#include "token_seq.hpp"
+#include "token_buffer.hpp"
 #include "../../lib/chars.hpp"
 #include <stdexcept>
-#include <sstream>
 #include <format>
 #include <map>
-#include <queue>
-#include <algorithm>
-#include <ranges>
+#include <vector>
 
 using namespace std::string_view_literals;
 using namespace std::string_literals;
 
 namespace {
   using stiX::token_seq;
-  
+  using stiX::token_buffer;
+
   auto const EndOfInput = std::string { 1, '\0' };
-
-  class token_buffer {
-  public:
-    token_buffer() = default;
-    explicit token_buffer(token_seq const& tokens): buf_(tokens) { }
-
-    bool token_available() const {
-      return !buf_.empty();
-    }
-
-    std::string const& peek_token() const {
-      return buf_.front();
-    }
-
-    std::string pop_token() {
-      auto tok = buf_.front();
-      buf_.pop_front();
-      return tok;
-    }
-
-    void push_tokens(token_seq const& tokens) {
-      std::ranges::copy(
-        std::ranges::reverse_view(tokens),
-        std::front_inserter(buf_));
-    }
-
-  private:
-    token_seq buf_;
-  };
 
   class token_stream {
   public:
