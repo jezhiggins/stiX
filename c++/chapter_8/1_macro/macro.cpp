@@ -27,8 +27,6 @@ namespace {
     void process_to(std::ostream& out);
 
   private:
-    void expect_next(std::string_view expected);
-
     void install_definition();
     std::pair<std::string, token_seq> get_definition();
     std::string get_definition_name();
@@ -83,6 +81,13 @@ namespace {
     return tokens.peek_token() == expected;
   }
 
+  void expect_next(auto& tokens, std::string_view expected) {
+    auto const& next = tokens.peek_token();
+    if (expected != next)
+      throw std::runtime_error(std::format("Expected {}", expected));
+    tokens.pop_token();
+  } // expect_next
+
   bool not_reached(auto& tokens, std::string_view end_marker) {
     return tokens.token_available() && tokens.peek_token() != end_marker;
   }
@@ -117,24 +122,17 @@ namespace {
     }
   } // process_to
 
-  void macro_processor::expect_next(std::string_view expected) {
-    auto const& next = source_.peek_token();
-    if (expected != next)
-      throw std::runtime_error(std::format("Expected {}", expected));
-    source_.pop_token();
-  } // expect_next
-
   void macro_processor::install_definition() {
     auto [ def, replacement ] = get_definition();
     definitions_[def] = replacement;
   }
 
   std::pair<std::string, token_seq> macro_processor::get_definition() {
-    expect_next(LeftParen);
+    expect_next(source_, LeftParen);
 
     auto def = get_definition_name();
 
-    expect_next(Comma);
+    expect_next(source_, Comma);
     skip_whitespace(source_);
 
     auto replacement = get_definition_replacement();
@@ -145,7 +143,7 @@ namespace {
   token_seq macro_processor::get_definition_replacement() {
     auto replacement = gather_until(source_, RightParen);
 
-    expect_next(RightParen);
+    expect_next(source_, RightParen);
 
     return replacement;
   }
@@ -223,7 +221,7 @@ namespace {
       arguments.push_back(next_argument(tokens));
 
       if (tokens.token_available())
-        tokens.pop_token(); // must be a comma
+        expect_next(tokens, Comma);
     }
 
     return arguments;
