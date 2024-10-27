@@ -1,5 +1,6 @@
 #include "macro.hpp"
 #include "tokenizer.hpp"
+#include "token_seq.hpp"
 #include "../../lib/chars.hpp"
 #include <stdexcept>
 #include <sstream>
@@ -13,45 +14,8 @@ using namespace std::string_view_literals;
 using namespace std::string_literals;
 
 namespace {
-
-  class token_seq {
-  public:
-    using const_iterator = std::deque<std::string>::const_iterator;
-    using value_type = std::string;
-
-    token_seq() = default;
-    token_seq(std::initializer_list<std::string> toks) : seq_(toks) { }
-
-    const_iterator begin() const { return seq_.begin(); }
-    const_iterator end() const { return seq_.end(); }
-
-    bool empty() const { return seq_.empty(); }
-
-    std::string const& front() const { return seq_.front(); }
-
-    void pop_front() { seq_.pop_front(); }
-    void pop_back() { seq_.pop_back(); }
-
-    void push_front(std::string const& tok) { seq_.push_front(tok); }
-    void push_back(std::string const& tok) { seq_.push_back(tok); }
-
-    token_seq& operator+=(std::string const& tok) {
-      seq_.push_back(tok);
-      return *this;
-    }
-    token_seq& operator+=(std::string&& tok) {
-      seq_.push_back(std::move(tok));
-      return *this;
-    }
-    token_seq& operator+=(token_seq&& tok) {
-      std::ranges::copy(tok, std::back_inserter(seq_));
-      return *this;
-    }
-
-  private:
-    std::deque<std::string> seq_;
-  };
-
+  using stiX::token_seq;
+  
   auto const EndOfInput = std::string { 1, '\0' };
 
   class token_buffer {

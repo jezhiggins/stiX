@@ -264,6 +264,8 @@ set (macro_sources
 		chapter_8/1_macro/tokenizer.cpp
 		chapter_8/1_macro/macro.hpp
 		chapter_8/1_macro/macro.cpp
+		chapter_8/1_macro/token_seq.hpp
+		chapter_8/1_macro/token_seq.cpp
 )
 add_executable(macro
 		chapter_8/1_macro/1_macro.cpp
