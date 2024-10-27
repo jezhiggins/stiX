@@ -16,8 +16,6 @@ namespace {
   using stiX::token_buffer;
   using stiX::token_source;
 
-  int argument_index(std::string const& index_tok);
-
   class macro_processor {
   public:
     explicit macro_processor(std::istream& in) :
@@ -103,10 +101,6 @@ namespace {
     return arg;
   }
 
-  token_seq next_argument(token_buffer& tokens) {
-    return gather_until(tokens, Comma);
-  }
-
   /////////////////////
   void macro_processor::process_to(std::ostream& out) {
     while(source_.token_available()) {
@@ -164,22 +158,13 @@ namespace {
     return definitions_[tok];
   }
 
+  int argument_index(std::string const& index_tok);
   token_seq argument_substitution(
-      token_buffer& definition,
-      std::vector<token_seq> const& arguments
-  ) {
-    auto const dollar = definition.pop_token();
-    auto const& index_tok = definition.peek_token();
-    auto const index = argument_index(index_tok);
-
-    if (index == -1)
-      return { dollar };
-
-    definition.pop_token();
-    return (index < arguments.size())
-      ? arguments[index]
-      : token_seq { };
-  }
+    token_buffer& definition,
+    std::vector<token_seq> const& arguments
+  );
+  token_buffer all_arguments(token_source& tokens);
+  token_seq next_argument(token_buffer& tokens);
 
   void macro_processor::apply_macro(std::string const& tok) {
     auto const arguments = gather_arguments();
@@ -195,26 +180,6 @@ namespace {
     }
 
     source_.push_tokens(with_arg_substitution);
-  }
-
-  int argument_index(std::string const& index_tok) {
-    auto index = 0;
-    std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
-    return index - 1;
-  }
-
-  void drop_brackets(token_seq& tokens) {
-    tokens.pop_front();
-    tokens.pop_back();
-  }
-
-  token_buffer all_arguments(auto& tokens) {
-    auto argument_tokens = parenthesised_sequence(tokens);
-
-    if (!argument_tokens.empty())
-      drop_brackets(argument_tokens);
-
-    return token_buffer { argument_tokens };
   }
 
   std::vector<token_seq> macro_processor::gather_arguments() {
@@ -234,6 +199,48 @@ namespace {
 
     return arguments;
   }
+
+  token_seq argument_substitution(
+    token_buffer& definition,
+    std::vector<token_seq> const& arguments
+  ) {
+    auto const dollar = definition.pop_token();
+    auto const& index_tok = definition.peek_token();
+    auto const index = argument_index(index_tok);
+
+    if (index == -1)
+      return { dollar };
+
+    definition.pop_token();
+    return (index < arguments.size())
+           ? arguments[index]
+           : token_seq { };
+  }
+
+  int argument_index(std::string const& index_tok) {
+    auto index = 0;
+    std::from_chars(index_tok.data(), index_tok.data() + index_tok.length(), index);
+    return index - 1;
+  }
+
+  void drop_brackets(token_seq& tokens) {
+    tokens.pop_front();
+    tokens.pop_back();
+  }
+
+  token_buffer all_arguments(token_source& tokens) {
+    auto argument_tokens = parenthesised_sequence(tokens);
+
+    if (!argument_tokens.empty())
+      drop_brackets(argument_tokens);
+
+    return token_buffer { argument_tokens };
+  }
+
+  token_seq next_argument(token_buffer& tokens) {
+    return gather_until(tokens, Comma);
+  }
+
 } // namespace
 
 void stiX::macro_process(
