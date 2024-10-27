@@ -14,9 +14,7 @@ namespace stiX {
       return !buf_.empty();
     }
 
-    std::string const& peek_token() const {
-      return buf_.front();
-    }
+    std::string const& peek_token() const;
 
     std::string pop_token();
 

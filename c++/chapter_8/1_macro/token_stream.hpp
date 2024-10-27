@@ -16,9 +16,7 @@ namespace stiX {
       return tok_ != tokenizer_.end();
     }
 
-    std::string const& peek_token() const {
-      return *tok_;
-    }
+    std::string const& peek_token() const;
 
     std::string pop_token();
 
