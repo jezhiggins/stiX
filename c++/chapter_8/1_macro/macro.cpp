@@ -48,12 +48,12 @@ namespace {
   auto constexpr RightParen = ")"sv;
   auto constexpr Dollar = "$"sv;
 
-  bool iswhitespace(std::string const& token) {
+  bool is_whitespace(std::string const& token) {
     return token.size() == 1 && stiX::iswhitespace(token[0]);
   }
 
   void skip_whitespace(auto& tokens) {
-    while (tokens.token_available() && iswhitespace(tokens.peek_token()))
+    while (tokens.token_available() && is_whitespace(tokens.peek_token()))
       tokens.pop_token();
   }
 
