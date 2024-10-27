@@ -2,7 +2,6 @@
 #include "tokenizer.hpp"
 #include "token_buffer.hpp"
 #include "token_source.hpp"
-#include "end_of_input.hpp"
 #include "../../lib/chars.hpp"
 #include <stdexcept>
 #include <format>
@@ -204,24 +203,33 @@ namespace {
     return index - 1;
   }
 
+  void drop_brackets(token_seq& tokens) {
+    tokens.pop_front();
+    tokens.pop_back();
+  }
+
+  token_buffer all_arguments(auto& tokens) {
+    auto argument_tokens = parenthesised_sequence(tokens);
+
+    if (!argument_tokens.empty())
+      drop_brackets(argument_tokens);
+
+    return token_buffer { argument_tokens };
+  }
+
   std::vector<token_seq> macro_processor::gather_arguments() {
-    auto argument_tokens = parenthesised_sequence(source_);
-    if (argument_tokens.empty())
+    auto argument_tokens = all_arguments(source_);
+    if (!argument_tokens.token_available())
       return { };
 
-    argument_tokens.pop_front();
-    argument_tokens.pop_back();
-
     auto arguments = std::vector<token_seq> { };
-    auto tokens = token_buffer { argument_tokens };
+    while(argument_tokens.token_available()) {
+      skip_whitespace(argument_tokens);
 
-    while(tokens.token_available()) {
-      skip_whitespace(tokens);
+      arguments.push_back(next_argument(argument_tokens));
 
-      arguments.push_back(next_argument(tokens));
-
-      if (tokens.token_available())
-        expect_next(tokens, Comma);
+      if (argument_tokens.token_available())
+        expect_next(argument_tokens, Comma);
     }
 
     return arguments;
