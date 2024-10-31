@@ -13,6 +13,10 @@ std::string stiX::token_buffer::pop_token() {
   return tok;
 }
 
+void stiX::token_buffer::push_token(
+    const std::string &token) {
+  buf_.push_front(token);
+}
 void stiX::token_buffer::push_tokens(
     stiX::token_seq const& tokens) {
   std::ranges::copy(

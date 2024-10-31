@@ -18,6 +18,7 @@ namespace stiX {
 
     std::string pop_token();
 
+    void push_token(std::string const& token);
     void push_tokens(token_seq const& tokens);
 
   private:
