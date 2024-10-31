@@ -7,6 +7,7 @@
 #include <format>
 #include <map>
 #include <vector>
+#include <numeric>
 
 using namespace std::string_view_literals;
 using namespace std::string_literals;
@@ -29,6 +30,8 @@ namespace {
     std::string get_definition_name();
     token_seq get_definition_replacement();
 
+    void len_macro();
+
     bool is_macro(std::string const& tok) const;
     token_seq const& macro_definition(std::string const& tok);
     void apply_macro(std::string const& tok);
@@ -39,6 +42,7 @@ namespace {
   };
 
   auto constexpr Define = "define"sv;
+  auto constexpr Len = "len"sv;
   auto constexpr LeftParen = "("sv;
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;
@@ -101,6 +105,14 @@ namespace {
     return arg;
   }
 
+  void drop_brackets(token_seq& tokens) {
+    if (tokens.empty())
+      return;
+
+    tokens.pop_front();
+    tokens.pop_back();
+  }
+
   /////////////////////
   void macro_processor::process_to(std::ostream& out) {
     while(source_.token_available()) {
@@ -108,6 +120,8 @@ namespace {
 
       if (token == Define)
         install_definition();
+      else if (token == Len)
+        len_macro();
       else if (is_macro(token))
         apply_macro(token);
       else
@@ -148,6 +162,22 @@ namespace {
       throw std::runtime_error(std::format("{} is not alphanumeric", def));
 
     return def;
+  }
+
+  void macro_processor::len_macro() {
+    auto argument_tokens = parenthesised_sequence(source_);
+
+    drop_brackets(argument_tokens);
+
+    auto length = std::accumulate(
+      argument_tokens.begin(),
+      argument_tokens.end(),
+      size_t(),
+      [](int total, std::string const& tok) {
+        return total + tok.length();
+      });
+
+    source_.push_token(std::to_string(length));
   }
 
   bool macro_processor::is_macro(std::string const& tok) const {
@@ -223,16 +253,10 @@ namespace {
     return index - 1;
   }
 
-  void drop_brackets(token_seq& tokens) {
-    tokens.pop_front();
-    tokens.pop_back();
-  }
-
   token_buffer all_arguments(token_source& tokens) {
     auto argument_tokens = parenthesised_sequence(tokens);
 
-    if (!argument_tokens.empty())
-      drop_brackets(argument_tokens);
+    drop_brackets(argument_tokens);
 
     return token_buffer { argument_tokens };
   }

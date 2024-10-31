@@ -44,7 +44,7 @@ TEST_CASE("Text replacement") {
   build_good_tests(good);
 }
 
-TEST_CASE("macros with arguments") {
+TEST_CASE("Text replacement with arguments") {
   auto good = std::vector<good_case> {
     { "arguments provided, not used",
       "define(x, y)x x(q) (x)",
@@ -101,6 +101,16 @@ TEST_CASE("macros with arguments") {
   build_good_tests(good);
 }
 
+TEST_CASE("len()") {
+  auto good = std::vector<good_case>{
+    { "len of a single token",
+      "len(string) is 6",
+      "6 is 6" }
+  };
+
+  build_good_tests(good);
+}
+
 TEST_CASE("Ill-formed macros") {
   auto bad = std::vector<std::pair<std::string, std::string>> {
     { "define[x, y]", "Expected (" },
@@ -108,7 +118,8 @@ TEST_CASE("Ill-formed macros") {
     { "define(x:y)", "Expected ," },
     { "define(x, y]", "Expected )" },
     { "define(x, (((y))", "Expected )" },
-    { "define(99, x)", "99 is not alphanumeric" }
+    { "define(99, x)", "99 is not alphanumeric" },
+    { "len(a string that just flops off the end", "Expected )" }
   };
   for (auto b : bad) {
     DYNAMIC_SECTION(b.first) {
