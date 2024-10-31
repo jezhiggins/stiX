@@ -20,6 +20,9 @@ namespace stiX {
 
     std::string pop_token();
 
+    void push_token(std::string const& token) {
+      buffer_.push_token(token);
+    }
     void push_tokens(token_seq const& tokens) {
       buffer_.push_tokens(tokens);
     }
