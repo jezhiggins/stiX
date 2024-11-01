@@ -27,19 +27,18 @@ namespace {
 
   private:
     void frame(
-      token_source& source,
+      token_source&& source,
       std::ostream& out
     );
     void frame(
-      token_source& source,
+      token_source&& source,
       token_seq& result
     );
     void frame(
-      token_source& source,
+      token_source&& source,
       std::function<void(std::string const&)> sink
     );
     std::string sub_frame_to_string(token_source&& in);
-    token_seq sub_frame_to_seq(token_seq const& in);
     token_seq sub_frame_to_seq(token_source&& in);
 
     void install_definition(token_source& source);
@@ -132,27 +131,31 @@ namespace {
     std::istream& in,
     std::ostream& out
   ) {
-    auto source = token_source { in };
-
-    frame(source, out);
+    frame(token_source { in }, out);
   }
 
   void macro_processor::frame(
-    token_source& source,
+    token_source&& source,
     std::ostream& out
   ) {
-    frame(source, [&out](std::string const& token) { out << token; });
+    frame(
+      std::move(source),
+      [&out](std::string const& token) { out << token; }
+    );
   }
 
   void macro_processor::frame(
-    token_source& source,
+    token_source&& source,
     token_seq& result
   ) {
-    frame(source, [&result](std::string const& token) { result.push_back(token); });
+    frame(
+      std::move(source),
+      [&result](std::string const& token) { result.push_back(token); }
+    );
   }
 
   void macro_processor::frame(
-    token_source& source,
+    token_source&& source,
     std::function<void(std::string const&)> sink)
   {
     while(source.token_available()) {
@@ -177,19 +180,15 @@ namespace {
   std::string macro_processor::sub_frame_to_string(token_source&& in) {
     auto sink = std::ostringstream { };
 
-    frame(in, sink);
+    frame(std::move(in), sink);
 
     return sink.str();
-  }
-
-  token_seq macro_processor::sub_frame_to_seq(token_seq const& in) {
-    return sub_frame_to_seq({ in });
   }
 
   token_seq macro_processor::sub_frame_to_seq(token_source&& in) {
     auto sink = token_seq { };
 
-    frame(in, sink);
+    frame(std::move(in), sink);
 
     return sink;
   }
