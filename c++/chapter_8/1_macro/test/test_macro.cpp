@@ -1,5 +1,5 @@
-#include "../../testlib/testlib.hpp"
-#include "macro.hpp"
+#include "../../../testlib/testlib.hpp"
+#include "../macro.hpp"
 #include <vector>
 
 struct good_case {

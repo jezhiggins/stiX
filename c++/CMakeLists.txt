@@ -280,8 +280,8 @@ add_executable(macro
 target_link_libraries(macro stix)
 
 add_executable(macro_test
-		chapter_8/1_macro/test_macro.cpp
-		chapter_8/1_macro/test_tokenizer.cpp
+		chapter_8/1_macro/test/test_macro.cpp
+		chapter_8/1_macro/test/test_tokenizer.cpp
 		${macro_sources}
 )
 target_link_libraries(macro_test stix testsupport)

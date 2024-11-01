@@ -1,6 +1,6 @@
 #define ADDITIONAL_TESTS
-#include "../../testlib/testlib.hpp"
-#include "tokenizer.hpp"
+#include "../../../testlib/testlib.hpp"
+#include "../tokenizer.hpp"
 
 using namespace std::string_literals;
 
