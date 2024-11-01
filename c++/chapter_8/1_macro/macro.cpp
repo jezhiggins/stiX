@@ -264,7 +264,7 @@ namespace {
         with_arg_substitution += argument_substitution(definition, arguments);
     }
 
-    source.push_tokens(sub_frame_to_seq(with_arg_substitution));
+    source.push_tokens(with_arg_substitution);
   }
 
   std::vector<token_seq> macro_processor::gather_arguments(token_source& source) {
