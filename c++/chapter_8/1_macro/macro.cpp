@@ -33,47 +33,18 @@ namespace {
       token_sink
     );
 
-    void frame(
-      token_source&& source,
-      std::ostream& out
-    );
-    void frame(
-      token_source&& source,
-      token_seq& result
-    );
-    void frame(
-      token_source&& source,
-      token_sink sink
-    );
+    void frame(token_source&& source, std::ostream& out);
+    void frame(token_source&& source, token_seq& result);
+    void frame(token_source&& source, token_sink sink);
     std::string sub_frame_to_string(token_source&& in);
     token_seq sub_frame_to_seq(token_source&& in);
 
-    void install_definition(
-      std::string const&,
-      token_source& source,
-      token_sink
-    );
-    std::pair<std::string, token_seq> get_definition(token_source& source);
-    std::string get_definition_name(token_source& source);
+    void define_replacement(std::string const&, token_source&, token_sink);
+    std::pair<std::string, token_seq> name_and_replacement(token_source& source);
 
-    void len_macro(
-      std::string const&,
-      token_source& source,
-      token_sink
-    );
-    void quoted_sequence(
-      std::string const& token,
-      token_source& source,
-      token_sink sink
-    );
-
-    token_seq const& macro_definition(std::string const& tok);
-    void apply_macro(
-      std::string const&,
-      token_source& source,
-      token_sink
-    );
-    std::vector<token_seq> gather_arguments(token_source& source);
+    void len_macro(std::string const&, token_source&, token_sink);
+    void quoted_sequence(std::string const&, token_source&, token_sink);
+    void apply_replacement(std::string const&,token_source&, token_sink);
 
     void install_macro(std::string_view name, macro_fn fn) {
       macros_[std::string(name)] = fn;
@@ -86,7 +57,7 @@ namespace {
     }
 
     std::map<std::string, macro_fn> macros_;
-    std::map<std::string, token_seq> definitions_;
+    std::map<std::string, token_seq> replacements_;
   };
 
   auto constexpr Define = "define"sv;
@@ -165,7 +136,7 @@ namespace {
     std::istream& in,
     std::ostream& out
   ) {
-    install_macro(Define, &macro_processor::install_definition);
+    install_macro(Define, &macro_processor::define_replacement);
     install_macro(Len, &macro_processor::len_macro);
     install_macro(Grave, &macro_processor::quoted_sequence);
 
@@ -210,43 +181,41 @@ namespace {
 
   std::string macro_processor::sub_frame_to_string(token_source&& in) {
     auto sink = std::ostringstream { };
-
     frame(std::move(in), sink);
-
     return sink.str();
   }
 
   token_seq macro_processor::sub_frame_to_seq(token_source&& in) {
     auto sink = token_seq { };
-
     frame(std::move(in), sink);
-
     return sink;
   }
 
-  void macro_processor::install_definition(
+  void macro_processor::define_replacement(
       std::string const&,
       token_source& source,
       token_sink
   ) {
-    auto [ def, replacement ] = get_definition(source);
-    definitions_[def] = replacement;
-    macros_[def] = &macro_processor::apply_macro;
+    auto [ def, replacement ] = name_and_replacement(source);
+    replacements_[def] = replacement;
+    macros_[def] = &macro_processor::apply_replacement;
   }
 
-  std::pair<std::string, token_seq> macro_processor::get_definition(
+  std::string definition_name(token_source& source);
+
+  std::pair<std::string, token_seq> macro_processor::name_and_replacement(
     token_source& source
   ) {
     check_next(source, LeftParen);
 
     auto define_source = all_arguments(source);
 
-    auto def = get_definition_name(define_source);
+    auto def = definition_name(define_source);
     auto replacement = sub_frame_to_seq(std::move(define_source));
     return { def, replacement };
   }
 
-  std::string macro_processor::get_definition_name(token_source& source) {
+  std::string definition_name(token_source& source) {
     auto def = source.pop_token();
     if (!stiX::isalnum(def))
       throw std::runtime_error(std::format("{} is not alphanumeric", def));
@@ -278,24 +247,21 @@ namespace {
     source.pop_token();
   }
 
-  token_seq const& macro_processor::macro_definition(std::string const& tok) {
-    return definitions_[tok];
-  }
-
   int argument_index(std::string const& index_tok);
   token_seq argument_substitution(
     token_source& definition,
     std::vector<token_seq> const& arguments
   );
   token_seq next_argument(token_source& tokens);
+  std::vector<token_seq> gather_arguments(token_source& source);
 
-  void macro_processor::apply_macro(
+  void macro_processor::apply_replacement(
     std::string const& token,
     token_source& source,
     token_sink
   ) {
     auto const arguments = gather_arguments(source);
-    auto definition = token_source { macro_definition(token) };
+    auto definition = token_source { replacements_[token] };
 
     auto with_arg_substitution = token_seq { };
     while (definition.token_available()) {
@@ -309,7 +275,7 @@ namespace {
     source.push_tokens(with_arg_substitution);
   }
 
-  std::vector<token_seq> macro_processor::gather_arguments(token_source& source) {
+  std::vector<token_seq> gather_arguments(token_source& source) {
     auto argument_tokens = all_arguments(source);
     if (!argument_tokens.token_available())
       return { };
