@@ -4,6 +4,7 @@
 
 const std::locale loc = std::locale();
 
+bool stiX::isdigit(char c) { return std::isdigit(c, loc); }
 bool stiX::isalnum(char c) { return std::isalnum(c, loc); }
 bool stiX::iswhitespace(char c) { return std::isspace(c, loc); }
 

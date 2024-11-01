@@ -9,6 +9,7 @@ namespace stiX {
     inline bool isnewline(char c) { return c == '\n'; }
     inline bool isbackspace(char c) { return c == '\b'; }
 
+    bool isdigit(char c);
     bool isalnum(char c);
     bool iswhitespace(char c);
 

@@ -22,14 +22,18 @@ stiX::stream_token_iterator& stiX::stream_token_iterator::operator++() {
 }
 
 void stiX::stream_token_iterator::next_token() {
-  if(input_available() && !stiX::isalnum(peek())) {
-    token_ = std::string{get()};
+  if (input_available() && !stiX::isalnum(peek())) {
+    token_ = std::string { get() };
     return;
   }
 
   token_.clear();
-  while(input_available() && stiX::isalnum(peek()))
-    token_ += get();
+  if (input_available() && stiX::isdigit(peek()))
+    while (input_available() && stiX::isdigit(peek()))
+      token_ += get();
+  else
+    while (input_available() && stiX::isalnum(peek()))
+      token_ += get();
 } // next_token
 
 bool stiX::stream_token_iterator::input_available() {

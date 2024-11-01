@@ -26,6 +26,18 @@ TEST_CASE("tokenizer") {
   test_tokenizer("one two three", {
     "one", " ", "two", " ", "three"
   });
+  test_tokenizer("hello111world", {
+    "hello111world"
+  });
+  test_tokenizer("111world", {
+    "111", "world"
+  });
+  test_tokenizer("hello$1world", {
+    "hello", "$", "1", "world"
+  });
+  test_tokenizer("$0,$1,$#", {
+    "$", "0", ",", "$", "1", ",", "$", "#"
+  });
   test_tokenizer("define(x, 1)", {
     "define",
     "(",
