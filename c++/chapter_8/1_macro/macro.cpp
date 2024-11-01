@@ -61,6 +61,11 @@ namespace {
       token_source& source,
       token_sink
     );
+    void quoted_sequence(
+      std::string const& token,
+      token_source& source,
+      token_sink sink
+    );
 
     token_seq const& macro_definition(std::string const& tok);
     void apply_macro(
@@ -162,6 +167,7 @@ namespace {
   ) {
     install_macro(Define, &macro_processor::install_definition);
     install_macro(Len, &macro_processor::len_macro);
+    install_macro(Grave, &macro_processor::quoted_sequence);
 
     frame(token_source { in }, out);
   }
@@ -196,11 +202,6 @@ namespace {
       if (is_macro(token)) {
         auto fn = macro_function(token);
         std::invoke(fn, this, token, source,sink);
-      }
-      else if (token == Grave) {
-        while(not_reached(source, Apostrophe))
-          sink(source.pop_token());
-        source.pop_token();
       }
       else
         sink(token);
@@ -265,6 +266,16 @@ namespace {
     );
 
     source.push_token(std::to_string(expansion.size()));
+  }
+
+  void macro_processor::quoted_sequence(
+    std::string const&,
+    token_source& source,
+    token_sink sink
+  ) {
+    while(not_reached(source, Apostrophe))
+      sink(source.pop_token());
+    source.pop_token();
   }
 
   token_seq const& macro_processor::macro_definition(std::string const& tok) {
