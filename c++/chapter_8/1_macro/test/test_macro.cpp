@@ -105,7 +105,10 @@ TEST_CASE("len()") {
   auto good = std::vector<good_case>{
     { "len of a single token",
       "len(string) is 6",
-      "6 is 6" }
+      "6 is 6" },
+    { "len of a multiple tokens",
+      "len(hello Brian Kernighan and PJ Plauger) is 36",
+      "36 is 36" }
   };
 
   build_good_tests(good);
