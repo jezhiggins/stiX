@@ -38,7 +38,7 @@ namespace {
       token_source& source,
       std::function<void(std::string const&)> sink
     );
-    std::string sub_frame_to_string(token_seq const& in);
+    std::string sub_frame_to_string(token_source&& in);
     token_seq sub_frame_to_seq(token_seq const& in);
     token_seq sub_frame_to_seq(token_source&& in);
 
@@ -69,12 +69,12 @@ namespace {
     return token.size() == 1 && stiX::iswhitespace(token[0]);
   }
 
-  void skip_whitespace(auto& tokens) {
+  void skip_whitespace(token_source& tokens) {
     while (is_whitespace(tokens.peek_token()))
       tokens.pop_token();
   }
 
-  token_seq parenthesised_sequence(auto& tokens) {
+  token_seq parenthesised_sequence(token_source& tokens) {
     if (tokens.peek_token() != LeftParen)
       return { };
 
@@ -95,13 +95,26 @@ namespace {
     return inner;
   }
 
+  void drop_brackets(token_seq& tokens) {
+    if (tokens.empty())
+      return;
+
+    tokens.pop_front();
+    tokens.pop_back();
+  }
+
+  token_source all_arguments(token_source& tokens) {
+    auto argument_tokens = parenthesised_sequence(tokens);
+    drop_brackets(argument_tokens);
+    return token_source { argument_tokens };
+  }
+
   bool is_next(token_source& tokens, std::string_view expected) {
     return tokens.peek_token() == expected;
   }
 
   void check_next(token_source& tokens, std::string_view expected) {
-    auto const& next = tokens.peek_token();
-    if (expected != next)
+    if (!is_next(tokens, expected))
       throw std::runtime_error(std::format("Expected {}", expected));
   } // check_next
 
@@ -112,26 +125,6 @@ namespace {
 
   bool not_reached(token_source& tokens, std::string_view end_marker) {
     return tokens.token_available() && tokens.peek_token() != end_marker;
-  }
-
-  token_seq gather_until(token_source& tokens, std::string_view end_token) {
-    auto arg = token_seq { };
-
-    while (not_reached(tokens, end_token))
-      if (tokens.peek_token() == LeftParen)
-        arg += parenthesised_sequence(tokens);
-      else
-        arg += tokens.pop_token();
-
-    return arg;
-  }
-
-  void drop_brackets(token_seq& tokens) {
-    if (tokens.empty())
-      return;
-
-    tokens.pop_front();
-    tokens.pop_back();
   }
 
   /////////////////////
@@ -181,11 +174,10 @@ namespace {
     }
   } // process
 
-  std::string macro_processor::sub_frame_to_string(token_seq const& in) {
-    auto seq_source = token_source { in };
+  std::string macro_processor::sub_frame_to_string(token_source&& in) {
     auto sink = std::ostringstream { };
 
-    frame(seq_source, sink);
+    frame(in, sink);
 
     return sink.str();
   }
@@ -212,10 +204,7 @@ namespace {
   ) {
     check_next(source, LeftParen);
 
-    auto define = parenthesised_sequence(source);
-    drop_brackets(define);
-
-    auto define_source = token_source { define };
+    auto define_source = all_arguments(source);
 
     auto def = get_definition_name(define_source);
     auto replacement = sub_frame_to_seq(std::move(define_source));
@@ -233,11 +222,9 @@ namespace {
   }
 
   void macro_processor::len_macro(token_source& source) {
-    auto argument_tokens = parenthesised_sequence(source);
-
-    drop_brackets(argument_tokens);
-
-    auto expansion = sub_frame_to_string(argument_tokens);
+    auto expansion = sub_frame_to_string(
+      all_arguments(source)
+    );
 
     source.push_token(std::to_string(expansion.size()));
   }
@@ -255,7 +242,6 @@ namespace {
     token_source& definition,
     std::vector<token_seq> const& arguments
   );
-  token_source all_arguments(token_source& tokens);
   token_seq next_argument(token_source& tokens);
 
   void macro_processor::apply_macro(std::string const& tok, token_source& source) {
@@ -315,14 +301,16 @@ namespace {
     return index - 1;
   }
 
-  token_source all_arguments(token_source& tokens) {
-    auto argument_tokens = parenthesised_sequence(tokens);
-    drop_brackets(argument_tokens);
-    return token_source { argument_tokens };
-  }
-
   token_seq next_argument(token_source& tokens) {
-    return gather_until(tokens, Comma);
+    auto arg = token_seq { };
+
+    while (not_reached(tokens, Comma))
+      if (tokens.peek_token() == LeftParen)
+        arg += parenthesised_sequence(tokens);
+      else
+        arg += tokens.pop_token();
+
+    return arg;
   }
 
 } // namespace
