@@ -5,6 +5,7 @@
 #include "../../lib/chars.hpp"
 #include <stdexcept>
 #include <format>
+#include <functional>
 #include <map>
 #include <vector>
 #include <sstream>
@@ -29,7 +30,16 @@ namespace {
       token_source& source,
       std::ostream& out
     );
-    std::string sub_frame(token_seq& in);
+    void frame(
+      token_source& source,
+      token_seq& result
+    );
+    void frame(
+      token_source& source,
+      std::function<void(std::string const&)> sink
+    );
+    std::string sub_frame_to_string(token_seq const& in);
+    token_seq sub_frame_to_seq(token_seq const& in);
 
     void install_definition(token_source& source);
     std::pair<std::string, token_seq> get_definition(token_source& source);
@@ -132,6 +142,20 @@ namespace {
     token_source& source,
     std::ostream& out
   ) {
+    frame(source, [&out](std::string const& token) { out << token; });
+  }
+
+  void macro_processor::frame(
+    token_source& source,
+    token_seq& result
+  ) {
+    frame(source, [&result](std::string const& token) { result.push_back(token); });
+  }
+
+  void macro_processor::frame(
+    token_source& source,
+    std::function<void(std::string const&)> sink)
+  {
     while(source.token_available()) {
       auto token = source.pop_token();
 
@@ -142,17 +166,26 @@ namespace {
       else if (is_macro(token))
         apply_macro(token, source);
       else
-        out << token;
+        sink(token);
     }
   } // process
 
-  std::string macro_processor::sub_frame(token_seq& in) {
+  std::string macro_processor::sub_frame_to_string(token_seq const& in) {
     auto seq_source = token_source { in };
     auto sink = std::ostringstream { };
 
     frame(seq_source, sink);
 
     return sink.str();
+  }
+
+  token_seq macro_processor::sub_frame_to_seq(token_seq const& in) {
+    auto seq_source = token_source { in };
+    auto sink = token_seq { };
+
+    frame(seq_source, sink);
+
+    return sink;
   }
 
   void macro_processor::install_definition(token_source& source) {
@@ -197,7 +230,7 @@ namespace {
 
     drop_brackets(argument_tokens);
 
-    auto expansion = sub_frame(argument_tokens);
+    auto expansion = sub_frame_to_string(argument_tokens);
 
     source.push_token(std::to_string(expansion.size()));
   }
@@ -231,7 +264,7 @@ namespace {
         with_arg_substitution += argument_substitution(definition, arguments);
     }
 
-    source.push_tokens(with_arg_substitution);
+    source.push_tokens(sub_frame_to_seq(with_arg_substitution));
   }
 
   std::vector<token_seq> macro_processor::gather_arguments(token_source& source) {
