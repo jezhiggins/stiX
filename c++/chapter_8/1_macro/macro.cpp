@@ -95,26 +95,26 @@ namespace {
     return inner;
   }
 
-  bool is_next(auto& tokens, std::string_view expected) {
+  bool is_next(token_source& tokens, std::string_view expected) {
     return tokens.peek_token() == expected;
   }
 
-  void check_next(auto& tokens, std::string_view expected) {
+  void check_next(token_source& tokens, std::string_view expected) {
     auto const& next = tokens.peek_token();
     if (expected != next)
       throw std::runtime_error(std::format("Expected {}", expected));
   } // check_next
 
-  void expect_next(auto& tokens, std::string_view expected) {
+  void expect_next(token_source& tokens, std::string_view expected) {
     check_next(tokens, expected);
     tokens.pop_token();
   } // expect_next
 
-  bool not_reached(auto& tokens, std::string_view end_marker) {
+  bool not_reached(token_source& tokens, std::string_view end_marker) {
     return tokens.token_available() && tokens.peek_token() != end_marker;
   }
 
-  token_seq gather_until(auto& tokens, std::string_view end_token) {
+  token_seq gather_until(token_source& tokens, std::string_view end_token) {
     auto arg = token_seq { };
 
     while (not_reached(tokens, end_token))
@@ -218,12 +218,7 @@ namespace {
     auto define_source = token_source { define };
 
     auto def = get_definition_name(define_source);
-    skip_whitespace(define_source);
-    expect_next(define_source, Comma);
-    skip_whitespace(define_source);
-
     auto replacement = sub_frame_to_seq(std::move(define_source));
-
     return { def, replacement };
   }
 
@@ -231,6 +226,9 @@ namespace {
     auto def = source.pop_token();
     if (!stiX::isalnum(def))
       throw std::runtime_error(std::format("{} is not alphanumeric", def));
+    skip_whitespace(source);
+    expect_next(source, Comma);
+    skip_whitespace(source);
     return def;
   }
 
@@ -254,15 +252,15 @@ namespace {
 
   int argument_index(std::string const& index_tok);
   token_seq argument_substitution(
-    token_buffer& definition,
+    token_source& definition,
     std::vector<token_seq> const& arguments
   );
-  token_buffer all_arguments(token_source& tokens);
-  token_seq next_argument(token_buffer& tokens);
+  token_source all_arguments(token_source& tokens);
+  token_seq next_argument(token_source& tokens);
 
   void macro_processor::apply_macro(std::string const& tok, token_source& source) {
     auto const arguments = gather_arguments(source);
-    auto definition = token_buffer { macro_definition(tok) };
+    auto definition = token_source { macro_definition(tok) };
 
     auto with_arg_substitution = token_seq { };
     while (definition.token_available()) {
@@ -295,7 +293,7 @@ namespace {
   }
 
   token_seq argument_substitution(
-    token_buffer& definition,
+    token_source& definition,
     std::vector<token_seq> const& arguments
   ) {
     auto const dollar = definition.pop_token();
@@ -317,15 +315,13 @@ namespace {
     return index - 1;
   }
 
-  token_buffer all_arguments(token_source& tokens) {
+  token_source all_arguments(token_source& tokens) {
     auto argument_tokens = parenthesised_sequence(tokens);
-
     drop_brackets(argument_tokens);
-
-    return token_buffer { argument_tokens };
+    return token_source { argument_tokens };
   }
 
-  token_seq next_argument(token_buffer& tokens) {
+  token_seq next_argument(token_source& tokens) {
     return gather_until(tokens, Comma);
   }
 
