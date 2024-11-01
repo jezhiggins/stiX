@@ -10,6 +10,9 @@ namespace stiX {
     token_source() = default;
     explicit token_source(std::istream& is) :
       stream_(is) { }
+    explicit token_source(token_seq const& seq) :
+      stream_(),
+      buffer_(seq) { }
 
     bool token_available() const {
       return buffer_.token_available() ||

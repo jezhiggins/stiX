@@ -7,7 +7,7 @@
 #include <format>
 #include <map>
 #include <vector>
-#include <numeric>
+#include <sstream>
 
 using namespace std::string_view_literals;
 using namespace std::string_literals;
@@ -19,12 +19,18 @@ namespace {
 
   class macro_processor {
   public:
-    void process_to(
+    void process(
       std::istream& in,
       std::ostream& out
     );
 
   private:
+    void frame(
+      token_source& source,
+      std::ostream& out
+    );
+    std::string sub_frame(token_seq& in);
+
     void install_definition(token_source& source);
     std::pair<std::string, token_seq> get_definition(token_source& source);
     std::string get_definition_name(token_source& source);
@@ -113,12 +119,19 @@ namespace {
   }
 
   /////////////////////
-  void macro_processor::process_to(
+  void macro_processor::process(
     std::istream& in,
     std::ostream& out
   ) {
     auto source = token_source { in };
 
+    frame(source, out);
+  }
+
+  void macro_processor::frame(
+    token_source& source,
+    std::ostream& out
+  ) {
     while(source.token_available()) {
       auto token = source.pop_token();
 
@@ -131,7 +144,16 @@ namespace {
       else
         out << token;
     }
-  } // process_to
+  } // process
+
+  std::string macro_processor::sub_frame(token_seq& in) {
+    auto seq_source = token_source { in };
+    auto sink = std::ostringstream { };
+
+    frame(seq_source, sink);
+
+    return sink.str();
+  }
 
   void macro_processor::install_definition(token_source& source) {
     auto [ def, replacement ] = get_definition(source);
@@ -175,15 +197,9 @@ namespace {
 
     drop_brackets(argument_tokens);
 
-    auto length = std::accumulate(
-      argument_tokens.begin(),
-      argument_tokens.end(),
-      size_t(),
-      [](int total, std::string const& tok) {
-        return total + tok.length();
-      });
+    auto expansion = sub_frame(argument_tokens);
 
-    source.push_token(std::to_string(length));
+    source.push_token(std::to_string(expansion.size()));
   }
 
   bool macro_processor::is_macro(std::string const& tok) const {
@@ -278,5 +294,5 @@ void stiX::macro_process(
     std::ostream& out
 ) {
   auto macro = macro_processor { };
-  macro.process_to(in, out);
+  macro.process(in, out);
 }

@@ -108,7 +108,13 @@ TEST_CASE("len()") {
       "6 is 6" },
     { "len of a multiple tokens",
       "len(hello Brian Kernighan and PJ Plauger) is 36",
-      "36 is 36" }
+      "36 is 36" },
+    { "len of a len",
+      "len(len(hello world)) == len(11)",
+      "2 == 2" },
+    { "len of a define, define is visible afterwards",
+      "len(define(hello, world)) hello",
+      "0 world" }
   };
 
   build_good_tests(good);
