@@ -273,10 +273,14 @@ set (macro_sources
 		chapter_8/1_macro/token_source.hpp
 		chapter_8/1_macro/token_source.cpp
 		chapter_8/1_macro/end_of_input.hpp
+		chapter_8/1_macro/mp/support.cpp
+		chapter_8/1_macro/mp/support.hpp
+		chapter_8/1_macro/mp/predefined.hpp
 )
 add_executable(macro
 		chapter_8/1_macro/1_macro.cpp
-		${macro_sources})
+		${macro_sources}
+)
 target_link_libraries(macro stix)
 
 add_executable(macro_test
