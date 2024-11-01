@@ -40,11 +40,11 @@ namespace {
     );
     std::string sub_frame_to_string(token_seq const& in);
     token_seq sub_frame_to_seq(token_seq const& in);
+    token_seq sub_frame_to_seq(token_source&& in);
 
     void install_definition(token_source& source);
     std::pair<std::string, token_seq> get_definition(token_source& source);
     std::string get_definition_name(token_source& source);
-    token_seq get_definition_replacement(token_source& source);
 
     void len_macro(token_source& source);
 
@@ -62,6 +62,8 @@ namespace {
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;
   auto constexpr Dollar = "$"sv;
+  auto constexpr Grave = "`"sv;
+  auto constexpr Apostrophe = "'"sv;
 
   bool is_whitespace(std::string const& token) {
     return token.size() == 1 && stiX::iswhitespace(token[0]);
@@ -97,10 +99,14 @@ namespace {
     return tokens.peek_token() == expected;
   }
 
-  void expect_next(auto& tokens, std::string_view expected) {
+  void check_next(auto& tokens, std::string_view expected) {
     auto const& next = tokens.peek_token();
     if (expected != next)
       throw std::runtime_error(std::format("Expected {}", expected));
+  } // check_next
+
+  void expect_next(auto& tokens, std::string_view expected) {
+    check_next(tokens, expected);
     tokens.pop_token();
   } // expect_next
 
@@ -165,6 +171,11 @@ namespace {
         len_macro(source);
       else if (is_macro(token))
         apply_macro(token, source);
+      else if (token == Grave) {
+        while(not_reached(source, Apostrophe))
+          sink(source.pop_token());
+        source.pop_token();
+      }
       else
         sink(token);
     }
@@ -180,10 +191,13 @@ namespace {
   }
 
   token_seq macro_processor::sub_frame_to_seq(token_seq const& in) {
-    auto seq_source = token_source { in };
+    return sub_frame_to_seq({ in });
+  }
+
+  token_seq macro_processor::sub_frame_to_seq(token_source&& in) {
     auto sink = token_seq { };
 
-    frame(seq_source, sink);
+    frame(in, sink);
 
     return sink;
   }
@@ -196,32 +210,27 @@ namespace {
   std::pair<std::string, token_seq> macro_processor::get_definition(
     token_source& source
   ) {
-    expect_next(source, LeftParen);
+    check_next(source, LeftParen);
 
-    auto def = get_definition_name(source);
+    auto define = parenthesised_sequence(source);
+    drop_brackets(define);
 
-    expect_next(source, Comma);
-    skip_whitespace(source);
+    auto define_source = token_source { define };
 
-    auto replacement = get_definition_replacement(source);
+    auto def = get_definition_name(define_source);
+    skip_whitespace(define_source);
+    expect_next(define_source, Comma);
+    skip_whitespace(define_source);
+
+    auto replacement = sub_frame_to_seq(std::move(define_source));
 
     return { def, replacement };
   }
 
-  token_seq macro_processor::get_definition_replacement(token_source& source) {
-    auto replacement = gather_until(source, RightParen);
-
-    expect_next(source, RightParen);
-
-    return replacement;
-  }
-
   std::string macro_processor::get_definition_name(token_source& source) {
     auto def = source.pop_token();
-
     if (!stiX::isalnum(def))
       throw std::runtime_error(std::format("{} is not alphanumeric", def));
-
     return def;
   }
 
