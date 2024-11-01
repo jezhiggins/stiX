@@ -27,6 +27,11 @@ namespace {
 
   private:
     using token_sink = std::function<void(std::string const&)>;
+    using macro_fn = void (macro_processor::*)(
+      std::string const&,
+      token_source&,
+      token_sink
+    );
 
     void frame(
       token_source&& source,
@@ -57,7 +62,6 @@ namespace {
       token_sink
     );
 
-    bool is_macro(std::string const& tok) const;
     token_seq const& macro_definition(std::string const& tok);
     void apply_macro(
       std::string const&,
@@ -66,6 +70,17 @@ namespace {
     );
     std::vector<token_seq> gather_arguments(token_source& source);
 
+    void install_macro(std::string_view name, macro_fn fn) {
+      macros_[std::string(name)] = fn;
+    }
+    bool is_macro(std::string const& tok) const {
+      return macros_.contains(tok);
+    }
+    macro_fn macro_function(std::string const& tok) {
+      return macros_[tok];
+    }
+
+    std::map<std::string, macro_fn> macros_;
     std::map<std::string, token_seq> definitions_;
   };
 
@@ -145,6 +160,9 @@ namespace {
     std::istream& in,
     std::ostream& out
   ) {
+    install_macro(Define, &macro_processor::install_definition);
+    install_macro(Len, &macro_processor::len_macro);
+
     frame(token_source { in }, out);
   }
 
@@ -175,12 +193,10 @@ namespace {
     while(source.token_available()) {
       auto token = source.pop_token();
 
-      if (token == Define)
-        install_definition(token, source, sink);
-      else if (token == Len)
-        len_macro(token, source, sink);
-      else if (is_macro(token))
-        apply_macro(token, source, sink);
+      if (is_macro(token)) {
+        auto fn = macro_function(token);
+        std::invoke(fn, this, token, source,sink);
+      }
       else if (token == Grave) {
         while(not_reached(source, Apostrophe))
           sink(source.pop_token());
@@ -214,6 +230,7 @@ namespace {
   ) {
     auto [ def, replacement ] = get_definition(source);
     definitions_[def] = replacement;
+    macros_[def] = &macro_processor::apply_macro;
   }
 
   std::pair<std::string, token_seq> macro_processor::get_definition(
@@ -248,10 +265,6 @@ namespace {
     );
 
     source.push_token(std::to_string(expansion.size()));
-  }
-
-  bool macro_processor::is_macro(std::string const& tok) const {
-    return definitions_.contains(tok);
   }
 
   token_seq const& macro_processor::macro_definition(std::string const& tok) {
