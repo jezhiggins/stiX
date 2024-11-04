@@ -264,14 +264,14 @@ set (macro_sources
 		chapter_8/1_macro/tokenizer.cpp
 		chapter_8/1_macro/macro.hpp
 		chapter_8/1_macro/macro.cpp
-		chapter_8/1_macro/token_seq.hpp
-		chapter_8/1_macro/token_seq.cpp
-		chapter_8/1_macro/token_buffer.hpp
-		chapter_8/1_macro/token_buffer.cpp
+		chapter_8/1_macro/source/token_seq.hpp
+		chapter_8/1_macro/source/token_seq.cpp
+		chapter_8/1_macro/source/token_buffer.hpp
+		chapter_8/1_macro/source/token_buffer.cpp
 		chapter_8/1_macro/token_stream.hpp
 		chapter_8/1_macro/token_stream.cpp
-		chapter_8/1_macro/token_source.hpp
-		chapter_8/1_macro/token_source.cpp
+		chapter_8/1_macro/source/token_source.hpp
+		chapter_8/1_macro/source/token_source.cpp
 		chapter_8/1_macro/end_of_input.hpp
 		chapter_8/1_macro/mp/support.cpp
 		chapter_8/1_macro/mp/support.hpp

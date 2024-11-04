@@ -1,5 +1,5 @@
 #include "token_buffer.hpp"
-#include "end_of_input.hpp"
+#include "../end_of_input.hpp"
 #include <algorithm>
 #include <ranges>
 

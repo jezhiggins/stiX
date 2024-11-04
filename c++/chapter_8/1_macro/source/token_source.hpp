@@ -2,7 +2,7 @@
 #define STICPP_TOKEN_SOURCE_HPP
 
 #include "token_buffer.hpp"
-#include "token_stream.hpp"
+#include "../token_stream.hpp"
 
 namespace stiX {
   class token_source {

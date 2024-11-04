@@ -1,8 +1,8 @@
 #include <stdexcept>
 #include <format>
 #include "support.hpp"
-#include "../token_seq.hpp"
-#include "../token_source.hpp"
+#include "../source/token_seq.hpp"
+#include "../source/token_source.hpp"
 #include "predefined.hpp"
 #include "../../../lib/chars.hpp"
 
