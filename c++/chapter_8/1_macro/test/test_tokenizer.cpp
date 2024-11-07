@@ -1,6 +1,6 @@
 #define ADDITIONAL_TESTS
 #include "../../../testlib/testlib.hpp"
-#include "../tokenizer.hpp"
+#include "../token_stream.hpp"
 
 using namespace std::string_literals;
 
@@ -8,15 +8,15 @@ void test_tokenizer(std::string in, std::vector<std::string> expected) {
   SECTION(in) {
     auto input = std::istringstream(in);
 
-    auto tok = stiX::tokenizer(input);
+    auto stream = stiX::token_stream(input);
     auto e = expected.begin();
-    for (auto token: tok) {
+    while (stream.token_available()) {
       if (e == expected.end())
         FAIL("Too many tokens");
-      REQUIRE(token == *e);
+      REQUIRE(stream.pop_token() == *e);
       ++e;
     }
-    if (e != expected.end())
+    if (e != expected.end()) 
       FAIL("Not enough tokens");
   }
 }

@@ -7,14 +7,9 @@ namespace stiX {
   class token_stream {
   public:
     token_stream() = default;
-    explicit token_stream(std::istream& in):
-      tokenizer_(in),
-      tok_(tokenizer_.begin()) {
-    }
+    explicit token_stream(std::istream& in);
 
-    bool token_available() const {
-      return tok_ != tokenizer_.end();
-    }
+    bool token_available() const;
 
     std::string const& peek_token() const;
 
