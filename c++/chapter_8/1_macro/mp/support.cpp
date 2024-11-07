@@ -2,7 +2,7 @@
 #include <format>
 #include "support.hpp"
 #include "../source/token_seq.hpp"
-#include "../source/token_source.hpp"
+#include "../source/token_stream.hpp"
 #include "predefined.hpp"
 #include "../../../lib/chars.hpp"
 
@@ -11,12 +11,12 @@ namespace mp {
     return token.size() == 1 && stiX::iswhitespace(token[0]);
   }
 
-  void skip_whitespace(stiX::token_source &tokens) {
+  void skip_whitespace(stiX::token_stream& tokens) {
     while (is_whitespace(tokens.peek_token()))
       tokens.pop_token();
   }
 
-  stiX::token_seq parenthesised_sequence(stiX::token_source &tokens) {
+  stiX::token_seq parenthesised_sequence(stiX::token_stream& tokens) {
     if (tokens.peek_token() != pre::LeftParen)
       return {};
 
@@ -45,31 +45,31 @@ namespace mp {
     tokens.pop_back();
   }
 
-  stiX::token_source all_arguments(stiX::token_source &tokens) {
+  stiX::token_stream all_arguments(stiX::token_stream& tokens) {
     auto argument_tokens = parenthesised_sequence(tokens);
     drop_brackets(argument_tokens);
-    return stiX::token_source{argument_tokens};
+    return stiX::token_stream { argument_tokens };
   }
 
-  bool is_next(stiX::token_source &tokens, std::string_view expected) {
+  bool is_next(stiX::token_stream& tokens, std::string_view expected) {
     return tokens.peek_token() == expected;
   }
 
-  void check_next(stiX::token_source &tokens, std::string_view expected) {
+  void check_next(stiX::token_stream& tokens, std::string_view expected) {
     if (!is_next(tokens, expected))
       throw std::runtime_error(std::format("Expected {}", expected));
   } // check_next
 
-  void expect_next(stiX::token_source &tokens, std::string_view expected) {
+  void expect_next(stiX::token_stream& tokens, std::string_view expected) {
     check_next(tokens, expected);
     tokens.pop_token();
   } // expect_next
 
-  bool not_reached(stiX::token_source &tokens, std::string_view end_marker) {
+  bool not_reached(stiX::token_stream& tokens, std::string_view end_marker) {
     return tokens.token_available() && tokens.peek_token() != end_marker;
   }
 
-  std::string definition_name(stiX::token_source& source) {
+  std::string definition_name(stiX::token_stream& source) {
     auto def = source.pop_token();
     if (!stiX::isalnum(def))
       throw std::runtime_error(std::format("{} is not alphanumeric", def));
@@ -80,7 +80,7 @@ namespace mp {
   }
 
   std::vector<stiX::token_seq> gather_arguments(
-    stiX::token_source& source
+    stiX::token_stream& source
   ) {
     auto argument_tokens = all_arguments(source);
     if (!argument_tokens.token_available())
@@ -100,7 +100,7 @@ namespace mp {
   }
 
   stiX::token_seq argument_substitution(
-    stiX::token_source& definition,
+    stiX::token_stream& definition,
     std::vector<stiX::token_seq> const& arguments
   ) {
     auto const dollar = definition.pop_token();
@@ -122,7 +122,7 @@ namespace mp {
     return index - 1;
   }
 
-  stiX::token_seq next_argument(stiX::token_source& tokens) {
+  stiX::token_seq next_argument(stiX::token_stream& tokens) {
     auto arg = stiX::token_seq { };
 
     while (not_reached(tokens, pre::Comma))

@@ -1,5 +1,5 @@
 #include "macro.hpp"
-#include "source/token_source.hpp"
+#include "source/token_stream.hpp"
 #include "mp/support.hpp"
 #include "mp/predefined.hpp"
 
@@ -9,7 +9,7 @@
 
 namespace {
   using stiX::token_seq;
-  using stiX::token_source;
+  using stiX::token_stream;
 
   class macro_processor {
   public:
@@ -22,22 +22,22 @@ namespace {
     using token_sink = std::function<void(std::string const&)>;
     using macro_fn = void (macro_processor::*)(
       std::string const&,
-      token_source&,
+      token_stream&,
       token_sink
     );
 
-    void frame(token_source&& source, std::ostream& out);
-    void frame(token_source&& source, token_seq& result);
-    void frame(token_source&& source, token_sink sink);
-    std::string sub_frame_to_string(token_source&& in);
-    token_seq sub_frame_to_seq(token_source&& in);
+    void frame(token_stream&& source, std::ostream& out);
+    void frame(token_stream&& source, token_seq& result);
+    void frame(token_stream&& source, token_sink sink);
+    std::string sub_frame_to_string(token_stream&& in);
+    token_seq sub_frame_to_seq(token_stream&& in);
 
-    void define_replacement(std::string const&, token_source&, token_sink);
-    std::pair<std::string, token_seq> name_and_replacement(token_source& source);
+    void define_replacement(std::string const&, token_stream&, token_sink);
+    std::pair<std::string, token_seq> name_and_replacement(token_stream& source);
 
-    void len_macro(std::string const&, token_source&, token_sink);
-    void quoted_sequence(std::string const&, token_source&, token_sink);
-    void apply_replacement(std::string const&,token_source&, token_sink);
+    void len_macro(std::string const&, token_stream&, token_sink);
+    void quoted_sequence(std::string const&, token_stream&, token_sink);
+    void apply_replacement(std::string const&,token_stream&, token_sink);
 
     void install_macro(std::string_view name, macro_fn fn) {
       macros_[std::string(name)] = fn;
@@ -65,11 +65,11 @@ namespace {
     install_macro(Len, &macro_processor::len_macro);
     install_macro(Grave, &macro_processor::quoted_sequence);
 
-    frame(token_source { in }, out);
+    frame(token_stream { in }, out);
   }
 
   void macro_processor::frame(
-    token_source&& source,
+    token_stream&& source,
     std::ostream& out
   ) {
     frame(
@@ -79,7 +79,7 @@ namespace {
   }
 
   void macro_processor::frame(
-    token_source&& source,
+    token_stream&& source,
     token_seq& result
   ) {
     frame(
@@ -89,7 +89,7 @@ namespace {
   }
 
   void macro_processor::frame(
-    token_source&& source,
+    token_stream&& source,
     token_sink sink)
   {
     while(source.token_available()) {
@@ -104,13 +104,13 @@ namespace {
     }
   } // process
 
-  std::string macro_processor::sub_frame_to_string(token_source&& in) {
+  std::string macro_processor::sub_frame_to_string(token_stream&& in) {
     auto sink = std::ostringstream { };
     frame(std::move(in), sink);
     return sink.str();
   }
 
-  token_seq macro_processor::sub_frame_to_seq(token_source&& in) {
+  token_seq macro_processor::sub_frame_to_seq(token_stream&& in) {
     auto sink = token_seq { };
     frame(std::move(in), sink);
     return sink;
@@ -118,7 +118,7 @@ namespace {
 
   void macro_processor::define_replacement(
       std::string const&,
-      token_source& source,
+      token_stream& source,
       token_sink
   ) {
     auto [ def, replacement ] = name_and_replacement(source);
@@ -127,7 +127,7 @@ namespace {
   }
 
   std::pair<std::string, token_seq> macro_processor::name_and_replacement(
-    token_source& source
+    token_stream& source
   ) {
     check_next(source, LeftParen);
 
@@ -140,7 +140,7 @@ namespace {
 
   void macro_processor::len_macro(
     std::string const&,
-    token_source& source,
+    token_stream& source,
     token_sink
   ) {
     auto expansion = sub_frame_to_string(
@@ -152,7 +152,7 @@ namespace {
 
   void macro_processor::quoted_sequence(
     std::string const&,
-    token_source& source,
+    token_stream& source,
     token_sink sink
   ) {
     while(not_reached(source, Apostrophe))
@@ -162,11 +162,14 @@ namespace {
 
   void macro_processor::apply_replacement(
     std::string const& token,
-    token_source& source,
+    token_stream& source,
     token_sink
   ) {
-    auto const arguments = gather_arguments(source);
-    auto definition = token_source { replacements_[token] };
+    auto const raw_arguments = gather_arguments(source);
+    auto arguments = std::vector<token_seq> { };
+    for (auto const& arg: raw_arguments)
+      arguments.push_back(sub_frame_to_seq(token_stream(arg)));
+    auto definition = token_stream { replacements_[token] };
 
     auto with_arg_substitution = token_seq { };
     while (definition.token_available()) {

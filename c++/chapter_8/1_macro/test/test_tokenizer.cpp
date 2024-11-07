@@ -1,6 +1,6 @@
 #define ADDITIONAL_TESTS
 #include "../../../testlib/testlib.hpp"
-#include "../token_stream.hpp"
+#include "../source/token_stream.hpp"
 
 using namespace std::string_literals;
 
