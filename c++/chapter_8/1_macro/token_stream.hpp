@@ -1,7 +1,8 @@
 #ifndef STICPP_TOKEN_STREAM_HPP
 #define STICPP_TOKEN_STREAM_HPP
 
-#include "tokenizer.hpp"
+#include <iosfwd>
+#include <string>
 
 namespace stiX {
   class token_stream {
@@ -16,8 +17,10 @@ namespace stiX {
     std::string pop_token();
 
   private:
-    stiX::tokenizer tokenizer_;
-    stiX::stream_token_iterator tok_;
+    void next_token();
+
+    std::istream* in_;
+    std::string token_;
   };
 }
 

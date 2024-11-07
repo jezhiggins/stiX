@@ -16,7 +16,7 @@ void test_tokenizer(std::string in, std::vector<std::string> expected) {
       REQUIRE(stream.pop_token() == *e);
       ++e;
     }
-    if (e != expected.end()) 
+    if (e != expected.end())
       FAIL("Not enough tokens");
   }
 }
