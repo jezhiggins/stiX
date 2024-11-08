@@ -17,7 +17,7 @@ namespace {
     void process(
       std::istream& in,
       std::ostream& out,
-      std::ostream* err = 0
+      std::ostream* warning = nullptr
     );
 
   private:
@@ -31,8 +31,8 @@ namespace {
     void frame(token_stream&& source, std::ostream& out);
     void frame(token_stream&& source, token_seq& result);
     void frame(token_stream&& source, token_sink sink);
-    std::string sub_frame_to_string(token_stream&& in);
-    token_seq sub_frame_to_seq(token_stream&& in);
+    std::string sub_frame_to_string(token_seq const& in);
+    token_seq sub_frame_to_seq(token_seq const& in);
 
     void define_replacement(std::string const&, token_stream&, token_sink);
     void len_macro(std::string const& macro, token_stream&, token_sink sink);
@@ -49,18 +49,21 @@ namespace {
       return macros_[tok];
     }
 
-    void set_error(std::ostream* err) {
-      err_ = err;
+    void set_warning_out(std::ostream* warning) {
+      warning_ = warning;
     }
-
+    void warning_if_excess(std::string const& tok, std::vector<token_seq> const& args) {
+      if (args.size() > 2)
+        warning(std::format("excess arguments to `{}' ignored", tok));
+    }
     void warning(std::string const& w) {
-      if (err_)
-        *err_ << "Warning: " << w << '\n';
+      if (warning_)
+        *warning_ << "Warning: " << w << '\n';
     }
 
     std::map<std::string, macro_fn> macros_;
     std::map<std::string, token_seq> replacements_;
-    std::ostream* err_;
+    std::ostream* warning_;
   };
 
   using namespace mp;
@@ -70,9 +73,9 @@ namespace {
   void macro_processor::process(
     std::istream& in,
     std::ostream& out,
-    std::ostream* err
+    std::ostream* warning
   ) {
-    set_error(err);
+    set_warning_out(warning);
 
     install_macro(Define, &macro_processor::define_replacement);
     install_macro(Len, &macro_processor::len_macro);
@@ -117,15 +120,15 @@ namespace {
     }
   } // process
 
-  std::string macro_processor::sub_frame_to_string(token_stream&& in) {
+  std::string macro_processor::sub_frame_to_string(token_seq const& in) {
     auto sink = std::ostringstream { };
-    frame(std::move(in), sink);
+    frame(token_stream { in }, sink);
     return sink.str();
   }
 
-  token_seq macro_processor::sub_frame_to_seq(token_stream&& in) {
+  token_seq macro_processor::sub_frame_to_seq(token_seq const& in) {
     auto sink = token_seq { };
-    frame(std::move(in), sink);
+    frame(token_stream { in }, sink);
     return sink;
   }
 
@@ -140,19 +143,18 @@ namespace {
     }
 
     auto const raw_arguments = gather_arguments(source);
-    if (raw_arguments.empty())
-      return;
-    if (raw_arguments.size() > 2)
-      warning("excess arguments to `define' ignored");
-
-    auto def = sub_frame_to_string(token_stream { raw_arguments[0] });
-    if (!stiX::isalnum(def)) {
-      //throw std::runtime_error(std::format("{} is not alphanumeric", def));
+    warning_if_excess(macro, raw_arguments);
+    if (raw_arguments.empty()) {
       return;
     }
+
+    auto def = sub_frame_to_string(raw_arguments[0]);
+    if (!stiX::isalnum(def))
+      return;
+
     auto replacement = raw_arguments.size() >= 2
-                       ? sub_frame_to_seq(token_stream { raw_arguments[1] })
-                       : token_seq { };
+      ? sub_frame_to_seq(raw_arguments[1])
+      : token_seq { };
 
     replacements_[def] = replacement;
     macros_[def] = &macro_processor::apply_replacement;
@@ -169,11 +171,10 @@ namespace {
     }
 
     auto const raw_arguments = gather_arguments(source);
-    if (raw_arguments.size() > 2)
-      warning("excess arguments to `len' ignored");
+    warning_if_excess(macro, raw_arguments);
 
     auto expansion = !raw_arguments.empty()
-      ? sub_frame_to_string(token_stream { raw_arguments[0] })
+      ? sub_frame_to_string(raw_arguments[0])
       : std::string { };
 
     source.push_token(std::to_string(expansion.size()));
@@ -197,7 +198,7 @@ namespace {
     auto const raw_arguments = gather_arguments(source);
     auto arguments = std::vector<token_seq> { };
     for (auto const& arg: raw_arguments)
-      arguments.push_back(sub_frame_to_seq(token_stream(arg)));
+      arguments.push_back(sub_frame_to_seq(arg));
     auto definition = token_stream { replacements_[token] };
 
     auto with_arg_substitution = token_seq { };
