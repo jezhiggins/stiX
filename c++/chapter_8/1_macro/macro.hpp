@@ -4,7 +4,14 @@
 #include <iosfwd>
 
 namespace stiX {
-    void macro_process(std::istream& in, std::ostream& out);
+  void macro_process(
+    std::istream& in,
+    std::ostream& out,
+    std::ostream& err);
+
+  void macro_process(
+    std::istream& in,
+    std::ostream& out);
 }
 
 #endif // STICPP_MACRO_HPP

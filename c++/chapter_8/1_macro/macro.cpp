@@ -16,7 +16,8 @@ namespace {
   public:
     void process(
       std::istream& in,
-      std::ostream& out
+      std::ostream& out,
+      std::ostream* err = 0
     );
 
   private:
@@ -48,8 +49,18 @@ namespace {
       return macros_[tok];
     }
 
+    void set_error(std::ostream* err) {
+      err_ = err;
+    }
+
+    void warning(std::string const& w) {
+      if (err_)
+        *err_ << "Warning: " << w << '\n';
+    }
+
     std::map<std::string, macro_fn> macros_;
     std::map<std::string, token_seq> replacements_;
+    std::ostream* err_;
   };
 
   using namespace mp;
@@ -58,8 +69,11 @@ namespace {
   /////////////////////
   void macro_processor::process(
     std::istream& in,
-    std::ostream& out
+    std::ostream& out,
+    std::ostream* err
   ) {
+    set_error(err);
+
     install_macro(Define, &macro_processor::define_replacement);
     install_macro(Len, &macro_processor::len_macro);
     install_macro(Grave, &macro_processor::quoted_sequence);
@@ -128,6 +142,8 @@ namespace {
     auto const raw_arguments = gather_arguments(source);
     if (raw_arguments.empty())
       return;
+    if (raw_arguments.size() > 2)
+      warning("excess arguments to `define' ignored");
 
     auto def = sub_frame_to_string(token_stream { raw_arguments[0] });
     if (!stiX::isalnum(def)) {
@@ -190,12 +206,28 @@ namespace {
 
     source.push_tokens(with_arg_substitution);
   }
+
+  void do_macro_process(
+    std::istream& in,
+    std::ostream& out,
+    std::ostream* err
+  ) {
+    auto macro = macro_processor { };
+    macro.process(in, out, err);
+  }
 } // namespace
 
 void stiX::macro_process(
     std::istream& in,
     std::ostream& out
 ) {
-  auto macro = macro_processor { };
-  macro.process(in, out);
+  do_macro_process(in, out, 0);
+}
+
+void stiX::macro_process(
+  std::istream& in,
+  std::ostream& out,
+  std::ostream& err
+) {
+  do_macro_process(in, out, &err);
 }
