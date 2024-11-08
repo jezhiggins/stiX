@@ -2,6 +2,7 @@
 #include "source/token_stream.hpp"
 #include "mp/support.hpp"
 #include "mp/predefined.hpp"
+#include "../../lib/chars.hpp"
 
 #include <functional>
 #include <map>
@@ -33,8 +34,6 @@ namespace {
     token_seq sub_frame_to_seq(token_stream&& in);
 
     void define_replacement(std::string const&, token_stream&, token_sink);
-    std::pair<std::string, token_seq> name_and_replacement(token_stream& source);
-
     void len_macro(std::string const& macro, token_stream&, token_sink sink);
     void quoted_sequence(std::string const&, token_stream&, token_sink);
     void apply_replacement(std::string const&,token_stream&, token_sink);
@@ -126,21 +125,21 @@ namespace {
       return;
     }
 
-    auto [ def, replacement ] = name_and_replacement(source);
+    auto const raw_arguments = gather_arguments(source);
+    if (raw_arguments.empty())
+      return;
+
+    auto def = sub_frame_to_string(token_stream { raw_arguments[0] });
+    if (!stiX::isalnum(def)) {
+      //throw std::runtime_error(std::format("{} is not alphanumeric", def));
+      return;
+    }
+    auto replacement = raw_arguments.size() >= 2
+                       ? sub_frame_to_seq(token_stream { raw_arguments[1] })
+                       : token_seq { };
+
     replacements_[def] = replacement;
     macros_[def] = &macro_processor::apply_replacement;
-  }
-
-  std::pair<std::string, token_seq> macro_processor::name_and_replacement(
-    token_stream& source
-  ) {
-    check_next(source, LeftParen);
-
-    auto define_source = mp::all_arguments(source);
-
-    auto def = definition_name(define_source);
-    auto replacement = sub_frame_to_seq(std::move(define_source));
-    return { def, replacement };
   }
 
   void macro_processor::len_macro(

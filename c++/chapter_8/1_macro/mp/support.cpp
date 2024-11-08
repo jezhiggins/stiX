@@ -69,16 +69,6 @@ namespace mp {
     return tokens.token_available() && tokens.peek_token() != end_marker;
   }
 
-  std::string definition_name(stiX::token_stream& source) {
-    auto def = source.pop_token();
-    if (!stiX::isalnum(def))
-      throw std::runtime_error(std::format("{} is not alphanumeric", def));
-    skip_whitespace(source);
-    expect_next(source, pre::Comma);
-    skip_whitespace(source);
-    return def;
-  }
-
   std::vector<stiX::token_seq> gather_arguments(
     stiX::token_stream& source
   ) {

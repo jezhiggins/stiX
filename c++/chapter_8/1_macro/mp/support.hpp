@@ -21,8 +21,6 @@ namespace mp {
 
   bool not_reached(stiX::token_stream& tokens, std::string_view end_marker);
 
-  std::string definition_name(stiX::token_stream& source);
-
   int argument_index(std::string const& index_tok);
   stiX::token_seq argument_substitution(
     stiX::token_stream& definition,

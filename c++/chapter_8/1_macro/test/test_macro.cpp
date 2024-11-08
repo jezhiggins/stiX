@@ -8,6 +8,11 @@ struct good_case {
   std::string expected;
 };
 
+struct bad_case {
+  std::string input;
+  std::string exception;
+};
+
 void build_good_tests(std::vector<good_case> const& good) {
   for (auto g : good) {
     DYNAMIC_SECTION(g.name) {
@@ -52,7 +57,9 @@ TEST_CASE("Text replacement") {
     { "just a define", "define(one, two)", "" },
     { "looks like an argument, but isn't", "define(dollar, $)\ndollar!", "\n$!"},
     { "expansion includes $", "define(dollar, $$1)\ndollar(5)!", "\n$5!"},
-    { "replace includes $1", "define(parp, hello$1world)parp parp(-)", "helloworld hello-world" }
+    { "replace includes $1", "define(parp, hello$1world)parp parp(-)", "helloworld hello-world" },
+    { "comma but no replacement", "define(parp,)parp", "" },
+    { "no replacement", "define(parp)-parp-parp", "--"}
   };
   build_good_tests(good);
 }
@@ -108,8 +115,8 @@ TEST_CASE("Text replacement with arguments") {
       "define(concat, $1-$2+)\nconcat(concat(A, B), concat(C, D))",
       "\nA-B+-C-D++" },
     { "two args, right recursive with a left recurse",
-        "define(concat, $1-$2+)\nconcat(A, concat(concat(B, C), D))",
-        "\nA-B-C+-D++" }
+      "define(concat, $1-$2+)\nconcat(A, concat(concat(B, C), D))",
+      "\nA-B-C+-D++" }
   };
   build_good_tests(good);
 }
@@ -160,25 +167,33 @@ TEST_CASE("len()") {
   build_good_tests(good);
 }
 
-TEST_CASE("Ill-formed macros") {
-  auto bad = std::vector<std::pair<std::string, std::string>> {
-    { "define(x:y)", "Expected ," },
+TEST_CASE("Ill-formed macros causing errors") {
+  auto bad = std::vector<bad_case> {
     { "define(x, y]", "Expected )" },
     { "define(x, (((y))", "Expected )" },
-    { "define(99, x)", "99 is not alphanumeric" },
     { "len(a string that just flops off the end", "Expected )" }
   };
   for (auto b : bad) {
-    DYNAMIC_SECTION(b.first) {
-      auto in = std::istringstream { b.first };
+    DYNAMIC_SECTION(b.input) {
+      auto in = std::istringstream { b.input };
       auto out = std::ostringstream { };
 
       try {
         stiX::macro_process(in, out);
         FAIL("Expected failure, but succeeded");
       } catch (std::exception& ex) {
-        REQUIRE(b.second == ex.what());
+        REQUIRE(b.exception == ex.what());
       }
     }
   }
+}
+
+TEST_CASE("Valid but meaningless") {
+  auto meaningless = std::vector<good_case> {
+    { "x:y is a multitoken sequence", "define(x:y, replacement) x:y", " x:y" },
+    { "99 is not alphanumeric", "define(99, x) 99", " 99" },
+    { "empty define", "define() hello", " hello" },
+    { "empty name", "define(, replace) hello", " hello" }
+  };
+  build_good_tests(meaningless);
 }
