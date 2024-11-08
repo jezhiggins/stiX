@@ -167,9 +167,14 @@ namespace {
       sink(macro);
       return;
     }
-    auto expansion = sub_frame_to_string(
-      all_arguments(source)
-    );
+
+    auto const raw_arguments = gather_arguments(source);
+    if (raw_arguments.size() > 2)
+      warning("excess arguments to `len' ignored");
+
+    auto expansion = !raw_arguments.empty()
+      ? sub_frame_to_string(token_stream { raw_arguments[0] })
+      : std::string { };
 
     source.push_token(std::to_string(expansion.size()));
   }

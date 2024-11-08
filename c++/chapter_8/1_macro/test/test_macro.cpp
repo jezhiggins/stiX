@@ -205,9 +205,10 @@ TEST_CASE("Valid but meaningless") {
   build_good_tests(meaningless);
 }
 
-TEST_CASE("Valid, with warning") {
+TEST_CASE("Valid with warning") {
   auto warnings = std::vector<warning_case> {
     { "too many args to define", "define(x,y,z) x", " y", "Warning: excess arguments to `define' ignored\n" },
+    { "too many args to len", "len(x,y,z) x", "1 x", "Warning: excess arguments to `len' ignored\n" },
   };
   for (auto w : warnings) {
     DYNAMIC_SECTION(w.name) {
