@@ -35,7 +35,7 @@ namespace {
     void define_replacement(std::string const&, token_stream&, token_sink);
     std::pair<std::string, token_seq> name_and_replacement(token_stream& source);
 
-    void len_macro(std::string const&, token_stream&, token_sink);
+    void len_macro(std::string const& macro, token_stream&, token_sink sink);
     void quoted_sequence(std::string const&, token_stream&, token_sink);
     void apply_replacement(std::string const&,token_stream&, token_sink);
 
@@ -139,10 +139,14 @@ namespace {
   }
 
   void macro_processor::len_macro(
-    std::string const&,
+    std::string const& macro,
     token_stream& source,
-    token_sink
+    token_sink sink
   ) {
+    if (!is_next(source, LeftParen)) {
+      sink(macro);
+      return;
+    }
     auto expansion = sub_frame_to_string(
       all_arguments(source)
     );

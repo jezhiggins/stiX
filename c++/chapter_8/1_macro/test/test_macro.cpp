@@ -104,12 +104,21 @@ TEST_CASE("Text replacement with arguments") {
 
 TEST_CASE("effect of quotes") {
   auto good = std::vector<good_case> {
-    { "len in replacement",
+    { "len($1) in replacement",
         "define(howlong, len($1)) howlong howlong(fruit)",
         " 2 2" },
-    { "escaped len in replacement",
+    { "`len($1)' in replacement",
         "define(howlong, `len($1)') howlong howlong(fruit)",
         " 0 5" },
+    { "len`($1)' in replacement",
+      "define(howlong, len`($1)') howlong howlong(fruit)",
+      " 0 5" },
+    { "len(`$'1) in replacement",
+      "define(howlong, len(`$'1)) howlong howlong(fruit)",
+      " 2 2" },
+    { "len(`$1') in replacement",
+      "define(howlong, len(`$1')) howlong howlong(fruit)",
+      " 2 2" },
     { "create an alias for define, use it",
         "define(def, `define($1,$2)') def(fish, fowl) fish",
         "  fowl" }
