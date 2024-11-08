@@ -117,10 +117,15 @@ namespace {
   }
 
   void macro_processor::define_replacement(
-      std::string const&,
+      std::string const& macro,
       token_stream& source,
-      token_sink
+      token_sink sink
   ) {
+    if (!is_next(source, LeftParen)) {
+      sink(macro);
+      return;
+    }
+
     auto [ def, replacement ] = name_and_replacement(source);
     replacements_[def] = replacement;
     macros_[def] = &macro_processor::apply_replacement;

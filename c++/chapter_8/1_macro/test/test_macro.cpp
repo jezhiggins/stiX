@@ -21,9 +21,18 @@ void build_good_tests(std::vector<good_case> const& good) {
   }
 }
 
-TEST_CASE("Text replacement") {
+TEST_CASE("Passthrough") {
   auto good = std::vector<good_case> {
     { "pass through", "nothing going on here\nat all", "nothing going on here\nat all" },
+    { "the word define is not special by itself", "the word define is not special by itself", "the word define is not special by itself" },
+    { "define[x, y]", "define[x, y]", "define[x, y]" },
+    { "define", "define", "define" }
+  };
+  build_good_tests(good);
+}
+
+TEST_CASE("Text replacement") {
+  auto good = std::vector<good_case> {
     { "simple define", "nothing going on here\ndefine(x, y)\nat all", "nothing going on here\n\nat all"},
     { "define with parenthesised replacement",
       "nothing going on here\ndefine(ENDFILE, (-1))\nat all",
@@ -36,6 +45,9 @@ TEST_CASE("Text replacement") {
       "\n\nif (getit(line) = (-1)) then putit(sumline)" },
     { "nested replacement, opposite order",
       "define(DONE, ENDFILE)\ndefine(ENDFILE, (-1))\nif (getit(line) = DONE) then putit(sumline)",
+      "\n\nif (getit(line) = (-1)) then putit(sumline)" },
+    { "replacement in definition",
+      "define(DONE, ENDFILE)\ndefine(DONE, (-1))\nif (getit(line) = ENDFILE) then putit(sumline)",
       "\n\nif (getit(line) = (-1)) then putit(sumline)" },
     { "just a define", "define(one, two)", "" },
     { "looks like an argument, but isn't", "define(dollar, $)\ndollar!", "\n$!"},
@@ -121,7 +133,10 @@ TEST_CASE("effect of quotes") {
       " 2 2" },
     { "create an alias for define, use it",
         "define(def, `define($1,$2)') def(fish, fowl) fish",
-        "  fowl" }
+        "  fowl" },
+    { "whole expression is quoted",
+        "`define($1,$2)'!",
+        "define($1,$2)!" }
   };
   build_good_tests(good);
 }
@@ -147,8 +162,6 @@ TEST_CASE("len()") {
 
 TEST_CASE("Ill-formed macros") {
   auto bad = std::vector<std::pair<std::string, std::string>> {
-    { "define[x, y]", "Expected (" },
-    { "define", "Expected (" },
     { "define(x:y)", "Expected ," },
     { "define(x, y]", "Expected )" },
     { "define(x, (((y))", "Expected )" },
