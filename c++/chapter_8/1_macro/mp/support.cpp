@@ -10,7 +10,7 @@ namespace mp {
   bool do_not_evaluate(
       std::string const& macro,
       stiX::token_stream& source,
-      token_sink sink) {
+      token_sink& sink) {
     auto is_bad = !is_next(source, pre::LeftParen);
     if (is_bad)
       sink(macro);

@@ -26,19 +26,19 @@ namespace {
     using macro_fn = void (macro_processor::*)(
       std::string const&,
       token_stream&,
-      token_sink
+      token_sink&
     );
 
     void frame(token_stream&& source, std::ostream& out);
     void frame(token_stream&& source, token_seq& result);
-    void frame(token_stream&& source, token_sink sink);
+    void frame(token_stream&& source, token_sink&& sink);
     std::string sub_frame_to_string(token_seq const& in);
     token_seq sub_frame_to_seq(token_seq const& in);
 
-    void define_replacement(std::string const&, token_stream&, token_sink);
-    void len_macro(std::string const& macro, token_stream&, token_sink sink);
-    void quoted_sequence(std::string const&, token_stream&, token_sink);
-    void apply_replacement(std::string const&,token_stream&, token_sink);
+    void define_replacement(std::string const&, token_stream&, token_sink&);
+    void len_macro(std::string const&, token_stream&, token_sink&);
+    void quoted_sequence(std::string const&, token_stream&, token_sink&);
+    void apply_replacement(std::string const&,token_stream&, token_sink&);
 
     void install_macro(std::string_view name, macro_fn fn) {
       macros_[std::string(name)] = fn;
@@ -57,14 +57,14 @@ namespace {
       if (args.size() > 2)
         warning(std::format("excess arguments to `{}' ignored", tok));
     }
-    void warning(std::string const& w) {
+    void warning(std::string&& w) {
       if (warning_)
         *warning_ << "Warning: " << w << '\n';
     }
 
     std::map<std::string, macro_fn> macros_;
     std::map<std::string, token_seq> replacements_;
-    std::ostream* warning_;
+    std::ostream* warning_ = nullptr;
   };
 
   using namespace mp;
@@ -107,7 +107,7 @@ namespace {
 
   void macro_processor::frame(
     token_stream&& source,
-    token_sink sink)
+    token_sink&& sink)
   {
     while(source.token_available()) {
       auto token = source.pop_token();
@@ -136,7 +136,7 @@ namespace {
   void macro_processor::define_replacement(
       std::string const& macro,
       token_stream& source,
-      token_sink sink
+      token_sink& sink
   ) {
     if (do_not_evaluate(macro, source, sink))
       return;
@@ -161,7 +161,7 @@ namespace {
   void macro_processor::len_macro(
     std::string const& macro,
     token_stream& source,
-    token_sink sink
+    token_sink& sink
   ) {
     if (do_not_evaluate(macro, source, sink))
       return;
@@ -179,7 +179,7 @@ namespace {
   void macro_processor::quoted_sequence(
     std::string const&,
     token_stream& source,
-    token_sink sink
+    token_sink& sink
   ) {
     while(not_reached(source, Apostrophe))
       sink(source.pop_token());
@@ -189,7 +189,7 @@ namespace {
   void macro_processor::apply_replacement(
     std::string const& token,
     token_stream& source,
-    token_sink
+    token_sink&
   ) {
     auto arguments = gather_arguments(source)
       | std::views::transform([this](token_seq const& a) { return sub_frame_to_seq(a); })
@@ -223,7 +223,7 @@ void stiX::macro_process(
     std::istream& in,
     std::ostream& out
 ) {
-  do_macro_process(in, out, 0);
+  do_macro_process(in, out, nullptr);
 }
 
 void stiX::macro_process(

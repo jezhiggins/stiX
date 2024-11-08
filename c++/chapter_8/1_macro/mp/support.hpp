@@ -8,7 +8,6 @@
 namespace stiX {
   class token_stream;
   class token_seq;
-  class token_sink;
 }
 
 namespace mp {
@@ -16,7 +15,7 @@ namespace mp {
   bool do_not_evaluate(
     std::string const& macro,
     stiX::token_stream& source,
-    token_sink sink);
+    token_sink& sink);
   void skip_whitespace(stiX::token_stream& tokens);
 
   stiX::token_seq parenthesised_sequence(stiX::token_stream& tokens);
