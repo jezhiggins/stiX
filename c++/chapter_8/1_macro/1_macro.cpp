@@ -54,5 +54,9 @@
 #include <iostream>
 
 int main() {
-  stiX::macro_process(std::cin, std::cout);
+  try {
+    stiX::macro_process(std::cin, std::cout);
+  } catch(std::exception const& ex) {
+    std::cerr << "ERROR: " << ex.what() << '\n';
+  }
 }
