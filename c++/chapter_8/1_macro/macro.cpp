@@ -7,6 +7,7 @@
 #include <functional>
 #include <map>
 #include <sstream>
+#include <ranges>
 
 namespace {
   using stiX::token_seq;
@@ -137,18 +138,15 @@ namespace {
       token_stream& source,
       token_sink sink
   ) {
-    if (!is_next(source, LeftParen)) {
-      sink(macro);
+    if (do_not_evaluate(macro, source, sink))
       return;
-    }
 
     auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments);
-    if (raw_arguments.empty()) {
-      return;
-    }
 
-    auto def = sub_frame_to_string(raw_arguments[0]);
+    auto def = !raw_arguments.empty()
+      ? sub_frame_to_string(raw_arguments[0])
+      : std::string { };
     if (!stiX::isalnum(def))
       return;
 
@@ -165,10 +163,8 @@ namespace {
     token_stream& source,
     token_sink sink
   ) {
-    if (!is_next(source, LeftParen)) {
-      sink(macro);
+    if (do_not_evaluate(macro, source, sink))
       return;
-    }
 
     auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments);
@@ -195,10 +191,10 @@ namespace {
     token_stream& source,
     token_sink
   ) {
-    auto const raw_arguments = gather_arguments(source);
-    auto arguments = std::vector<token_seq> { };
-    for (auto const& arg: raw_arguments)
-      arguments.push_back(sub_frame_to_seq(arg));
+    auto arguments = gather_arguments(source)
+      | std::views::transform([this](token_seq const& a) { return sub_frame_to_seq(a); })
+      | std::ranges::to<std::vector>();
+
     auto definition = token_stream { replacements_[token] };
 
     auto with_arg_substitution = token_seq { };
