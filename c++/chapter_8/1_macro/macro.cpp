@@ -10,8 +10,11 @@
 #include <ranges>
 
 namespace {
+  using namespace std::string_literals;
   using stiX::token_seq;
   using stiX::token_stream;
+
+  auto const Empty = ""s;
 
   class macro_processor {
   public:
@@ -37,6 +40,7 @@ namespace {
 
     void define_replacement(std::string const&, token_stream&, token_sink&);
     void len_macro(std::string const&, token_stream&, token_sink&);
+    void ifelse_macro(std::string const&, token_stream&, token_sink&);
     void quoted_sequence(std::string const&, token_stream&, token_sink&);
     void apply_replacement(std::string const&,token_stream&, token_sink&);
 
@@ -53,8 +57,11 @@ namespace {
     void set_warning_out(std::ostream* warning) {
       warning_ = warning;
     }
-    void warning_if_excess(std::string const& tok, std::vector<token_seq> const& args) {
-      if (args.size() > 2)
+    void warning_if_excess(
+        std::string const& tok,
+        std::vector<token_seq> const& args,
+        size_t max_args) {
+      if (args.size() > max_args)
         warning(std::format("excess arguments to `{}' ignored", tok));
     }
     void warning(std::string&& w) {
@@ -80,6 +87,7 @@ namespace {
 
     install_macro(Define, &macro_processor::define_replacement);
     install_macro(Len, &macro_processor::len_macro);
+    install_macro(IfElse, &macro_processor::ifelse_macro);
     install_macro(Grave, &macro_processor::quoted_sequence);
 
     frame(token_stream { in }, out);
@@ -142,7 +150,7 @@ namespace {
       return;
 
     auto const raw_arguments = gather_arguments(source);
-    warning_if_excess(macro, raw_arguments);
+    warning_if_excess(macro, raw_arguments, 2);
 
     auto def = !raw_arguments.empty()
       ? sub_frame_to_string(raw_arguments[0])
@@ -167,13 +175,40 @@ namespace {
       return;
 
     auto const raw_arguments = gather_arguments(source);
-    warning_if_excess(macro, raw_arguments);
+    warning_if_excess(macro, raw_arguments, 2);
 
     auto expansion = !raw_arguments.empty()
       ? sub_frame_to_string(raw_arguments[0])
       : std::string { };
 
     source.push_token(std::to_string(expansion.size()));
+  }
+
+  void macro_processor::ifelse_macro(
+    std::string const& macro,
+    token_stream& source,
+    token_sink& sink
+  ) {
+    if (do_not_evaluate(macro, source, sink))
+      return;
+
+    auto const raw_arguments = gather_arguments(source);
+    warning_if_excess(macro, raw_arguments, 4);
+
+    if (raw_arguments.size() < 3)
+      return;
+
+    auto arguments = raw_arguments
+                     | std::views::transform([this](token_seq const& a) { return sub_frame_to_string(a); })
+                     | std::ranges::to<std::vector>();
+
+    auto const& lhs = arguments[0];
+    auto const& rhs = arguments[1];
+    auto const& then_r = arguments[2];
+    auto const& else_r = arguments.size() >= 4 ? arguments[3] : Empty;
+
+    auto const& result = lhs == rhs ? then_r : else_r;
+    source.push_token(result);
   }
 
   void macro_processor::quoted_sequence(

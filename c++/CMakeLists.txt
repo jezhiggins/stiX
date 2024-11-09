@@ -283,6 +283,7 @@ add_executable(macro_test
 		${macro_sources}
 		chapter_8/1_macro/test/test.hpp
 		chapter_8/1_macro/test/test.cpp
+		chapter_8/1_macro/test/test_ifelse.cpp
 )
 target_link_libraries(macro_test stix testsupport)
 
