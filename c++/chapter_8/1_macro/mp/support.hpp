@@ -34,6 +34,8 @@ namespace mp {
   );
   stiX::token_seq next_argument(stiX::token_stream& tokens);
   std::vector<stiX::token_seq> gather_arguments(stiX::token_stream& source);
+
+  std::pair<int, bool> int_arg(std::vector<std::string> const& args, size_t index, int def = 0);
 } // namespace mp
 
 #endif //STICPP_SUPPORT_HPP

@@ -133,4 +133,15 @@ namespace mp {
 
     return arg;
   }
+
+  std::pair<int, bool> int_arg(std::vector<std::string> const& args, size_t index, int def) {
+    if (index >= args.size())
+      return { def, true };
+
+    auto value = def;
+    auto const& arg = args[index];
+    auto [_, ec] = std::from_chars(arg.data(), arg.data() + arg.length(), value);
+
+    return { value, ec == std::errc() };
+  }
 } // namespace mp

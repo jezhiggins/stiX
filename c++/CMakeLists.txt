@@ -286,6 +286,7 @@ add_executable(macro_test
 		chapter_8/1_macro/test/test_ifelse.cpp
 		chapter_8/1_macro/test/test_len.cpp
 		chapter_8/1_macro/test/test_quotes.cpp
+		chapter_8/1_macro/test/test_substr.cpp
 )
 target_link_libraries(macro_test stix testsupport)
 

@@ -9,6 +9,7 @@ namespace pre {
   auto constexpr Define = "define"sv;
   auto constexpr Len = "len"sv;
   auto constexpr IfElse = "ifelse"sv;
+  auto constexpr Substr = "substr"sv;
   auto constexpr LeftParen = "("sv;
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;

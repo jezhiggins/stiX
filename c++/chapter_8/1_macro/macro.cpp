@@ -41,6 +41,7 @@ namespace {
     void define_replacement(std::string const&, token_stream&, token_sink&);
     void len_macro(std::string const&, token_stream&, token_sink&);
     void ifelse_macro(std::string const&, token_stream&, token_sink&);
+    void substr_macro(std::string const&, token_stream&, token_sink&);
     void quoted_sequence(std::string const&, token_stream&, token_sink&);
     void apply_replacement(std::string const&,token_stream&, token_sink&);
 
@@ -63,6 +64,13 @@ namespace {
         size_t max_args) {
       if (args.size() > max_args)
         warning(std::format("excess arguments to `{}' ignored", tok));
+    }
+    void warning_if_too_few(
+      std::string const& tok,
+      std::vector<token_seq> const& args,
+      size_t min_args) {
+      if (args.size() < min_args)
+        warning(std::format("too few arguments to `{}'", tok));
     }
     void warning(std::string&& w) {
       if (warning_)
@@ -88,6 +96,7 @@ namespace {
     install_macro(Define, &macro_processor::define_replacement);
     install_macro(Len, &macro_processor::len_macro);
     install_macro(IfElse, &macro_processor::ifelse_macro);
+    install_macro(Substr, &macro_processor::substr_macro);
     install_macro(Grave, &macro_processor::quoted_sequence);
 
     frame(token_stream { in }, out);
@@ -209,6 +218,34 @@ namespace {
 
     auto const& result = lhs == rhs ? then_r : else_r;
     source.push_token(result);
+  }
+
+  void macro_processor::substr_macro(
+    std::string const& macro,
+    token_stream& source,
+    token_sink& sink
+  ) {
+    if (do_not_evaluate(macro, source, sink))
+      return;
+
+    auto const raw_arguments = gather_arguments(source);
+    warning_if_excess(macro, raw_arguments, 3);
+    warning_if_too_few(macro, raw_arguments, 2);
+
+    auto arguments = raw_arguments
+                     | std::views::transform([this](token_seq const& a) { return sub_frame_to_string(a); })
+                     | std::ranges::to<std::vector>();
+    auto const& str = !arguments.empty() ? arguments[0] : Empty;
+    auto [start, start_ok] = int_arg(arguments, 1);
+    auto [len, len_ok] = int_arg(arguments, 2, static_cast<int>(std::string::npos));
+
+    if (!start_ok || !len_ok) {
+      warning(std::format("non-numeric argument to `{}'", macro));
+      return;
+    }
+
+    if (start < str.size())
+      source.push_token(str.substr(start, len));
   }
 
   void macro_processor::quoted_sequence(
