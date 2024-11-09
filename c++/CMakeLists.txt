@@ -281,6 +281,8 @@ add_executable(macro_test
 		chapter_8/1_macro/test/test_macro.cpp
 		chapter_8/1_macro/test/test_tokenizer.cpp
 		${macro_sources}
+		chapter_8/1_macro/test/test.hpp
+		chapter_8/1_macro/test/test.cpp
 )
 target_link_libraries(macro_test stix testsupport)
 

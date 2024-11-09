@@ -1,37 +1,6 @@
 #include "../../../testlib/testlib.hpp"
 #include "../macro.hpp"
-#include <vector>
-
-struct good_case {
-  std::string name;
-  std::string input;
-  std::string expected;
-};
-
-struct warning_case {
-  std::string name;
-  std::string input;
-  std::string output;
-  std::string warning;
-};
-
-struct bad_case {
-  std::string input;
-  std::string exception;
-};
-
-void build_good_tests(std::vector<good_case> const& good) {
-  for (auto g : good) {
-    DYNAMIC_SECTION(g.name) {
-      auto in = std::istringstream{g.input};
-      auto out = std::ostringstream{};
-
-      stiX::macro_process(in, out);
-
-      REQUIRE(g.expected == out.str());
-    }
-  }
-}
+#include "test.hpp"
 
 TEST_CASE("Passthrough") {
   auto good = std::vector<good_case> {
@@ -180,19 +149,7 @@ TEST_CASE("Ill-formed macros causing errors") {
     { "define(x, (((y))", "Expected )" },
     { "len(a string that just flops off the end", "Expected )" }
   };
-  for (auto b : bad) {
-    DYNAMIC_SECTION(b.input) {
-      auto in = std::istringstream { b.input };
-      auto out = std::ostringstream { };
-
-      try {
-        stiX::macro_process(in, out);
-        FAIL("Expected failure, but succeeded");
-      } catch (std::exception& ex) {
-        REQUIRE(b.exception == ex.what());
-      }
-    }
-  }
+  build_bad_tests(bad);
 }
 
 TEST_CASE("Valid but meaningless") {
@@ -210,16 +167,5 @@ TEST_CASE("Valid with warning") {
     { "too many args to define", "define(x,y,z) x", " y", "Warning: excess arguments to `define' ignored\n" },
     { "too many args to len", "len(x,y,z) x", "1 x", "Warning: excess arguments to `len' ignored\n" },
   };
-  for (auto w : warnings) {
-    DYNAMIC_SECTION(w.name) {
-      auto in = std::istringstream { w.input };
-      auto out = std::ostringstream { };
-      auto err = std::ostringstream { };
-
-      stiX::macro_process(in, out, err);
-
-      REQUIRE(w.output == out.str());
-      REQUIRE(w.warning == err.str());
-    }
-  }
+  build_warning_tests(warnings);
 }
