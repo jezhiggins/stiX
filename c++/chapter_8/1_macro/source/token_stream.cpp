@@ -19,29 +19,29 @@ namespace {
     return in && in->good() && peek(in) != eof;
   }
 
-  char peek(std::deque<char> const& buf) {
-    return buf.front();
+  char peek(std::vector<char> const& buf) {
+    return buf.back();
   }
 
-  char get(std::deque<char>& buf) {
-    auto c = buf.front();
-    buf.pop_front();
+  char get(std::vector<char>& buf) {
+    auto c = buf.back();
+    buf.pop_back();
     return c;
   }
 
-  bool input_available(std::deque<char> const& buf) {
+  bool input_available(std::vector<char> const& buf) {
     return !buf.empty();
   }
 
-  char peek(std::deque<char> const& buf, std::istream* in) {
+  char peek(std::vector<char> const& buf, std::istream* in) {
     return input_available(buf) ? peek(buf) : peek(in);
   }
 
-  char get(std::deque<char>& buf, std::istream* in) {
+  char get(std::vector<char>& buf, std::istream* in) {
     return input_available(buf) ? get(buf) : get(in);
   }
 
-  bool input_available(std::deque<char> const& buf, std::istream* in) {
+  bool input_available(std::vector<char> const& buf, std::istream* in) {
     return input_available(buf) || input_available(in);
   }
 }
@@ -87,7 +87,7 @@ void stiX::token_stream::push_tokens(token_seq const& tokens) {
 void stiX::token_stream::push_back(std::string const& token) {
   std::ranges::copy(
     std::ranges::reverse_view(token),
-    std::front_inserter(buffer_));
+    std::back_inserter(buffer_));
 }
 
 void stiX::token_stream::next_token() {

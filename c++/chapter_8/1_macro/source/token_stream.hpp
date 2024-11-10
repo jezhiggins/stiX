@@ -27,7 +27,7 @@ namespace stiX {
     void next_token();
 
     std::istream* in_;
-    std::deque<char> buffer_;
+    std::vector<char> buffer_;
     std::string token_;
   };
 }
