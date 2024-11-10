@@ -175,7 +175,7 @@ namespace {
 
     auto def = !raw_arguments.empty()
       ? sub_frame_to_string(raw_arguments[0])
-      : std::string { };
+      : Empty;
     if (!stiX::isalnum(def))
       return;
 
@@ -200,7 +200,7 @@ namespace {
 
     auto expansion = !raw_arguments.empty()
       ? sub_frame_to_string(raw_arguments[0])
-      : std::string { };
+      : Empty;
 
     source.push_token(std::to_string(expansion.size()));
   }
