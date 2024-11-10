@@ -184,7 +184,7 @@ namespace {
       return;
 
     auto const raw_arguments = gather_arguments(source);
-    warning_if_excess(macro, raw_arguments, 2);
+    warning_if_excess(macro, raw_arguments, 1);
 
     auto expansion = !raw_arguments.empty()
       ? sub_frame_to_string(raw_arguments[0])

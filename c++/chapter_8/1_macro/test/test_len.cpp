@@ -18,7 +18,7 @@ TEST_CASE("len()") {
       "0 world" }
   };
   auto warning = std::vector<warning_case> {
-    { "too many args to len", "len(x,y,z) x", "1 x", "Warning: excess arguments to `len' ignored\n" },
+    { "too many args to len", "len(x,y) x", "1 x", "Warning: excess arguments to `len' ignored\n" },
   };
   auto bad = std::vector<bad_case> {
     { "len(a string that just flops off the end", "Expected )" }
