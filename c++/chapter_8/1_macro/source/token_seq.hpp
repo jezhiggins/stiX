@@ -18,12 +18,9 @@ namespace stiX {
 
     bool empty() const { return seq_.empty(); }
 
-    std::string const& front() const { return seq_.front(); }
-
     void pop_front() { seq_.pop_front(); }
     void pop_back() { seq_.pop_back(); }
 
-    void push_front(std::string const& tok) { seq_.push_front(tok); }
     void push_back(std::string const& tok) { seq_.push_back(tok); }
 
     token_seq& operator+=(std::string const& tok);
