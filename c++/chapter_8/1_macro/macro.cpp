@@ -38,8 +38,17 @@ namespace {
     std::string sub_frame_to_string(token_seq const& in);
     token_seq sub_frame_to_seq(token_seq const& in);
 
-    std::vector<std::string> all_to_string(std::vector<token_seq> const&& args);
-    std::vector<token_seq> all_to_seq(std::vector<token_seq> const&& args);
+    auto all_to_(std::vector<token_seq> const& args, auto transform_fn) {
+      return args
+        | std::views::transform(transform_fn)
+        | std::ranges::to<std::vector>();
+    }
+    std::vector<std::string> all_to_string(std::vector<token_seq> const& args) {
+      return all_to_(args, [this](token_seq const& a) { return sub_frame_to_string(a); });
+    }
+    std::vector<token_seq> all_to_seq(std::vector<token_seq> const& args) {
+      return all_to_(args, [this](token_seq const& a) { return sub_frame_to_seq(a); });
+    }
 
     void define_replacement(std::string const&, token_stream&, token_sink&);
     void len_macro(std::string const&, token_stream&, token_sink&);
@@ -153,18 +162,6 @@ namespace {
     return sink;
   }
 
-  std::vector<std::string> macro_processor::all_to_string(std::vector<token_seq> const&& args) {
-    return args
-      | std::views::transform([this](token_seq const& a) { return sub_frame_to_string(a); })
-      | std::ranges::to<std::vector>();
-  }
-
-  std::vector<token_seq> macro_processor::all_to_seq(std::vector<token_seq>const&& args) {
-    return args
-      | std::views::transform([this](token_seq const& a) { return sub_frame_to_seq(a); })
-      | std::ranges::to<std::vector>();
-  }
-
   void macro_processor::define_replacement(
       std::string const& macro,
       token_stream& source,
@@ -222,7 +219,7 @@ namespace {
     if (raw_arguments.size() < 3)
       return;
 
-    auto arguments = all_to_string(std::move(raw_arguments));
+    auto arguments = all_to_string(raw_arguments);
 
     auto const& lhs = arguments[0];
     auto const& rhs = arguments[1];
@@ -245,7 +242,7 @@ namespace {
     warning_if_excess(macro, raw_arguments, 3);
     warning_if_too_few(macro, raw_arguments, 2);
 
-    auto arguments = all_to_string(std::move(raw_arguments));
+    auto arguments = all_to_string(raw_arguments);
     auto const& str = !arguments.empty() ? arguments[0] : Empty;
     auto [start, start_ok] = int_arg(arguments, 1);
     auto [len, len_ok] = int_arg(arguments, 2, static_cast<int>(std::string::npos));
