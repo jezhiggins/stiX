@@ -244,6 +244,11 @@ namespace {
     auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments, 1);
     warning_if_too_few(macro, raw_arguments, 1);
+
+    if (raw_arguments.empty()) {
+      sink("0");
+      return;
+    }
   }
 
   void macro_processor::substr_macro(
