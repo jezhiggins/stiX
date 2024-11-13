@@ -54,6 +54,7 @@ namespace {
     void define_replacement(std::string const&, token_stream&, token_sink&);
     void len_macro(std::string const&, token_stream&, token_sink&);
     void ifelse_macro(std::string const&, token_stream&, token_sink&);
+    void expr_macro(std::string const&, token_stream&, token_sink&);
     void substr_macro(std::string const&, token_stream&, token_sink&);
     void quoted_sequence(std::string const&, token_stream&, token_sink&);
     void apply_replacement(std::string const&,token_stream&, token_sink&);
@@ -109,6 +110,7 @@ namespace {
     install_macro(Define, &macro_processor::define_replacement);
     install_macro(Len, &macro_processor::len_macro);
     install_macro(IfElse, &macro_processor::ifelse_macro);
+    install_macro(Expr, &macro_processor::expr_macro);
     install_macro(Substr, &macro_processor::substr_macro);
     install_macro(Grave, &macro_processor::quoted_sequence);
 
@@ -229,6 +231,19 @@ namespace {
 
     auto const& result = lhs == rhs ? then_r : else_r;
     source.push_token(result);
+  }
+
+  void macro_processor::expr_macro(
+    std::string const& macro,
+    token_stream& source,
+    token_sink& sink
+  ) {
+    if (do_not_evaluate(macro, source, sink))
+      return;
+
+    auto const raw_arguments = gather_arguments(source);
+    warning_if_excess(macro, raw_arguments, 1);
+    warning_if_too_few(macro, raw_arguments, 1);
   }
 
   void macro_processor::substr_macro(
