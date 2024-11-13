@@ -26,8 +26,12 @@ namespace mp {
       tokens.pop_token();
   }
 
-  stiX::token_seq parenthesised_sequence(stiX::token_stream& tokens) {
-    if (tokens.peek_token() != pre::LeftParen)
+
+  stiX::token_seq bracketed_sequence(
+      stiX::token_stream& tokens,
+      std::string_view opening,
+      std::string_view closing) {
+    if (tokens.peek_token() != opening)
       return {};
 
     auto inner = stiX::token_seq{};
@@ -35,19 +39,23 @@ namespace mp {
     do {
       auto tok = tokens.pop_token();
 
-      parens -= (tok == pre::RightParen);
-      parens += (tok == pre::LeftParen);
+      parens -= (tok == closing);
+      parens += (tok == opening);
 
       inner += tok;
     } while (parens != 0 && tokens.token_available());
 
     if (parens != 0)
-      throw std::runtime_error("Expected )");
+      throw std::runtime_error(std::format("Expected {}", closing));
 
     return inner;
   }
 
-  void drop_brackets(stiX::token_seq &tokens) {
+  stiX::token_seq parenthesised_sequence(stiX::token_stream& tokens) {
+    return bracketed_sequence(tokens, pre::LeftParen, pre::RightParen);
+  }
+
+  void drop_bracketing(stiX::token_seq &tokens) {
     if (tokens.empty())
       return;
 
@@ -57,7 +65,7 @@ namespace mp {
 
   stiX::token_stream all_arguments(stiX::token_stream& tokens) {
     auto argument_tokens = parenthesised_sequence(tokens);
-    drop_brackets(argument_tokens);
+    drop_bracketing(argument_tokens);
     return stiX::token_stream { argument_tokens };
   }
 

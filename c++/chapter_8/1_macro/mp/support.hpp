@@ -18,7 +18,12 @@ namespace mp {
     token_sink& sink);
   void skip_whitespace(stiX::token_stream& tokens);
 
+  stiX::token_seq bracketed_sequence(
+    stiX::token_stream& tokens,
+    std::string_view opening,
+    std::string_view closing);
   stiX::token_seq parenthesised_sequence(stiX::token_stream& tokens);
+  void drop_bracketing(stiX::token_seq &tokens);
   stiX::token_stream all_arguments(stiX::token_stream& tokens);
 
   bool is_next(stiX::token_stream& tokens, std::string_view expected);

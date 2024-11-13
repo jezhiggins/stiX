@@ -8,6 +8,7 @@
 #include <map>
 #include <sstream>
 #include <ranges>
+#include <algorithm>
 
 namespace {
   using namespace std::string_literals;
@@ -257,13 +258,14 @@ namespace {
   }
 
   void macro_processor::quoted_sequence(
-    std::string const&,
+    std::string const& token,
     token_stream& source,
     token_sink& sink
   ) {
-    while(not_reached(source, Apostrophe))
-      sink(source.pop_token());
-    source.pop_token();
+    source.push_token(token);
+    auto quoted_seq = bracketed_sequence(source, Grave, Apostrophe);
+    drop_bracketing(quoted_seq);
+    std::ranges::for_each(quoted_seq, [&sink](std::string const& t) { sink(t); });
   }
 
   void macro_processor::apply_replacement(
