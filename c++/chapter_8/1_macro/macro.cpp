@@ -249,6 +249,15 @@ namespace {
       sink("0");
       return;
     }
+
+    auto expr = sub_frame_to_seq(raw_arguments[0]);
+    if (expr.size() == 1) {
+      auto [val, val_ok] = to_int(expr.front(), 0);
+      if (val_ok)
+        sink(std::to_string(val));
+      else
+        warning(std::format("bad expression in `{}': {}", macro, expr.front()));
+    }
   }
 
   void macro_processor::substr_macro(

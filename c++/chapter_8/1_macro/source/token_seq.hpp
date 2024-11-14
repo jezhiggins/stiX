@@ -17,6 +17,8 @@ namespace stiX {
     const_iterator end() const { return seq_.end(); }
 
     bool empty() const { return seq_.empty(); }
+    size_t size() const { return seq_.size(); }
+    std::string const& front() const { return seq_.front(); }
 
     void pop_front() { seq_.pop_front(); }
     void pop_back() { seq_.pop_back(); }

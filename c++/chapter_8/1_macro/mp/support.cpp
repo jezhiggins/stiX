@@ -144,12 +144,13 @@ namespace mp {
 
   std::pair<int, bool> int_arg(std::vector<std::string> const& args, size_t index, int def) {
     if (index >= args.size())
-      return { def, true };
+      return {def, true};
+    return to_int(args[index], def);
+  }
 
+  std::pair<int, bool> to_int(std::string_view arg, int def) {
     auto value = def;
-    auto const& arg = args[index];
     auto [_, ec] = std::from_chars(arg.data(), arg.data() + arg.length(), value);
-
     return { value, ec == std::errc() };
   }
 } // namespace mp

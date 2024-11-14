@@ -13,7 +13,8 @@ TEST_CASE("expr()") {
   };
   auto warning = std::vector<warning_case> {
     { "too few args to expr", "expr()", "0", "Warning: too few arguments to `expr'\n"},
-    { "too many args to expr", "expr(1+1,99)", "2", "Warning: excess arguments to `expr' ignored\n" },
+    { "too many args to expr", "expr(2,99)", "2", "Warning: excess arguments to `expr' ignored\n" },
+    { "bad argument", "expr(fruit)", "", "Warning: bad expression in `expr': fruit\n" }
   };
   auto bad = std::vector<bad_case> {
     { "expr(99", "Expected )" }
