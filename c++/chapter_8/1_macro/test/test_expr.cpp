@@ -9,7 +9,10 @@ TEST_CASE("expr()") {
       "expr" },
     { "expr(constant)",
       "expr(6) is 6",
-      "6 is 6" }
+      "6 is 6" },
+    { "expr(defined)",
+      "define(number, 99)expr(number) is 99",
+      "99 is 99" }
   };
   auto warning = std::vector<warning_case> {
     { "too few args to expr", "expr()", "0", "Warning: too few arguments to `expr'\n"},
