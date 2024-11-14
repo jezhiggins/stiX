@@ -15,7 +15,13 @@ TEST_CASE("expr()") {
       "99 is 99" },
     { "simple multiplication",
       "expr(3 * 3) is 9",
-      "9 is 9" }
+      "9 is 9" },
+    { "simple multiplication, with second term an eval",
+      "expr(3 * expr(2 * 3)) is 18",
+      "18 is 18" },
+    { "two multiplications",
+      "expr(3 * 3 * 2) is 18",
+      "18 is 18" }
   };
   auto warning = std::vector<warning_case> {
     { "too few args to expr", "expr()", "0", "Warning: too few arguments to `expr'\n"},
