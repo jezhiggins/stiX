@@ -250,13 +250,21 @@ namespace {
       return;
     }
 
-    auto expr = sub_frame_to_seq(raw_arguments[0]);
+    auto expr = sub_frame_to_seq(raw_arguments[0])
+      | std::views::filter([](std::string const& s) { return !stiX::iswhitespace(s); })
+      | std::ranges::to<std::vector>();
     if (expr.size() == 1) {
       auto [val, val_ok] = to_int(expr.front(), 0);
       if (val_ok)
         sink(std::to_string(val));
       else
         warning(std::format("bad expression in `{}': {}", macro, expr.front()));
+    }
+    auto mult = std::ranges::find(expr, "*");
+    if (mult != expr.end()) {
+      auto [lhs, lhs_ok] = to_int(*std::prev(mult), 0);
+      auto [rhs, rhs_ok] = to_int(*std::next(mult), 0);
+      sink(std::to_string(lhs * rhs));
     }
   }
 
