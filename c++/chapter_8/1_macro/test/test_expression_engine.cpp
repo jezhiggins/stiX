@@ -11,17 +11,21 @@ struct eval_result {
 
 int multiply_fn(int lhs, int rhs) { return lhs * rhs; }
 int divide_fn(int lhs, int rhs) { return lhs / rhs; }
+int add_fn(int lhs, int rhs) { return lhs + rhs; }
 
 auto constexpr multiply = "*"s;
 auto constexpr divide = "/"s;
+auto constexpr add = "+"s;
 
 auto const operator_precedence = std::vector<std::vector<std::string_view>> {
-  { multiply, divide }
+  { multiply, divide },
+  { add }
 };
 
 auto const fn = std::map<std::string, std::function<int(int,int)>> {
   { multiply, multiply_fn },
-  { divide, divide_fn }
+  { divide, divide_fn },
+  { add, add_fn }
 };
 
 eval_result evaluate(std::vector<std::string> expression) {
@@ -66,7 +70,9 @@ TEST_CASE("expression engine") {
     { { "10", "/", "2" }, 5 },
     { { "13", "/", "4" }, 3 },
     { { "13", "/", "3", "/", "2" }, 2 },
-    { { "45", "/", "3", "*", "3" }, 45}
+    { { "45", "/", "3", "*", "3" }, 45},
+    { { "2", "+", "3" }, 5 },
+    { { "2", "+", "3", "*", "5" }, 17 }
   };
 
   for (auto g: good) {
