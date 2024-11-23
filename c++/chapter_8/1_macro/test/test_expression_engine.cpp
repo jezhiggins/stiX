@@ -1,27 +1,46 @@
 #define ADDITIONAL_TESTS
 #include "../../../testlib/testlib.hpp"
 #include <vector>
+#include <map>
 #include "../mp/support.hpp"
+using namespace std::string_literals;
 
 struct eval_result {
   int value;
 };
+
+int multiply_fn(int lhs, int rhs) { return lhs * rhs; }
+int divide_fn(int lhs, int rhs) { return lhs / rhs; }
+
+auto constexpr multiply = "*"s;
+auto constexpr divide = "/"s;
+
+auto const operator_precedence = std::vector<std::vector<std::string_view>> {
+  { multiply, divide }
+};
+
+auto const fn = std::map<std::string, std::function<int(int,int)>> {
+  { multiply, multiply_fn },
+  { divide, divide_fn }
+};
+
 eval_result evaluate(std::vector<std::string> expression) {
-  auto muldiv = std::vector<std::string> { "*", "/" };
-  for(auto mult = std::ranges::find_first_of(expression, muldiv);
-      mult != expression.end();
-      mult = std::ranges::find_first_of(expression, muldiv)) {
-    auto lhs = std::prev(mult);
-    auto rhs = std::next(mult);
+  for(auto const& ops : operator_precedence) {
+    for (auto mult = std::ranges::find_first_of(expression, ops);
+         mult != expression.end();
+         mult = std::ranges::find_first_of(expression, ops)) {
+      auto lhs = std::prev(mult);
+      auto rhs = std::next(mult);
 
-    auto [lhs_val, lhs_ok] = mp::to_int(*lhs, 0);
-    auto [rhs_val, rhs_ok] = mp::to_int(*rhs, 0);
-    auto result = std::to_string(
-      *mult == "*" ? lhs_val * rhs_val : lhs_val / rhs_val
-    );
+      auto [lhs_val, lhs_ok] = mp::to_int(*lhs, 0);
+      auto [rhs_val, rhs_ok] = mp::to_int(*rhs, 0);
+      auto result = std::to_string(
+        fn.at(*mult)(lhs_val, rhs_val)
+      );
 
-    *lhs = result;
-    expression.erase(mult, std::next(rhs));
+      *lhs = result;
+      expression.erase(mult, std::next(rhs));
+    }
   }
 
   if (expression.size() == 1) {
