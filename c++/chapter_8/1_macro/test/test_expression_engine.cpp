@@ -5,10 +5,6 @@
 #include "../mp/support.hpp"
 using namespace std::string_literals;
 
-struct eval_result {
-  int value;
-};
-
 int multiply_fn(int lhs, int rhs) { return lhs * rhs; }
 int divide_fn(int lhs, int rhs) { return lhs / rhs; }
 int add_fn(int lhs, int rhs) { return lhs + rhs; }
@@ -31,7 +27,7 @@ auto const fn = std::map<std::string, std::function<int(int,int)>> {
   { subtract, subtract_fn }
 };
 
-eval_result evaluate(std::vector<std::string> expression) {
+std::pair<int, bool> evaluate(std::vector<std::string> expression) {
   for(auto const& ops : operator_precedence) {
     for (auto mult = std::ranges::find_first_of(expression, ops);
          mult != expression.end();
@@ -39,8 +35,11 @@ eval_result evaluate(std::vector<std::string> expression) {
       auto lhs = std::prev(mult);
       auto rhs = std::next(mult);
 
-      auto [lhs_val, lhs_ok] = mp::to_int(*lhs, 0);
-      auto [rhs_val, rhs_ok] = mp::to_int(*rhs, 0);
+      auto [lhs_val, lhs_ok] = mp::to_int(*std::prev(mult), 0);
+      auto [rhs_val, rhs_ok] = mp::to_int(*std::next(mult), 0);
+      if (!lhs_ok || !rhs_ok)
+        break;
+
       auto result = std::to_string(
         fn.at(*mult)(lhs_val, rhs_val)
       );
@@ -50,13 +49,9 @@ eval_result evaluate(std::vector<std::string> expression) {
     }
   }
 
-  if (expression.size() == 1) {
-    auto [val, val_ok] = mp::to_int(expression.front(), 0);
-    if (val_ok)
-      return {val};
-  }
-
-  return { -1 };
+  return (expression.size() == 1)
+    ? mp::to_int(expression.front(), 0)
+    : std::make_pair(-1, false);
 }
 
 struct good_expr {
@@ -87,8 +82,9 @@ TEST_CASE("expression engine") {
       std::string(),
       [](std::string const& l, std::string const& r) { return l+" "+r; });
     DYNAMIC_SECTION(name + " = " + std::to_string(g.expected)) {
-      auto [ result ] = evaluate(g.expression);
+      auto [ result, ok ] = evaluate(g.expression);
 
+      REQUIRE(true == ok);
       REQUIRE(g.expected == result);
     }
   }
