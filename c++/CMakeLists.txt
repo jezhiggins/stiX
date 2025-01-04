@@ -270,6 +270,8 @@ set (macro_sources
 		chapter_8/1_macro/mp/support.cpp
 		chapter_8/1_macro/mp/support.hpp
 		chapter_8/1_macro/mp/predefined.hpp
+		chapter_8/1_macro/source/expression_engine.cpp
+		chapter_8/1_macro/source/expression_engine.hpp
 )
 add_executable(macro
 		chapter_8/1_macro/1_macro.cpp
