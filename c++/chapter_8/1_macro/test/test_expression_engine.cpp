@@ -2,7 +2,11 @@
 #include "../../../testlib/testlib.hpp"
 #include <vector>
 #include <map>
+#include <ranges>
+#include <algorithm>
 #include "../mp/support.hpp"
+#include "../mp/predefined.hpp"
+
 using namespace std::string_literals;
 
 int multiply_fn(int lhs, int rhs) { return lhs * rhs; }
@@ -27,27 +31,66 @@ auto const fn = std::map<std::string, std::function<int(int,int)>> {
   { subtract, subtract_fn }
 };
 
-std::pair<int, bool> evaluate(std::vector<std::string> expression) {
-  for(auto const& ops : operator_precedence) {
-    for (auto mult = std::ranges::find_first_of(expression, ops);
-         mult != expression.end();
-         mult = std::ranges::find_first_of(expression, ops)) {
-      auto lhs = std::prev(mult);
-      auto rhs = std::next(mult);
+std::pair<int, bool> evaluate(std::vector<std::string> expression);
 
-      auto [lhs_val, lhs_ok] = mp::to_int(*std::prev(mult), 0);
-      auto [rhs_val, rhs_ok] = mp::to_int(*std::next(mult), 0);
+std::vector<std::string>::iterator find_last_left_bracket(std::vector<std::string>& expression) {
+  auto left_bracket_from_end = std::ranges::find(
+    expression | std::views::reverse,
+    pre::LeftParen);
+
+  if (left_bracket_from_end == expression.rend())
+    return expression.end();
+
+  auto left_bracket = expression.begin() +
+    std::distance(left_bracket_from_end+1, expression.rend());
+  return left_bracket;
+}
+
+void evaluate_brackets(std::vector<std::string>& expression) {
+  for (
+    auto left_bracket = find_last_left_bracket(expression);
+    left_bracket != expression.end();
+    left_bracket = find_last_left_bracket(expression))
+  {
+    auto right_bracket = std::find(left_bracket, expression.end(), pre::RightParen);
+
+    auto subexpression = std::vector<std::string>(left_bracket+1, right_bracket);
+    auto [result, ok] = evaluate(subexpression);
+
+    if (!ok)
+      return;
+
+    *left_bracket = std::to_string(result);
+    expression.erase(left_bracket+1, right_bracket+1);
+  }
+}
+
+void evaluate_ops(std::vector<std::string>& expression) {
+  for(auto const& ops : operator_precedence) {
+    for (auto op = std::ranges::find_first_of(expression, ops);
+         op != expression.end();
+         op = std::ranges::find_first_of(expression, ops)) {
+      auto lhs = std::prev(op);
+      auto rhs = std::next(op);
+
+      auto [lhs_val, lhs_ok] = mp::to_int(*std::prev(op), 0);
+      auto [rhs_val, rhs_ok] = mp::to_int(*std::next(op), 0);
       if (!lhs_ok || !rhs_ok)
         break;
 
       auto result = std::to_string(
-        fn.at(*mult)(lhs_val, rhs_val)
+        fn.at(*op)(lhs_val, rhs_val)
       );
 
       *lhs = result;
-      expression.erase(mult, std::next(rhs));
+      expression.erase(op, std::next(rhs));
     }
   }
+}
+
+std::pair<int, bool> evaluate(std::vector<std::string> expression) {
+  evaluate_brackets(expression);
+  evaluate_ops(expression);
 
   return (expression.size() == 1)
     ? mp::to_int(expression.front(), 0)
@@ -73,7 +116,12 @@ TEST_CASE("expression engine") {
     { { "2", "+", "3", "*", "5" }, 17 },
     { { "5", "-", "3" }, 2 },
     { { "5", "-", "3", "+", "2" }, 4 },
-    { { "5", "*", "3", "+", "9", "/", "3", "-", "8"}, 10 }
+    { { "5", "*", "3", "+", "9", "/", "3", "-", "8"}, 10 },
+    { { "2", "+", "3", "*", "5" }, 17 },
+    { { "(", "2", "+", "3", ")", "*", "5" }, 25 },
+    { { "2", "+", "(", "3", "*", "5", ")" }, 17 },
+    { { "2", "+", "(", "3", "*", "1", "+", "4", ")" }, 9 },
+    { { "2", "+", "(", "3", "*", "(", "1", "+", "4", ")", ")" }, 17 }
   };
 
   for (auto g: good) {
