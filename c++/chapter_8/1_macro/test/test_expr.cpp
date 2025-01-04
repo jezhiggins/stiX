@@ -21,7 +21,13 @@ TEST_CASE("expr()") {
       "18 is 18" },
     { "two multiplications",
       "expr(3 * 3 * 2) is 18",
-      "18 is 18" }
+      "18 is 18" },
+    { "lots of parentheses",
+      "expr(3 * ((1+2) * (1+1+(1-1)))) is 18",
+      "18 is 18" },
+    { "expression with precedence",
+      "expr(5*2+2) = 12",
+      "12 = 12" }
   };
   auto warning = std::vector<warning_case> {
     { "too few args to expr", "expr()", "0", "Warning: too few arguments to `expr'\n"},
