@@ -33,6 +33,9 @@ namespace {
       token_stream&,
       token_sink&
     );
+    struct macro_def {
+      macro_fn fn;
+    };
 
     void frame(token_stream&& source, std::ostream& out);
     void frame(token_stream&& source, token_seq& result);
@@ -63,13 +66,13 @@ namespace {
     void apply_replacement(std::string const&,token_stream&, token_sink&);
 
     void install_macro(std::string_view name, macro_fn fn) {
-      macros_[std::string(name)] = fn;
+      macros_[std::string(name)] = { fn };
     }
     bool is_macro(std::string const& tok) const {
       return macros_.contains(tok);
     }
     macro_fn macro_function(std::string const& tok) {
-      return macros_[tok];
+      return macros_[tok].fn;
     }
 
     void set_warning_out(std::ostream* warning) {
@@ -94,7 +97,7 @@ namespace {
         *warning_ << "Warning: " << w << '\n';
     }
 
-    std::map<std::string, macro_fn> macros_;
+    std::map<std::string, macro_def> macros_;
     std::map<std::string, token_seq> replacements_;
     std::string open_quote;
     std::string close_quote;
@@ -193,7 +196,7 @@ namespace {
       : token_seq { };
 
     replacements_[def] = replacement;
-    macros_[def] = &macro_processor::apply_replacement;
+    install_macro(def, &macro_processor::apply_replacement);
   }
 
   void macro_processor::len_macro(
