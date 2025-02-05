@@ -19,6 +19,10 @@ TEST_CASE("changeq()") {
     },
     { "changeq(#)",
       "define(hello, helloworld)len(hello),len(`hello'),len(#hello#) changeq(#)len(hello),len(`hello'),len(#hello#)",
+      "10,5,12 10,12,5"
+    },
+    { "define(quote,#) changeq(quote)",
+      "define(quote,#)define(hello, helloworld)len(hello),len(`hello'),len(#hello#) changeq(quote)len(hello),len(`hello'),len(#hello#)",
         "10,5,12 10,12,5"
     }
   };
