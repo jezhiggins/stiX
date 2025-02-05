@@ -74,6 +74,7 @@ namespace {
     macro_fn macro_function(std::string const& tok) {
       return macros_[tok].fn;
     }
+    void invoke_macro(std::string const&, token_stream&, token_sink&);
 
     void set_warning_out(std::ostream* warning) {
       warning_ = warning;
@@ -153,10 +154,8 @@ namespace {
     while(source.token_available()) {
       auto token = source.pop_token();
 
-      if (is_macro(token)) {
-        auto fn = macro_function(token);
-        std::invoke(fn, this, token, source,sink);
-      }
+      if (is_macro(token))
+        invoke_macro(token, source, sink);
       else
         sink(token);
     }
@@ -355,6 +354,14 @@ namespace {
     }
 
     source.push_tokens(with_arg_substitution);
+  }
+
+  void macro_processor::invoke_macro(
+    std::string const& token,
+    token_stream& source,
+    token_sink& sink) {
+    auto fn = macro_function(token);
+    std::invoke(fn, this, token, source, sink);
   }
 
   void do_macro_process(
