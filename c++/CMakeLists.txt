@@ -291,6 +291,7 @@ add_executable(macro_test
 		chapter_8/1_macro/test/test_substr.cpp
 		chapter_8/1_macro/test/test_expr.cpp
 		chapter_8/1_macro/test/test_expression_engine.cpp
+		chapter_8/1_macro/test/test_changeq.cpp
 )
 target_link_libraries(macro_test stix testsupport)
 

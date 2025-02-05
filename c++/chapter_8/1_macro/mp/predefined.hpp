@@ -11,6 +11,7 @@ namespace pre {
   auto constexpr IfElse = "ifelse"sv;
   auto constexpr Expr = "expr"sv;
   auto constexpr Substr = "substr"sv;
+  auto constexpr ChangeQ = "changeq"sv;
   auto constexpr LeftParen = "("sv;
   auto constexpr Comma = ","sv;
   auto constexpr RightParen = ")"sv;

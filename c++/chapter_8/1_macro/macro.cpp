@@ -57,6 +57,7 @@ namespace {
     void ifelse_macro(std::string const&, token_stream&, token_sink&);
     void expr_macro(std::string const&, token_stream&, token_sink&);
     void substr_macro(std::string const&, token_stream&, token_sink&);
+    void changeq_macro(std::string const&, token_stream&, token_sink&);
     void quoted_sequence(std::string const&, token_stream&, token_sink&);
     void apply_replacement(std::string const&,token_stream&, token_sink&);
 
@@ -113,6 +114,7 @@ namespace {
     install_macro(IfElse, &macro_processor::ifelse_macro);
     install_macro(Expr, &macro_processor::expr_macro);
     install_macro(Substr, &macro_processor::substr_macro);
+    install_macro(ChangeQ, &macro_processor::changeq_macro);
     install_macro(Grave, &macro_processor::quoted_sequence);
 
     frame(token_stream { in }, out);
@@ -287,6 +289,11 @@ namespace {
     if (start < str.size())
       source.push_token(str.substr(start, len));
   }
+
+  void macro_processor::changeq_macro(std::string const&, token_stream& source, token_sink&) {
+    auto const raw_arguments = gather_arguments(source);
+  }
+
 
   void macro_processor::quoted_sequence(
     std::string const& token,
