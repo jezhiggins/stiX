@@ -297,8 +297,12 @@ namespace {
     auto const raw_arguments = gather_arguments(source);
 
     auto arguments = all_to_string(raw_arguments);
-    auto const& quotes = !arguments.empty() ? arguments[0] : Empty;
+    if (arguments.empty()) {
+      install_quotes(Grave, Apostrophe);
+      return;
+    }
 
+    auto const& quotes = arguments[0];
     install_quotes(quotes.substr(0, 1), quotes.substr(1, 1));
   }
 

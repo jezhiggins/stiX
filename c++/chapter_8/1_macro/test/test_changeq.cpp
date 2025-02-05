@@ -10,7 +10,14 @@ TEST_CASE("changeq()") {
     { "changeq([])",
       "define(hello, helloworld)len(hello),len(`hello'),len([hello]) changeq([])len(hello),len(`hello'),len([hello])",
       "10,5,12 10,12,5"
+    },
+    { "changeq([])changeq()",
+        "define(hello, helloworld)len(hello),len(`hello'),len([hello]) "
+          "changeq([])len(hello),len(`hello'),len([hello]) "
+          "changeq()len(hello),len(`hello'),len([hello])",
+        "10,5,12 10,12,5 10,5,12"
     }
+
   };
   auto bad = std::vector<bad_case> {
     { "changeq(pants", "Expected )" }
