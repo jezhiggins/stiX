@@ -44,6 +44,8 @@ namespace {
     struct macro_def {
       macro_fn fn;
       macro_argument_type args;
+      size_t min_args;
+      size_t max_args;
     };
 
     void frame(token_stream&& source, std::ostream& out);
@@ -77,11 +79,15 @@ namespace {
     void install_macro(
       std::string_view name,
       macro_fn fn,
-      macro_argument_type arg_type
+      macro_argument_type arg_type,
+      size_t min_args = 0,
+      size_t max_args = std::numeric_limits<size_t>::max()
     ) {
       macros_[std::string(name)] = {
         fn,
-        arg_type
+        arg_type,
+        min_args,
+        max_args
       };
     }
     bool is_macro(std::string const& tok) const {
@@ -132,12 +138,12 @@ namespace {
   ) {
     set_warning_out(warning);
 
-    install_macro(Define, &macro_processor::define_replacement, macro_argument_type::required);
-    install_macro(Len, &macro_processor::len_macro, macro_argument_type::required);
-    install_macro(IfElse, &macro_processor::ifelse_macro, macro_argument_type::required);
-    install_macro(Expr, &macro_processor::expr_macro, macro_argument_type::required);
-    install_macro(Substr, &macro_processor::substr_macro, macro_argument_type::required);
-    install_macro(ChangeQ, &macro_processor::changeq_macro, macro_argument_type::required);
+    install_macro(Define, &macro_processor::define_replacement, macro_argument_type::required, 0, 2);
+    install_macro(Len, &macro_processor::len_macro, macro_argument_type::required, 0, 1);
+    install_macro(IfElse, &macro_processor::ifelse_macro, macro_argument_type::required, 0, 4);
+    install_macro(Expr, &macro_processor::expr_macro, macro_argument_type::required, 1, 1);
+    install_macro(Substr, &macro_processor::substr_macro, macro_argument_type::required, 2, 3);
+    install_macro(ChangeQ, &macro_processor::changeq_macro, macro_argument_type::required, 0, 1);
     install_quotes(Grave, Apostrophe);
 
     frame(token_stream { in }, out);
@@ -195,8 +201,6 @@ namespace {
       token_stream& source,
       token_sink& sink
   ) {
-    warning_if_excess(macro, raw_arguments, 2);
-
     auto def = !raw_arguments.empty()
       ? sub_frame_to_string(raw_arguments[0])
       : Empty;
@@ -217,8 +221,6 @@ namespace {
     token_stream& source,
     token_sink& sink
   ) {
-    warning_if_excess(macro, raw_arguments, 1);
-
     auto expansion = !raw_arguments.empty()
       ? sub_frame_to_string(raw_arguments[0])
       : Empty;
@@ -232,8 +234,6 @@ namespace {
     token_stream& source,
     token_sink& sink
   ) {
-    warning_if_excess(macro, raw_arguments, 4);
-
     if (raw_arguments.size() < 3)
       return;
 
@@ -254,9 +254,6 @@ namespace {
     token_stream& source,
     token_sink& sink
   ) {
-    warning_if_excess(macro, raw_arguments, 1);
-    warning_if_too_few(macro, raw_arguments, 1);
-
     if (raw_arguments.empty()) {
       sink("0");
       return;
@@ -279,9 +276,6 @@ namespace {
     token_stream& source,
     token_sink& sink
   ) {
-    warning_if_excess(macro, raw_arguments, 3);
-    warning_if_too_few(macro, raw_arguments, 2);
-
     auto arguments = all_to_string(raw_arguments);
     auto const& str = !arguments.empty() ? arguments[0] : Empty;
     auto [start, start_ok] = int_arg(arguments, 1);
@@ -302,8 +296,6 @@ namespace {
     token_stream& source,
     token_sink& sink
   ) {
-    warning_if_excess(macro, raw_arguments, 1);
-
     auto arguments = all_to_string(raw_arguments);
     if (arguments.empty()) {
       install_quotes(Grave, Apostrophe);
@@ -368,6 +360,9 @@ namespace {
       def.args != macro_argument_type::none
       ? gather_arguments(source)
       : EmptyArguments;
+
+    warning_if_excess(macro, raw_arguments, def.max_args);
+    warning_if_too_few(macro, raw_arguments, def.min_args);
 
     std::invoke(def.fn, this, macro, raw_arguments, source, sink);
   }
