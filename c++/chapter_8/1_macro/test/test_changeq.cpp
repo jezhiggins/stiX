@@ -24,6 +24,10 @@ TEST_CASE("changeq()") {
     { "define(quote,#) changeq(quote)",
       "define(quote,#)define(hello, helloworld)len(hello),len(`hello'),len(#hello#) changeq(quote)len(hello),len(`hello'),len(#hello#)",
         "10,5,12 10,12,5"
+    },
+    { "changeq does nothing",
+      "changeq len(`hello')",
+      "changeq 5"
     }
   };
   auto bad = std::vector<bad_case> {

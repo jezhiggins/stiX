@@ -293,7 +293,14 @@ namespace {
       source.push_token(str.substr(start, len));
   }
 
-  void macro_processor::changeq_macro(std::string const&, token_stream& source, token_sink&) {
+  void macro_processor::changeq_macro(
+    std::string const& macro,
+    token_stream& source,
+    token_sink& sink
+  ) {
+    if (do_not_evaluate(macro, source, sink))
+      return;
+
     auto const raw_arguments = gather_arguments(source);
 
     auto arguments = all_to_string(raw_arguments);
