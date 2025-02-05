@@ -58,6 +58,7 @@ namespace {
     void expr_macro(std::string const&, token_stream&, token_sink&);
     void substr_macro(std::string const&, token_stream&, token_sink&);
     void changeq_macro(std::string const&, token_stream&, token_sink&);
+    void install_quotes(std::string_view open, std::string_view close);
     void quoted_sequence(std::string const&, token_stream&, token_sink&);
     void apply_replacement(std::string const&,token_stream&, token_sink&);
 
@@ -95,8 +96,8 @@ namespace {
 
     std::map<std::string, macro_fn> macros_;
     std::map<std::string, token_seq> replacements_;
-    std::string start_quote;
-    std::string end_quote;
+    std::string open_quote;
+    std::string close_quote;
     std::ostream* warning_ = nullptr;
   };
 
@@ -117,9 +118,7 @@ namespace {
     install_macro(Expr, &macro_processor::expr_macro);
     install_macro(Substr, &macro_processor::substr_macro);
     install_macro(ChangeQ, &macro_processor::changeq_macro);
-    start_quote = Grave;
-    end_quote = Apostrophe;
-    install_macro(start_quote, &macro_processor::quoted_sequence);
+    install_quotes(Grave, Apostrophe);
 
     frame(token_stream { in }, out);
   }
@@ -300,12 +299,15 @@ namespace {
     auto arguments = all_to_string(raw_arguments);
     auto const& quotes = !arguments.empty() ? arguments[0] : Empty;
 
-    macros_.erase(start_quote);
-    start_quote = quotes[0];
-    end_quote = quotes[1];
-    install_macro(start_quote, &macro_processor::quoted_sequence);
+    install_quotes(quotes.substr(0, 1), quotes.substr(1, 1));
   }
 
+  void macro_processor::install_quotes(std::string_view open, std::string_view close) {
+    macros_.erase(open_quote);
+    open_quote = open;
+    close_quote = close;
+    install_macro(open_quote, &macro_processor::quoted_sequence);
+  }
 
   void macro_processor::quoted_sequence(
     std::string const& token,
@@ -313,7 +315,7 @@ namespace {
     token_sink& sink
   ) {
     source.push_token(token);
-    auto quoted_seq = bracketed_sequence(source, start_quote, end_quote);
+    auto quoted_seq = bracketed_sequence(source, open_quote, close_quote);
     drop_bracketing(quoted_seq);
     std::ranges::for_each(quoted_seq, [&sink](std::string const& t) { sink(t); });
   }
