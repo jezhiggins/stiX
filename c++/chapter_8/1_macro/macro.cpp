@@ -95,6 +95,8 @@ namespace {
 
     std::map<std::string, macro_fn> macros_;
     std::map<std::string, token_seq> replacements_;
+    std::string start_quote;
+    std::string end_quote;
     std::ostream* warning_ = nullptr;
   };
 
@@ -115,7 +117,9 @@ namespace {
     install_macro(Expr, &macro_processor::expr_macro);
     install_macro(Substr, &macro_processor::substr_macro);
     install_macro(ChangeQ, &macro_processor::changeq_macro);
-    install_macro(Grave, &macro_processor::quoted_sequence);
+    start_quote = Grave;
+    end_quote = Apostrophe;
+    install_macro(start_quote, &macro_processor::quoted_sequence);
 
     frame(token_stream { in }, out);
   }
@@ -292,6 +296,14 @@ namespace {
 
   void macro_processor::changeq_macro(std::string const&, token_stream& source, token_sink&) {
     auto const raw_arguments = gather_arguments(source);
+
+    auto arguments = all_to_string(raw_arguments);
+    auto const& quotes = !arguments.empty() ? arguments[0] : Empty;
+
+    macros_.erase(start_quote);
+    start_quote = quotes[0];
+    end_quote = quotes[1];
+    install_macro(start_quote, &macro_processor::quoted_sequence);
   }
 
 
@@ -301,7 +313,7 @@ namespace {
     token_sink& sink
   ) {
     source.push_token(token);
-    auto quoted_seq = bracketed_sequence(source, Grave, Apostrophe);
+    auto quoted_seq = bracketed_sequence(source, start_quote, end_quote);
     drop_bracketing(quoted_seq);
     std::ranges::for_each(quoted_seq, [&sink](std::string const& t) { sink(t); });
   }
