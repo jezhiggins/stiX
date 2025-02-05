@@ -30,10 +30,14 @@ TEST_CASE("changeq()") {
       "changeq 5"
     }
   };
+  auto warning = std::vector<warning_case> {
+    { "too many args to changeq", "changeq(<>,99)", "", "Warning: excess arguments to `changeq' ignored\n" }
+  };
   auto bad = std::vector<bad_case> {
     { "changeq(pants", "Expected )" }
   };
 
   build_good_tests(good);
+  build_warning_tests(warning);
   build_bad_tests(bad);
 }
