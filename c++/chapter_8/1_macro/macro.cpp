@@ -15,8 +15,10 @@ namespace {
   using namespace std::string_literals;
   using stiX::token_seq;
   using stiX::token_stream;
+  using macro_arguments = std::vector<stiX::token_seq>;
 
   auto const Empty = ""s;
+  auto const EmptyArguments = macro_arguments { };
 
   class macro_processor {
   public:
@@ -30,12 +32,18 @@ namespace {
     using token_sink = std::function<void(std::string const&)>;
     using macro_fn = void (macro_processor::*)(
       std::string const&,
+      macro_arguments const&,
       token_stream&,
       token_sink&
     );
+    enum class macro_argument_type {
+      required,
+      optional,
+      none
+    };
     struct macro_def {
       macro_fn fn;
-      bool requires_args;
+      macro_argument_type args;
     };
 
     void frame(token_stream&& source, std::ostream& out);
@@ -56,18 +64,25 @@ namespace {
       return all_to_(args, [this](token_seq const& a) { return sub_frame_to_seq(a); });
     }
 
-    void define_replacement(std::string const&, token_stream&, token_sink&);
-    void len_macro(std::string const&, token_stream&, token_sink&);
-    void ifelse_macro(std::string const&, token_stream&, token_sink&);
-    void expr_macro(std::string const&, token_stream&, token_sink&);
-    void substr_macro(std::string const&, token_stream&, token_sink&);
-    void changeq_macro(std::string const&, token_stream&, token_sink&);
+    void define_replacement(std::string const&, macro_arguments const&, token_stream&, token_sink&);
+    void len_macro(std::string const&, macro_arguments const&, token_stream&, token_sink&);
+    void ifelse_macro(std::string const&, macro_arguments const&, token_stream&, token_sink&);
+    void expr_macro(std::string const&, macro_arguments const&, token_stream&, token_sink&);
+    void substr_macro(std::string const&, macro_arguments const&, token_stream&, token_sink&);
+    void changeq_macro(std::string const&, macro_arguments const&, token_stream&, token_sink&);
     void install_quotes(std::string_view open, std::string_view close);
-    void quoted_sequence(std::string const&, token_stream&, token_sink&);
-    void apply_replacement(std::string const&,token_stream&, token_sink&);
+    void quoted_sequence(std::string const&, macro_arguments const&, token_stream&, token_sink&);
+    void apply_replacement(std::string const&, macro_arguments const&, token_stream&, token_sink&);
 
-    void install_macro(std::string_view name, macro_fn fn, bool reqs_args) {
-      macros_[std::string(name)] = { fn, reqs_args };
+    void install_macro(
+      std::string_view name,
+      macro_fn fn,
+      macro_argument_type arg_type
+    ) {
+      macros_[std::string(name)] = {
+        fn,
+        arg_type
+      };
     }
     bool is_macro(std::string const& tok) const {
       return macros_.contains(tok);
@@ -117,12 +132,12 @@ namespace {
   ) {
     set_warning_out(warning);
 
-    install_macro(Define, &macro_processor::define_replacement, true);
-    install_macro(Len, &macro_processor::len_macro, true);
-    install_macro(IfElse, &macro_processor::ifelse_macro, true);
-    install_macro(Expr, &macro_processor::expr_macro, true);
-    install_macro(Substr, &macro_processor::substr_macro, true);
-    install_macro(ChangeQ, &macro_processor::changeq_macro, true);
+    install_macro(Define, &macro_processor::define_replacement, macro_argument_type::required);
+    install_macro(Len, &macro_processor::len_macro, macro_argument_type::required);
+    install_macro(IfElse, &macro_processor::ifelse_macro, macro_argument_type::required);
+    install_macro(Expr, &macro_processor::expr_macro, macro_argument_type::required);
+    install_macro(Substr, &macro_processor::substr_macro, macro_argument_type::required);
+    install_macro(ChangeQ, &macro_processor::changeq_macro, macro_argument_type::required);
     install_quotes(Grave, Apostrophe);
 
     frame(token_stream { in }, out);
@@ -176,10 +191,10 @@ namespace {
 
   void macro_processor::define_replacement(
       std::string const& macro,
+      macro_arguments const& raw_arguments,
       token_stream& source,
       token_sink& sink
   ) {
-    auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments, 2);
 
     auto def = !raw_arguments.empty()
@@ -193,15 +208,15 @@ namespace {
       : token_seq { };
 
     replacements_[def] = replacement;
-    install_macro(def, &macro_processor::apply_replacement, false);
+    install_macro(def, &macro_processor::apply_replacement, macro_argument_type::optional);
   }
 
   void macro_processor::len_macro(
     std::string const& macro,
+    macro_arguments const& raw_arguments,
     token_stream& source,
     token_sink& sink
   ) {
-    auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments, 1);
 
     auto expansion = !raw_arguments.empty()
@@ -213,10 +228,10 @@ namespace {
 
   void macro_processor::ifelse_macro(
     std::string const& macro,
+    macro_arguments const& raw_arguments,
     token_stream& source,
     token_sink& sink
   ) {
-    auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments, 4);
 
     if (raw_arguments.size() < 3)
@@ -235,10 +250,10 @@ namespace {
 
   void macro_processor::expr_macro(
     std::string const& macro,
+    macro_arguments const& raw_arguments,
     token_stream& source,
     token_sink& sink
   ) {
-    auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments, 1);
     warning_if_too_few(macro, raw_arguments, 1);
 
@@ -260,10 +275,10 @@ namespace {
 
   void macro_processor::substr_macro(
     std::string const& macro,
+    macro_arguments const& raw_arguments,
     token_stream& source,
     token_sink& sink
   ) {
-    auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments, 3);
     warning_if_too_few(macro, raw_arguments, 2);
 
@@ -283,10 +298,10 @@ namespace {
 
   void macro_processor::changeq_macro(
     std::string const& macro,
+    macro_arguments const& raw_arguments,
     token_stream& source,
     token_sink& sink
   ) {
-    auto const raw_arguments = gather_arguments(source);
     warning_if_excess(macro, raw_arguments, 1);
 
     auto arguments = all_to_string(raw_arguments);
@@ -304,11 +319,12 @@ namespace {
     macros_.erase(open_quote);
     open_quote = open;
     close_quote = close;
-    install_macro(open_quote, &macro_processor::quoted_sequence, false);
+    install_macro(open_quote, &macro_processor::quoted_sequence, macro_argument_type::none);
   }
 
   void macro_processor::quoted_sequence(
     std::string const& token,
+    macro_arguments const&,
     token_stream& source,
     token_sink& sink
   ) {
@@ -320,10 +336,11 @@ namespace {
 
   void macro_processor::apply_replacement(
     std::string const& token,
+    macro_arguments const& raw_arguments,
     token_stream& source,
     token_sink&
   ) {
-    auto arguments = all_to_seq(gather_arguments(source));
+    auto arguments = all_to_seq(raw_arguments);
 
     auto definition = token_stream { replacements_[token] };
 
@@ -345,9 +362,14 @@ namespace {
     token_sink& sink) {
     auto& def = macro_definition(macro);
 
-    if (def.requires_args && do_not_evaluate(macro, source, sink))
+    if (def.args == macro_argument_type::required && do_not_evaluate(macro, source, sink))
       return;
-    std::invoke(def.fn, this, macro, source, sink);
+    auto const raw_arguments =
+      def.args != macro_argument_type::none
+      ? gather_arguments(source)
+      : EmptyArguments;
+
+    std::invoke(def.fn, this, macro, raw_arguments, source, sink);
   }
 
   void do_macro_process(
