@@ -26,7 +26,6 @@ namespace mp {
       tokens.pop_token();
   }
 
-
   stiX::token_seq bracketed_sequence(
       stiX::token_stream& tokens,
       std::string_view opening,
@@ -34,13 +33,20 @@ namespace mp {
     if (tokens.peek_token() != opening)
       return {};
 
+    auto can_nest = (opening != closing);
+
     auto inner = stiX::token_seq{};
     auto parens = 0;
     do {
       auto tok = tokens.pop_token();
 
-      parens -= (tok == closing);
-      parens += (tok == opening);
+      if (can_nest) {
+        parens -= (tok == closing);
+        parens += (tok == opening);
+      } else {
+        if (tok == opening)
+          parens = !parens;
+      }
 
       inner += tok;
     } while (parens != 0 && tokens.token_available());

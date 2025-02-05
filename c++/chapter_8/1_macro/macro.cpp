@@ -303,7 +303,8 @@ namespace {
     }
 
     auto const& quotes = arguments[0];
-    install_quotes(quotes.substr(0, 1), quotes.substr(1, 1));
+    auto end = quotes.length() > 1 ? 1 : 0;
+    install_quotes(quotes.substr(0, 1), quotes.substr(end, 1));
   }
 
   void macro_processor::install_quotes(std::string_view open, std::string_view close) {
