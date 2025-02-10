@@ -57,10 +57,20 @@ and [two](https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html)
 
 ### Chapter 7 - Formatting 
 
-1. format
+1. [format](https://www.jezuk.co.uk/blog/2024/07/format-a-typesetter-of-my-own.html) +
+with a postscript on [text justification](https://www.jezuk.co.uk/blog/2024/08/format-postscript-justification.html)
+
+### Chapter 8 - Macro Processing 
+
+The whole of chapter 8 concerns writing `macro`, a macro processor 
+
+* [macro - simple text replacement](https://www.jezuk.co.uk/blog/2024/10/a-macro-processor-step-one.html)
+* [text replacement with arguments](https://www.jezuk.co.uk/blog/2024/12/a-macro-processor-step-two.html)
+* [evaluating macros wherever they occur](https://www.jezuk.co.uk/blog/2025/02/a-macro-processor-step-three.html)
+* ... more to come ...
 
 ## License
 
-Copyright 2019-2024 [JezUK Ltd](http://www.jezuk.co.uk/)
+Copyright 2019-2025 [JezUK Ltd](http://www.jezuk.co.uk/)
 
 Licensed under the terms of the MIT License.

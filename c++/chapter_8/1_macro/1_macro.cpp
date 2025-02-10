@@ -36,7 +36,7 @@
 //
 // `substr(s,m,n)` is replaced by the substring of `s` starting at location
 // `m` (counting from one) and continuing at most `n` characters. If `n` is
-// omitted, it is taken as a very large number; if `n` is outside the string,
+// omitted, it is taken as a very large number; if `m` is outside the string,
 // the replacement string is null. `m` and `n` may be expressions suitable for
 // `expr`.
 //
