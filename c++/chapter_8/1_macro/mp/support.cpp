@@ -3,6 +3,7 @@
 #include "support.hpp"
 #include "../source/token_seq.hpp"
 #include "../source/token_stream.hpp"
+#include "../source/expression_engine.hpp"
 #include "predefined.hpp"
 #include "../../../lib/chars.hpp"
 
@@ -148,15 +149,17 @@ namespace mp {
     return arg;
   }
 
-  std::pair<int, bool> int_arg(std::vector<std::string> const& args, size_t index, int def) {
-    if (index >= args.size())
-      return {def, true};
-    return to_int(args[index], def);
-  }
-
   std::pair<int, bool> to_int(std::string_view arg, int def) {
     auto value = def;
     auto [_, ec] = std::from_chars(arg.data(), arg.data() + arg.length(), value);
     return { value, ec == std::errc() };
+  }
+
+  std::pair<int, bool> eval_int_arg(std::vector<stiX::token_seq> const& args, size_t index, int def) {
+    if (index >= args.size())
+      return {def, true};
+
+    auto as_vec = std::vector<std::string>(args[index].begin(), args[index].end());
+    return stiX::evaluate(as_vec);
   }
 } // namespace mp

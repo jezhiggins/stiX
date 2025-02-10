@@ -12,6 +12,7 @@ TEST_CASE("substr()") {
     { "no arg", "substr is the macro", "substr is the macro" },
     { "with define string arg", "define(f, hello world)substr(f, 3, 5)", "lo wo" },
     { "with define numeric arg", "define(f, 2)substr(hello, 0, f)", "he" },
+    { "with expression", "substr(hello, 9 % 3, 2+2)", "hell" }
   };
   auto warning = std::vector<warning_case> {
     { "non-numeric", "substr(hello, f)", "", "Warning: non-numeric argument to `substr'\n" },

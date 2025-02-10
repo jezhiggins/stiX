@@ -276,10 +276,10 @@ namespace {
     token_stream& source,
     token_sink& sink
   ) {
-    auto arguments = all_to_string(raw_arguments);
-    auto const& str = !arguments.empty() ? arguments[0] : Empty;
-    auto [start, start_ok] = int_arg(arguments, 1);
-    auto [len, len_ok] = int_arg(arguments, 2, static_cast<int>(std::string::npos));
+    auto arguments = all_to_seq(raw_arguments);
+    auto const& str = !arguments.empty() ? sub_frame_to_string(arguments[0]) : Empty;
+    auto [start, start_ok] = eval_int_arg(arguments, 1);
+    auto [len, len_ok] = eval_int_arg(arguments, 2, static_cast<int>(std::string::npos));
 
     if (!start_ok || !len_ok) {
       warning(std::format("non-numeric argument to `{}'", macro));
