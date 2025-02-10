@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "../mp/support.hpp"
 #include "../mp/predefined.hpp"
+#include "../../../lib/chars.hpp"
 
 namespace {
   using namespace std::string_literals;
@@ -88,9 +89,19 @@ namespace {
     }
   }
 
+  void strip_whitespace(std::vector<std::string> &expression) {
+    auto e = std::remove_if(
+      expression.begin(),
+      expression.end(),
+      [](std::string const& s) { return stiX::iswhitespace(s); }
+    );
+    expression.erase(e, expression.end());
+  }
 } // namespace
 
 std::pair<int, bool> stiX::evaluate(std::vector<std::string> expression) {
+  strip_whitespace(expression);
+
   evaluate_brackets(expression);
   evaluate_ops(expression);
 
