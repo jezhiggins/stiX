@@ -11,22 +11,25 @@ namespace {
 
   int multiply_fn(int lhs, int rhs) { return lhs * rhs; }
   int divide_fn(int lhs, int rhs) { return lhs / rhs; }
+  int modulus_fn(int lhs, int rhs) { return lhs % rhs; }
   int add_fn(int lhs, int rhs) { return lhs + rhs; }
   int subtract_fn(int lhs, int rhs) { return lhs - rhs; }
 
   auto constexpr multiply = "*"s;
   auto constexpr divide = "/"s;
+  auto constexpr modulus = "%"s;
   auto constexpr add = "+"s;
   auto constexpr subtract = "-"s;
 
   auto const operator_precedence = std::vector<std::vector<std::string_view>>{
-    {multiply, divide},
+    {multiply, divide,  modulus},
     {add,      subtract}
   };
 
   auto const fn = std::map<std::string, std::function<int(int, int)>>{
     {multiply, multiply_fn},
     {divide,   divide_fn},
+    {modulus,  modulus_fn},
     {add,      add_fn},
     {subtract, subtract_fn}
   };
