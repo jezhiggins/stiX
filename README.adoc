@@ -1,0 +1,76 @@
+= Software Tools in <X>
+
+**Jez Higgins**, *jez@jezuk.co.uk*
+
+Reimplementing the programs described in Kernighan and Plauger's
+https://archive.org/details/softwaretoolsinp00kern[Software Tools in Pascal]
+in other languages. 
+
+== https://www.jezuk.co.uk/tags/software-tools-in-c++.html[{cpp}]
+=== Chapter 1 - Getting Started
+
+1. https://www.jezuk.co.uk/blog/2019/08/sticpp-copy.html[copy]
+2. https://www.jezuk.co.uk/blog/2019/08/sticpp-charcount.html[charcount]
+3. https://www.jezuk.co.uk/blog/2019/08/sticpp-linecount.html[linecount]
+4. https://www.jezuk.co.uk/blog/2019/08/sticpp-wordcount.html[wordcount]
+5. https://www.jezuk.co.uk/blog/2019/09/sticpp-detab.html[detab]
+
+=== Chapter 2 - Filters
+
+1. https://www.jezuk.co.uk/blog/2019/10/sticpp-entab.html[entab]
+2. https://www.jezuk.co.uk/blog/2019/10/sticpp-overstrike.html[overstrike]
+3. https://www.jezuk.co.uk/blog/2019/11/sticpp-compress.html[compress]
+4. https://www.jezuk.co.uk/blog/2019/11/sticpp-expand.html[expand]
+5. https://www.jezuk.co.uk/blog/2019/11/sticpp-echo.html[echo]
+6. https://www.jezuk.co.uk/blog/2019/11/sticpp-translit.html[translit]
+
+=== Chapter 3 - Files
+
+1. https://www.jezuk.co.uk/blog/2020/02/sticpp-compare.html[compare]
+2. https://www.jezuk.co.uk/blog/2020/04/sticpp-include.html[include]
+3. https://www.jezuk.co.uk/blog/2020/04/sticpp-concat.html[concat]
+4. https://www.jezuk.co.uk/blog/2020/04/sticpp-print.html[print]
+5. https://www.jezuk.co.uk/blog/2020/06/sticpp-makecopy.html[makecopy]
+6. archive - https://www.jezuk.co.uk/blog/2020/07/sticpp-archive-create.html[create],
+https://www.jezuk.co.uk/blog/2020/08/sticpp-archive-contents-print-delete.html[contents, delete, print],
+https://www.jezuk.co.uk/blog/2020/08/sticpp-archive-update-extract.html[update, extract]
+
+=== Chapter 4 - Sorting
+
+1. https://www.jezuk.co.uk/blog/2020/09/sticpp-bubble-sort.html[bubble sort]
+2. https://www.jezuk.co.uk/blog/2020/11/sticpp-shell-sort.html[Shell sort]
+3. https://www.jezuk.co.uk/blog/2020/12/sticpp-in-memory-text-sort.html[in-memory sort]
+4. quick sort, parts https://www.jezuk.co.uk/blog/2020/12/sticpp-quick-sort.html[one]
+and https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html[two]
+5. https://www.jezuk.co.uk/blog/2021/03/sticpp-external-text-sort.html[external sort]
+6. https://www.jezuk.co.uk/blog/2021/04/sticpp-unique.html[unique]
+7. https://www.jezuk.co.uk/blog/2021/05/sticpp-kwic-unrotate.html[kwic and unrotate]
+
+=== Chapter 5 - Text Patterns
+
+1. https://www.jezuk.co.uk/blog/2021/08/sticpp-find.html[find]
+2. https://www.jezuk.co.uk/blog/2022/01/sticpp-change.html[change]
+
+=== Chapter 6 - Editing
+
+1. https://www.jezuk.co.uk/blog/2024/06/ed-ed-hooray.html[edit]
+
+=== Chapter 7 - Formatting
+
+1. https://www.jezuk.co.uk/blog/2024/07/format-a-typesetter-of-my-own.html[format] +
+with a postscript on https://www.jezuk.co.uk/blog/2024/08/format-postscript-justification.html[text justification]
+
+=== Chapter 8 - Macro Processing
+
+The whole of chapter 8 concerns writing `macro`, a macro processor 
+
+* https://www.jezuk.co.uk/blog/2024/10/a-macro-processor-step-one.html[macro - simple text replacement]
+* https://www.jezuk.co.uk/blog/2024/12/a-macro-processor-step-two.html[text replacement with arguments]
+* https://www.jezuk.co.uk/blog/2025/02/a-macro-processor-step-three.html[evaluating macros wherever they occur]
+* ... more to come ...
+
+== License
+
+Copyright 2019-2025 http://www.jezuk.co.uk/[JezUK Ltd]
+
+Licensed under the terms of the MIT License.
