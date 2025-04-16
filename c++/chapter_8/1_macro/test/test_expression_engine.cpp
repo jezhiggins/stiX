@@ -36,7 +36,7 @@ TEST_CASE("expression engine") {
       std::string(),
       [](std::string const& l, std::string const& r) { return l+" "+r; });
     DYNAMIC_SECTION(name + " = " + std::to_string(g.expected)) {
-      auto [ result, ok ] = stiX::evaluate(g.expression);
+      auto [ result, ok ] = stiX::evaluate_expression(g.expression);
 
       REQUIRE(true == ok);
       REQUIRE(g.expected == result);

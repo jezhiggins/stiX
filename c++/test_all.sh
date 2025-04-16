@@ -1,6 +1,10 @@
 #!/bin/sh
 
-for i in cmake-build-debug/*_test
+cd cmake-build-debug
+
+for i in ./*_test
 do
 	echo $i && ./$i
 done
+
+cd ..

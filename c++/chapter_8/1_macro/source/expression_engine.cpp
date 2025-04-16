@@ -9,6 +9,7 @@
 
 namespace {
   using namespace std::string_literals;
+  std::pair<int, bool> evaluate(std::vector<std::string> expression);
 
   int multiply_fn(int lhs, int rhs) { return lhs * rhs; }
   int divide_fn(int lhs, int rhs) { return lhs / rhs; }
@@ -56,7 +57,7 @@ namespace {
       auto right_bracket = std::find(left_bracket, expression.end(), pre::RightParen);
 
       auto subexpression = std::vector<std::string>(left_bracket + 1, right_bracket);
-      auto [result, ok] = stiX::evaluate(subexpression);
+      auto [result, ok] = evaluate(subexpression);
 
       if (!ok)
         return;
@@ -89,23 +90,35 @@ namespace {
     }
   }
 
-  void strip_whitespace(std::vector<std::string> &expression) {
-    auto e = std::remove_if(
-      expression.begin(),
-      expression.end(),
-      [](std::string const& s) { return stiX::iswhitespace(s); }
-    );
-    expression.erase(e, expression.end());
+  std::pair<int, bool> evaluate(std::vector<std::string> expression) {
+    evaluate_brackets(expression);
+    evaluate_ops(expression);
+
+    return (expression.size() == 1)
+           ? mp::to_int(expression.front(), 0)
+           : std::make_pair(-1, false);
+  }
+
+
+  bool not_whitespace(std::string const& s) {
+    return !stiX::iswhitespace(s);
+  }
+
+  std::vector<std::string> strip_whitespace(auto const& expression) {
+    return expression
+      | std::views::filter(not_whitespace)
+      | std::ranges::to<std::vector>();
+  }
+
+  std::pair<int, bool> do_evaluate_expression(auto const& expression) {
+    return evaluate(strip_whitespace(expression));
   }
 } // namespace
 
-std::pair<int, bool> stiX::evaluate(std::vector<std::string> expression) {
-  strip_whitespace(expression);
+std::pair<int, bool> stiX::evaluate_expression(token_seq const& expression) {
+  return do_evaluate_expression(expression);
+}
 
-  evaluate_brackets(expression);
-  evaluate_ops(expression);
-
-  return (expression.size() == 1)
-         ? mp::to_int(expression.front(), 0)
-         : std::make_pair(-1, false);
+std::pair<int, bool> stiX::evaluate_expression(std::vector<std::string> const& expression) {
+  return do_evaluate_expression(expression);
 }

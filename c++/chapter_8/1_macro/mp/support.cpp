@@ -159,7 +159,7 @@ namespace mp {
     if (index >= args.size())
       return {def, true};
 
-    auto as_vec = std::vector<std::string>(args[index].begin(), args[index].end());
-    return stiX::evaluate(as_vec);
+    auto as_vec = std::vector(args[index].begin(), args[index].end());
+    return stiX::evaluate_expression(as_vec);
   }
 } // namespace mp

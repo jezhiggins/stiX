@@ -259,11 +259,8 @@ namespace {
       return;
     }
 
-    auto expr = sub_frame_to_seq(raw_arguments[0])
-      | std::views::filter([](std::string const& s) { return !stiX::iswhitespace(s); })
-      | std::ranges::to<std::vector>();
-
-    auto [val, val_ok] = stiX::evaluate(expr);
+    auto expr = sub_frame_to_seq(raw_arguments[0]);
+    auto [val, val_ok] = evaluate_expression(expr);
     if (val_ok)
       sink(std::to_string(val));
     else
