@@ -36,7 +36,7 @@ namespace {
     {subtract, subtract_fn}
   };
 
-  std::vector<std::string>::iterator find_last_left_bracket(std::vector<std::string> &expression) {
+  std::vector<std::string>::iterator find_last_left_bracket(std::vector<std::string>& expression) {
     auto left_bracket_from_end = std::ranges::find(
       expression | std::views::reverse,
       pre::LeftParen);
@@ -49,7 +49,7 @@ namespace {
     return left_bracket;
   }
 
-  void evaluate_brackets(std::vector<std::string> &expression) {
+  void evaluate_brackets(std::vector<std::string>& expression) {
     for (
       auto left_bracket = find_last_left_bracket(expression);
       left_bracket != expression.end();
@@ -67,7 +67,7 @@ namespace {
     }
   }
 
-  void evaluate_ops(std::vector<std::string> &expression) {
+  void evaluate_ops(std::vector<std::string>& expression) {
     for (auto const &ops: operator_precedence) {
       for (auto op = std::ranges::find_first_of(expression, ops);
            op != expression.end();
@@ -75,16 +75,14 @@ namespace {
         auto lhs = std::prev(op);
         auto rhs = std::next(op);
 
-        auto [lhs_val, lhs_ok] = mp::to_int(*std::prev(op), 0);
-        auto [rhs_val, rhs_ok] = mp::to_int(*std::next(op), 0);
+        auto [lhs_val, lhs_ok] = mp::to_int(*lhs, 0);
+        auto [rhs_val, rhs_ok] = mp::to_int(*rhs, 0);
         if (!lhs_ok || !rhs_ok)
           break;
 
-        auto result = std::to_string(
-          fn.at(*op)(lhs_val, rhs_val)
-        );
+        auto result = fn.at(*op)(lhs_val, rhs_val);
 
-        *lhs = result;
+        *lhs = std::to_string(result);
         expression.erase(op, std::next(rhs));
       }
     }
