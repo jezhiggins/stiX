@@ -37,7 +37,7 @@ namespace {
   };
 
   std::vector<std::string>::iterator find_last_left_bracket(std::vector<std::string>& expression) {
-    auto left_bracket_from_end = std::ranges::find(
+    auto const left_bracket_from_end = std::ranges::find(
       expression | std::views::reverse,
       pre::LeftParen);
 
@@ -56,7 +56,7 @@ namespace {
       left_bracket = find_last_left_bracket(expression)) {
       auto right_bracket = std::find(left_bracket, expression.end(), pre::RightParen);
 
-      auto subexpression = std::vector<std::string>(left_bracket + 1, right_bracket);
+      auto subexpression = std::vector(left_bracket + 1, right_bracket);
       auto [result, ok] = evaluate(subexpression);
 
       if (!ok)
