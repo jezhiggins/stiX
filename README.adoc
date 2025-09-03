@@ -53,11 +53,11 @@ and https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html[two]
 
 === Chapter 6 - Editing
 
-1. https://www.jezuk.co.uk/blog/2024/06/ed-ed-hooray.html[edit]
+* https://www.jezuk.co.uk/blog/2024/06/ed-ed-hooray.html[edit]
 
 === Chapter 7 - Formatting
 
-1. https://www.jezuk.co.uk/blog/2024/07/format-a-typesetter-of-my-own.html[format] +
+* https://www.jezuk.co.uk/blog/2024/07/format-a-typesetter-of-my-own.html[format] +
 with a postscript on https://www.jezuk.co.uk/blog/2024/08/format-postscript-justification.html[text justification]
 
 === Chapter 8 - Macro Processing
