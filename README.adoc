@@ -67,7 +67,12 @@ The whole of chapter 8 concerns writing `macro`, a macro processor
 * https://www.jezuk.co.uk/blog/2024/10/a-macro-processor-step-one.html[macro - simple text replacement]
 * https://www.jezuk.co.uk/blog/2024/12/a-macro-processor-step-two.html[text replacement with arguments]
 * https://www.jezuk.co.uk/blog/2025/02/a-macro-processor-step-three.html[evaluating macros wherever they occur]
-* ... more to come ...
+* https://www.jezuk.co.uk/blog/2025/02/a-macro-processor-step-three-b.html[filling out the macro set]
+* https://www.jezuk.co.uk/blog/2025/05/a-macro-processor-step-three-c.html[plugging in integer expressions to complete the processor]
+
+=== Epilogue
+
+* https://www.jezuk.co.uk/blog/2025/06/sticpp-epilogue.html[It's been lovely]
 
 == License
 
