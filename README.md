@@ -1,4 +1,4 @@
-# Software Tools in &lt;Xs&gt;>
+# Software Tools in &lt;X&gt;
 ***Jez Higgins***, *jez@jezuk.co.uk*
 
 Reimplementing the programs described in Kernighan and Plauger’s
@@ -56,7 +56,7 @@ and [two](https://www.jezuk.co.uk/blog/2020/12/sticpp-more-quick-sort.html)
 
 ### Chapter 7 - Formatting
 
-* [format](https://www.jezuk.co.uk/blog/2024/07/format-a-typesetter-of-my-own.html) +
+* [format](https://www.jezuk.co.uk/blog/2024/07/format-a-typesetter-of-my-own.html) 
 with a postscript on [text justification](https://www.jezuk.co.uk/blog/2024/08/format-postscript-justification.html)
 
 ### Chapter 8 - Macro Processing
