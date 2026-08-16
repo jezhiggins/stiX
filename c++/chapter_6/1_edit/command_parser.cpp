@@ -401,7 +401,7 @@ namespace {
       while (!input.is_eol())
         s += input_pop();
 
-      while (std::isblank(s.back()))
+      while (s.length() && std::isblank(s.back()))
         s.pop_back();
 
       return s;

@@ -74,9 +74,9 @@ namespace {
   }
 
   size_t next_mark(size_t index, stiX::edit_buffer const& buffer) {
-    while ((!buffer.mark(index)) && (index <= buffer.last()))
+    while (index <= buffer.last() && !buffer.mark(index))
       ++index;
-    return (index <= buffer.last()) ? index : -1;
+    return index <= buffer.last() ? index : -1;
   }
 
   void clear_marks(edit_buffer& buffer) {
