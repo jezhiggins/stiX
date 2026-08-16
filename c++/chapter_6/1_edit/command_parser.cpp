@@ -22,7 +22,9 @@ namespace {
   using stiX::code_match;
 
   bool is_error(char const c) { return c == stiX::command::code_error; }
-  bool is_error(size_t const i) { return i == stiX::command::line_error; }
+  bool is_error(size_t const i) {
+    return i == stiX::command::line_error;
+  }
 
   stiX::line_expression int_index(size_t const index) {
     return [index](stiX::edit_buffer const&, size_t, std::string_view) -> std::tuple<size_t, std::string>

@@ -10,6 +10,26 @@ void editor_test(std::string consoleIO);
 void x_editor_test(std::string) { }
 
 TEST_CASE("Chapter 6 - edit - editor") {
+  SECTION("empty editor") {
+    editor_test(
+      "1\n"
+      "?\n"
+      "2\n"
+      "?\n"
+    );
+    editor_test(
+      "0\n"
+      "?\n"
+    );
+    editor_test(
+      ".\n"
+      "?\n"
+    );
+    editor_test(
+    "$\n"
+    "?\n"
+  );
+  }
   SECTION("= command") {
     editor_test(
       "=\n"
